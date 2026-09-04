@@ -1,84 +1,793 @@
 {
-  "phase": "2.3W",
-  "phase_title": "ROAD NETWORK <-> CADASTRAL TOPOLOGY / NEIGHBOR-STREET TRANSFER",
-  "status": "APPROVED_AND_EXECUTED",
-  "classification": "ROAD_CADASTRAL_TRANSFER_PARTIAL_VALUE",
-  "sample_size": 36,
-  "primary_metrics": {
-    "ORPHAN_EVIDENCE_COVERAGE": {
-      "count": 32,
-      "total": 36,
-      "rate": 0.8889,
-      "wilson_ci_95": [
-        0.7469,
-        0.956
-      ]
-    },
-    "ORPHAN_DS_TOP_1": {
-      "count": 19,
-      "denominator": 32,
-      "rate": 0.5938,
-      "wilson_ci_95": [
-        0.4226,
-        0.7448
-      ]
-    },
-    "ORPHAN_DS_TOP_3": {
-      "count": 27,
-      "denominator": 32,
-      "rate": 0.8438,
-      "wilson_ci_95": [
-        0.6825,
-        0.9314
-      ]
-    },
-    "ORPHAN_DSQ_TOP_1": {
-      "count": 2,
-      "denominator": 32,
-      "rate": 0.0625,
-      "wilson_ci_95": [
-        0.0173,
-        0.2015
-      ]
-    },
-    "ORPHAN_DSQ_TOP_5": {
-      "count": 2,
-      "denominator": 32,
-      "rate": 0.0625,
-      "wilson_ci_95": [
-        0.0173,
-        0.2015
-      ]
-    },
-    "MEDIAN_CANDIDATE_DSQ": 6,
-    "DELTA_DS_TOP1_VS_RANDOM_CONTROL": 0.2697,
-    "DELTA_DS_TOP1_ONE_HOP_VS_RANDOM_CONTROL": 0.4459
+  "phase": "2.3X0",
+  "phase_name": "DENSE_CADASTRAL_MICRO_AREA_DISCOVERY",
+  "classification": "DENSE_MICROAREA_ALREADY_AVAILABLE",
+  "summary": {
+    "total_sources_audited": 8,
+    "total_unique_real_bcs": 8794,
+    "total_urban_physical_road_blocks": 3360,
+    "total_candidate_microareas_evaluated": 30304,
+    "has_laboratory_area": true
   },
-  "artifacts": [
-    "road_network_taubate.json",
-    "road_bc_anchor_graph.json",
-    "road_neighbor_statistics.json",
-    "intersection_cadastral_analysis.json",
-    "leave_one_street_out_predictions.json",
-    "orphan_street_evaluation.json",
-    "road_cadastral_ablations.json",
-    "random_distance_control.json",
-    "road_cadastral_target_predictions.json",
-    "road_cadastral_target_evaluation.json",
-    "ROAD_CADASTRAL_TOPOLOGY_REPORT.md"
-  ],
-  "hashes": {
-    "road_network_taubate.json": "a3ae551bd1bbff73a960eb5b15bc770dfa6ae01665974b5165c0b8043fb832ab",
-    "road_bc_anchor_graph.json": "f652c48f1a8ba57261ecd968a31f2b5525187087cbbfd547b9034c6562d4e248",
-    "road_cadastral_target_predictions.json": "3de1529b2147708c8566e61ef3878b50e59c29b35049da64dc560787ef92d222",
-    "road_cadastral_target_evaluation.json": "dc5b69b4d35a2a90cfa2e12eb00039236ca32b52c69a5ccc0c2f36271f9e62dc"
+  "top_microarea_winner": {
+    "rank": 1,
+    "candidate_id": "CAND-MICRO-14585",
+    "region_name": "Antonio Delgado Da Veiga / Capitao Bernardo Sanches Pimenta / Claudino Veloso Borges (DSQ 4.4.203, 4.4.206)",
+    "physical_blocks": [
+      "PRB-0733",
+      "PRB-0734",
+      "PRB-0735",
+      "PRB-0736"
+    ],
+    "total_area_m2": 39613.4,
+    "observed_dsqs": [
+      "4.4.203",
+      "4.4.206",
+      "4.4.207",
+      "4.4.208",
+      "4.4.209"
+    ],
+    "metrics": {
+      "UNIQUE_REAL_BC_COUNT": 29,
+      "UNIQUE_STREET_COUNT": 6,
+      "UNIQUE_DSQ_COUNT": 5,
+      "UNIQUE_DSQLLL_COUNT": 22,
+      "BC_WITH_FULL_ADDRESS_COUNT": 25,
+      "BC_WITH_STREET_ONLY_COUNT": 4,
+      "BC_PER_PHYSICAL_BLOCK": 7.25,
+      "STREETS_WITH_BC_ANCHOR": 4,
+      "PERCENT_STREETS_WITH_ANCHOR": 66.7,
+      "STREETS_WITH_MULTIPLE_BCS": 3,
+      "CONDO_BC_COUNT": 10,
+      "OPEN_STREET_BC_COUNT": 19,
+      "ADDRESSABLE_RECORD_COUNT": 29,
+      "EXACT_BLOCK_ASSIGNABLE_COUNT": 0,
+      "STREET_LEVEL_ONLY_COUNT": 29,
+      "INTERNAL_STREET_BC_COUNT": 29,
+      "PERIMETER_STREET_BC_COUNT": 0
+    }
   },
-  "limitations": [
-    "A transferência viária entre ruas vizinhas funciona fortemente para Setor Fiscal (DS), mas transfere muito fracamente a Quadra Cadastral (DSQ Top-5 de apenas 6.2% a 22.2%).",
-    "As vias públicas atuam fisicamente como fronteiras de quadra, gerando descontinuidade cadastral de QQQ nas esquinas opostas.",
-    "A numeração de QQQ não apresenta sequencialidade aritmética linear contínua no mapa.",
-    "3 dos 36 alvos de Ground Truth não possuem representação nominal na base pública do OpenStreetMap (falha de cobertura cartográfica)."
+  "top10_candidates": [
+    {
+      "candidate_id": "CAND-MICRO-14585",
+      "score": 2353.4,
+      "physical_block_count": 4,
+      "physical_block_ids": [
+        "PRB-0733",
+        "PRB-0734",
+        "PRB-0735",
+        "PRB-0736"
+      ],
+      "total_area_m2": 39613.4,
+      "bbox": {
+        "min_lon": -45.576882,
+        "min_lat": -23.028176,
+        "max_lon": -45.57383,
+        "max_lat": -23.025477
+      },
+      "metrics": {
+        "UNIQUE_REAL_BC_COUNT": 29,
+        "UNIQUE_STREET_COUNT": 6,
+        "UNIQUE_DSQ_COUNT": 5,
+        "UNIQUE_DSQLLL_COUNT": 22,
+        "BC_WITH_FULL_ADDRESS_COUNT": 25,
+        "BC_WITH_STREET_ONLY_COUNT": 4,
+        "BC_PER_PHYSICAL_BLOCK": 7.25,
+        "STREETS_WITH_BC_ANCHOR": 4,
+        "PERCENT_STREETS_WITH_ANCHOR": 66.7,
+        "STREETS_WITH_MULTIPLE_BCS": 3,
+        "CONDO_BC_COUNT": 10,
+        "OPEN_STREET_BC_COUNT": 19,
+        "ADDRESSABLE_RECORD_COUNT": 29,
+        "EXACT_BLOCK_ASSIGNABLE_COUNT": 0,
+        "STREET_LEVEL_ONLY_COUNT": 29,
+        "INTERNAL_STREET_BC_COUNT": 29,
+        "PERIMETER_STREET_BC_COUNT": 0
+      },
+      "observed_dsq_list": [
+        "4.4.203",
+        "4.4.206",
+        "4.4.207",
+        "4.4.208",
+        "4.4.209"
+      ],
+      "observed_dsqlll_list": [
+        "4.4.203.030",
+        "4.4.206.001",
+        "4.4.206.002",
+        "4.4.206.003",
+        "4.4.206.004",
+        "4.4.206.005",
+        "4.4.206.006",
+        "4.4.206.007",
+        "4.4.206.008",
+        "4.4.206.009",
+        "4.4.206.010",
+        "4.4.206.012",
+        "4.4.206.013",
+        "4.4.207.001",
+        "4.4.207.002",
+        "4.4.207.006",
+        "4.4.207.014",
+        "4.4.208.001",
+        "4.4.208.002",
+        "4.4.208.003",
+        "4.4.208.008",
+        "4.4.209.013"
+      ],
+      "streets_with_anchors_list": [
+        "antonio delgado da veiga",
+        "capitao bernardo sanches pimenta",
+        "claudino veloso borges",
+        "melchior felix correa"
+      ],
+      "internal_streets": [
+        "antonio delgado da veiga",
+        "benedito antonio barbosa",
+        "capitao bernardo sanches pimenta",
+        "claudino veloso borges",
+        "melchior felix correa",
+        "treze"
+      ],
+      "perimeter_streets": [],
+      "rank": 1,
+      "name": "Antonio Delgado Da Veiga / Capitao Bernardo Sanches Pimenta / Claudino Veloso Borges (DSQ 4.4.203, 4.4.206)"
+    },
+    {
+      "candidate_id": "CAND-MICRO-16484",
+      "score": 1948.4,
+      "physical_block_count": 4,
+      "physical_block_ids": [
+        "PRB-0192",
+        "PRB-0193",
+        "PRB-0194",
+        "PRB-0478"
+      ],
+      "total_area_m2": 12260.2,
+      "bbox": {
+        "min_lon": -45.616611,
+        "min_lat": -23.034323,
+        "max_lon": -45.612107,
+        "max_lat": -23.031973
+      },
+      "metrics": {
+        "UNIQUE_REAL_BC_COUNT": 79,
+        "UNIQUE_STREET_COUNT": 6,
+        "UNIQUE_DSQ_COUNT": 28,
+        "UNIQUE_DSQLLL_COUNT": 28,
+        "BC_WITH_FULL_ADDRESS_COUNT": 53,
+        "BC_WITH_STREET_ONLY_COUNT": 26,
+        "BC_PER_PHYSICAL_BLOCK": 19.75,
+        "STREETS_WITH_BC_ANCHOR": 1,
+        "PERCENT_STREETS_WITH_ANCHOR": 16.7,
+        "STREETS_WITH_MULTIPLE_BCS": 1,
+        "CONDO_BC_COUNT": 79,
+        "OPEN_STREET_BC_COUNT": 0,
+        "ADDRESSABLE_RECORD_COUNT": 79,
+        "EXACT_BLOCK_ASSIGNABLE_COUNT": 0,
+        "STREET_LEVEL_ONLY_COUNT": 79,
+        "INTERNAL_STREET_BC_COUNT": 79,
+        "PERIMETER_STREET_BC_COUNT": 0
+      },
+      "observed_dsq_list": [
+        "1.0.140",
+        "1.0.441",
+        "1.2.208",
+        "1.2.210",
+        "1.4.463",
+        "1.5.013",
+        "1.8.377",
+        "1.8.384",
+        "1.9.913",
+        "2.3.041",
+        "2.7.113",
+        "2.8.162",
+        "2.9.142",
+        "3.0.874",
+        "3.1.202",
+        "3.2.372",
+        "3.3.271",
+        "3.3.382",
+        "3.6.364",
+        "3.7.694",
+        "3.9.138",
+        "4.4.214",
+        "5.2.003",
+        "5.4.160",
+        "6.0.506",
+        "6.5.415",
+        "7.3.788",
+        "7.6.128"
+      ],
+      "observed_dsqlll_list": [
+        "1.0.140.730",
+        "1.0.441.919",
+        "1.2.208.732",
+        "1.2.210.852",
+        "1.4.463.534",
+        "1.5.013.371",
+        "1.8.377.885",
+        "1.8.384.342",
+        "1.9.913.794",
+        "2.3.041.008",
+        "2.7.113.542",
+        "2.8.162.188",
+        "2.9.142.726",
+        "3.0.874.715",
+        "3.1.202.793",
+        "3.2.372.271",
+        "3.3.271.822",
+        "3.3.382.535",
+        "3.6.364.305",
+        "3.7.694.642",
+        "3.9.138.999",
+        "4.4.214.001",
+        "5.2.003.009",
+        "5.4.160.790",
+        "6.0.506.024",
+        "6.5.415.116",
+        "7.3.788.678",
+        "7.6.128.644"
+      ],
+      "streets_with_anchors_list": [
+        "francisco alves monteiro"
+      ],
+      "internal_streets": [
+        "francisco alves monteiro",
+        "joao ramalho",
+        "municipal francisco alves monteiro",
+        "professora marisa lapido barbosa"
+      ],
+      "perimeter_streets": [
+        "ambrosina afra crosariol dias",
+        "giacomo savi"
+      ],
+      "rank": 2,
+      "name": "Francisco Alves Monteiro (DSQ 1.0.140, 1.0.441)"
+    },
+    {
+      "candidate_id": "CAND-MICRO-05186",
+      "score": 1127.2,
+      "physical_block_count": 4,
+      "physical_block_ids": [
+        "PRB-0326",
+        "PRB-0327",
+        "PRB-0732",
+        "PRB-0746"
+      ],
+      "total_area_m2": 46799.7,
+      "bbox": {
+        "min_lon": -45.574492,
+        "min_lat": -23.033217,
+        "max_lon": -45.570328,
+        "max_lat": -23.028346
+      },
+      "metrics": {
+        "UNIQUE_REAL_BC_COUNT": 278,
+        "UNIQUE_STREET_COUNT": 14,
+        "UNIQUE_DSQ_COUNT": 5,
+        "UNIQUE_DSQLLL_COUNT": 7,
+        "BC_WITH_FULL_ADDRESS_COUNT": 0,
+        "BC_WITH_STREET_ONLY_COUNT": 278,
+        "BC_PER_PHYSICAL_BLOCK": 69.5,
+        "STREETS_WITH_BC_ANCHOR": 4,
+        "PERCENT_STREETS_WITH_ANCHOR": 28.6,
+        "STREETS_WITH_MULTIPLE_BCS": 3,
+        "CONDO_BC_COUNT": 271,
+        "OPEN_STREET_BC_COUNT": 7,
+        "ADDRESSABLE_RECORD_COUNT": 278,
+        "EXACT_BLOCK_ASSIGNABLE_COUNT": 0,
+        "STREET_LEVEL_ONLY_COUNT": 278,
+        "INTERNAL_STREET_BC_COUNT": 276,
+        "PERIMETER_STREET_BC_COUNT": 2
+      },
+      "observed_dsq_list": [
+        "3.1.004",
+        "3.1.009",
+        "3.1.014",
+        "3.3.019",
+        "4.5.102"
+      ],
+      "observed_dsqlll_list": [
+        "3.1.004.013",
+        "3.1.009.004",
+        "3.1.009.006",
+        "3.1.014.001",
+        "3.3.019.005",
+        "3.3.019.006",
+        "4.5.102.004"
+      ],
+      "streets_with_anchors_list": [
+        "argentina",
+        "franca",
+        "professor walter thaumaturgo",
+        "siria"
+      ],
+      "internal_streets": [
+        "argentina",
+        "cuba",
+        "franca",
+        "grecia",
+        "john fitzgerald kennedy",
+        "panama",
+        "peru",
+        "professor walter thaumaturgo",
+        "venezuela"
+      ],
+      "perimeter_streets": [
+        "austria",
+        "bolivia",
+        "equador",
+        "espanha",
+        "siria"
+      ],
+      "rank": 3,
+      "name": "Argentina / Franca / Professor Walter Thaumaturgo (DSQ 3.1.004, 3.1.009)"
+    },
+    {
+      "candidate_id": "CAND-MICRO-27948",
+      "score": 830.0,
+      "physical_block_count": 4,
+      "physical_block_ids": [
+        "PRB-2608",
+        "PRB-2619",
+        "PRB-2620",
+        "PRB-2637"
+      ],
+      "total_area_m2": 46770.3,
+      "bbox": {
+        "min_lon": -45.604722,
+        "min_lat": -23.057351,
+        "max_lon": -45.599924,
+        "max_lat": -23.055461
+      },
+      "metrics": {
+        "UNIQUE_REAL_BC_COUNT": 5,
+        "UNIQUE_STREET_COUNT": 10,
+        "UNIQUE_DSQ_COUNT": 3,
+        "UNIQUE_DSQLLL_COUNT": 5,
+        "BC_WITH_FULL_ADDRESS_COUNT": 0,
+        "BC_WITH_STREET_ONLY_COUNT": 5,
+        "BC_PER_PHYSICAL_BLOCK": 1.25,
+        "STREETS_WITH_BC_ANCHOR": 3,
+        "PERCENT_STREETS_WITH_ANCHOR": 30.0,
+        "STREETS_WITH_MULTIPLE_BCS": 2,
+        "CONDO_BC_COUNT": 0,
+        "OPEN_STREET_BC_COUNT": 5,
+        "ADDRESSABLE_RECORD_COUNT": 5,
+        "EXACT_BLOCK_ASSIGNABLE_COUNT": 0,
+        "STREET_LEVEL_ONLY_COUNT": 5,
+        "INTERNAL_STREET_BC_COUNT": 5,
+        "PERIMETER_STREET_BC_COUNT": 0
+      },
+      "observed_dsq_list": [
+        "7.2.008",
+        "7.2.025",
+        "7.2.026"
+      ],
+      "observed_dsqlll_list": [
+        "7.2.008.013",
+        "7.2.008.014",
+        "7.2.025.009",
+        "7.2.026.006",
+        "7.2.026.014"
+      ],
+      "streets_with_anchors_list": [
+        "jornalista romeu garcia",
+        "orestes francisco vanone",
+        "professor denny paulista azevedo"
+      ],
+      "internal_streets": [
+        "brasilino vinhas",
+        "emerson boucalt avilla germano",
+        "emidio cardoso filho",
+        "joao vanone",
+        "jornalista romeu garcia",
+        "luis carlos geia",
+        "orestes francisco vanone",
+        "professor denny paulista azevedo"
+      ],
+      "perimeter_streets": [
+        "karine tatiane sampaio",
+        "maria da paixao silveira peixoto"
+      ],
+      "rank": 4,
+      "name": "Jornalista Romeu Garcia / Orestes Francisco Vanone / Professor Denny Paulista Azevedo (DSQ 7.2.008, 7.2.025)"
+    },
+    {
+      "candidate_id": "CAND-MICRO-14674",
+      "score": 808.6,
+      "physical_block_count": 4,
+      "physical_block_ids": [
+        "PRB-0235",
+        "PRB-0236",
+        "PRB-0237",
+        "PRB-0741"
+      ],
+      "total_area_m2": 36982.0,
+      "bbox": {
+        "min_lon": -45.575856,
+        "min_lat": -23.029002,
+        "max_lon": -45.572378,
+        "max_lat": -23.026282
+      },
+      "metrics": {
+        "UNIQUE_REAL_BC_COUNT": 7,
+        "UNIQUE_STREET_COUNT": 7,
+        "UNIQUE_DSQ_COUNT": 3,
+        "UNIQUE_DSQLLL_COUNT": 7,
+        "BC_WITH_FULL_ADDRESS_COUNT": 5,
+        "BC_WITH_STREET_ONLY_COUNT": 2,
+        "BC_PER_PHYSICAL_BLOCK": 1.75,
+        "STREETS_WITH_BC_ANCHOR": 1,
+        "PERCENT_STREETS_WITH_ANCHOR": 14.3,
+        "STREETS_WITH_MULTIPLE_BCS": 1,
+        "CONDO_BC_COUNT": 0,
+        "OPEN_STREET_BC_COUNT": 7,
+        "ADDRESSABLE_RECORD_COUNT": 7,
+        "EXACT_BLOCK_ASSIGNABLE_COUNT": 0,
+        "STREET_LEVEL_ONLY_COUNT": 7,
+        "INTERNAL_STREET_BC_COUNT": 7,
+        "PERIMETER_STREET_BC_COUNT": 0
+      },
+      "observed_dsq_list": [
+        "4.4.206",
+        "4.4.207",
+        "4.4.208"
+      ],
+      "observed_dsqlll_list": [
+        "4.4.206.012",
+        "4.4.206.013",
+        "4.4.207.001",
+        "4.4.207.002",
+        "4.4.208.001",
+        "4.4.208.002",
+        "4.4.208.003"
+      ],
+      "streets_with_anchors_list": [
+        "claudino veloso borges"
+      ],
+      "internal_streets": [
+        "antonio celidonio monteiro",
+        "claudino veloso borges",
+        "doutor jorge ferreira da motta",
+        "jorge salim mutran",
+        "professor ernesto de oliveira filho",
+        "ramiro adolpho de souza guimaraes"
+      ],
+      "perimeter_streets": [
+        "antonio dias de oliveira"
+      ],
+      "rank": 5,
+      "name": "Claudino Veloso Borges (DSQ 4.4.206, 4.4.207)"
+    },
+    {
+      "candidate_id": "CAND-MICRO-08379",
+      "score": 475.0,
+      "physical_block_count": 7,
+      "physical_block_ids": [
+        "PRB-0114",
+        "PRB-0229",
+        "PRB-0378",
+        "PRB-0386",
+        "PRB-0387",
+        "PRB-0402",
+        "PRB-0403"
+      ],
+      "total_area_m2": 100225.9,
+      "bbox": {
+        "min_lon": -45.580346,
+        "min_lat": -23.036319,
+        "max_lon": -45.574886,
+        "max_lat": -23.031964
+      },
+      "metrics": {
+        "UNIQUE_REAL_BC_COUNT": 3,
+        "UNIQUE_STREET_COUNT": 16,
+        "UNIQUE_DSQ_COUNT": 2,
+        "UNIQUE_DSQLLL_COUNT": 3,
+        "BC_WITH_FULL_ADDRESS_COUNT": 0,
+        "BC_WITH_STREET_ONLY_COUNT": 3,
+        "BC_PER_PHYSICAL_BLOCK": 0.43,
+        "STREETS_WITH_BC_ANCHOR": 2,
+        "PERCENT_STREETS_WITH_ANCHOR": 12.5,
+        "STREETS_WITH_MULTIPLE_BCS": 1,
+        "CONDO_BC_COUNT": 0,
+        "OPEN_STREET_BC_COUNT": 3,
+        "ADDRESSABLE_RECORD_COUNT": 3,
+        "EXACT_BLOCK_ASSIGNABLE_COUNT": 0,
+        "STREET_LEVEL_ONLY_COUNT": 3,
+        "INTERNAL_STREET_BC_COUNT": 1,
+        "PERIMETER_STREET_BC_COUNT": 2
+      },
+      "observed_dsq_list": [
+        "3.3.019",
+        "3.5.014"
+      ],
+      "observed_dsqlll_list": [
+        "3.3.019.005",
+        "3.3.019.006",
+        "3.5.014.015"
+      ],
+      "streets_with_anchors_list": [
+        "professor cesidio ambrosi",
+        "siria"
+      ],
+      "internal_streets": [
+        "egito",
+        "espanha",
+        "estados unidos",
+        "italia",
+        "marrocos",
+        "mexico",
+        "noruega",
+        "polonia",
+        "professor cesidio ambrosi",
+        "suecia",
+        "suica",
+        "turquia",
+        "vaticano"
+      ],
+      "perimeter_streets": [
+        "dinamarca",
+        "romenia",
+        "siria"
+      ],
+      "rank": 6,
+      "name": "Professor Cesidio Ambrosi / Siria (DSQ 3.3.019, 3.5.014)"
+    },
+    {
+      "candidate_id": "CAND-MICRO-06990",
+      "score": 435.0,
+      "physical_block_count": 4,
+      "physical_block_ids": [
+        "PRB-0728",
+        "PRB-0738",
+        "PRB-0739",
+        "PRB-0740"
+      ],
+      "total_area_m2": 42238.9,
+      "bbox": {
+        "min_lon": -45.575778,
+        "min_lat": -23.031557,
+        "max_lon": -45.572893,
+        "max_lat": -23.028332
+      },
+      "metrics": {
+        "UNIQUE_REAL_BC_COUNT": 3,
+        "UNIQUE_STREET_COUNT": 8,
+        "UNIQUE_DSQ_COUNT": 2,
+        "UNIQUE_DSQLLL_COUNT": 3,
+        "BC_WITH_FULL_ADDRESS_COUNT": 0,
+        "BC_WITH_STREET_ONLY_COUNT": 3,
+        "BC_PER_PHYSICAL_BLOCK": 0.75,
+        "STREETS_WITH_BC_ANCHOR": 1,
+        "PERCENT_STREETS_WITH_ANCHOR": 12.5,
+        "STREETS_WITH_MULTIPLE_BCS": 1,
+        "CONDO_BC_COUNT": 0,
+        "OPEN_STREET_BC_COUNT": 3,
+        "ADDRESSABLE_RECORD_COUNT": 3,
+        "EXACT_BLOCK_ASSIGNABLE_COUNT": 0,
+        "STREET_LEVEL_ONLY_COUNT": 3,
+        "INTERNAL_STREET_BC_COUNT": 3,
+        "PERIMETER_STREET_BC_COUNT": 0
+      },
+      "observed_dsq_list": [
+        "3.1.009",
+        "3.1.014"
+      ],
+      "observed_dsqlll_list": [
+        "3.1.009.004",
+        "3.1.009.006",
+        "3.1.014.001"
+      ],
+      "streets_with_anchors_list": [
+        "franca"
+      ],
+      "internal_streets": [
+        "alemanha",
+        "franca",
+        "grecia",
+        "japao",
+        "marrocos",
+        "venezuela"
+      ],
+      "perimeter_streets": [
+        "bolivia",
+        "espanha"
+      ],
+      "rank": 7,
+      "name": "Franca (DSQ 3.1.009, 3.1.014)"
+    },
+    {
+      "candidate_id": "CAND-MICRO-24944",
+      "score": 400.0,
+      "physical_block_count": 5,
+      "physical_block_ids": [
+        "PRB-0574",
+        "PRB-0575",
+        "PRB-0595",
+        "PRB-0600",
+        "PRB-0608"
+      ],
+      "total_area_m2": 47920.1,
+      "bbox": {
+        "min_lon": -45.530215,
+        "min_lat": -23.002024,
+        "max_lon": -45.527987,
+        "max_lat": -22.997896
+      },
+      "metrics": {
+        "UNIQUE_REAL_BC_COUNT": 2,
+        "UNIQUE_STREET_COUNT": 10,
+        "UNIQUE_DSQ_COUNT": 2,
+        "UNIQUE_DSQLLL_COUNT": 2,
+        "BC_WITH_FULL_ADDRESS_COUNT": 0,
+        "BC_WITH_STREET_ONLY_COUNT": 2,
+        "BC_PER_PHYSICAL_BLOCK": 0.4,
+        "STREETS_WITH_BC_ANCHOR": 2,
+        "PERCENT_STREETS_WITH_ANCHOR": 20.0,
+        "STREETS_WITH_MULTIPLE_BCS": 0,
+        "CONDO_BC_COUNT": 0,
+        "OPEN_STREET_BC_COUNT": 2,
+        "ADDRESSABLE_RECORD_COUNT": 2,
+        "EXACT_BLOCK_ASSIGNABLE_COUNT": 0,
+        "STREET_LEVEL_ONLY_COUNT": 2,
+        "INTERNAL_STREET_BC_COUNT": 2,
+        "PERIMETER_STREET_BC_COUNT": 0
+      },
+      "observed_dsq_list": [
+        "6.4.003",
+        "6.4.007"
+      ],
+      "observed_dsqlll_list": [
+        "6.4.003.025",
+        "6.4.007.071"
+      ],
+      "streets_with_anchors_list": [
+        "cinderela",
+        "dona benta"
+      ],
+      "internal_streets": [
+        "ali baba",
+        "cinderela",
+        "dona benta",
+        "narizinho",
+        "oswaldo barbosa guisard",
+        "pedro malazartes",
+        "projetada",
+        "tico tico"
+      ],
+      "perimeter_streets": [
+        "gibi",
+        "mirim"
+      ],
+      "rank": 8,
+      "name": "Cinderela / Dona Benta (DSQ 6.4.003, 6.4.007)"
+    },
+    {
+      "candidate_id": "CAND-MICRO-04326",
+      "score": 353.6,
+      "physical_block_count": 4,
+      "physical_block_ids": [
+        "PRB-2604",
+        "PRB-2605",
+        "PRB-2606",
+        "PRB-2607"
+      ],
+      "total_area_m2": 120272.7,
+      "bbox": {
+        "min_lon": -45.599357,
+        "min_lat": -23.055115,
+        "max_lon": -45.593791,
+        "max_lat": -23.051645
+      },
+      "metrics": {
+        "UNIQUE_REAL_BC_COUNT": 2,
+        "UNIQUE_STREET_COUNT": 7,
+        "UNIQUE_DSQ_COUNT": 2,
+        "UNIQUE_DSQLLL_COUNT": 2,
+        "BC_WITH_FULL_ADDRESS_COUNT": 0,
+        "BC_WITH_STREET_ONLY_COUNT": 2,
+        "BC_PER_PHYSICAL_BLOCK": 0.5,
+        "STREETS_WITH_BC_ANCHOR": 1,
+        "PERCENT_STREETS_WITH_ANCHOR": 14.3,
+        "STREETS_WITH_MULTIPLE_BCS": 1,
+        "CONDO_BC_COUNT": 0,
+        "OPEN_STREET_BC_COUNT": 2,
+        "ADDRESSABLE_RECORD_COUNT": 2,
+        "EXACT_BLOCK_ASSIGNABLE_COUNT": 0,
+        "STREET_LEVEL_ONLY_COUNT": 2,
+        "INTERNAL_STREET_BC_COUNT": 2,
+        "PERIMETER_STREET_BC_COUNT": 0
+      },
+      "observed_dsq_list": [
+        "2.1.235",
+        "2.1.238"
+      ],
+      "observed_dsqlll_list": [
+        "2.1.235.006",
+        "2.1.238.023"
+      ],
+      "streets_with_anchors_list": [
+        "dos limoeiros"
+      ],
+      "internal_streets": [
+        "das goiabeiras",
+        "das jaboticabeiras",
+        "das laranjeiras",
+        "dois",
+        "dos coqueiros",
+        "dos limoeiros",
+        "dos mamoeiros"
+      ],
+      "perimeter_streets": [],
+      "rank": 9,
+      "name": "Dos Limoeiros (DSQ 2.1.235, 2.1.238)"
+    },
+    {
+      "candidate_id": "CAND-MICRO-08050",
+      "score": 328.4,
+      "physical_block_count": 4,
+      "physical_block_ids": [
+        "PRB-0387",
+        "PRB-0389",
+        "PRB-0400",
+        "PRB-1588"
+      ],
+      "total_area_m2": 53355.4,
+      "bbox": {
+        "min_lon": -45.576429,
+        "min_lat": -23.035357,
+        "max_lon": -45.573454,
+        "max_lat": -23.032279
+      },
+      "metrics": {
+        "UNIQUE_REAL_BC_COUNT": 2,
+        "UNIQUE_STREET_COUNT": 6,
+        "UNIQUE_DSQ_COUNT": 1,
+        "UNIQUE_DSQLLL_COUNT": 2,
+        "BC_WITH_FULL_ADDRESS_COUNT": 0,
+        "BC_WITH_STREET_ONLY_COUNT": 2,
+        "BC_PER_PHYSICAL_BLOCK": 0.5,
+        "STREETS_WITH_BC_ANCHOR": 1,
+        "PERCENT_STREETS_WITH_ANCHOR": 16.7,
+        "STREETS_WITH_MULTIPLE_BCS": 1,
+        "CONDO_BC_COUNT": 0,
+        "OPEN_STREET_BC_COUNT": 2,
+        "ADDRESSABLE_RECORD_COUNT": 2,
+        "EXACT_BLOCK_ASSIGNABLE_COUNT": 0,
+        "STREET_LEVEL_ONLY_COUNT": 2,
+        "INTERNAL_STREET_BC_COUNT": 2,
+        "PERIMETER_STREET_BC_COUNT": 0
+      },
+      "observed_dsq_list": [
+        "3.3.019"
+      ],
+      "observed_dsqlll_list": [
+        "3.3.019.005",
+        "3.3.019.006"
+      ],
+      "streets_with_anchors_list": [
+        "siria"
+      ],
+      "internal_streets": [
+        "austria",
+        "espanha",
+        "estados unidos",
+        "john fitzgerald kennedy",
+        "mexico",
+        "siria"
+      ],
+      "perimeter_streets": [],
+      "rank": 10,
+      "name": "Siria (DSQ 3.3.019)"
+    }
   ],
-  "recommended_next_step": "Integrar a recuperação de Setor Fiscal (DS) da Phase 2.3W ao gerador de quadras topológicas 2.2D para recuperar casos frios, e acoplar a topologia intra-quadra da Phase 2.3V exclusivamente onde houver evidência na quadra.",
-  "stop_status": "STOP_FOR_HUMAN_REVIEW"
+  "road_network_sha256": "a3ae551bd1bbff73a960eb5b15bc770dfa6ae01665974b5165c0b8043fb832ab",
+  "user_addendum_compliance": {
+    "exact_block_interpolation_used": false,
+    "street_level_evidence_preserved": true,
+    "exact_block_assignable_separated": true
+  }
 }

@@ -66,3 +66,7 @@ data/*.db
 facade-checker/images/
 facade-checker/data/logs/
 
+
+!brain/address_finder/maps/*.png
+
+.handoff_meta.json
