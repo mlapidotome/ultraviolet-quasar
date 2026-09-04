@@ -1,0 +1,68 @@
+# Environment and Secrets
+.env
+.env.*
+!.env.example
+*.env
+**/.env
+**/.env.*
+config.json
+**/config.json
+
+# WhatsApp Sessions, Cookies and Auth
+.wwebjs_auth/
+**/.wwebjs_auth/
+whatsapp_session/
+**/whatsapp_session/
+
+# Vercel & Deployment
+.vercel/
+**/.vercel/
+
+# Binaries and Large Archives
+*.exe
+*.zip
+*.tar
+*.gz
+cloudflared.exe
+project_bundle.zip
+
+# Logs and Debug outputs
+*.log
+**/*.log
+server_debug.log
+server_direct.log
+
+# Private Spreadsheets, Leads and Customer Documents
+*.xlsx
+*.csv
+*.pdf
+*.docx
+*.pptx
+
+# Captchas and Temporary Screenshots
+captcha*.png
+cap_*.png
+cap*.png
+captchas/
+**/captchas/
+scratch_*.png
+*.traineddata
+*.png
+
+# Node & Python dependencies / caches
+node_modules/
+**/node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Local Data and Media caches
+uploads/
+cards_gerados/
+carousel_previews/
+outputs/*.mp4
+data/*.db
+facade-checker/images/
+facade-checker/data/logs/
+

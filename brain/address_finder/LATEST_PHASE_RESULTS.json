@@ -1,0 +1,84 @@
+{
+  "phase": "2.3W",
+  "phase_title": "ROAD NETWORK <-> CADASTRAL TOPOLOGY / NEIGHBOR-STREET TRANSFER",
+  "status": "APPROVED_AND_EXECUTED",
+  "classification": "ROAD_CADASTRAL_TRANSFER_PARTIAL_VALUE",
+  "sample_size": 36,
+  "primary_metrics": {
+    "ORPHAN_EVIDENCE_COVERAGE": {
+      "count": 32,
+      "total": 36,
+      "rate": 0.8889,
+      "wilson_ci_95": [
+        0.7469,
+        0.956
+      ]
+    },
+    "ORPHAN_DS_TOP_1": {
+      "count": 19,
+      "denominator": 32,
+      "rate": 0.5938,
+      "wilson_ci_95": [
+        0.4226,
+        0.7448
+      ]
+    },
+    "ORPHAN_DS_TOP_3": {
+      "count": 27,
+      "denominator": 32,
+      "rate": 0.8438,
+      "wilson_ci_95": [
+        0.6825,
+        0.9314
+      ]
+    },
+    "ORPHAN_DSQ_TOP_1": {
+      "count": 2,
+      "denominator": 32,
+      "rate": 0.0625,
+      "wilson_ci_95": [
+        0.0173,
+        0.2015
+      ]
+    },
+    "ORPHAN_DSQ_TOP_5": {
+      "count": 2,
+      "denominator": 32,
+      "rate": 0.0625,
+      "wilson_ci_95": [
+        0.0173,
+        0.2015
+      ]
+    },
+    "MEDIAN_CANDIDATE_DSQ": 6,
+    "DELTA_DS_TOP1_VS_RANDOM_CONTROL": 0.2697,
+    "DELTA_DS_TOP1_ONE_HOP_VS_RANDOM_CONTROL": 0.4459
+  },
+  "artifacts": [
+    "road_network_taubate.json",
+    "road_bc_anchor_graph.json",
+    "road_neighbor_statistics.json",
+    "intersection_cadastral_analysis.json",
+    "leave_one_street_out_predictions.json",
+    "orphan_street_evaluation.json",
+    "road_cadastral_ablations.json",
+    "random_distance_control.json",
+    "road_cadastral_target_predictions.json",
+    "road_cadastral_target_evaluation.json",
+    "ROAD_CADASTRAL_TOPOLOGY_REPORT.md"
+  ],
+  "hashes": {
+    "road_network_taubate.json": "a3ae551bd1bbff73a960eb5b15bc770dfa6ae01665974b5165c0b8043fb832ab",
+    "road_bc_anchor_graph.json": "f652c48f1a8ba57261ecd968a31f2b5525187087cbbfd547b9034c6562d4e248",
+    "road_cadastral_target_predictions.json": "3de1529b2147708c8566e61ef3878b50e59c29b35049da64dc560787ef92d222",
+    "road_cadastral_target_evaluation.json": "dc5b69b4d35a2a90cfa2e12eb00039236ca32b52c69a5ccc0c2f36271f9e62dc"
+  },
+  "limitations": [
+    "A transferência viária entre ruas vizinhas funciona fortemente para Setor Fiscal (DS), mas transfere muito fracamente a Quadra Cadastral (DSQ Top-5 de apenas 6.2% a 22.2%).",
+    "As vias públicas atuam fisicamente como fronteiras de quadra, gerando descontinuidade cadastral de QQQ nas esquinas opostas.",
+    "A numeração de QQQ não apresenta sequencialidade aritmética linear contínua no mapa.",
+    "3 dos 36 alvos de Ground Truth não possuem representação nominal na base pública do OpenStreetMap (falha de cobertura cartográfica)."
+  ],
+  "recommended_next_step": "Integrar a recuperação de Setor Fiscal (DS) da Phase 2.3W ao gerador de quadras topológicas 2.2D para recuperar casos frios, e acoplar a topologia intra-quadra da Phase 2.3V exclusivamente onde houver evidência na quadra.",
+  "stop_status": "STOP_FOR_HUMAN_REVIEW"
+}
