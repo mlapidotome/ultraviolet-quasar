@@ -667,10 +667,11 @@
           <span>🚀 Buscar e Criar Job</span>
         </button>
       </form>
-      <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem; align-items: center; font-size: 0.82rem; color: var(--text-muted); flex-wrap: wrap;">
-        <span>Job Homologado:</span>
-        <button type="button" onclick="loadJob('bbddf3ba-f7c6-44f5-a81a-2ac09dae611b')" style="background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #93C5FD; border-radius: 6px; padding: 0.3rem 0.7rem; cursor: pointer; font-size: 0.8rem; font-family: inherit; display: inline-flex; align-items: center; gap: 0.35rem;">
-          ⭐ Ver Vídeos Produzidos (Ref: #1639 — 3 Vídeos + Shadow 3C)
+
+      <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+        <span style="font-size: 0.85rem; color: #C4B5FD;">✨ <strong>Homologação Visual Fase 3C.1:</strong></span>
+        <button type="button" class="btn-submit" style="background: linear-gradient(135deg, #8B5CF6, #6366F1); font-size: 0.85rem; padding: 0.5rem 1rem;" onclick="loadJobById('c3c10000-0000-4000-8000-000000001639')">
+          <span>🎬 Carregar Showcase Homologação 3C.1 (Ref: 1639)</span>
         </button>
       </div>
     </section>
@@ -1000,44 +1001,6 @@
     let currentJobId = null;
     let pollInterval = null;
 
-    async function loadJob(jobId) {
-      if (!jobId) return;
-      stopPolling();
-      const errorBanner = document.getElementById('errorBanner');
-      const degradedBanner = document.getElementById('degradedBanner');
-      const resultSection = document.getElementById('resultSection');
-      const input = document.getElementById('propertyRefInput');
-      errorBanner.classList.remove('visible');
-      degradedBanner.classList.remove('visible');
-
-      try {
-        const response = await fetch(`/api/v2/panel/video-jobs/${jobId}`);
-        const data = await response.json().catch(() => null);
-
-        if (response.status === 200 && data && data.success) {
-          currentJobId = data.job_id;
-          if (input && (data.property_ref || data.property?.ref)) {
-            input.value = data.property_ref || data.property?.ref || '';
-          }
-          renderJobData(data, false);
-          updatePipelineState(data.status, data.error_message, data);
-          if (typeof loadShadow3CComparison === 'function') {
-            loadShadow3CComparison();
-          }
-        } else {
-          showError(data?.message || 'Job não encontrado.');
-        }
-      } catch (err) {
-        showError('Falha ao carregar Job.');
-      }
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      const params = new URLSearchParams(window.location.search);
-      const jobId = params.get('job_id') || 'bbddf3ba-f7c6-44f5-a81a-2ac09dae611b';
-      loadJob(jobId);
-    });
-
     // Gerenciador de Submissão de Criação de Job
     async function handleCreateJob(event) {
       if (event) event.preventDefault();
@@ -1052,10 +1015,6 @@
       if (!ref) {
         showError('Por favor, informe uma referência válida.');
         return;
-      }
-
-      if (/^[0-9a-fA-F-]{36}$/.test(ref)) {
-        return loadJob(ref);
       }
 
       stopPolling();
@@ -1442,6 +1401,114 @@
         });
       }
     }
+
+    // Carregar Job específico (ex: Showcase)
+    async function loadJobById(jobId) {
+      stopPolling();
+      const errorBanner = document.getElementById('errorBanner');
+      const degradedBanner = document.getElementById('degradedBanner');
+      errorBanner.classList.remove('visible');
+      degradedBanner.classList.remove('visible');
+
+      try {
+        const res = await fetch(`/api/v2/panel/video-jobs/${jobId}`);
+        if (res.status === 200) {
+          const data = await res.json();
+          currentJobId = data.job_id;
+          document.getElementById('propertyRefInput').value = data.property_ref || (data.property && data.property.ref) || '';
+          renderJobData(data, false);
+          updatePipelineState(data.status, data.error_message, data);
+
+          // Carregar Player do Shadow 3C
+          const shadowPlayerBox = document.getElementById('shadow3cPlayerBox');
+          const shadowVideoElem = document.getElementById('shadow3cVideoElement');
+          const shadowMetaText = document.getElementById('shadow3cMetaText');
+          const shadowStatus = document.getElementById('shadow3cStatus');
+
+          const shadowStreamUrl = `/api/v2/panel/video-jobs/${currentJobId}/shadow-3c-video/1?t=${Date.now()}`;
+          shadowVideoElem.src = shadowStreamUrl;
+          shadowMetaText.innerHTML = `<strong>Showcase Homologação Fase 3C.1</strong> (Ref: ${data.property_ref})<br><strong>Estilo:</strong> performance_reels_v1 (v1)<br><strong>Timestamps:</strong> 0-6s Headline | 8-14s Price Punch | 18-24s Location Tag | 28-39s CTA Banner + Legendas`;
+          shadowPlayerBox.style.display = 'flex';
+          shadowStatus.style.display = 'block';
+          shadowStatus.innerHTML = `<span style="color: var(--success); font-weight: 600;">✨ Vídeo da Fase 3C.1 carregado com sucesso no player Shadow 3C abaixo!</span>`;
+
+          // Rolar suavemente até o player 3C
+          setTimeout(() => {
+            shadowPlayerBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 300);
+
+          return true;
+        } else {
+          showError('Job ' + jobId + ' não encontrado no servidor.');
+          return false;
+        }
+      } catch (e) {
+        showError('Erro ao carregar Job: ' + e.message);
+        return false;
+      }
+    }
+
+    // Gerenciador de Composição Shadow 3C sob demanda
+    async function handleComposeShadow3c() {
+      if (!currentJobId) {
+        alert('Nenhum Job selecionado.');
+        return;
+      }
+      const btn = document.getElementById('btnComposeShadow3c');
+      const styleSelect = document.getElementById('shadow3cStyleSelect');
+      const varSelect = document.getElementById('shadow3cVarSelect');
+      const statusDiv = document.getElementById('shadow3cStatus');
+      const playerBox = document.getElementById('shadow3cPlayerBox');
+      const videoElem = document.getElementById('shadow3cVideoElement');
+      const metaText = document.getElementById('shadow3cMetaText');
+
+      const styleId = styleSelect.value;
+      const varIndex = varSelect.value;
+
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳ Renderizando Shadow 3C...</span>';
+      statusDiv.style.display = 'block';
+      statusDiv.textContent = 'Enviando requisição de renderização Shadow 3C ao Composer...';
+
+      try {
+        const res = await fetch(`/api/v2/panel/video-jobs/${currentJobId}/compose-shadow-3c`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            creative_index: parseInt(varIndex, 10),
+            style_id: styleId
+          })
+        });
+        const data = await res.json();
+        if (res.status === 200 && data.success) {
+          statusDiv.innerHTML = `<span style="color: var(--success);">✅ Renderizado com sucesso em ${data.render_duration_ms}ms! (Estilo: ${data.style_id})</span>`;
+          const streamUrl = `/api/v2/panel/video-jobs/${currentJobId}/shadow-3c-video/${varIndex}?t=${Date.now()}`;
+          videoElem.src = streamUrl;
+          metaText.innerHTML = `<strong>Asset ID:</strong> ${data.asset_id}<br><strong>Render Key:</strong> <code>${data.render_key}</code><br><strong>Style:</strong> ${data.style_id} (v${data.style_version})`;
+          playerBox.style.display = 'flex';
+          videoElem.play().catch(() => {});
+        } else {
+          statusDiv.innerHTML = `<span style="color: var(--error);">❌ Erro: ${data.message || 'Falha na renderização'}</span>`;
+        }
+      } catch (err) {
+        statusDiv.innerHTML = `<span style="color: var(--error);">❌ Falha de rede: ${err.message}</span>`;
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>✨ Renderizar Edição Shadow 3C</span>';
+      }
+    }
+
+    // Auto-carregar showcase se informado na URL (?job_id=... ou ?showcase=3c1)
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const jobIdParam = urlParams.get('job_id');
+      const showcaseParam = urlParams.get('showcase');
+      if (jobIdParam) {
+        loadJobById(jobIdParam);
+      } else if (showcaseParam === '3c1' || showcaseParam === 'true') {
+        loadJobById('c3c10000-0000-4000-8000-000000001639');
+      }
+    });
   </script>
 </body>
 </html>
