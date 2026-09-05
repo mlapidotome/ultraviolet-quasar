@@ -1,0 +1,4692 @@
+{
+  "aggregate_comparison": {
+    "cases_with_at_least_10_real_resolved_v1": 1,
+    "cases_with_at_least_10_real_resolved_v2": 5,
+    "cases_with_at_least_1_real_resolved_v1": 1,
+    "cases_with_at_least_1_real_resolved_v2": 6,
+    "ds_failure_count_v1": 3,
+    "ds_failure_count_v2": 0,
+    "no_anchor_count_v1": 0,
+    "no_anchor_count_v2": 0,
+    "street_not_available_count_v1": 6,
+    "street_not_available_count_v2": 4
+  },
+  "generated_at": "2026-09-05T21:57:20Z",
+  "pipeline_metadata": {
+    "candidate_corpus_sha256": "42e9816f81a7acd37e4e8d610faed225d5b71d889eb0bcea5da4d31397952a7b",
+    "evaluation_executed": false,
+    "facade_checker_invoked": false,
+    "ground_truth_accessed": false,
+    "map_audit_sha256": "cfdc947e8e1b1a7281634412e7adc3eb3511d0300a621fb9988af7d85a25d4a9",
+    "pipeline_variant": "PREDICTION_V2_FROZEN_MAP_COORDINATES",
+    "prediction_v1_sha256": "a6ba9cfad39e864586e65f04486a0367ca088baa42242ea1e95d20e9cce72266",
+    "primary_model": "MODEL_F_TARGET_STREET_ONLY_WITH_SPATIAL_DECAY",
+    "public_inputs_sha256": "6968654618d489431d46831668ed47bad5f16bc97bde250baca415db01d04f46",
+    "spatial_reference_anchors_count": 33,
+    "spatial_reference_dataset": "facade-checker/data/address_finder_bc_anchors_v1/phase_map_street_bindings.json"
+  },
+  "predictions": [
+    {
+      "candidate_burden_v2": {
+        "real_resolved_candidate_count": 0,
+        "structural_unresolved_count": 0,
+        "total_candidate_count": 0
+      },
+      "cohort_eligibility": "PROTOCOL_COMPLIANT",
+      "coordinate_available": false,
+      "coordinate_precision_class": "D) unknown precision",
+      "coordinate_used": null,
+      "failure_code_v1": "STREET_NOT_AVAILABLE",
+      "failure_code_v2": "STREET_NOT_AVAILABLE",
+      "listing_id": "26230879",
+      "neighbourhood_used": "Jardim Gurilândia",
+      "real_resolved_candidates": [],
+      "street_available": false,
+      "street_used": null,
+      "structural_unresolved_hypotheses": [],
+      "v1_anchor_count": 0,
+      "v1_ds_candidates": [],
+      "v1_dsq_candidates": [],
+      "v1_prediction_status": "FAILED",
+      "v1_real_resolved_count": 0,
+      "v1_structural_unresolved_count": 0,
+      "v2_anchor_count": 0,
+      "v2_ds_candidates": [],
+      "v2_dsq_candidates": [],
+      "v2_prediction_status": "FAILED",
+      "v2_real_resolved_count": 0,
+      "v2_structural_unresolved_count": 0
+    },
+    {
+      "candidate_burden_v2": {
+        "real_resolved_candidate_count": 85,
+        "structural_unresolved_count": 15,
+        "total_candidate_count": 100
+      },
+      "cohort_eligibility": "PROTOCOL_COMPLIANT",
+      "coordinate_available": true,
+      "coordinate_precision_class": "C) street-level location with hidden number",
+      "coordinate_used": {
+        "lat": -23.0644368,
+        "lon": -45.5775586
+      },
+      "failure_code_v1": "DS_FAILURE",
+      "failure_code_v2": null,
+      "listing_id": "30744879",
+      "neighbourhood_used": "Jardim Continental III",
+      "real_resolved_candidates": [
+        {
+          "candidate_bc": "3.3.001.008.001",
+          "candidate_dsqlll": "3.3.001.008",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "INDEPENDENCIA, AV, 00676",
+          "rank": 1,
+          "score": 0.5639
+        },
+        {
+          "candidate_bc": "3.3.002.007.001",
+          "candidate_dsqlll": "3.3.002.007",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.002",
+          "normalized_address": "INDEPENDENCIA, AV, 00566",
+          "rank": 2,
+          "score": 0.5639
+        },
+        {
+          "candidate_bc": "3.3.002.007.002",
+          "candidate_dsqlll": "3.3.002.007",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.002",
+          "normalized_address": "INDEPENDENCIA, AV, 00584",
+          "rank": 3,
+          "score": 0.5639
+        },
+        {
+          "candidate_bc": "3.3.003.009.001",
+          "candidate_dsqlll": "3.3.003.009",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.003",
+          "normalized_address": "INDEPENDENCIA, AV, 00460",
+          "rank": 4,
+          "score": 0.5639
+        },
+        {
+          "candidate_bc": "3.3.004.006.001",
+          "candidate_dsqlll": "3.3.004.006",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "INDEPENDENCIA, AV, 00356",
+          "rank": 5,
+          "score": 0.5639
+        },
+        {
+          "candidate_bc": "3.3.032.001.001",
+          "candidate_dsqlll": "3.3.032.001",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.032",
+          "normalized_address": "INDEPENDENCIA, AV, 00000",
+          "rank": 6,
+          "score": 0.5639
+        },
+        {
+          "candidate_bc": "3.3.001.009.001",
+          "candidate_dsqlll": "3.3.001.009",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "INDEPENDENCIA, AV, 00686",
+          "rank": 7,
+          "score": 0.4413
+        },
+        {
+          "candidate_bc": "3.3.003.010.001",
+          "candidate_dsqlll": "3.3.003.010",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.003",
+          "normalized_address": "INDEPENDENCIA, AV, 00490",
+          "rank": 8,
+          "score": 0.4413
+        },
+        {
+          "candidate_bc": "3.3.003.010.002",
+          "candidate_dsqlll": "3.3.003.010",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.003",
+          "normalized_address": "INDEPENDENCIA, AV, 00492",
+          "rank": 9,
+          "score": 0.4413
+        },
+        {
+          "candidate_bc": "3.3.001.010.001",
+          "candidate_dsqlll": "3.3.001.010",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "INDEPENDENCIA, AV, 00696",
+          "rank": 10,
+          "score": 0.4005
+        },
+        {
+          "candidate_bc": "3.3.003.011.001",
+          "candidate_dsqlll": "3.3.003.011",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.003",
+          "normalized_address": "INDEPENDENCIA, AV, 00510",
+          "rank": 11,
+          "score": 0.4005
+        },
+        {
+          "candidate_bc": "3.3.003.011.002",
+          "candidate_dsqlll": "3.3.003.011",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.003",
+          "normalized_address": "INDEPENDENCIA, AV, 00494",
+          "rank": 12,
+          "score": 0.4005
+        },
+        {
+          "candidate_bc": "3.3.004.008.001",
+          "candidate_dsqlll": "3.3.004.008",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "INDEPENDENCIA, AV, 00370",
+          "rank": 13,
+          "score": 0.4005
+        },
+        {
+          "candidate_bc": "3.3.004.008.002",
+          "candidate_dsqlll": "3.3.004.008",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "INDEPENDENCIA, AV, 00374",
+          "rank": 14,
+          "score": 0.4005
+        },
+        {
+          "candidate_bc": "3.3.001.011.001",
+          "candidate_dsqlll": "3.3.001.011",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "INDEPENDENCIA, AV, 00700",
+          "rank": 15,
+          "score": 0.3801
+        },
+        {
+          "candidate_bc": "3.3.003.012.001",
+          "candidate_dsqlll": "3.3.003.012",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.003",
+          "normalized_address": "INDEPENDENCIA, AV, 00514",
+          "rank": 16,
+          "score": 0.3801
+        },
+        {
+          "candidate_bc": "3.3.004.009.001",
+          "candidate_dsqlll": "3.3.004.009",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "INDEPENDENCIA, AV, 00412",
+          "rank": 17,
+          "score": 0.3801
+        },
+        {
+          "candidate_bc": "3.3.001.012.001",
+          "candidate_dsqlll": "3.3.001.012",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "INDEPENDENCIA, AV, 00716",
+          "rank": 18,
+          "score": 0.3678
+        },
+        {
+          "candidate_bc": "3.3.001.012.002",
+          "candidate_dsqlll": "3.3.001.012",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "INDEPENDENCIA, AV, 00714",
+          "rank": 19,
+          "score": 0.3678
+        },
+        {
+          "candidate_bc": "3.3.001.013.001",
+          "candidate_dsqlll": "3.3.001.013",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "INDEPENDENCIA, AV, 00000",
+          "rank": 20,
+          "score": 0.3596
+        },
+        {
+          "candidate_bc": "3.3.001.014.001",
+          "candidate_dsqlll": "3.3.001.014",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "INDEPENDENCIA, AV, 00736",
+          "rank": 21,
+          "score": 0.3538
+        },
+        {
+          "candidate_bc": "3.3.001.015.001",
+          "candidate_dsqlll": "3.3.001.015",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "INDEPENDENCIA, AV, 00740",
+          "rank": 22,
+          "score": 0.3494
+        },
+        {
+          "candidate_bc": "3.3.001.016.001",
+          "candidate_dsqlll": "3.3.001.016",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "INDEPENDENCIA, AV, 00000",
+          "rank": 23,
+          "score": 0.346
+        },
+        {
+          "candidate_bc": "3.3.001.017.001",
+          "candidate_dsqlll": "3.3.001.017",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "INDEPENDENCIA, AV, 00766",
+          "rank": 24,
+          "score": 0.3433
+        },
+        {
+          "candidate_bc": "3.3.004.020.001",
+          "candidate_dsqlll": "3.3.004.020",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "INDEPENDENCIA, AV, 00336",
+          "rank": 25,
+          "score": 0.3351
+        },
+        {
+          "candidate_bc": "3.3.001.007.001",
+          "candidate_dsqlll": "3.3.001.007",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "ABISSINIA, R, 00045",
+          "rank": 26,
+          "score": 0.1226
+        },
+        {
+          "candidate_bc": "3.3.002.006.001",
+          "candidate_dsqlll": "3.3.002.006",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.002",
+          "normalized_address": "FINLANDIA, R, 00045",
+          "rank": 27,
+          "score": 0.1226
+        },
+        {
+          "candidate_bc": "3.3.003.008.001",
+          "candidate_dsqlll": "3.3.003.008",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.003",
+          "normalized_address": "HOLANDA, PCA, 00080",
+          "rank": 28,
+          "score": 0.1226
+        },
+        {
+          "candidate_bc": "3.3.001.006.001",
+          "candidate_dsqlll": "3.3.001.006",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "ABISSINIA, R, 00053",
+          "rank": 29,
+          "score": 0.0817
+        },
+        {
+          "candidate_bc": "3.3.002.005.001",
+          "candidate_dsqlll": "3.3.002.005",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.002",
+          "normalized_address": "FINLANDIA, R, 00055",
+          "rank": 30,
+          "score": 0.0817
+        },
+        {
+          "candidate_bc": "3.3.003.007.001",
+          "candidate_dsqlll": "3.3.003.007",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.003",
+          "normalized_address": "CANADA, R, 00342",
+          "rank": 31,
+          "score": 0.0817
+        },
+        {
+          "candidate_bc": "3.3.001.005.001",
+          "candidate_dsqlll": "3.3.001.005",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "ABISSINIA, R, 00063",
+          "rank": 32,
+          "score": 0.0613
+        },
+        {
+          "candidate_bc": "3.3.002.004.001",
+          "candidate_dsqlll": "3.3.002.004",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.002",
+          "normalized_address": "FINLANDIA, R, 00075",
+          "rank": 33,
+          "score": 0.0613
+        },
+        {
+          "candidate_bc": "3.3.003.006.001",
+          "candidate_dsqlll": "3.3.003.006",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.003",
+          "normalized_address": "CANADA, R, 300",
+          "rank": 34,
+          "score": 0.0613
+        },
+        {
+          "candidate_bc": "3.3.004.003.001",
+          "candidate_dsqlll": "3.3.004.003",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "Lote.:DD17 37262 Requerente.:",
+          "rank": 35,
+          "score": 0.0613
+        },
+        {
+          "candidate_bc": "3.3.001.004.001",
+          "candidate_dsqlll": "3.3.001.004",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "ABISSINIA, R, 00073",
+          "rank": 36,
+          "score": 0.049
+        },
+        {
+          "candidate_bc": "3.3.002.003.001",
+          "candidate_dsqlll": "3.3.002.003",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.002",
+          "normalized_address": "FINLANDIA, R, 00085",
+          "rank": 37,
+          "score": 0.049
+        },
+        {
+          "candidate_bc": "3.3.003.005.001",
+          "candidate_dsqlll": "3.3.003.005",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.003",
+          "normalized_address": "CANADA, R, 290",
+          "rank": 38,
+          "score": 0.049
+        },
+        {
+          "candidate_bc": "3.3.004.002.001",
+          "candidate_dsqlll": "3.3.004.002",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "Lote.:DD18 37261 Requerente.:",
+          "rank": 39,
+          "score": 0.049
+        },
+        {
+          "candidate_bc": "3.3.004.010.001",
+          "candidate_dsqlll": "3.3.004.010",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "JOHN FITZGERALD KENNEDY, AV, 01275",
+          "rank": 40,
+          "score": 0.049
+        },
+        {
+          "candidate_bc": "3.3.001.003.001",
+          "candidate_dsqlll": "3.3.001.003",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "ABISSINIA, R, 00083",
+          "rank": 41,
+          "score": 0.0409
+        },
+        {
+          "candidate_bc": "3.3.002.002.001",
+          "candidate_dsqlll": "3.3.002.002",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.002",
+          "normalized_address": "FINLANDIA, R, 00101",
+          "rank": 42,
+          "score": 0.0409
+        },
+        {
+          "candidate_bc": "3.3.002.002.002",
+          "candidate_dsqlll": "3.3.002.002",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.002",
+          "normalized_address": "FINLANDIA, R, 00095",
+          "rank": 43,
+          "score": 0.0409
+        },
+        {
+          "candidate_bc": "3.3.003.004.001",
+          "candidate_dsqlll": "3.3.003.004",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.003",
+          "normalized_address": "CANADA, R, 00280",
+          "rank": 44,
+          "score": 0.0409
+        },
+        {
+          "candidate_bc": "3.3.004.001.001",
+          "candidate_dsqlll": "3.3.004.001",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "Lote.:DD19 37260 Requerente.:",
+          "rank": 45,
+          "score": 0.0409
+        },
+        {
+          "candidate_bc": "3.3.004.011.001",
+          "candidate_dsqlll": "3.3.004.011",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "JOHN FITZGERALD KENNEDY, AV, 01263",
+          "rank": 46,
+          "score": 0.0409
+        },
+        {
+          "candidate_bc": "3.3.001.002.001",
+          "candidate_dsqlll": "3.3.001.002",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "ABISSINIA, R, 00093",
+          "rank": 47,
+          "score": 0.035
+        },
+        {
+          "candidate_bc": "3.3.002.001.001",
+          "candidate_dsqlll": "3.3.002.001",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.002",
+          "normalized_address": "FINLANDIA, R, 00119",
+          "rank": 48,
+          "score": 0.035
+        },
+        {
+          "candidate_bc": "3.3.003.003.001",
+          "candidate_dsqlll": "3.3.003.003",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.003",
+          "normalized_address": "CANADA, R, 00270",
+          "rank": 49,
+          "score": 0.035
+        },
+        {
+          "candidate_bc": "3.3.004.012.001",
+          "candidate_dsqlll": "3.3.004.012",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "JOHN FITZGERALD KENNEDY, AV, 01251",
+          "rank": 50,
+          "score": 0.035
+        },
+        {
+          "candidate_bc": "3.3.001.001.001",
+          "candidate_dsqlll": "3.3.001.001",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "ABISSINIA, R, 00103",
+          "rank": 51,
+          "score": 0.0306
+        },
+        {
+          "candidate_bc": "3.3.003.002.001",
+          "candidate_dsqlll": "3.3.003.002",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.003",
+          "normalized_address": "CANADA, R, 00260",
+          "rank": 52,
+          "score": 0.0306
+        },
+        {
+          "candidate_bc": "3.3.003.016.001",
+          "candidate_dsqlll": "3.3.003.016",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.003",
+          "normalized_address": "FINLANDIA, R, 00042",
+          "rank": 53,
+          "score": 0.0306
+        },
+        {
+          "candidate_bc": "3.3.004.013.001",
+          "candidate_dsqlll": "3.3.004.013",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "JOHN FITZGERALD KENNEDY, AV, 01239",
+          "rank": 54,
+          "score": 0.0306
+        },
+        {
+          "candidate_bc": "3.3.003.001.001",
+          "candidate_dsqlll": "3.3.003.001",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.003",
+          "normalized_address": "CANADA, R, 00250",
+          "rank": 55,
+          "score": 0.0272
+        },
+        {
+          "candidate_bc": "3.3.003.017.001",
+          "candidate_dsqlll": "3.3.003.017",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.003",
+          "normalized_address": "FINLANDIA, R, 00052",
+          "rank": 56,
+          "score": 0.0272
+        },
+        {
+          "candidate_bc": "3.3.004.014.001",
+          "candidate_dsqlll": "3.3.004.014",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "JOHN FITZGERALD KENNEDY, AV, 01227",
+          "rank": 57,
+          "score": 0.0272
+        },
+        {
+          "candidate_bc": "3.3.004.015.001",
+          "candidate_dsqlll": "3.3.004.015",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "JOHN FITZGERALD KENNEDY, AV, 01221",
+          "rank": 58,
+          "score": 0.0245
+        },
+        {
+          "candidate_bc": "3.3.001.018.001",
+          "candidate_dsqlll": "3.3.001.018",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "ITALIA, AV, 00030",
+          "rank": 59,
+          "score": 0.0223
+        },
+        {
+          "candidate_bc": "3.3.003.019.001",
+          "candidate_dsqlll": "3.3.003.019",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.003",
+          "normalized_address": "FINLANDIA, R, 00086",
+          "rank": 60,
+          "score": 0.0223
+        },
+        {
+          "candidate_bc": "3.3.004.016.001",
+          "candidate_dsqlll": "3.3.004.016",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "JOHN FITZGERALD KENNEDY, AV, 01215",
+          "rank": 61,
+          "score": 0.0223
+        },
+        {
+          "candidate_bc": "3.3.001.019.001",
+          "candidate_dsqlll": "3.3.001.019",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "ITALIA, AV, 00040",
+          "rank": 62,
+          "score": 0.0204
+        },
+        {
+          "candidate_bc": "3.3.003.020.001",
+          "candidate_dsqlll": "3.3.003.020",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.003",
+          "normalized_address": "CANADA, R, 00240",
+          "rank": 63,
+          "score": 0.0204
+        },
+        {
+          "candidate_bc": "3.3.004.017.001",
+          "candidate_dsqlll": "3.3.004.017",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "ESTADOS UNIDOS, AV, 00360",
+          "rank": 64,
+          "score": 0.0204
+        },
+        {
+          "candidate_bc": "3.3.001.020.001",
+          "candidate_dsqlll": "3.3.001.020",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "ITALIA, AV, 00050",
+          "rank": 65,
+          "score": 0.0189
+        },
+        {
+          "candidate_bc": "3.3.004.018.001",
+          "candidate_dsqlll": "3.3.004.018",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "ESTADOS UNIDOS, AV, 00360",
+          "rank": 66,
+          "score": 0.0189
+        },
+        {
+          "candidate_bc": "3.3.004.019.001",
+          "candidate_dsqlll": "3.3.004.019",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "Lote.:DD14 37282 Requerente.:",
+          "rank": 67,
+          "score": 0.0175
+        },
+        {
+          "candidate_bc": "3.3.001.022.001",
+          "candidate_dsqlll": "3.3.001.022",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "ITALIA, AV, 00000",
+          "rank": 68,
+          "score": 0.0163
+        },
+        {
+          "candidate_bc": "3.3.001.023.001",
+          "candidate_dsqlll": "3.3.001.023",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "ITALIA, AV, 00000",
+          "rank": 69,
+          "score": 0.0153
+        },
+        {
+          "candidate_bc": "3.3.004.021.001",
+          "candidate_dsqlll": "3.3.004.021",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "Lote.:DD15 E 16 37284 Requerente.:",
+          "rank": 70,
+          "score": 0.0153
+        },
+        {
+          "candidate_bc": "3.3.001.024.001",
+          "candidate_dsqlll": "3.3.001.024",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "ITALIA, AV, 00000",
+          "rank": 71,
+          "score": 0.0144
+        },
+        {
+          "candidate_bc": "3.3.004.022.001",
+          "candidate_dsqlll": "3.3.004.022",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "Lote.:DD15 E 16 37285 Requerente.:",
+          "rank": 72,
+          "score": 0.0144
+        },
+        {
+          "candidate_bc": "3.3.001.025.001",
+          "candidate_dsqlll": "3.3.001.025",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "ITALIA, AV, 00000",
+          "rank": 73,
+          "score": 0.0136
+        },
+        {
+          "candidate_bc": "3.3.004.023.001",
+          "candidate_dsqlll": "3.3.004.023",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "Lote.:DD15 E 16 37286 Requerente.:",
+          "rank": 74,
+          "score": 0.0136
+        },
+        {
+          "candidate_bc": "3.3.001.026.001",
+          "candidate_dsqlll": "3.3.001.026",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "ITALIA, AV, 00150",
+          "rank": 75,
+          "score": 0.0129
+        },
+        {
+          "candidate_bc": "3.3.004.024.001",
+          "candidate_dsqlll": "3.3.004.024",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "Lote.:DD15 E 16 37287 Requerente.:",
+          "rank": 76,
+          "score": 0.0129
+        },
+        {
+          "candidate_bc": "3.3.001.027.001",
+          "candidate_dsqlll": "3.3.001.027",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "EGITO, R, 00141",
+          "rank": 77,
+          "score": 0.0123
+        },
+        {
+          "candidate_bc": "3.3.004.025.001",
+          "candidate_dsqlll": "3.3.004.025",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "Lote.:DD15 E 16 37288 Requerente.:",
+          "rank": 78,
+          "score": 0.0123
+        },
+        {
+          "candidate_bc": "3.3.001.028.001",
+          "candidate_dsqlll": "3.3.001.028",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "EGITO, R, 00131",
+          "rank": 79,
+          "score": 0.0117
+        },
+        {
+          "candidate_bc": "3.3.004.026.001",
+          "candidate_dsqlll": "3.3.004.026",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.004",
+          "normalized_address": "Lote.:DD15 E 16 37289 Requerente.:",
+          "rank": 80,
+          "score": 0.0117
+        },
+        {
+          "candidate_bc": "3.3.001.029.001",
+          "candidate_dsqlll": "3.3.001.029",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "EGITO, R, 00121",
+          "rank": 81,
+          "score": 0.0111
+        },
+        {
+          "candidate_bc": "3.3.001.030.001",
+          "candidate_dsqlll": "3.3.001.030",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "EGITO, R, 00111",
+          "rank": 82,
+          "score": 0.0107
+        },
+        {
+          "candidate_bc": "3.3.001.031.001",
+          "candidate_dsqlll": "3.3.001.031",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "EGITO, R, 00101",
+          "rank": 83,
+          "score": 0.0102
+        },
+        {
+          "candidate_bc": "3.3.001.032.001",
+          "candidate_dsqlll": "3.3.001.032",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "EGITO, R, 00091",
+          "rank": 84,
+          "score": 0.0098
+        },
+        {
+          "candidate_bc": "3.3.001.033.001",
+          "candidate_dsqlll": "3.3.001.033",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'independencia' (2811m) in DSQ 3.3.001",
+          "normalized_address": "ABISSINIA, R, 49",
+          "rank": 85,
+          "score": 0.0094
+        }
+      ],
+      "street_available": true,
+      "street_used": "Rua Doutor Cyro Lemos de Oliveira",
+      "structural_unresolved_hypotheses": [
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.002.007 (2811m)",
+          "hypothesis_bc": "3.3.002.008.001",
+          "hypothesis_dsqlll": "3.3.002.008",
+          "score": 0.0981,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 1
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.004.006 (2811m)",
+          "hypothesis_bc": "3.3.004.005.001",
+          "hypothesis_dsqlll": "3.3.004.005",
+          "score": 0.0981,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 2
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.004.006 (2811m)",
+          "hypothesis_bc": "3.3.004.007.001",
+          "hypothesis_dsqlll": "3.3.004.007",
+          "score": 0.0981,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 3
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.032.001 (2811m)",
+          "hypothesis_bc": "3.3.032.002.001",
+          "hypothesis_dsqlll": "3.3.032.002",
+          "score": 0.0981,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 4
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.002.007 (2811m)",
+          "hypothesis_bc": "3.3.002.009.001",
+          "hypothesis_dsqlll": "3.3.002.009",
+          "score": 0.0654,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 5
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.004.006 (2811m)",
+          "hypothesis_bc": "3.3.004.004.001",
+          "hypothesis_dsqlll": "3.3.004.004",
+          "score": 0.0654,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 6
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.032.001 (2811m)",
+          "hypothesis_bc": "3.3.032.003.001",
+          "hypothesis_dsqlll": "3.3.032.003",
+          "score": 0.0654,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 7
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.002.007 (2811m)",
+          "hypothesis_bc": "3.3.002.010.001",
+          "hypothesis_dsqlll": "3.3.002.010",
+          "score": 0.049,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 8
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.032.001 (2811m)",
+          "hypothesis_bc": "3.3.032.004.001",
+          "hypothesis_dsqlll": "3.3.032.004",
+          "score": 0.049,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 9
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.002.007 (2811m)",
+          "hypothesis_bc": "3.3.002.011.001",
+          "hypothesis_dsqlll": "3.3.002.011",
+          "score": 0.0392,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 10
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.003.009 (2811m)",
+          "hypothesis_bc": "3.3.003.013.001",
+          "hypothesis_dsqlll": "3.3.003.013",
+          "score": 0.0392,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 11
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.032.001 (2811m)",
+          "hypothesis_bc": "3.3.032.005.001",
+          "hypothesis_dsqlll": "3.3.032.005",
+          "score": 0.0392,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 12
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.002.007 (2811m)",
+          "hypothesis_bc": "3.3.002.012.001",
+          "hypothesis_dsqlll": "3.3.002.012",
+          "score": 0.0327,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 13
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.003.009 (2811m)",
+          "hypothesis_bc": "3.3.003.014.001",
+          "hypothesis_dsqlll": "3.3.003.014",
+          "score": 0.0327,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 14
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.032.001 (2811m)",
+          "hypothesis_bc": "3.3.032.006.001",
+          "hypothesis_dsqlll": "3.3.032.006",
+          "score": 0.0327,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 15
+        }
+      ],
+      "v1_anchor_count": 0,
+      "v1_ds_candidates": [],
+      "v1_dsq_candidates": [],
+      "v1_prediction_status": "FAILED",
+      "v1_real_resolved_count": 0,
+      "v1_structural_unresolved_count": 0,
+      "v2_anchor_count": 5,
+      "v2_ds_candidates": [
+        {
+          "ds": "3.3",
+          "evidence": "Nearest spatial reference anchor 'independencia' (2811m)",
+          "score": 0.2452
+        }
+      ],
+      "v2_dsq_candidates": [
+        {
+          "dsq": "3.3.001",
+          "evidence": "Nearest spatial reference anchor 'independencia' (2811m)",
+          "score": 0.2452
+        },
+        {
+          "dsq": "3.3.002",
+          "evidence": "Nearest spatial reference anchor 'independencia' (2811m)",
+          "score": 0.2452
+        },
+        {
+          "dsq": "3.3.003",
+          "evidence": "Nearest spatial reference anchor 'independencia' (2811m)",
+          "score": 0.2452
+        },
+        {
+          "dsq": "3.3.004",
+          "evidence": "Nearest spatial reference anchor 'independencia' (2811m)",
+          "score": 0.2452
+        },
+        {
+          "dsq": "3.3.032",
+          "evidence": "Nearest spatial reference anchor 'independencia' (2811m)",
+          "score": 0.2452
+        }
+      ],
+      "v2_prediction_status": "SUCCESS",
+      "v2_real_resolved_count": 85,
+      "v2_structural_unresolved_count": 15
+    },
+    {
+      "candidate_burden_v2": {
+        "real_resolved_candidate_count": 0,
+        "structural_unresolved_count": 0,
+        "total_candidate_count": 0
+      },
+      "cohort_eligibility": "PRESELECTION_ELIGIBILITY_ERROR",
+      "coordinate_available": false,
+      "coordinate_precision_class": "D) unknown precision",
+      "coordinate_used": null,
+      "failure_code_v1": "STREET_NOT_AVAILABLE",
+      "failure_code_v2": "STREET_NOT_AVAILABLE",
+      "listing_id": "32738189",
+      "neighbourhood_used": "Jardim Santa Tereza",
+      "real_resolved_candidates": [],
+      "street_available": false,
+      "street_used": null,
+      "structural_unresolved_hypotheses": [],
+      "v1_anchor_count": 0,
+      "v1_ds_candidates": [],
+      "v1_dsq_candidates": [],
+      "v1_prediction_status": "FAILED",
+      "v1_real_resolved_count": 0,
+      "v1_structural_unresolved_count": 0,
+      "v2_anchor_count": 0,
+      "v2_ds_candidates": [],
+      "v2_dsq_candidates": [],
+      "v2_prediction_status": "FAILED",
+      "v2_real_resolved_count": 0,
+      "v2_structural_unresolved_count": 0
+    },
+    {
+      "candidate_burden_v2": {
+        "real_resolved_candidate_count": 119,
+        "structural_unresolved_count": 6,
+        "total_candidate_count": 125
+      },
+      "cohort_eligibility": "PROTOCOL_COMPLIANT",
+      "coordinate_available": true,
+      "coordinate_precision_class": "B) approximate listing location",
+      "coordinate_used": {
+        "lat": -23.01943,
+        "lon": -45.56438
+      },
+      "failure_code_v1": "STREET_NOT_AVAILABLE",
+      "failure_code_v2": null,
+      "listing_id": "37154734",
+      "neighbourhood_used": "Jardim Eulália",
+      "real_resolved_candidates": [
+        {
+          "candidate_bc": "3.3.001.018.001",
+          "candidate_dsqlll": "3.3.001.018",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "ITALIA, AV, 00030",
+          "rank": 1,
+          "score": 1.3741
+        },
+        {
+          "candidate_bc": "3.3.013.001.001",
+          "candidate_dsqlll": "3.3.013.001",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "ITALIA, AV, 00270",
+          "rank": 2,
+          "score": 1.3741
+        },
+        {
+          "candidate_bc": "3.3.020.001.001",
+          "candidate_dsqlll": "3.3.020.001",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.020",
+          "normalized_address": "ITALIA, AV, 340",
+          "rank": 3,
+          "score": 1.3741
+        },
+        {
+          "candidate_bc": "3.3.021.032.001",
+          "candidate_dsqlll": "3.3.021.032",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "ITALIA, AV, 00500",
+          "rank": 4,
+          "score": 1.3741
+        },
+        {
+          "candidate_bc": "3.3.001.019.001",
+          "candidate_dsqlll": "3.3.001.019",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "ITALIA, AV, 00040",
+          "rank": 5,
+          "score": 1.0754
+        },
+        {
+          "candidate_bc": "3.3.020.002.001",
+          "candidate_dsqlll": "3.3.020.002",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.020",
+          "normalized_address": "ITALIA, AV, 00350",
+          "rank": 6,
+          "score": 1.0754
+        },
+        {
+          "candidate_bc": "3.3.021.033.001",
+          "candidate_dsqlll": "3.3.021.033",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "ITALIA, AV, 00000",
+          "rank": 7,
+          "score": 1.0754
+        },
+        {
+          "candidate_bc": "3.3.001.020.001",
+          "candidate_dsqlll": "3.3.001.020",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "ITALIA, AV, 00050",
+          "rank": 8,
+          "score": 0.9758
+        },
+        {
+          "candidate_bc": "3.3.020.003.001",
+          "candidate_dsqlll": "3.3.020.003",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.020",
+          "normalized_address": "ITALIA, AV, 00360",
+          "rank": 9,
+          "score": 0.9758
+        },
+        {
+          "candidate_bc": "3.3.021.034.001",
+          "candidate_dsqlll": "3.3.021.034",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "ITALIA, AV, 520",
+          "rank": 10,
+          "score": 0.9758
+        },
+        {
+          "candidate_bc": "3.3.021.035.001",
+          "candidate_dsqlll": "3.3.021.035",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "ITALIA, AV, 00530",
+          "rank": 11,
+          "score": 0.926
+        },
+        {
+          "candidate_bc": "3.3.001.022.001",
+          "candidate_dsqlll": "3.3.001.022",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "ITALIA, AV, 00000",
+          "rank": 12,
+          "score": 0.8961
+        },
+        {
+          "candidate_bc": "3.3.020.005.001",
+          "candidate_dsqlll": "3.3.020.005",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.020",
+          "normalized_address": "ITALIA, AV, 00390",
+          "rank": 13,
+          "score": 0.8961
+        },
+        {
+          "candidate_bc": "3.3.021.036.001",
+          "candidate_dsqlll": "3.3.021.036",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "ITALIA, AV, 00550",
+          "rank": 14,
+          "score": 0.8961
+        },
+        {
+          "candidate_bc": "3.3.001.023.001",
+          "candidate_dsqlll": "3.3.001.023",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "ITALIA, AV, 00000",
+          "rank": 15,
+          "score": 0.8762
+        },
+        {
+          "candidate_bc": "3.3.001.024.001",
+          "candidate_dsqlll": "3.3.001.024",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "ITALIA, AV, 00000",
+          "rank": 16,
+          "score": 0.862
+        },
+        {
+          "candidate_bc": "3.3.020.007.001",
+          "candidate_dsqlll": "3.3.020.007",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.020",
+          "normalized_address": "ITALIA, AV, 00400",
+          "rank": 17,
+          "score": 0.862
+        },
+        {
+          "candidate_bc": "3.3.001.025.001",
+          "candidate_dsqlll": "3.3.001.025",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "ITALIA, AV, 00000",
+          "rank": 18,
+          "score": 0.8513
+        },
+        {
+          "candidate_bc": "3.3.001.026.001",
+          "candidate_dsqlll": "3.3.001.026",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "ITALIA, AV, 00150",
+          "rank": 19,
+          "score": 0.843
+        },
+        {
+          "candidate_bc": "3.3.020.022.001",
+          "candidate_dsqlll": "3.3.020.022",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.020",
+          "normalized_address": "ITALIA, AV, 320",
+          "rank": 20,
+          "score": 0.8038
+        },
+        {
+          "candidate_bc": "3.3.020.023.001",
+          "candidate_dsqlll": "3.3.020.023",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.020",
+          "normalized_address": "ITALIA, AV, 00344",
+          "rank": 21,
+          "score": 0.8026
+        },
+        {
+          "candidate_bc": "3.3.020.024.001",
+          "candidate_dsqlll": "3.3.020.024",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.020",
+          "normalized_address": "ITALIA, AV, 306",
+          "rank": 22,
+          "score": 0.8015
+        },
+        {
+          "candidate_bc": "3.3.013.026.001",
+          "candidate_dsqlll": "3.3.013.026",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "ITALIA, AV, 00170",
+          "rank": 23,
+          "score": 0.7996
+        },
+        {
+          "candidate_bc": "3.3.013.027.001",
+          "candidate_dsqlll": "3.3.013.027",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "ITALIA, AV, 00180",
+          "rank": 24,
+          "score": 0.7988
+        },
+        {
+          "candidate_bc": "3.3.013.028.001",
+          "candidate_dsqlll": "3.3.013.028",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "ITALIA, AV, 00190",
+          "rank": 25,
+          "score": 0.798
+        },
+        {
+          "candidate_bc": "3.3.013.029.001",
+          "candidate_dsqlll": "3.3.013.029",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "ITALIA, AV, 00200",
+          "rank": 26,
+          "score": 0.7972
+        },
+        {
+          "candidate_bc": "3.3.013.030.001",
+          "candidate_dsqlll": "3.3.013.030",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "ITALIA, AV, 00210",
+          "rank": 27,
+          "score": 0.7966
+        },
+        {
+          "candidate_bc": "3.3.013.031.001",
+          "candidate_dsqlll": "3.3.013.031",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "ITALIA, AV, 00220",
+          "rank": 28,
+          "score": 0.7959
+        },
+        {
+          "candidate_bc": "3.3.013.033.001",
+          "candidate_dsqlll": "3.3.013.033",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "ITALIA, AV, 00000",
+          "rank": 29,
+          "score": 0.7948
+        },
+        {
+          "candidate_bc": "3.3.013.035.001",
+          "candidate_dsqlll": "3.3.013.035",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "ITALIA, AV, 00260",
+          "rank": 30,
+          "score": 0.7937
+        },
+        {
+          "candidate_bc": "3.3.013.036.001",
+          "candidate_dsqlll": "3.3.013.036",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "ITALIA, AV, 00250",
+          "rank": 31,
+          "score": 0.7932
+        },
+        {
+          "candidate_bc": "3.3.001.017.001",
+          "candidate_dsqlll": "3.3.001.017",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "INDEPENDENCIA, AV, 00766",
+          "rank": 32,
+          "score": 0.2987
+        },
+        {
+          "candidate_bc": "3.3.021.031.001",
+          "candidate_dsqlll": "3.3.021.031",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "NORUEGA, R, 00130",
+          "rank": 33,
+          "score": 0.2987
+        },
+        {
+          "candidate_bc": "3.3.001.016.001",
+          "candidate_dsqlll": "3.3.001.016",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "INDEPENDENCIA, AV, 00000",
+          "rank": 34,
+          "score": 0.1991
+        },
+        {
+          "candidate_bc": "3.3.013.003.001",
+          "candidate_dsqlll": "3.3.013.003",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "TURQUIA, PCA, 00020",
+          "rank": 35,
+          "score": 0.1991
+        },
+        {
+          "candidate_bc": "3.3.021.030.001",
+          "candidate_dsqlll": "3.3.021.030",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "NORUEGA, R, 00112",
+          "rank": 36,
+          "score": 0.1991
+        },
+        {
+          "candidate_bc": "3.3.001.015.001",
+          "candidate_dsqlll": "3.3.001.015",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "INDEPENDENCIA, AV, 00740",
+          "rank": 37,
+          "score": 0.1494
+        },
+        {
+          "candidate_bc": "3.3.013.004.001",
+          "candidate_dsqlll": "3.3.013.004",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "TURQUIA, PCA, 00030",
+          "rank": 38,
+          "score": 0.1494
+        },
+        {
+          "candidate_bc": "3.3.021.029.001",
+          "candidate_dsqlll": "3.3.021.029",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "NORUEGA, R, 00100",
+          "rank": 39,
+          "score": 0.1494
+        },
+        {
+          "candidate_bc": "3.3.001.014.001",
+          "candidate_dsqlll": "3.3.001.014",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "INDEPENDENCIA, AV, 00736",
+          "rank": 40,
+          "score": 0.1195
+        },
+        {
+          "candidate_bc": "3.3.013.005.001",
+          "candidate_dsqlll": "3.3.013.005",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "TURQUIA, PCA, 00040",
+          "rank": 41,
+          "score": 0.1195
+        },
+        {
+          "candidate_bc": "3.3.001.013.001",
+          "candidate_dsqlll": "3.3.001.013",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "INDEPENDENCIA, AV, 00000",
+          "rank": 42,
+          "score": 0.0996
+        },
+        {
+          "candidate_bc": "3.3.013.006.001",
+          "candidate_dsqlll": "3.3.013.006",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "CANADA, R, 00010",
+          "rank": 43,
+          "score": 0.0996
+        },
+        {
+          "candidate_bc": "3.3.021.027.001",
+          "candidate_dsqlll": "3.3.021.027",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "NORUEGA, R, 00082",
+          "rank": 44,
+          "score": 0.0996
+        },
+        {
+          "candidate_bc": "3.3.001.012.001",
+          "candidate_dsqlll": "3.3.001.012",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "INDEPENDENCIA, AV, 00716",
+          "rank": 45,
+          "score": 0.0853
+        },
+        {
+          "candidate_bc": "3.3.001.012.002",
+          "candidate_dsqlll": "3.3.001.012",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "INDEPENDENCIA, AV, 00714",
+          "rank": 46,
+          "score": 0.0853
+        },
+        {
+          "candidate_bc": "3.3.013.007.001",
+          "candidate_dsqlll": "3.3.013.007",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "CANADA, R, 00030",
+          "rank": 47,
+          "score": 0.0853
+        },
+        {
+          "candidate_bc": "3.3.021.026.001",
+          "candidate_dsqlll": "3.3.021.026",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "NORUEGA, R, 00072",
+          "rank": 48,
+          "score": 0.0853
+        },
+        {
+          "candidate_bc": "3.3.001.011.001",
+          "candidate_dsqlll": "3.3.001.011",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "INDEPENDENCIA, AV, 00700",
+          "rank": 49,
+          "score": 0.0747
+        },
+        {
+          "candidate_bc": "3.3.013.008.001",
+          "candidate_dsqlll": "3.3.013.008",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "CANADA, R, 00044",
+          "rank": 50,
+          "score": 0.0747
+        },
+        {
+          "candidate_bc": "3.3.020.008.001",
+          "candidate_dsqlll": "3.3.020.008",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.020",
+          "normalized_address": "NORUEGA, R, 00081",
+          "rank": 51,
+          "score": 0.0747
+        },
+        {
+          "candidate_bc": "3.3.001.010.001",
+          "candidate_dsqlll": "3.3.001.010",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "INDEPENDENCIA, AV, 00696",
+          "rank": 52,
+          "score": 0.0664
+        },
+        {
+          "candidate_bc": "3.3.013.009.001",
+          "candidate_dsqlll": "3.3.013.009",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "CANADA, R, 00054",
+          "rank": 53,
+          "score": 0.0664
+        },
+        {
+          "candidate_bc": "3.3.020.009.001",
+          "candidate_dsqlll": "3.3.020.009",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.020",
+          "normalized_address": "NORUEGA, R, 00061",
+          "rank": 54,
+          "score": 0.0664
+        },
+        {
+          "candidate_bc": "3.3.001.009.001",
+          "candidate_dsqlll": "3.3.001.009",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "INDEPENDENCIA, AV, 00686",
+          "rank": 55,
+          "score": 0.0597
+        },
+        {
+          "candidate_bc": "3.3.001.027.001",
+          "candidate_dsqlll": "3.3.001.027",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "EGITO, R, 00141",
+          "rank": 56,
+          "score": 0.0597
+        },
+        {
+          "candidate_bc": "3.3.013.010.001",
+          "candidate_dsqlll": "3.3.013.010",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "CANADA, R, 00064",
+          "rank": 57,
+          "score": 0.0597
+        },
+        {
+          "candidate_bc": "3.3.020.010.001",
+          "candidate_dsqlll": "3.3.020.010",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.020",
+          "normalized_address": "NORUEGA, R, 00051",
+          "rank": 58,
+          "score": 0.0597
+        },
+        {
+          "candidate_bc": "3.3.021.023.001",
+          "candidate_dsqlll": "3.3.021.023",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "POLONIA, R, 00115",
+          "rank": 59,
+          "score": 0.0597
+        },
+        {
+          "candidate_bc": "3.3.001.008.001",
+          "candidate_dsqlll": "3.3.001.008",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "INDEPENDENCIA, AV, 00676",
+          "rank": 60,
+          "score": 0.0543
+        },
+        {
+          "candidate_bc": "3.3.001.028.001",
+          "candidate_dsqlll": "3.3.001.028",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "EGITO, R, 00131",
+          "rank": 61,
+          "score": 0.0543
+        },
+        {
+          "candidate_bc": "3.3.013.011.001",
+          "candidate_dsqlll": "3.3.013.011",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "CANADA, R, 00074",
+          "rank": 62,
+          "score": 0.0543
+        },
+        {
+          "candidate_bc": "3.3.020.011.001",
+          "candidate_dsqlll": "3.3.020.011",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.020",
+          "normalized_address": "NORUEGA, R, 00043",
+          "rank": 63,
+          "score": 0.0543
+        },
+        {
+          "candidate_bc": "3.3.021.022.001",
+          "candidate_dsqlll": "3.3.021.022",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "POLONIA, R, 00125",
+          "rank": 64,
+          "score": 0.0543
+        },
+        {
+          "candidate_bc": "3.3.001.007.001",
+          "candidate_dsqlll": "3.3.001.007",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "ABISSINIA, R, 00045",
+          "rank": 65,
+          "score": 0.0498
+        },
+        {
+          "candidate_bc": "3.3.001.029.001",
+          "candidate_dsqlll": "3.3.001.029",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "EGITO, R, 00121",
+          "rank": 66,
+          "score": 0.0498
+        },
+        {
+          "candidate_bc": "3.3.013.012.001",
+          "candidate_dsqlll": "3.3.013.012",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "CANADA, R, 00000",
+          "rank": 67,
+          "score": 0.0498
+        },
+        {
+          "candidate_bc": "3.3.020.012.001",
+          "candidate_dsqlll": "3.3.020.012",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.020",
+          "normalized_address": "POLONIA, R, 00085",
+          "rank": 68,
+          "score": 0.0498
+        },
+        {
+          "candidate_bc": "3.3.021.021.001",
+          "candidate_dsqlll": "3.3.021.021",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "POLONIA, R, 00135",
+          "rank": 69,
+          "score": 0.0498
+        },
+        {
+          "candidate_bc": "3.3.001.006.001",
+          "candidate_dsqlll": "3.3.001.006",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "ABISSINIA, R, 00053",
+          "rank": 70,
+          "score": 0.046
+        },
+        {
+          "candidate_bc": "3.3.001.030.001",
+          "candidate_dsqlll": "3.3.001.030",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "EGITO, R, 00111",
+          "rank": 71,
+          "score": 0.046
+        },
+        {
+          "candidate_bc": "3.3.013.013.001",
+          "candidate_dsqlll": "3.3.013.013",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "CANADA, R, 00112",
+          "rank": 72,
+          "score": 0.046
+        },
+        {
+          "candidate_bc": "3.3.020.013.001",
+          "candidate_dsqlll": "3.3.020.013",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.020",
+          "normalized_address": "POLONIA, R, 00075",
+          "rank": 73,
+          "score": 0.046
+        },
+        {
+          "candidate_bc": "3.3.021.020.001",
+          "candidate_dsqlll": "3.3.021.020",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "POLONIA, R, 00145",
+          "rank": 74,
+          "score": 0.046
+        },
+        {
+          "candidate_bc": "3.3.001.005.001",
+          "candidate_dsqlll": "3.3.001.005",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "ABISSINIA, R, 00063",
+          "rank": 75,
+          "score": 0.0427
+        },
+        {
+          "candidate_bc": "3.3.001.031.001",
+          "candidate_dsqlll": "3.3.001.031",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "EGITO, R, 00101",
+          "rank": 76,
+          "score": 0.0427
+        },
+        {
+          "candidate_bc": "3.3.020.014.001",
+          "candidate_dsqlll": "3.3.020.014",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.020",
+          "normalized_address": "POLONIA, R, 00065",
+          "rank": 77,
+          "score": 0.0427
+        },
+        {
+          "candidate_bc": "3.3.021.019.001",
+          "candidate_dsqlll": "3.3.021.019",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "POLONIA, R, 00155",
+          "rank": 78,
+          "score": 0.0427
+        },
+        {
+          "candidate_bc": "3.3.001.004.001",
+          "candidate_dsqlll": "3.3.001.004",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "ABISSINIA, R, 00073",
+          "rank": 79,
+          "score": 0.0398
+        },
+        {
+          "candidate_bc": "3.3.001.032.001",
+          "candidate_dsqlll": "3.3.001.032",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "EGITO, R, 00091",
+          "rank": 80,
+          "score": 0.0398
+        },
+        {
+          "candidate_bc": "3.3.013.015.001",
+          "candidate_dsqlll": "3.3.013.015",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "CANADA, R, 00126",
+          "rank": 81,
+          "score": 0.0398
+        },
+        {
+          "candidate_bc": "3.3.020.015.001",
+          "candidate_dsqlll": "3.3.020.015",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.020",
+          "normalized_address": "POLONIA, R, 00055",
+          "rank": 82,
+          "score": 0.0398
+        },
+        {
+          "candidate_bc": "3.3.021.018.001",
+          "candidate_dsqlll": "3.3.021.018",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "POLONIA, R, 00165",
+          "rank": 83,
+          "score": 0.0398
+        },
+        {
+          "candidate_bc": "3.3.001.003.001",
+          "candidate_dsqlll": "3.3.001.003",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "ABISSINIA, R, 00083",
+          "rank": 84,
+          "score": 0.0373
+        },
+        {
+          "candidate_bc": "3.3.001.033.001",
+          "candidate_dsqlll": "3.3.001.033",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "ABISSINIA, R, 49",
+          "rank": 85,
+          "score": 0.0373
+        },
+        {
+          "candidate_bc": "3.3.020.016.001",
+          "candidate_dsqlll": "3.3.020.016",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.020",
+          "normalized_address": "POLONIA, R, 00045",
+          "rank": 86,
+          "score": 0.0373
+        },
+        {
+          "candidate_bc": "3.3.021.017.001",
+          "candidate_dsqlll": "3.3.021.017",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "POLONIA, R, 00175",
+          "rank": 87,
+          "score": 0.0373
+        },
+        {
+          "candidate_bc": "3.3.001.002.001",
+          "candidate_dsqlll": "3.3.001.002",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "ABISSINIA, R, 00093",
+          "rank": 88,
+          "score": 0.0351
+        },
+        {
+          "candidate_bc": "3.3.013.017.001",
+          "candidate_dsqlll": "3.3.013.017",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "CANADA, R, 00136",
+          "rank": 89,
+          "score": 0.0351
+        },
+        {
+          "candidate_bc": "3.3.020.017.001",
+          "candidate_dsqlll": "3.3.020.017",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.020",
+          "normalized_address": "POLONIA, R, 00037",
+          "rank": 90,
+          "score": 0.0351
+        },
+        {
+          "candidate_bc": "3.3.021.016.001",
+          "candidate_dsqlll": "3.3.021.016",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "POLONIA, R, 00185",
+          "rank": 91,
+          "score": 0.0351
+        },
+        {
+          "candidate_bc": "3.3.001.001.001",
+          "candidate_dsqlll": "3.3.001.001",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.001",
+          "normalized_address": "ABISSINIA, R, 00103",
+          "rank": 92,
+          "score": 0.0332
+        },
+        {
+          "candidate_bc": "3.3.013.018.001",
+          "candidate_dsqlll": "3.3.013.018",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "EGITO, R, 00030",
+          "rank": 93,
+          "score": 0.0332
+        },
+        {
+          "candidate_bc": "3.3.020.018.001",
+          "candidate_dsqlll": "3.3.020.018",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.020",
+          "normalized_address": "POLONIA, R, 00027",
+          "rank": 94,
+          "score": 0.0332
+        },
+        {
+          "candidate_bc": "3.3.021.015.001",
+          "candidate_dsqlll": "3.3.021.015",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "POLONIA, R, 00195",
+          "rank": 95,
+          "score": 0.0332
+        },
+        {
+          "candidate_bc": "3.3.013.019.001",
+          "candidate_dsqlll": "3.3.013.019",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "EGITO, R, 00050",
+          "rank": 96,
+          "score": 0.0314
+        },
+        {
+          "candidate_bc": "3.3.020.019.001",
+          "candidate_dsqlll": "3.3.020.019",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.020",
+          "normalized_address": "POLONIA, R, 00017",
+          "rank": 97,
+          "score": 0.0314
+        },
+        {
+          "candidate_bc": "3.3.021.014.001",
+          "candidate_dsqlll": "3.3.021.014",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "SUECIA, R, 00027",
+          "rank": 98,
+          "score": 0.0314
+        },
+        {
+          "candidate_bc": "3.3.013.020.001",
+          "candidate_dsqlll": "3.3.013.020",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "EGITO, R, 00070",
+          "rank": 99,
+          "score": 0.0299
+        },
+        {
+          "candidate_bc": "3.3.020.020.001",
+          "candidate_dsqlll": "3.3.020.020",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.020",
+          "normalized_address": "TURQUIA, PCA, 00029",
+          "rank": 100,
+          "score": 0.0299
+        },
+        {
+          "candidate_bc": "3.3.013.021.001",
+          "candidate_dsqlll": "3.3.013.021",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "EGITO, R, 00000",
+          "rank": 101,
+          "score": 0.0284
+        },
+        {
+          "candidate_bc": "3.3.020.021.001",
+          "candidate_dsqlll": "3.3.020.021",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.020",
+          "normalized_address": "TURQUIA, PCA, 00019",
+          "rank": 102,
+          "score": 0.0284
+        },
+        {
+          "candidate_bc": "3.3.021.012.001",
+          "candidate_dsqlll": "3.3.021.012",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "SUECIA, R, 00047",
+          "rank": 103,
+          "score": 0.0284
+        },
+        {
+          "candidate_bc": "3.3.013.022.001",
+          "candidate_dsqlll": "3.3.013.022",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "EGITO, R, 00090",
+          "rank": 104,
+          "score": 0.0272
+        },
+        {
+          "candidate_bc": "3.3.021.011.001",
+          "candidate_dsqlll": "3.3.021.011",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "SUECIA, R, 00065",
+          "rank": 105,
+          "score": 0.0272
+        },
+        {
+          "candidate_bc": "3.3.013.023.001",
+          "candidate_dsqlll": "3.3.013.023",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "EGITO, R, 00000",
+          "rank": 106,
+          "score": 0.026
+        },
+        {
+          "candidate_bc": "3.3.021.010.001",
+          "candidate_dsqlll": "3.3.021.010",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "SUECIA, R, 00075",
+          "rank": 107,
+          "score": 0.026
+        },
+        {
+          "candidate_bc": "3.3.013.024.001",
+          "candidate_dsqlll": "3.3.013.024",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "EGITO, R, 00000",
+          "rank": 108,
+          "score": 0.0249
+        },
+        {
+          "candidate_bc": "3.3.021.009.001",
+          "candidate_dsqlll": "3.3.021.009",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "SUECIA, R, 00085",
+          "rank": 109,
+          "score": 0.0249
+        },
+        {
+          "candidate_bc": "3.3.021.007.001",
+          "candidate_dsqlll": "3.3.021.007",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "SUECIA, R, 00095",
+          "rank": 110,
+          "score": 0.023
+        },
+        {
+          "candidate_bc": "3.3.021.006.001",
+          "candidate_dsqlll": "3.3.021.006",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "SUECIA, R, 00105",
+          "rank": 111,
+          "score": 0.0221
+        },
+        {
+          "candidate_bc": "3.3.021.005.001",
+          "candidate_dsqlll": "3.3.021.005",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "SUECIA, R, 00115",
+          "rank": 112,
+          "score": 0.0213
+        },
+        {
+          "candidate_bc": "3.3.021.004.001",
+          "candidate_dsqlll": "3.3.021.004",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "SUECIA, R, 00125",
+          "rank": 113,
+          "score": 0.0206
+        },
+        {
+          "candidate_bc": "3.3.021.003.001",
+          "candidate_dsqlll": "3.3.021.003",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "SUECIA, R, 00131",
+          "rank": 114,
+          "score": 0.0199
+        },
+        {
+          "candidate_bc": "3.3.021.002.001",
+          "candidate_dsqlll": "3.3.021.002",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "SUECIA, R, 00145",
+          "rank": 115,
+          "score": 0.0193
+        },
+        {
+          "candidate_bc": "3.3.021.001.001",
+          "candidate_dsqlll": "3.3.021.001",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.021",
+          "normalized_address": "SUECIA, R, 00175",
+          "rank": 116,
+          "score": 0.0187
+        },
+        {
+          "candidate_bc": "3.3.013.034.001",
+          "candidate_dsqlll": "3.3.013.034",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "CANADA, R, 00102",
+          "rank": 117,
+          "score": 0.0176
+        },
+        {
+          "candidate_bc": "3.3.013.037.001",
+          "candidate_dsqlll": "3.3.013.037",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "TURQUIA, PCA, 00018",
+          "rank": 118,
+          "score": 0.0161
+        },
+        {
+          "candidate_bc": "3.3.013.038.001",
+          "candidate_dsqlll": "3.3.013.038",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'italia' (1030m) in DSQ 3.3.013",
+          "normalized_address": "CANADA, R, 00122",
+          "rank": 119,
+          "score": 0.0157
+        }
+      ],
+      "street_available": false,
+      "street_used": null,
+      "structural_unresolved_hypotheses": [
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.013.001 (1030m)",
+          "hypothesis_bc": "3.3.013.002.001",
+          "hypothesis_dsqlll": "3.3.013.002",
+          "score": 0.239,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 1
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.001.018 (1030m)",
+          "hypothesis_bc": "3.3.001.021.001",
+          "hypothesis_dsqlll": "3.3.001.021",
+          "score": 0.1195,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 2
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.020.001 (1030m)",
+          "hypothesis_bc": "3.3.020.004.001",
+          "hypothesis_dsqlll": "3.3.020.004",
+          "score": 0.1195,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 3
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.021.032 (1030m)",
+          "hypothesis_bc": "3.3.021.028.001",
+          "hypothesis_dsqlll": "3.3.021.028",
+          "score": 0.0956,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 4
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.020.001 (1030m)",
+          "hypothesis_bc": "3.3.020.006.001",
+          "hypothesis_dsqlll": "3.3.020.006",
+          "score": 0.0797,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 5
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.021.032 (1030m)",
+          "hypothesis_bc": "3.3.021.037.001",
+          "hypothesis_dsqlll": "3.3.021.037",
+          "score": 0.0797,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 6
+        }
+      ],
+      "v1_anchor_count": 0,
+      "v1_ds_candidates": [],
+      "v1_dsq_candidates": [],
+      "v1_prediction_status": "FAILED",
+      "v1_real_resolved_count": 0,
+      "v1_structural_unresolved_count": 0,
+      "v2_anchor_count": 4,
+      "v2_ds_candidates": [
+        {
+          "ds": "3.3",
+          "evidence": "Nearest spatial reference anchor 'italia' (1030m)",
+          "score": 0.5974
+        }
+      ],
+      "v2_dsq_candidates": [
+        {
+          "dsq": "3.3.001",
+          "evidence": "Nearest spatial reference anchor 'italia' (1030m)",
+          "score": 0.5974
+        },
+        {
+          "dsq": "3.3.013",
+          "evidence": "Nearest spatial reference anchor 'italia' (1030m)",
+          "score": 0.5974
+        },
+        {
+          "dsq": "3.3.020",
+          "evidence": "Nearest spatial reference anchor 'italia' (1030m)",
+          "score": 0.5974
+        },
+        {
+          "dsq": "3.3.021",
+          "evidence": "Nearest spatial reference anchor 'italia' (1030m)",
+          "score": 0.5974
+        }
+      ],
+      "v2_prediction_status": "SUCCESS",
+      "v2_real_resolved_count": 119,
+      "v2_structural_unresolved_count": 6
+    },
+    {
+      "candidate_burden_v2": {
+        "real_resolved_candidate_count": 49,
+        "structural_unresolved_count": 35,
+        "total_candidate_count": 84
+      },
+      "cohort_eligibility": "PROTOCOL_COMPLIANT",
+      "coordinate_available": false,
+      "coordinate_precision_class": "D) unknown precision",
+      "coordinate_used": null,
+      "failure_code_v1": null,
+      "failure_code_v2": null,
+      "listing_id": "38732282",
+      "neighbourhood_used": "Jardim Mourisco",
+      "real_resolved_candidates": [
+        {
+          "candidate_bc": "5.2.048.003.001",
+          "candidate_dsqlll": "5.2.048.003",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.048 (reference 5.2.048.003)",
+          "normalized_address": "CLODOMIRO AMAZONAS, R, 00264",
+          "rank": 1,
+          "score": 1.5
+        },
+        {
+          "candidate_bc": "5.2.049.023.001",
+          "candidate_dsqlll": "5.2.049.023",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "VICENTE CELESTINO, R, 00037",
+          "rank": 2,
+          "score": 1.5
+        },
+        {
+          "candidate_bc": "5.2.050.008.001",
+          "candidate_dsqlll": "5.2.050.008",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.050 (reference 5.2.050.008)",
+          "normalized_address": "ELPIDIO DOS SANTOS, R, 00205",
+          "rank": 3,
+          "score": 1.5
+        },
+        {
+          "candidate_bc": "5.2.051.006.001",
+          "candidate_dsqlll": "5.2.051.006",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.051 (reference 5.2.051.006)",
+          "normalized_address": "TAVARES FILHO, R, 00073",
+          "rank": 4,
+          "score": 1.5
+        },
+        {
+          "candidate_bc": "5.2.053.004.001",
+          "candidate_dsqlll": "5.2.053.004",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.053 (reference 5.2.053.004)",
+          "normalized_address": "VICENTE CELESTINO, R, 00202",
+          "rank": 5,
+          "score": 1.5
+        },
+        {
+          "candidate_bc": "5.2.054.005.001",
+          "candidate_dsqlll": "5.2.054.005",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.054 (reference 5.2.054.005)",
+          "normalized_address": "CLODOMIRO AMAZONAS, R, 00130",
+          "rank": 6,
+          "score": 1.5
+        },
+        {
+          "candidate_bc": "5.2.058.005.001",
+          "candidate_dsqlll": "5.2.058.005",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.058 (reference 5.2.058.005)",
+          "normalized_address": "WILLY AURELI, R, 00233",
+          "rank": 7,
+          "score": 1.5
+        },
+        {
+          "candidate_bc": "5.2.049.022.001",
+          "candidate_dsqlll": "5.2.049.022",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "VICENTE CELESTINO, R, 00041",
+          "rank": 8,
+          "score": 1.0
+        },
+        {
+          "candidate_bc": "5.2.050.009.001",
+          "candidate_dsqlll": "5.2.050.009",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.050 (reference 5.2.050.008)",
+          "normalized_address": "ELPIDIO DOS SANTOS, R, 00195",
+          "rank": 9,
+          "score": 1.0
+        },
+        {
+          "candidate_bc": "5.2.051.005.001",
+          "candidate_dsqlll": "5.2.051.005",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.051 (reference 5.2.051.006)",
+          "normalized_address": "TAVARES FILHO, R, 00081",
+          "rank": 10,
+          "score": 1.0
+        },
+        {
+          "candidate_bc": "5.2.051.007.001",
+          "candidate_dsqlll": "5.2.051.007",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.051 (reference 5.2.051.006)",
+          "normalized_address": "TAVARES FILHO, R, 00063",
+          "rank": 11,
+          "score": 1.0
+        },
+        {
+          "candidate_bc": "5.2.053.005.001",
+          "candidate_dsqlll": "5.2.053.005",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.053 (reference 5.2.053.004)",
+          "normalized_address": "VICENTE CELESTINO, R, 00212",
+          "rank": 12,
+          "score": 1.0
+        },
+        {
+          "candidate_bc": "5.2.058.004.001",
+          "candidate_dsqlll": "5.2.058.004",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.058 (reference 5.2.058.005)",
+          "normalized_address": "WILLY AURELI, R, 00243",
+          "rank": 13,
+          "score": 1.0
+        },
+        {
+          "candidate_bc": "5.2.058.006.001",
+          "candidate_dsqlll": "5.2.058.006",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.058 (reference 5.2.058.005)",
+          "normalized_address": "WILLY AURELI, R, 00223",
+          "rank": 14,
+          "score": 1.0
+        },
+        {
+          "candidate_bc": "5.2.049.025.001",
+          "candidate_dsqlll": "5.2.049.025",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "VICENTE CELESTINO, R, 00007",
+          "rank": 15,
+          "score": 0.8333333333333333
+        },
+        {
+          "candidate_bc": "5.2.051.008.001",
+          "candidate_dsqlll": "5.2.051.008",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.051 (reference 5.2.051.006)",
+          "normalized_address": "TAVARES FILHO, R, 00049",
+          "rank": 16,
+          "score": 0.8333333333333333
+        },
+        {
+          "candidate_bc": "5.2.054.007.001",
+          "candidate_dsqlll": "5.2.054.007",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.054 (reference 5.2.054.005)",
+          "normalized_address": "CLODOMIRO AMAZONAS, R, 00150",
+          "rank": 17,
+          "score": 0.8333333333333333
+        },
+        {
+          "candidate_bc": "5.2.058.003.001",
+          "candidate_dsqlll": "5.2.058.003",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.058 (reference 5.2.058.005)",
+          "normalized_address": "WILLY AURELI, R, 00249",
+          "rank": 18,
+          "score": 0.8333333333333333
+        },
+        {
+          "candidate_bc": "5.2.049.020.001",
+          "candidate_dsqlll": "5.2.049.020",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "VICENTE CELESTINO, R, 00057",
+          "rank": 19,
+          "score": 0.75
+        },
+        {
+          "candidate_bc": "5.2.051.009.001",
+          "candidate_dsqlll": "5.2.051.009",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.051 (reference 5.2.051.006)",
+          "normalized_address": "TAVARES FILHO, R, 00041",
+          "rank": 20,
+          "score": 0.75
+        },
+        {
+          "candidate_bc": "5.2.053.001.001",
+          "candidate_dsqlll": "5.2.053.001",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.053 (reference 5.2.053.004)",
+          "normalized_address": "VICENTE CELESTINO, R, 00162",
+          "rank": 21,
+          "score": 0.75
+        },
+        {
+          "candidate_bc": "5.2.050.004.001",
+          "candidate_dsqlll": "5.2.050.004",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.050 (reference 5.2.050.008)",
+          "normalized_address": "ELPIDIO DOS SANTOS, R, 00237",
+          "rank": 22,
+          "score": 0.7
+        },
+        {
+          "candidate_bc": "5.2.054.009.001",
+          "candidate_dsqlll": "5.2.054.009",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.054 (reference 5.2.054.005)",
+          "normalized_address": "CLODOMIRO AMAZONAS, R, 00168",
+          "rank": 23,
+          "score": 0.7
+        },
+        {
+          "candidate_bc": "5.2.049.018.001",
+          "candidate_dsqlll": "5.2.049.018",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "VICENTE CELESTINO, R, 00077",
+          "rank": 24,
+          "score": 0.6666666666666666
+        },
+        {
+          "candidate_bc": "5.2.054.010.001",
+          "candidate_dsqlll": "5.2.054.010",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.054 (reference 5.2.054.005)",
+          "normalized_address": "CLODOMIRO AMAZONAS, R, 00174",
+          "rank": 25,
+          "score": 0.6666666666666666
+        },
+        {
+          "candidate_bc": "5.2.049.017.001",
+          "candidate_dsqlll": "5.2.049.017",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "VICENTE CELESTINO, R, 00087",
+          "rank": 26,
+          "score": 0.6428571428571428
+        },
+        {
+          "candidate_bc": "5.2.054.011.001",
+          "candidate_dsqlll": "5.2.054.011",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.054 (reference 5.2.054.005)",
+          "normalized_address": "CLODOMIRO AMAZONAS, R, 00188",
+          "rank": 27,
+          "score": 0.6428571428571428
+        },
+        {
+          "candidate_bc": "5.2.049.016.001",
+          "candidate_dsqlll": "5.2.049.016",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "VICENTE CELESTINO, R, 00097",
+          "rank": 28,
+          "score": 0.625
+        },
+        {
+          "candidate_bc": "5.2.054.012.001",
+          "candidate_dsqlll": "5.2.054.012",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.054 (reference 5.2.054.005)",
+          "normalized_address": "CLODOMIRO AMAZONAS, R, 00198",
+          "rank": 29,
+          "score": 0.625
+        },
+        {
+          "candidate_bc": "5.2.049.013.001",
+          "candidate_dsqlll": "5.2.049.013",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "VICENTE CELESTINO, R, 00131",
+          "rank": 30,
+          "score": 0.5909090909090909
+        },
+        {
+          "candidate_bc": "5.2.049.012.001",
+          "candidate_dsqlll": "5.2.049.012",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "VICENTE CELESTINO, R, 00141",
+          "rank": 31,
+          "score": 0.5833333333333334
+        },
+        {
+          "candidate_bc": "5.2.049.008.001",
+          "candidate_dsqlll": "5.2.049.008",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "VICENTE CELESTINO, R, 00179",
+          "rank": 32,
+          "score": 0.5625
+        },
+        {
+          "candidate_bc": "5.2.054.004.001",
+          "candidate_dsqlll": "5.2.054.004",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.054 (reference 5.2.054.005)",
+          "normalized_address": "EUCLIDES DA CUNHA, R, 00000",
+          "rank": 33,
+          "score": 0.5
+        },
+        {
+          "candidate_bc": "5.2.051.004.001",
+          "candidate_dsqlll": "5.2.051.004",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.051 (reference 5.2.051.006)",
+          "normalized_address": "IVAN COSTA, R, 00060",
+          "rank": 34,
+          "score": 0.3333333333333333
+        },
+        {
+          "candidate_bc": "5.2.054.003.001",
+          "candidate_dsqlll": "5.2.054.003",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.054 (reference 5.2.054.005)",
+          "normalized_address": "EUCLIDES DA CUNHA, R, 00640",
+          "rank": 35,
+          "score": 0.3333333333333333
+        },
+        {
+          "candidate_bc": "5.2.051.003.001",
+          "candidate_dsqlll": "5.2.051.003",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.051 (reference 5.2.051.006)",
+          "normalized_address": "IVAN COSTA, R, 00050",
+          "rank": 36,
+          "score": 0.25
+        },
+        {
+          "candidate_bc": "5.2.054.002.001",
+          "candidate_dsqlll": "5.2.054.002",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.054 (reference 5.2.054.005)",
+          "normalized_address": "EUCLIDES DA CUNHA, R, 00632",
+          "rank": 37,
+          "score": 0.25
+        },
+        {
+          "candidate_bc": "5.2.049.027.001",
+          "candidate_dsqlll": "5.2.049.027",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "ELPIDIO DOS SANTOS, R, 00030",
+          "rank": 38,
+          "score": 0.2
+        },
+        {
+          "candidate_bc": "5.2.051.002.001",
+          "candidate_dsqlll": "5.2.051.002",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.051 (reference 5.2.051.006)",
+          "normalized_address": "IVAN COSTA, R, 00040",
+          "rank": 39,
+          "score": 0.2
+        },
+        {
+          "candidate_bc": "5.2.054.001.001",
+          "candidate_dsqlll": "5.2.054.001",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.054 (reference 5.2.054.005)",
+          "normalized_address": "EUCLIDES DA CUNHA, R, 00564",
+          "rank": 40,
+          "score": 0.2
+        },
+        {
+          "candidate_bc": "5.2.049.028.001",
+          "candidate_dsqlll": "5.2.049.028",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "ELPIDIO DOS SANTOS, R, 00040",
+          "rank": 41,
+          "score": 0.16666666666666666
+        },
+        {
+          "candidate_bc": "5.2.051.001.001",
+          "candidate_dsqlll": "5.2.051.001",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.051 (reference 5.2.051.006)",
+          "normalized_address": "IVAN COSTA, R, 00030",
+          "rank": 42,
+          "score": 0.16666666666666666
+        },
+        {
+          "candidate_bc": "5.2.049.030.001",
+          "candidate_dsqlll": "5.2.049.030",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "ELPIDIO DOS SANTOS, R, 00068",
+          "rank": 43,
+          "score": 0.125
+        },
+        {
+          "candidate_bc": "5.2.051.013.001",
+          "candidate_dsqlll": "5.2.051.013",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.051 (reference 5.2.051.006)",
+          "normalized_address": "VICENTE CELESTINO, R, 00078",
+          "rank": 44,
+          "score": 0.125
+        },
+        {
+          "candidate_bc": "5.2.051.016.001",
+          "candidate_dsqlll": "5.2.051.016",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.051 (reference 5.2.051.006)",
+          "normalized_address": "VICENTE CELESTINO, R, 00105",
+          "rank": 45,
+          "score": 0.09090909090909091
+        },
+        {
+          "candidate_bc": "5.2.049.034.001",
+          "candidate_dsqlll": "5.2.049.034",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "ELPIDIO DOS SANTOS, R, 00102",
+          "rank": 46,
+          "score": 0.08333333333333333
+        },
+        {
+          "candidate_bc": "5.2.049.035.001",
+          "candidate_dsqlll": "5.2.049.035",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "ELPIDIO DOS SANTOS, R, 00112",
+          "rank": 47,
+          "score": 0.07692307692307693
+        },
+        {
+          "candidate_bc": "5.2.049.037.001",
+          "candidate_dsqlll": "5.2.049.037",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "ELPIDIO DOS SANTOS, R, 00128",
+          "rank": 48,
+          "score": 0.06666666666666667
+        },
+        {
+          "candidate_bc": "5.2.049.039.001",
+          "candidate_dsqlll": "5.2.049.039",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "ELPIDIO DOS SANTOS, R, 00148",
+          "rank": 49,
+          "score": 0.058823529411764705
+        }
+      ],
+      "street_available": false,
+      "street_used": null,
+      "structural_unresolved_hypotheses": [
+        {
+          "evidence": "Structural search interval around reference 5.2.048.003",
+          "hypothesis_bc": "5.2.048.002.001",
+          "hypothesis_dsqlll": "5.2.048.002",
+          "score": 0.4,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 1
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.048.003",
+          "hypothesis_bc": "5.2.048.004.001",
+          "hypothesis_dsqlll": "5.2.048.004",
+          "score": 0.4,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 2
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.049.023",
+          "hypothesis_bc": "5.2.049.024.001",
+          "hypothesis_dsqlll": "5.2.049.024",
+          "score": 0.4,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 3
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.050.008",
+          "hypothesis_bc": "5.2.050.007.001",
+          "hypothesis_dsqlll": "5.2.050.007",
+          "score": 0.4,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 4
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.053.004",
+          "hypothesis_bc": "5.2.053.003.001",
+          "hypothesis_dsqlll": "5.2.053.003",
+          "score": 0.4,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 5
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.054.005",
+          "hypothesis_bc": "5.2.054.006.001",
+          "hypothesis_dsqlll": "5.2.054.006",
+          "score": 0.4,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 6
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.048.003",
+          "hypothesis_bc": "5.2.048.001.001",
+          "hypothesis_dsqlll": "5.2.048.001",
+          "score": 0.26666666666666666,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 7
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.048.003",
+          "hypothesis_bc": "5.2.048.005.001",
+          "hypothesis_dsqlll": "5.2.048.005",
+          "score": 0.26666666666666666,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 8
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.049.023",
+          "hypothesis_bc": "5.2.049.021.001",
+          "hypothesis_dsqlll": "5.2.049.021",
+          "score": 0.26666666666666666,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 9
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.050.008",
+          "hypothesis_bc": "5.2.050.006.001",
+          "hypothesis_dsqlll": "5.2.050.006",
+          "score": 0.26666666666666666,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 10
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.050.008",
+          "hypothesis_bc": "5.2.050.010.001",
+          "hypothesis_dsqlll": "5.2.050.010",
+          "score": 0.26666666666666666,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 11
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.053.004",
+          "hypothesis_bc": "5.2.053.002.001",
+          "hypothesis_dsqlll": "5.2.053.002",
+          "score": 0.26666666666666666,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 12
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.053.004",
+          "hypothesis_bc": "5.2.053.006.001",
+          "hypothesis_dsqlll": "5.2.053.006",
+          "score": 0.26666666666666666,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 13
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.058.005",
+          "hypothesis_bc": "5.2.058.007.001",
+          "hypothesis_dsqlll": "5.2.058.007",
+          "score": 0.26666666666666666,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 14
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.048.003",
+          "hypothesis_bc": "5.2.048.006.001",
+          "hypothesis_dsqlll": "5.2.048.006",
+          "score": 0.2,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 15
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.049.023",
+          "hypothesis_bc": "5.2.049.026.001",
+          "hypothesis_dsqlll": "5.2.049.026",
+          "score": 0.2,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 16
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.050.008",
+          "hypothesis_bc": "5.2.050.005.001",
+          "hypothesis_dsqlll": "5.2.050.005",
+          "score": 0.2,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 17
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.050.008",
+          "hypothesis_bc": "5.2.050.011.001",
+          "hypothesis_dsqlll": "5.2.050.011",
+          "score": 0.2,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 18
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.053.004",
+          "hypothesis_bc": "5.2.053.007.001",
+          "hypothesis_dsqlll": "5.2.053.007",
+          "score": 0.2,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 19
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.054.005",
+          "hypothesis_bc": "5.2.054.008.001",
+          "hypothesis_dsqlll": "5.2.054.008",
+          "score": 0.2,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 20
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.058.005",
+          "hypothesis_bc": "5.2.058.002.001",
+          "hypothesis_dsqlll": "5.2.058.002",
+          "score": 0.2,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 21
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.058.005",
+          "hypothesis_bc": "5.2.058.008.001",
+          "hypothesis_dsqlll": "5.2.058.008",
+          "score": 0.2,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 22
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.048.003",
+          "hypothesis_bc": "5.2.048.007.001",
+          "hypothesis_dsqlll": "5.2.048.007",
+          "score": 0.16000000000000003,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 23
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.049.023",
+          "hypothesis_bc": "5.2.049.019.001",
+          "hypothesis_dsqlll": "5.2.049.019",
+          "score": 0.16000000000000003,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 24
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.050.008",
+          "hypothesis_bc": "5.2.050.012.001",
+          "hypothesis_dsqlll": "5.2.050.012",
+          "score": 0.16000000000000003,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 25
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.051.006",
+          "hypothesis_bc": "5.2.051.010.001",
+          "hypothesis_dsqlll": "5.2.051.010",
+          "score": 0.16000000000000003,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 26
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.053.004",
+          "hypothesis_bc": "5.2.053.008.001",
+          "hypothesis_dsqlll": "5.2.053.008",
+          "score": 0.16000000000000003,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 27
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.058.005",
+          "hypothesis_bc": "5.2.058.001.001",
+          "hypothesis_dsqlll": "5.2.058.001",
+          "score": 0.16000000000000003,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 28
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.058.005",
+          "hypothesis_bc": "5.2.058.009.001",
+          "hypothesis_dsqlll": "5.2.058.009",
+          "score": 0.16000000000000003,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 29
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.048.003",
+          "hypothesis_bc": "5.2.048.008.001",
+          "hypothesis_dsqlll": "5.2.048.008",
+          "score": 0.13333333333333333,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 30
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.050.008",
+          "hypothesis_bc": "5.2.050.003.001",
+          "hypothesis_dsqlll": "5.2.050.003",
+          "score": 0.13333333333333333,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 31
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.050.008",
+          "hypothesis_bc": "5.2.050.013.001",
+          "hypothesis_dsqlll": "5.2.050.013",
+          "score": 0.13333333333333333,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 32
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.051.006",
+          "hypothesis_bc": "5.2.051.011.001",
+          "hypothesis_dsqlll": "5.2.051.011",
+          "score": 0.13333333333333333,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 33
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.053.004",
+          "hypothesis_bc": "5.2.053.009.001",
+          "hypothesis_dsqlll": "5.2.053.009",
+          "score": 0.13333333333333333,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 34
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.058.005",
+          "hypothesis_bc": "5.2.058.010.001",
+          "hypothesis_dsqlll": "5.2.058.010",
+          "score": 0.13333333333333333,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 35
+        }
+      ],
+      "v1_anchor_count": 7,
+      "v1_ds_candidates": [
+        {
+          "ds": "5.2",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        }
+      ],
+      "v1_dsq_candidates": [
+        {
+          "dsq": "5.2.048",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        },
+        {
+          "dsq": "5.2.049",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        },
+        {
+          "dsq": "5.2.050",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        },
+        {
+          "dsq": "5.2.051",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        },
+        {
+          "dsq": "5.2.053",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        },
+        {
+          "dsq": "5.2.054",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        },
+        {
+          "dsq": "5.2.058",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        }
+      ],
+      "v1_prediction_status": "SUCCESS",
+      "v1_real_resolved_count": 49,
+      "v1_structural_unresolved_count": 35,
+      "v2_anchor_count": 7,
+      "v2_ds_candidates": [
+        {
+          "ds": "5.2",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        }
+      ],
+      "v2_dsq_candidates": [
+        {
+          "dsq": "5.2.048",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        },
+        {
+          "dsq": "5.2.049",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        },
+        {
+          "dsq": "5.2.050",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        },
+        {
+          "dsq": "5.2.051",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        },
+        {
+          "dsq": "5.2.053",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        },
+        {
+          "dsq": "5.2.054",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        },
+        {
+          "dsq": "5.2.058",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        }
+      ],
+      "v2_prediction_status": "SUCCESS",
+      "v2_real_resolved_count": 49,
+      "v2_structural_unresolved_count": 35
+    },
+    {
+      "candidate_burden_v2": {
+        "real_resolved_candidate_count": 3,
+        "structural_unresolved_count": 5,
+        "total_candidate_count": 8
+      },
+      "cohort_eligibility": "PROTOCOL_COMPLIANT",
+      "coordinate_available": true,
+      "coordinate_precision_class": "B) approximate listing location",
+      "coordinate_used": {
+        "lat": -23.01684,
+        "lon": -45.56454
+      },
+      "failure_code_v1": "STREET_NOT_AVAILABLE",
+      "failure_code_v2": null,
+      "listing_id": "38813993",
+      "neighbourhood_used": "Campos Elíseos",
+      "real_resolved_candidates": [
+        {
+          "candidate_bc": "4.4.214.003.001",
+          "candidate_dsqlll": "4.4.214.003",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'francisco alves monteiro' (1126m) in DSQ 4.4.214",
+          "normalized_address": "FRANCISCO ALVES MONTEIRO, AV, 00000",
+          "rank": 1,
+          "score": 1.3097
+        },
+        {
+          "candidate_bc": "4.4.214.004.001",
+          "candidate_dsqlll": "4.4.214.004",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'francisco alves monteiro' (1126m) in DSQ 4.4.214",
+          "normalized_address": "FRANCISCO ALVES MONTEIRO, AV, 00000",
+          "rank": 2,
+          "score": 1.025
+        },
+        {
+          "candidate_bc": "4.4.214.005.001",
+          "candidate_dsqlll": "4.4.214.005",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'francisco alves monteiro' (1126m) in DSQ 4.4.214",
+          "normalized_address": "FRANCISCO ALVES MONTEIRO, AV, 01107",
+          "rank": 3,
+          "score": 0.9301
+        }
+      ],
+      "street_available": false,
+      "street_used": null,
+      "structural_unresolved_hypotheses": [
+        {
+          "evidence": "Spatial structural interval around anchor 4.4.214.003 (1126m)",
+          "hypothesis_bc": "4.4.214.002.001",
+          "hypothesis_dsqlll": "4.4.214.002",
+          "score": 0.2278,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 1
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 4.4.214.003 (1126m)",
+          "hypothesis_bc": "4.4.214.001.001",
+          "hypothesis_dsqlll": "4.4.214.001",
+          "score": 0.1518,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 2
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 4.4.214.003 (1126m)",
+          "hypothesis_bc": "4.4.214.006.001",
+          "hypothesis_dsqlll": "4.4.214.006",
+          "score": 0.1139,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 3
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 4.4.214.003 (1126m)",
+          "hypothesis_bc": "4.4.214.007.001",
+          "hypothesis_dsqlll": "4.4.214.007",
+          "score": 0.0911,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 4
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 4.4.214.003 (1126m)",
+          "hypothesis_bc": "4.4.214.008.001",
+          "hypothesis_dsqlll": "4.4.214.008",
+          "score": 0.0759,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 5
+        }
+      ],
+      "v1_anchor_count": 0,
+      "v1_ds_candidates": [],
+      "v1_dsq_candidates": [],
+      "v1_prediction_status": "FAILED",
+      "v1_real_resolved_count": 0,
+      "v1_structural_unresolved_count": 0,
+      "v2_anchor_count": 1,
+      "v2_ds_candidates": [
+        {
+          "ds": "4.4",
+          "evidence": "Nearest spatial reference anchor 'francisco alves monteiro' (1126m)",
+          "score": 0.5694
+        }
+      ],
+      "v2_dsq_candidates": [
+        {
+          "dsq": "4.4.214",
+          "evidence": "Nearest spatial reference anchor 'francisco alves monteiro' (1126m)",
+          "score": 0.5694
+        }
+      ],
+      "v2_prediction_status": "SUCCESS",
+      "v2_real_resolved_count": 3,
+      "v2_structural_unresolved_count": 5
+    },
+    {
+      "candidate_burden_v2": {
+        "real_resolved_candidate_count": 38,
+        "structural_unresolved_count": 0,
+        "total_candidate_count": 38
+      },
+      "cohort_eligibility": "PRESELECTION_ELIGIBILITY_ERROR",
+      "coordinate_available": true,
+      "coordinate_precision_class": "C) street-level location with hidden number",
+      "coordinate_used": {
+        "lat": -23.02648,
+        "lon": -45.59912
+      },
+      "failure_code_v1": "DS_FAILURE",
+      "failure_code_v2": null,
+      "listing_id": "40591449",
+      "neighbourhood_used": "Jardim Oasis",
+      "real_resolved_candidates": [
+        {
+          "candidate_bc": "4.4.130.019.001",
+          "candidate_dsqlll": "4.4.130.019",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "PEDRO MARCON, R, 00577",
+          "rank": 1,
+          "score": 1.9825
+        },
+        {
+          "candidate_bc": "4.4.130.020.001",
+          "candidate_dsqlll": "4.4.130.020",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "PEDRO MARCON, R, 00567",
+          "rank": 2,
+          "score": 1.5515
+        },
+        {
+          "candidate_bc": "4.4.130.021.001",
+          "candidate_dsqlll": "4.4.130.021",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "PEDRO MARCON, R, 00000",
+          "rank": 3,
+          "score": 1.4079
+        },
+        {
+          "candidate_bc": "4.4.130.022.001",
+          "candidate_dsqlll": "4.4.130.022",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "PEDRO MARCON, R, 00547",
+          "rank": 4,
+          "score": 1.336
+        },
+        {
+          "candidate_bc": "4.4.130.023.001",
+          "candidate_dsqlll": "4.4.130.023",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "PEDRO MARCON, R, 00000",
+          "rank": 5,
+          "score": 1.2929
+        },
+        {
+          "candidate_bc": "4.4.130.024.001",
+          "candidate_dsqlll": "4.4.130.024",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "PEDRO MARCON, R, 00527",
+          "rank": 6,
+          "score": 1.2642
+        },
+        {
+          "candidate_bc": "4.4.130.025.001",
+          "candidate_dsqlll": "4.4.130.025",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "PEDRO MARCON, R, 00511",
+          "rank": 7,
+          "score": 1.2437
+        },
+        {
+          "candidate_bc": "4.4.130.026.001",
+          "candidate_dsqlll": "4.4.130.026",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "PEDRO MARCON, R, 00507",
+          "rank": 8,
+          "score": 1.2283
+        },
+        {
+          "candidate_bc": "4.4.130.027.001",
+          "candidate_dsqlll": "4.4.130.027",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "PEDRO MARCON, R, 00491",
+          "rank": 9,
+          "score": 1.2163
+        },
+        {
+          "candidate_bc": "4.4.130.029.001",
+          "candidate_dsqlll": "4.4.130.029",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "PEDRO MARCON, R, 00475",
+          "rank": 10,
+          "score": 1.1989
+        },
+        {
+          "candidate_bc": "4.4.130.030.001",
+          "candidate_dsqlll": "4.4.130.030",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "PEDRO MARCON, R, 00467",
+          "rank": 11,
+          "score": 1.1924
+        },
+        {
+          "candidate_bc": "4.4.130.031.001",
+          "candidate_dsqlll": "4.4.130.031",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "PEDRO MARCON, R, 00457",
+          "rank": 12,
+          "score": 1.1868
+        },
+        {
+          "candidate_bc": "4.4.130.032.001",
+          "candidate_dsqlll": "4.4.130.032",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "PEDRO MARCON, R, 00443",
+          "rank": 13,
+          "score": 1.1821
+        },
+        {
+          "candidate_bc": "4.4.130.033.001",
+          "candidate_dsqlll": "4.4.130.033",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "PEDRO MARCON, R, 00437",
+          "rank": 14,
+          "score": 1.178
+        },
+        {
+          "candidate_bc": "4.4.130.034.001",
+          "candidate_dsqlll": "4.4.130.034",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "PEDRO MARCON, R, 00427",
+          "rank": 15,
+          "score": 1.1744
+        },
+        {
+          "candidate_bc": "4.4.130.035.001",
+          "candidate_dsqlll": "4.4.130.035",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "PEDRO MARCON, R, 417",
+          "rank": 16,
+          "score": 1.1712
+        },
+        {
+          "candidate_bc": "4.4.130.036.001",
+          "candidate_dsqlll": "4.4.130.036",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "PEDRO MARCON, R, 00407",
+          "rank": 17,
+          "score": 1.1684
+        },
+        {
+          "candidate_bc": "4.4.130.037.001",
+          "candidate_dsqlll": "4.4.130.037",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "PEDRO MARCON, R, 00485",
+          "rank": 18,
+          "score": 1.1659
+        },
+        {
+          "candidate_bc": "4.4.130.038.001",
+          "candidate_dsqlll": "4.4.130.038",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "PEDRO MARCON, R, 00489",
+          "rank": 19,
+          "score": 1.1636
+        },
+        {
+          "candidate_bc": "4.4.130.039.001",
+          "candidate_dsqlll": "4.4.130.039",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "PEDRO MARCON, R, 00479",
+          "rank": 20,
+          "score": 1.1616
+        },
+        {
+          "candidate_bc": "4.4.130.018.001",
+          "candidate_dsqlll": "4.4.130.018",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "LUIZ CARLOS PAVANITTO , R, 00000",
+          "rank": 21,
+          "score": 0.431
+        },
+        {
+          "candidate_bc": "4.4.130.017.001",
+          "candidate_dsqlll": "4.4.130.017",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "LUIZ CARLOS PAVANITTO , R, 00000",
+          "rank": 22,
+          "score": 0.2873
+        },
+        {
+          "candidate_bc": "4.4.130.016.001",
+          "candidate_dsqlll": "4.4.130.016",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "LUIZ CARLOS PAVANITTO , R, 00554",
+          "rank": 23,
+          "score": 0.2155
+        },
+        {
+          "candidate_bc": "4.4.130.015.001",
+          "candidate_dsqlll": "4.4.130.015",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "LUIZ CARLOS PAVANITTO , R, 00544",
+          "rank": 24,
+          "score": 0.1724
+        },
+        {
+          "candidate_bc": "4.4.130.014.001",
+          "candidate_dsqlll": "4.4.130.014",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "LUIZ CARLOS PAVANITTO , R, 00534",
+          "rank": 25,
+          "score": 0.1437
+        },
+        {
+          "candidate_bc": "4.4.130.013.001",
+          "candidate_dsqlll": "4.4.130.013",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "LUIZ CARLOS PAVANITTO , R, 00524",
+          "rank": 26,
+          "score": 0.1231
+        },
+        {
+          "candidate_bc": "4.4.130.012.001",
+          "candidate_dsqlll": "4.4.130.012",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "LUIZ CARLOS PAVANITTO , R, 00514",
+          "rank": 27,
+          "score": 0.1077
+        },
+        {
+          "candidate_bc": "4.4.130.011.001",
+          "candidate_dsqlll": "4.4.130.011",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "LUIZ CARLOS PAVANITTO , R, 00504",
+          "rank": 28,
+          "score": 0.0958
+        },
+        {
+          "candidate_bc": "4.4.130.010.001",
+          "candidate_dsqlll": "4.4.130.010",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "LUIZ CARLOS PAVANITTO , R, 00494",
+          "rank": 29,
+          "score": 0.0862
+        },
+        {
+          "candidate_bc": "4.4.130.009.001",
+          "candidate_dsqlll": "4.4.130.009",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "LUIZ CARLOS PAVANITTO , R, 00484",
+          "rank": 30,
+          "score": 0.0784
+        },
+        {
+          "candidate_bc": "4.4.130.008.001",
+          "candidate_dsqlll": "4.4.130.008",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "LUIZ CARLOS PAVANITTO , R, 00474",
+          "rank": 31,
+          "score": 0.0718
+        },
+        {
+          "candidate_bc": "4.4.130.007.001",
+          "candidate_dsqlll": "4.4.130.007",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "LUIZ CARLOS PAVANITTO , R, 00464",
+          "rank": 32,
+          "score": 0.0663
+        },
+        {
+          "candidate_bc": "4.4.130.006.001",
+          "candidate_dsqlll": "4.4.130.006",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "LUIZ CARLOS PAVANITTO , R, 00000",
+          "rank": 33,
+          "score": 0.0616
+        },
+        {
+          "candidate_bc": "4.4.130.005.001",
+          "candidate_dsqlll": "4.4.130.005",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "LUIZ CARLOS PAVANITTO , R, 00000",
+          "rank": 34,
+          "score": 0.0575
+        },
+        {
+          "candidate_bc": "4.4.130.004.001",
+          "candidate_dsqlll": "4.4.130.004",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "LUIZ CARLOS PAVANITTO , R, 00000",
+          "rank": 35,
+          "score": 0.0539
+        },
+        {
+          "candidate_bc": "4.4.130.003.001",
+          "candidate_dsqlll": "4.4.130.003",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "LUIZ CARLOS PAVANITTO , R, 00424",
+          "rank": 36,
+          "score": 0.0507
+        },
+        {
+          "candidate_bc": "4.4.130.002.001",
+          "candidate_dsqlll": "4.4.130.002",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "LUIZ CARLOS PAVANITTO , R, 00414",
+          "rank": 37,
+          "score": 0.0479
+        },
+        {
+          "candidate_bc": "4.4.130.040.001",
+          "candidate_dsqlll": "4.4.130.040",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'pedro marcon' (297m) in DSQ 4.4.130",
+          "normalized_address": "LUIZ CARLOS PAVANITTO , R, 00000",
+          "rank": 38,
+          "score": 0.0392
+        }
+      ],
+      "street_available": true,
+      "street_used": "Avenida Carlos Pedroso da Silveira",
+      "structural_unresolved_hypotheses": [],
+      "v1_anchor_count": 0,
+      "v1_ds_candidates": [],
+      "v1_dsq_candidates": [],
+      "v1_prediction_status": "FAILED",
+      "v1_real_resolved_count": 0,
+      "v1_structural_unresolved_count": 0,
+      "v2_anchor_count": 1,
+      "v2_ds_candidates": [
+        {
+          "ds": "4.4",
+          "evidence": "Nearest spatial reference anchor 'pedro marcon' (297m)",
+          "score": 0.862
+        }
+      ],
+      "v2_dsq_candidates": [
+        {
+          "dsq": "4.4.130",
+          "evidence": "Nearest spatial reference anchor 'pedro marcon' (297m)",
+          "score": 0.862
+        }
+      ],
+      "v2_prediction_status": "SUCCESS",
+      "v2_real_resolved_count": 38,
+      "v2_structural_unresolved_count": 0
+    },
+    {
+      "candidate_burden_v2": {
+        "real_resolved_candidate_count": 0,
+        "structural_unresolved_count": 0,
+        "total_candidate_count": 0
+      },
+      "cohort_eligibility": "PROTOCOL_COMPLIANT",
+      "coordinate_available": false,
+      "coordinate_precision_class": "D) unknown precision",
+      "coordinate_used": null,
+      "failure_code_v1": "STREET_NOT_AVAILABLE",
+      "failure_code_v2": "STREET_NOT_AVAILABLE",
+      "listing_id": "40712114",
+      "neighbourhood_used": "Vila Santa Isabel",
+      "real_resolved_candidates": [],
+      "street_available": false,
+      "street_used": null,
+      "structural_unresolved_hypotheses": [],
+      "v1_anchor_count": 0,
+      "v1_ds_candidates": [],
+      "v1_dsq_candidates": [],
+      "v1_prediction_status": "FAILED",
+      "v1_real_resolved_count": 0,
+      "v1_structural_unresolved_count": 0,
+      "v2_anchor_count": 0,
+      "v2_ds_candidates": [],
+      "v2_dsq_candidates": [],
+      "v2_prediction_status": "FAILED",
+      "v2_real_resolved_count": 0,
+      "v2_structural_unresolved_count": 0
+    },
+    {
+      "candidate_burden_v2": {
+        "real_resolved_candidate_count": 109,
+        "structural_unresolved_count": 2,
+        "total_candidate_count": 111
+      },
+      "cohort_eligibility": "PROTOCOL_COMPLIANT",
+      "coordinate_available": true,
+      "coordinate_precision_class": "C) street-level location with hidden number",
+      "coordinate_used": {
+        "lat": -23.03653,
+        "lon": -45.58457
+      },
+      "failure_code_v1": "DS_FAILURE",
+      "failure_code_v2": null,
+      "listing_id": "42910754",
+      "neighbourhood_used": "Jardim Oasis",
+      "real_resolved_candidates": [
+        {
+          "candidate_bc": "3.3.022.001.001",
+          "candidate_dsqlll": "3.3.022.001",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "MARROCOS, R, 00295",
+          "rank": 1,
+          "score": 1.9425
+        },
+        {
+          "candidate_bc": "3.3.023.011.001",
+          "candidate_dsqlll": "3.3.023.011",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "MARROCOS, R, 00225",
+          "rank": 2,
+          "score": 1.9425
+        },
+        {
+          "candidate_bc": "3.3.030.028.001",
+          "candidate_dsqlll": "3.3.030.028",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "MARROCOS, R, 00125",
+          "rank": 3,
+          "score": 1.9425
+        },
+        {
+          "candidate_bc": "3.3.031.001.001",
+          "candidate_dsqlll": "3.3.031.001",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.031",
+          "normalized_address": "MARROCOS, R, 00000",
+          "rank": 4,
+          "score": 1.9425
+        },
+        {
+          "candidate_bc": "3.3.023.012.001",
+          "candidate_dsqlll": "3.3.023.012",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "MARROCOS, R, 00215",
+          "rank": 5,
+          "score": 1.5203
+        },
+        {
+          "candidate_bc": "3.3.030.029.001",
+          "candidate_dsqlll": "3.3.030.029",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "MARROCOS, R, 00105",
+          "rank": 6,
+          "score": 1.5203
+        },
+        {
+          "candidate_bc": "3.3.023.013.001",
+          "candidate_dsqlll": "3.3.023.013",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "MARROCOS, R, 00205",
+          "rank": 7,
+          "score": 1.3795
+        },
+        {
+          "candidate_bc": "3.3.030.030.001",
+          "candidate_dsqlll": "3.3.030.030",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "MARROCOS, R, 00000",
+          "rank": 8,
+          "score": 1.3795
+        },
+        {
+          "candidate_bc": "3.3.023.014.001",
+          "candidate_dsqlll": "3.3.023.014",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "MARROCOS, R, 00195",
+          "rank": 9,
+          "score": 1.3091
+        },
+        {
+          "candidate_bc": "3.3.023.015.001",
+          "candidate_dsqlll": "3.3.023.015",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "MARROCOS, R, 00185",
+          "rank": 10,
+          "score": 1.2669
+        },
+        {
+          "candidate_bc": "3.3.023.016.001",
+          "candidate_dsqlll": "3.3.023.016",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "MARROCOS, R, 00175",
+          "rank": 11,
+          "score": 1.2387
+        },
+        {
+          "candidate_bc": "3.3.022.036.001",
+          "candidate_dsqlll": "3.3.022.036",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "MARROCOS, R, 00345",
+          "rank": 12,
+          "score": 1.1214
+        },
+        {
+          "candidate_bc": "3.3.022.037.001",
+          "candidate_dsqlll": "3.3.022.037",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "MARROCOS, R, 00325",
+          "rank": 13,
+          "score": 1.1208
+        },
+        {
+          "candidate_bc": "3.3.022.038.001",
+          "candidate_dsqlll": "3.3.022.038",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "MARROCOS, R, 00315",
+          "rank": 14,
+          "score": 1.1202
+        },
+        {
+          "candidate_bc": "3.3.022.039.001",
+          "candidate_dsqlll": "3.3.022.039",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "MARROCOS, R, 00305",
+          "rank": 15,
+          "score": 1.1196
+        },
+        {
+          "candidate_bc": "3.3.031.001.002",
+          "candidate_dsqlll": "3.3.031.001",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.031",
+          "normalized_address": "ALEMANHA, R, 00000",
+          "rank": 16,
+          "score": 0.8446
+        },
+        {
+          "candidate_bc": "3.3.022.002.001",
+          "candidate_dsqlll": "3.3.022.002",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "DINAMARCA, R, 00141",
+          "rank": 17,
+          "score": 0.4223
+        },
+        {
+          "candidate_bc": "3.3.023.010.001",
+          "candidate_dsqlll": "3.3.023.010",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "DINAMARCA, R, 00140",
+          "rank": 18,
+          "score": 0.4223
+        },
+        {
+          "candidate_bc": "3.3.030.027.001",
+          "candidate_dsqlll": "3.3.030.027",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "POLONIA, R, 00448",
+          "rank": 19,
+          "score": 0.4223
+        },
+        {
+          "candidate_bc": "3.3.031.002.001",
+          "candidate_dsqlll": "3.3.031.002",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.031",
+          "normalized_address": "ALEMANHA, R, 00000",
+          "rank": 20,
+          "score": 0.4223
+        },
+        {
+          "candidate_bc": "3.3.022.003.001",
+          "candidate_dsqlll": "3.3.022.003",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "DINAMARCA, R, 00131",
+          "rank": 21,
+          "score": 0.2815
+        },
+        {
+          "candidate_bc": "3.3.023.009.001",
+          "candidate_dsqlll": "3.3.023.009",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "DINAMARCA, R, 00130",
+          "rank": 22,
+          "score": 0.2815
+        },
+        {
+          "candidate_bc": "3.3.030.026.001",
+          "candidate_dsqlll": "3.3.030.026",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "POLONIA, R, 00438",
+          "rank": 23,
+          "score": 0.2815
+        },
+        {
+          "candidate_bc": "3.3.031.003.001",
+          "candidate_dsqlll": "3.3.031.003",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.031",
+          "normalized_address": "ALEMANHA, R, 00000",
+          "rank": 24,
+          "score": 0.2815
+        },
+        {
+          "candidate_bc": "3.3.022.004.001",
+          "candidate_dsqlll": "3.3.022.004",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "DINAMARCA, R, 00121",
+          "rank": 25,
+          "score": 0.2111
+        },
+        {
+          "candidate_bc": "3.3.023.008.001",
+          "candidate_dsqlll": "3.3.023.008",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "DINAMARCA, R, 00120",
+          "rank": 26,
+          "score": 0.2111
+        },
+        {
+          "candidate_bc": "3.3.030.031.001",
+          "candidate_dsqlll": "3.3.030.031",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "SUICA, R, 00503",
+          "rank": 27,
+          "score": 0.2111
+        },
+        {
+          "candidate_bc": "3.3.030.025.001",
+          "candidate_dsqlll": "3.3.030.025",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "POLONIA, R, 00428",
+          "rank": 28,
+          "score": 0.2111
+        },
+        {
+          "candidate_bc": "3.3.031.004.001",
+          "candidate_dsqlll": "3.3.031.004",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.031",
+          "normalized_address": "ESPANHA, R, 00000",
+          "rank": 29,
+          "score": 0.2111
+        },
+        {
+          "candidate_bc": "3.3.022.005.001",
+          "candidate_dsqlll": "3.3.022.005",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "DINAMARCA, R, 00111",
+          "rank": 30,
+          "score": 0.1689
+        },
+        {
+          "candidate_bc": "3.3.023.007.001",
+          "candidate_dsqlll": "3.3.023.007",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "DINAMARCA, R, 00110",
+          "rank": 31,
+          "score": 0.1689
+        },
+        {
+          "candidate_bc": "3.3.030.024.001",
+          "candidate_dsqlll": "3.3.030.024",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "POLONIA, R, 00418",
+          "rank": 32,
+          "score": 0.1689
+        },
+        {
+          "candidate_bc": "3.3.031.005.001",
+          "candidate_dsqlll": "3.3.031.005",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.031",
+          "normalized_address": "ESPANHA, R, 00000",
+          "rank": 33,
+          "score": 0.1689
+        },
+        {
+          "candidate_bc": "3.3.022.006.001",
+          "candidate_dsqlll": "3.3.022.006",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "DINAMARCA, R, 00101",
+          "rank": 34,
+          "score": 0.1408
+        },
+        {
+          "candidate_bc": "3.3.023.006.001",
+          "candidate_dsqlll": "3.3.023.006",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "DINAMARCA, R, 00100",
+          "rank": 35,
+          "score": 0.1408
+        },
+        {
+          "candidate_bc": "3.3.030.023.001",
+          "candidate_dsqlll": "3.3.030.023",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "POLONIA, R, 00408",
+          "rank": 36,
+          "score": 0.1408
+        },
+        {
+          "candidate_bc": "3.3.031.006.001",
+          "candidate_dsqlll": "3.3.031.006",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.031",
+          "normalized_address": "ESPANHA, R, 00000",
+          "rank": 37,
+          "score": 0.1408
+        },
+        {
+          "candidate_bc": "3.3.022.007.001",
+          "candidate_dsqlll": "3.3.022.007",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "DINAMARCA, R, 00091",
+          "rank": 38,
+          "score": 0.1207
+        },
+        {
+          "candidate_bc": "3.3.023.005.001",
+          "candidate_dsqlll": "3.3.023.005",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "DINAMARCA, R, 00090",
+          "rank": 39,
+          "score": 0.1207
+        },
+        {
+          "candidate_bc": "3.3.023.017.001",
+          "candidate_dsqlll": "3.3.023.017",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "POLONIA, R, 00475",
+          "rank": 40,
+          "score": 0.1207
+        },
+        {
+          "candidate_bc": "3.3.030.022.001",
+          "candidate_dsqlll": "3.3.030.022",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "POLONIA, R, 396",
+          "rank": 41,
+          "score": 0.1207
+        },
+        {
+          "candidate_bc": "3.3.031.007.001",
+          "candidate_dsqlll": "3.3.031.007",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.031",
+          "normalized_address": "ESPANHA, R, 00000",
+          "rank": 42,
+          "score": 0.1207
+        },
+        {
+          "candidate_bc": "3.3.022.008.001",
+          "candidate_dsqlll": "3.3.022.008",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "DINAMARCA, R, 00081",
+          "rank": 43,
+          "score": 0.1056
+        },
+        {
+          "candidate_bc": "3.3.023.004.001",
+          "candidate_dsqlll": "3.3.023.004",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "DINAMARCA, R, 00080",
+          "rank": 44,
+          "score": 0.1056
+        },
+        {
+          "candidate_bc": "3.3.023.018.001",
+          "candidate_dsqlll": "3.3.023.018",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "POLONIA, R, 00465",
+          "rank": 45,
+          "score": 0.1056
+        },
+        {
+          "candidate_bc": "3.3.030.021.001",
+          "candidate_dsqlll": "3.3.030.021",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "POLONIA, R, 00384",
+          "rank": 46,
+          "score": 0.1056
+        },
+        {
+          "candidate_bc": "3.3.031.008.001",
+          "candidate_dsqlll": "3.3.031.008",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.031",
+          "normalized_address": "ESPANHA, R, 00000",
+          "rank": 47,
+          "score": 0.1056
+        },
+        {
+          "candidate_bc": "3.3.022.009.001",
+          "candidate_dsqlll": "3.3.022.009",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "DINAMARCA, R, 00071",
+          "rank": 48,
+          "score": 0.0938
+        },
+        {
+          "candidate_bc": "3.3.023.003.001",
+          "candidate_dsqlll": "3.3.023.003",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "DINAMARCA, R, 00070",
+          "rank": 49,
+          "score": 0.0938
+        },
+        {
+          "candidate_bc": "3.3.023.019.001",
+          "candidate_dsqlll": "3.3.023.019",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "POLONIA, R, 00445",
+          "rank": 50,
+          "score": 0.0938
+        },
+        {
+          "candidate_bc": "3.3.030.020.001",
+          "candidate_dsqlll": "3.3.030.020",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "POLONIA, R, 00378",
+          "rank": 51,
+          "score": 0.0938
+        },
+        {
+          "candidate_bc": "3.3.031.009.001",
+          "candidate_dsqlll": "3.3.031.009",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.031",
+          "normalized_address": "ESPANHA, R, 00000",
+          "rank": 52,
+          "score": 0.0938
+        },
+        {
+          "candidate_bc": "3.3.022.010.001",
+          "candidate_dsqlll": "3.3.022.010",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "DINAMARCA, R, 00061",
+          "rank": 53,
+          "score": 0.0845
+        },
+        {
+          "candidate_bc": "3.3.023.002.001",
+          "candidate_dsqlll": "3.3.023.002",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "DINAMARCA, R, 00060",
+          "rank": 54,
+          "score": 0.0845
+        },
+        {
+          "candidate_bc": "3.3.023.020.001",
+          "candidate_dsqlll": "3.3.023.020",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "POLONIA, R, 00435",
+          "rank": 55,
+          "score": 0.0845
+        },
+        {
+          "candidate_bc": "3.3.030.019.001",
+          "candidate_dsqlll": "3.3.030.019",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "POLONIA, R, 00368",
+          "rank": 56,
+          "score": 0.0845
+        },
+        {
+          "candidate_bc": "3.3.022.011.001",
+          "candidate_dsqlll": "3.3.022.011",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "DINAMARCA, R, 00051",
+          "rank": 57,
+          "score": 0.0768
+        },
+        {
+          "candidate_bc": "3.3.023.001.001",
+          "candidate_dsqlll": "3.3.023.001",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "DINAMARCA, R, 00040",
+          "rank": 58,
+          "score": 0.0768
+        },
+        {
+          "candidate_bc": "3.3.023.021.001",
+          "candidate_dsqlll": "3.3.023.021",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "POLONIA, R, 00425",
+          "rank": 59,
+          "score": 0.0768
+        },
+        {
+          "candidate_bc": "3.3.030.018.001",
+          "candidate_dsqlll": "3.3.030.018",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "POLONIA, R, 00358",
+          "rank": 60,
+          "score": 0.0768
+        },
+        {
+          "candidate_bc": "3.3.022.012.001",
+          "candidate_dsqlll": "3.3.022.012",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "DINAMARCA, R, 00041",
+          "rank": 61,
+          "score": 0.0704
+        },
+        {
+          "candidate_bc": "3.3.023.022.001",
+          "candidate_dsqlll": "3.3.023.022",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "POLONIA, R, 00415",
+          "rank": 62,
+          "score": 0.0704
+        },
+        {
+          "candidate_bc": "3.3.030.017.001",
+          "candidate_dsqlll": "3.3.030.017",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "POLONIA, R, 00348",
+          "rank": 63,
+          "score": 0.0704
+        },
+        {
+          "candidate_bc": "3.3.022.013.001",
+          "candidate_dsqlll": "3.3.022.013",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "DINAMARCA, R, 00031",
+          "rank": 64,
+          "score": 0.065
+        },
+        {
+          "candidate_bc": "3.3.023.023.001",
+          "candidate_dsqlll": "3.3.023.023",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "POLONIA, R, 00405",
+          "rank": 65,
+          "score": 0.065
+        },
+        {
+          "candidate_bc": "3.3.030.016.001",
+          "candidate_dsqlll": "3.3.030.016",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "SUICA, R, 00387",
+          "rank": 66,
+          "score": 0.065
+        },
+        {
+          "candidate_bc": "3.3.022.014.001",
+          "candidate_dsqlll": "3.3.022.014",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "POLONIA, R, 285",
+          "rank": 67,
+          "score": 0.0603
+        },
+        {
+          "candidate_bc": "3.3.023.024.001",
+          "candidate_dsqlll": "3.3.023.024",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "POLONIA, R, 00397",
+          "rank": 68,
+          "score": 0.0603
+        },
+        {
+          "candidate_bc": "3.3.030.015.001",
+          "candidate_dsqlll": "3.3.030.015",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "SUICA, R, 00403",
+          "rank": 69,
+          "score": 0.0603
+        },
+        {
+          "candidate_bc": "3.3.022.015.001",
+          "candidate_dsqlll": "3.3.022.015",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "POLONIA, R, 275",
+          "rank": 70,
+          "score": 0.0563
+        },
+        {
+          "candidate_bc": "3.3.023.025.001",
+          "candidate_dsqlll": "3.3.023.025",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "POLONIA, R, 00387",
+          "rank": 71,
+          "score": 0.0563
+        },
+        {
+          "candidate_bc": "3.3.030.014.001",
+          "candidate_dsqlll": "3.3.030.014",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "SUICA, R, 411",
+          "rank": 72,
+          "score": 0.0563
+        },
+        {
+          "candidate_bc": "3.3.022.016.001",
+          "candidate_dsqlll": "3.3.022.016",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "POLONIA, R, 00265",
+          "rank": 73,
+          "score": 0.0528
+        },
+        {
+          "candidate_bc": "3.3.023.026.001",
+          "candidate_dsqlll": "3.3.023.026",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "POLONIA, R, 00377",
+          "rank": 74,
+          "score": 0.0528
+        },
+        {
+          "candidate_bc": "3.3.030.013.001",
+          "candidate_dsqlll": "3.3.030.013",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "SUICA, R, 00000",
+          "rank": 75,
+          "score": 0.0528
+        },
+        {
+          "candidate_bc": "3.3.022.017.001",
+          "candidate_dsqlll": "3.3.022.017",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "POLONIA, R, 00255",
+          "rank": 76,
+          "score": 0.0497
+        },
+        {
+          "candidate_bc": "3.3.023.027.001",
+          "candidate_dsqlll": "3.3.023.027",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "POLONIA, R, 00375",
+          "rank": 77,
+          "score": 0.0497
+        },
+        {
+          "candidate_bc": "3.3.030.012.001",
+          "candidate_dsqlll": "3.3.030.012",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "SUICA, R, 00433",
+          "rank": 78,
+          "score": 0.0497
+        },
+        {
+          "candidate_bc": "3.3.022.018.001",
+          "candidate_dsqlll": "3.3.022.018",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "POLONIA, R, 00245",
+          "rank": 79,
+          "score": 0.0469
+        },
+        {
+          "candidate_bc": "3.3.023.028.001",
+          "candidate_dsqlll": "3.3.023.028",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.023",
+          "normalized_address": "POLONIA, R, 337",
+          "rank": 80,
+          "score": 0.0469
+        },
+        {
+          "candidate_bc": "3.3.030.011.001",
+          "candidate_dsqlll": "3.3.030.011",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "SUICA, R, 00439",
+          "rank": 81,
+          "score": 0.0469
+        },
+        {
+          "candidate_bc": "3.3.022.019.001",
+          "candidate_dsqlll": "3.3.022.019",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "POLONIA, R, 00235",
+          "rank": 82,
+          "score": 0.0445
+        },
+        {
+          "candidate_bc": "3.3.030.010.001",
+          "candidate_dsqlll": "3.3.030.010",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "SUICA, R, 449",
+          "rank": 83,
+          "score": 0.0445
+        },
+        {
+          "candidate_bc": "3.3.022.020.001",
+          "candidate_dsqlll": "3.3.022.020",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "POLONIA, R, 00225",
+          "rank": 84,
+          "score": 0.0422
+        },
+        {
+          "candidate_bc": "3.3.030.009.001",
+          "candidate_dsqlll": "3.3.030.009",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "SUICA, R, 00000",
+          "rank": 85,
+          "score": 0.0422
+        },
+        {
+          "candidate_bc": "3.3.022.021.001",
+          "candidate_dsqlll": "3.3.022.021",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "POLONIA, R, 00215",
+          "rank": 86,
+          "score": 0.0402
+        },
+        {
+          "candidate_bc": "3.3.030.008.001",
+          "candidate_dsqlll": "3.3.030.008",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "SUICA, R, 00000",
+          "rank": 87,
+          "score": 0.0402
+        },
+        {
+          "candidate_bc": "3.3.022.022.001",
+          "candidate_dsqlll": "3.3.022.022",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "SUECIA, R, 00034",
+          "rank": 88,
+          "score": 0.0384
+        },
+        {
+          "candidate_bc": "3.3.030.007.001",
+          "candidate_dsqlll": "3.3.030.007",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "SUICA, R, 00475",
+          "rank": 89,
+          "score": 0.0384
+        },
+        {
+          "candidate_bc": "3.3.022.023.001",
+          "candidate_dsqlll": "3.3.022.023",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "SUECIA, R, 00044",
+          "rank": 90,
+          "score": 0.0367
+        },
+        {
+          "candidate_bc": "3.3.030.006.001",
+          "candidate_dsqlll": "3.3.030.006",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "SUICA, R, 00485",
+          "rank": 91,
+          "score": 0.0367
+        },
+        {
+          "candidate_bc": "3.3.022.024.001",
+          "candidate_dsqlll": "3.3.022.024",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "SUECIA, R, 00054",
+          "rank": 92,
+          "score": 0.0352
+        },
+        {
+          "candidate_bc": "3.3.030.005.001",
+          "candidate_dsqlll": "3.3.030.005",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "SUICA, R, 493",
+          "rank": 93,
+          "score": 0.0352
+        },
+        {
+          "candidate_bc": "3.3.022.025.001",
+          "candidate_dsqlll": "3.3.022.025",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "SUECIA, R, 00064",
+          "rank": 94,
+          "score": 0.0338
+        },
+        {
+          "candidate_bc": "3.3.030.004.001",
+          "candidate_dsqlll": "3.3.030.004",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "SUICA, R, 00509",
+          "rank": 95,
+          "score": 0.0338
+        },
+        {
+          "candidate_bc": "3.3.022.026.001",
+          "candidate_dsqlll": "3.3.022.026",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "SUECIA, R, 00074",
+          "rank": 96,
+          "score": 0.0325
+        },
+        {
+          "candidate_bc": "3.3.030.003.001",
+          "candidate_dsqlll": "3.3.030.003",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "SUICA, R, 00531",
+          "rank": 97,
+          "score": 0.0325
+        },
+        {
+          "candidate_bc": "3.3.022.027.001",
+          "candidate_dsqlll": "3.3.022.027",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "SUECIA, R, 00080",
+          "rank": 98,
+          "score": 0.0313
+        },
+        {
+          "candidate_bc": "3.3.030.002.001",
+          "candidate_dsqlll": "3.3.030.002",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "SUICA, R, 00541",
+          "rank": 99,
+          "score": 0.0313
+        },
+        {
+          "candidate_bc": "3.3.022.028.001",
+          "candidate_dsqlll": "3.3.022.028",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "SUECIA, R, 00094",
+          "rank": 100,
+          "score": 0.0302
+        },
+        {
+          "candidate_bc": "3.3.030.001.001",
+          "candidate_dsqlll": "3.3.030.001",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.030",
+          "normalized_address": "SUICA, R, 00565",
+          "rank": 101,
+          "score": 0.0302
+        },
+        {
+          "candidate_bc": "3.3.022.029.001",
+          "candidate_dsqlll": "3.3.022.029",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "SUECIA, R, 00104",
+          "rank": 102,
+          "score": 0.0291
+        },
+        {
+          "candidate_bc": "3.3.022.030.001",
+          "candidate_dsqlll": "3.3.022.030",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "SUECIA, R, 00116",
+          "rank": 103,
+          "score": 0.0282
+        },
+        {
+          "candidate_bc": "3.3.022.031.001",
+          "candidate_dsqlll": "3.3.022.031",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "SUECIA, R, 00124",
+          "rank": 104,
+          "score": 0.0272
+        },
+        {
+          "candidate_bc": "3.3.022.032.001",
+          "candidate_dsqlll": "3.3.022.032",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "SUECIA, R, 00136",
+          "rank": 105,
+          "score": 0.0264
+        },
+        {
+          "candidate_bc": "3.3.022.033.001",
+          "candidate_dsqlll": "3.3.022.033",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "SUECIA, R, 00146",
+          "rank": 106,
+          "score": 0.0256
+        },
+        {
+          "candidate_bc": "3.3.022.034.001",
+          "candidate_dsqlll": "3.3.022.034",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "SUECIA, R, 00156",
+          "rank": 107,
+          "score": 0.0248
+        },
+        {
+          "candidate_bc": "3.3.022.035.001",
+          "candidate_dsqlll": "3.3.022.035",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "SUECIA, R, 00168",
+          "rank": 108,
+          "score": 0.0241
+        },
+        {
+          "candidate_bc": "3.3.022.040.001",
+          "candidate_dsqlll": "3.3.022.040",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Spatial proximity to anchor 'marrocos' (338m) in DSQ 3.3.022",
+          "normalized_address": "DINAMARCA, R, 00151",
+          "rank": 109,
+          "score": 0.0211
+        }
+      ],
+      "street_available": true,
+      "street_used": "Rua Edu Mattos Ortiz",
+      "structural_unresolved_hypotheses": [
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.030.028 (338m)",
+          "hypothesis_bc": "3.3.030.032.001",
+          "hypothesis_dsqlll": "3.3.030.032",
+          "score": 0.1351,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 1
+        },
+        {
+          "evidence": "Spatial structural interval around anchor 3.3.030.028 (338m)",
+          "hypothesis_bc": "3.3.030.033.001",
+          "hypothesis_dsqlll": "3.3.030.033",
+          "score": 0.1126,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 2
+        }
+      ],
+      "v1_anchor_count": 0,
+      "v1_ds_candidates": [],
+      "v1_dsq_candidates": [],
+      "v1_prediction_status": "FAILED",
+      "v1_real_resolved_count": 0,
+      "v1_structural_unresolved_count": 0,
+      "v2_anchor_count": 4,
+      "v2_ds_candidates": [
+        {
+          "ds": "3.3",
+          "evidence": "Nearest spatial reference anchor 'marrocos' (338m)",
+          "score": 0.8446
+        }
+      ],
+      "v2_dsq_candidates": [
+        {
+          "dsq": "3.3.022",
+          "evidence": "Nearest spatial reference anchor 'marrocos' (338m)",
+          "score": 0.8446
+        },
+        {
+          "dsq": "3.3.023",
+          "evidence": "Nearest spatial reference anchor 'marrocos' (338m)",
+          "score": 0.8446
+        },
+        {
+          "dsq": "3.3.030",
+          "evidence": "Nearest spatial reference anchor 'marrocos' (338m)",
+          "score": 0.8446
+        },
+        {
+          "dsq": "3.3.031",
+          "evidence": "Nearest spatial reference anchor 'marrocos' (338m)",
+          "score": 0.8446
+        }
+      ],
+      "v2_prediction_status": "SUCCESS",
+      "v2_real_resolved_count": 109,
+      "v2_structural_unresolved_count": 2
+    },
+    {
+      "candidate_burden_v2": {
+        "real_resolved_candidate_count": 0,
+        "structural_unresolved_count": 0,
+        "total_candidate_count": 0
+      },
+      "cohort_eligibility": "PROTOCOL_COMPLIANT",
+      "coordinate_available": false,
+      "coordinate_precision_class": "D) unknown precision",
+      "coordinate_used": null,
+      "failure_code_v1": "STREET_NOT_AVAILABLE",
+      "failure_code_v2": "STREET_NOT_AVAILABLE",
+      "listing_id": "44628622",
+      "neighbourhood_used": "Jardim Continental III",
+      "real_resolved_candidates": [],
+      "street_available": false,
+      "street_used": null,
+      "structural_unresolved_hypotheses": [],
+      "v1_anchor_count": 0,
+      "v1_ds_candidates": [],
+      "v1_dsq_candidates": [],
+      "v1_prediction_status": "FAILED",
+      "v1_real_resolved_count": 0,
+      "v1_structural_unresolved_count": 0,
+      "v2_anchor_count": 0,
+      "v2_ds_candidates": [],
+      "v2_dsq_candidates": [],
+      "v2_prediction_status": "FAILED",
+      "v2_real_resolved_count": 0,
+      "v2_structural_unresolved_count": 0
+    }
+  ],
+  "schema_version": "2.0"
+}
