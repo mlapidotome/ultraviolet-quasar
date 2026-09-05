@@ -173,7 +173,7 @@ Applying the frozen rules to the untouched Holdout cohort (9 complete DSQs, 175 
 | **W_90** | $\pm 23$ | 90.6% | **91.2%** | +0.7% | **Fully Stable** |
 | **W_95** | $\pm 28$ | 95.6% | **96.7%** | +1.1% | **Fully Stable** |
 
-> **Holdout Confirmation:** Performance is exceptionally stable across all frozen window levels. The $W_{90}$ rule reproduces at **91.2%** on unseen cadastral blocks, confirming that LLL spatial sequentiality is an inherent property of municipal lot numbering rather than block-specific overfitting.
+> **Holdout Confirmation:** The observed LLL locality/ordinal signal generalized to the held-out DSQs in this cohort. This supports local predictive value but does not establish a universal cadastral law.
 
 ---
 
@@ -197,12 +197,12 @@ Applying the frozen rules to the untouched Holdout cohort (9 complete DSQs, 175 
 ## 9. Answers to the Six Address Finder Product Questions
 
 1. **Can a known BC be used as an ordinal LLL anchor?**  
-   **YES.** Municipal cadastral parcel assignment exhibits high ordinal alignment (median $|\rho| = 1.00$). Anchors provide highly localized search seeds that capture adjacent street addresses with high precision.
+   **YES.** Municipal cadastral parcel assignment exhibits high ordinal alignment (median $|\rho| = 1.00$). Anchors provide highly localized search seeds that capture adjacent street addresses with high precision at tight radii.
 
 2. **What window sizes correspond to ~80%, ~90%, and ~95% local recall?**  
-   - **$W_{80} = \pm 16$ lots** (33 candidates) $\rightarrow$ **81.5%** local recall  
-   - **$W_{90} = \pm 23$ lots** (47 candidates) $\rightarrow$ **90.6%** local recall  
-   - **$W_{95} = \pm 28$ lots** (57 candidates) $\rightarrow$ **95.6%** local recall  
+   - **$W_{80} = \pm 16$ lots** (33 candidates) $\rightarrow$ **81.5%** local recall (`HOUSE_NUMBER_PROXIMITY_PROXY_100`)  
+   - **$W_{90} = \pm 23$ lots** (47 candidates) $\rightarrow$ **90.6%** local recall (`HOUSE_NUMBER_PROXIMITY_PROXY_100`)  
+   - **$W_{95} = \pm 28$ lots** (57 candidates) $\rightarrow$ **95.6%** local recall (`HOUSE_NUMBER_PROXIMITY_PROXY_100`)  
 
 3. **How many hypothetical candidates are generated per window?**  
    - $W_{80}:$ **33 candidates**  
@@ -210,13 +210,17 @@ Applying the frozen rules to the untouched Holdout cohort (9 complete DSQs, 175 
    - $W_{95}:$ **57 candidates**  
 
 4. **How does this compare with the legacy 001..080 bounded generation?**  
-   Legacy bounded generation queries 80 candidates per block indiscriminately. The anchor-centered $W_{90}$ window reduces candidate queries to **47**, achieving a **1.7x reduction** (41.2% reduction in candidate burden) while capturing **90.6%** of local target parcels. For aggressive local searches (tight proximity), a $W = \pm 5$ window achieves **1.45x information lift** and a **7.3x reduction** in query count.
+   Legacy bounded generation queries 80 candidates per block indiscriminately. The anchor-centered $W_{90}$ window reduces candidate queries to **47**, achieving approximately a **1.7x reduction** (80 $\rightarrow$ 47 structural candidates).  
+   Crucially, the control comparison reveals:
+   - **At $W=3$:** Real anchor lift vs random same-DSQ window = **1.51x** (35.0% vs 23.1%).
+   - **At $W=23$:** Real anchor lift vs random same-DSQ window = **1.01x** (90.6% vs 89.4%).  
+   **Conclusion:** LLL position carries meaningful discriminatory information at tight local windows, while most high-recall performance at wide windows comes from broad DSQ coverage.
 
 5. **Is the compression sufficient to justify an Address Finder candidate generator refactor?**  
-   **YES.** A 1.7x to 7.3x reduction in candidate query burden materially reduces network overhead, accelerates response times, and sharply lowers municipal endpoint load.
+   **NO as a standalone candidate generator.** Do NOT recommend using $\pm 23$ as a standalone candidate generator for Facade Checker, because at wide windows discriminatory lift over a random same-DSQ window is negligible (1.01x). However, at tight windows ($W=1\dots 5$, lift 1.32x to 1.51x), `DELTA_LLL` provides strong local discriminatory value.
 
 6. **Should the subsequent phase be a blinded real-listing test?**  
-   **YES.** With the statistical validity of the LLL sequentiality signal rigorously proven and frozen, the next engineering milestone should be an end-to-end Address Finder candidate generator test on blinded real-world listings.
+   **YES.** Recommend using `DELTA_LLL` as one ranking feature in a multi-signal candidate ranker, followed by a blinded real-listing experiment.
 
 ---
 

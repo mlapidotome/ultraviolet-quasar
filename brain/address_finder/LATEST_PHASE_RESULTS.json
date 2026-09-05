@@ -44,8 +44,8 @@
       "w90": 47,
       "w95": 57
     },
-    "q4_comparison_with_legacy_001_080": "Reduces candidates from 80 down to 47 (a 1.7x reduction) while retaining 90.6% local recall.",
-    "q5_is_compression_sufficient_for_generator_refactor": "YES. An 8x reduction in query burden makes candidate generation dramatically faster and reduces load on municipal endpoints.",
-    "q6_next_phase_recommendation": "PROCEED to a blinded real-listing test integrating the anchor-centered window generator."
+    "q4_comparison_with_legacy_001_080": "Reduces candidates from 80 down to 47 (approximately 1.7x reduction) while capturing 90.6% of local target parcels. At W=3, real anchor lift vs random same-DSQ window is 1.51x, whereas at W=23, real anchor lift is approximately 1.01x. Therefore, LLL position carries meaningful discriminatory information at tight local windows, while most high-recall performance at wide windows comes from broad DSQ coverage.",
+    "q5_is_compression_sufficient_for_generator_refactor": "NO as a standalone candidate generator. A 1.7x reduction (80 -> 47) at W=23 is insufficient to serve as a standalone candidate generator for Facade Checker, because at wide windows discriminatory lift over a random same-DSQ window is negligible (1.01x). However, at tight windows (W=1..5, lift 1.32x..1.51x), DELTA_LLL provides strong local discriminatory value.",
+    "q6_next_phase_recommendation": "Do NOT use +/-23 as a standalone candidate generator for Facade Checker. Recommend using DELTA_LLL as one ranking feature in a multi-signal candidate ranker, followed by a blinded real-listing experiment."
   }
 }
