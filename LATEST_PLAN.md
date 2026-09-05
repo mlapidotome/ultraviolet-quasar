@@ -1,300 +1,292 @@
-# Proposta Arquitetural & Plano de Implementação — Fase 2A (Revisado)
-## Painel Web Mínimo de Criação e Visualização de Job
+# Proposta Arquitetural & Plano de Implementação — Fase 2B
+## Geração de Vídeo Piloto pelo Painel Web V2 (Vinculada ao Job)
 
 **Projeto:** Video Engine V2 — Bali Imóveis  
-**Fase:** 2A (Primeira Interface Visual Independente de WhatsApp)  
+**Fase:** 2B (Primeira Produção de Vídeo Iniciada pelo Painel Visual)  
 **Status do Documento:** AGUARDANDO REVISÃO E APROVAÇÃO  
-**Objetivo Estratégico:** Prover uma interface visual leve, moderna e responsiva (`video-painel.html`), permitindo que Marcel digite o código de um imóvel, crie o Job e visualize instantaneamente os dados do imóvel, simulação financeira e os 3 ganchos + corpo, **sem utilizar o WhatsApp, sem expor a chave de API externa e com barreira server-side de autenticação HTTP Basic Auth**.
+**Objetivo Estratégico:** Permitir que, após criar um Job no painel web e inspecionar os roteiros gerados, Marcel possa acionar **“Gerar Piloto”**, disparando a produção do primeiro vídeo (Gancho 1 + Desenvolvimento/Corpo) **estritamente vinculado ao `job_id` no PostgreSQL, sem qualquer dependência de `activeVideoSessions`, sem adivinhar arquivos em disco e sem interferir no fluxo WhatsApp V1**.
 
 ---
 
-## 1. Diagnóstico da Arquitetura do Frontend Existente
+## 1. Diagnóstico da Arquitetura do Fluxo Atual (`CLONE` no WhatsApp)
 
-Uma inspeção no servidor `/var/www/bali-gestor/` e na infraestrutura Nginx revelou:
+A inspeção detalhada em `/var/www/bali-gestor/video_anuncios_engine.js` identificou os seguintes pontos críticos e acoplamentos no fluxo legado:
 
-1. **Padrão dos Cockpits Atuais (`/gestor`, `/leads`, `/imoveis`):**
-   - São páginas HTML5 autocontidas com CSS moderno (Dark Mode com paleta `#0B0F19`, `#111827`, `#3B82F6`, tipografia *Plus Jakarta Sans*).
-   - Utilizam JavaScript Vanilla puro com `fetch()` assíncrono para endpoints locais.
-   - Servidas diretamente pelo Express através de `res.sendFile(path.join(__dirname, 'nome-da-pagina.html'))`.
-   - **Zero frameworks pesados (React, Vue, Angular)**: Não exigem etapa de build (`npm build` ou `webpack`), tornando os arquivos leves, estáveis e de manutenção trivial.
+1. **Acoplamento com Memória Volátil (`activeVideoSessions`):**
+   - O comando `CLONE` depende de um objeto em memória indexado pelo número do remetente do WhatsApp (`activeVideoSessions[sessionKey]`).
+   - Se a sessão não existir na memória (ou se o PM2 reiniciar), o sistema invoca `getOrInitSession("1639")`, que recorre a um **fallback hardcoded para o imóvel `1639`**.
 
-2. **Exposição de Rede & Nginx:**
-   - Nginx atua como proxy reverso padrão escutando na porta 80 e encaminhando tudo para `http://127.0.0.1:3005`.
-   - Atualmente não há `.htpasswd` global configurado no Nginx.
-   - Como qualquer usuário que acesse o domínio público da VPS poderia visualizar páginas desprotegidas, **é indispensável uma barreira de autenticação server-side** para o novo painel e seu endpoint BFF.
+2. **Reutilização de Vídeo de Corpo Baseada em Varredura de Disco:**
+   - O motor busca o corpo executando:
+     `fs.readdirSync(OUTPUTS_DIR).filter(f => f.startsWith("body_" + session.imovelRef) && f.endsWith(".mp4")).sort().reverse()[0]`
+   - O sistema simplesmente seleciona o arquivo mais recente que case com o padrão de nome.
+   - **Risco Crítico no V1:** Se os roteiros foram alterados, se outro corretor gerou o mesmo imóvel ou se houve falha parcial anterior, o sistema reutiliza um vídeo de corpo defasado ou arbitrário sem validar versão de script ou identificador único de trabalho.
+
+3. **Nomenclatura com Sobrescrita de Arquivos:**
+   - O vídeo final gerado é salvo como `Anuncio_Completo_1_Imovel_<ref>.mp4`.
+   - Qualquer nova execução sobrescreve diretamente o arquivo anterior no diretório `outputs/`.
+
+4. **Perda Total de Contexto em Restart do PM2:**
+   - Como os IDs dos vídeos da HeyGen (`video_id`) e o estado intermediário ficam apenas na RAM da sessão, qualquer reinicialização do PM2 interrompe o polling e descarta o contexto, impossibilitando a recuperação ou o download do vídeo já pago na HeyGen.
 
 ---
 
-## 2. Arquitetura de Segurança: HTTP Basic Auth Server-Side + BFF Isolado
+## 2. Regra Arquitetural Absoluta para a Fase 2B
 
-Para atender com precisão aos requisitos de segurança:
-1. **`Origin` e `Referer` NÃO são tratados como autenticação principal**, atuando apenas como camada secundária de defesa em profundidade (CSRF defense-in-depth).
-2. **Barreira Server-Side de Autenticação Primária: HTTP Basic Auth nativo:**
-   - Protege tanto a rota da interface (`GET /video-painel`) quanto o endpoint BFF (`POST /api/v2/panel/video-jobs`).
-   - Credenciais configuradas exclusivamente no `.env` do servidor: `PANEL_USER` e `PANEL_PASSWORD`.
-   - Quando o usuário acessa `/video-painel` sem credenciais, o servidor responde `HTTP 401 Unauthorized` com cabeçalho `WWW-Authenticate: Basic realm="Video Engine V2 Painel"`.
-   - O navegador exibe nativamente a caixa de diálogo do sistema operacional solicitando Usuário e Senha.
-   - Após validação, o próprio navegador gerencia o envio transparente do header `Authorization: Basic ...` nas requisições subsequentes (inclusive nas chamadas `fetch('/api/v2/panel/video-jobs')`).
-3. **Credenciais e Secrets 100% Fora do Browser:**
-   - **ZERO credenciais no HTML.**
-   - **ZERO credenciais no JavaScript.**
-   - **ZERO credenciais em `localStorage` ou `sessionStorage`.**
-   - A chave mestra `VIDEO_ENGINE_API_KEY` permanece **100% no servidor** e nunca transita no navegador.
-4. **Isolamento de Contratos:**
-   - A rota externa `POST /api/v2/video-jobs` (homologada na Fase 1D) permanece totalmente independente, protegida exclusivamente por `Authorization: Bearer <VIDEO_ENGINE_API_KEY>`.
-   - O endpoint BFF `POST /api/v2/panel/video-jobs` atende o painel sob proteção do HTTP Basic Auth, injetando no backend `broker_id = 'marcel'` e `source = 'web_panel'`.
-   - Sem necessidade de criar banco de usuários ou sistema complexo de sessões nesta fase.
+> **Regra Primária de Confiabilidade V2:**  
+> A execução da Fase 2B é **100% vinculada ao `job_id` (UUID)** registrado no PostgreSQL.  
+> Se o sistema não conseguir identificar exatamente qual Job está sendo continuado, **ele deve parar imediatamente**.  
+> É terminantemente proibido:
+> * Adivinhar imóvel;
+> * Adivinhar sessão;
+> * Reutilizar vídeos por busca de arquivos em diretório (`readdirSync`);
+> * Recorrer a fallbacks arbitrários (como `1639`);
+> * Depender de `activeVideoSessions`.
+
+---
+
+## 3. Arquitetura Proposta: `pilot_service.js` Isolado e Orientado a `job_id`
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                            NAVEGADOR DO USUÁRIO                             │
+│                            PAINEL WEB (video-painel.html)                   │
 │                                                                             │
-│  1. Marcel acessa: GET /video-painel                                        │
-│     → Servidor responde 401 (WWW-Authenticate: Basic realm="...")           │
-│     → Navegador exibe popup nativo de Usuário e Senha                       │
-│     → Marcel digita credenciais                                             │
-│     → Servidor valida e entrega video-painel.html                           │
-│                                                                             │
-│  2. Marcel digita "#1639" e clica em "Buscar / Criar Job"                   │
-│     → fetch('/api/v2/panel/video-jobs', { body: { property_ref: "1639" } }) │
-│     → Navegador anexa automaticamente Authorization: Basic <credentials>    │
-│     ⚠️ ZERO TOKENS OU API KEYS NO JS/HTML/STORAGE                           │
+│  Marcel visualiza o Job (ex: SCRIPT_READY)                                  │
+│  Clica em: "🎬 Gerar Vídeo Piloto"                                          │
+│  Dispara: POST /api/v2/panel/video-jobs/:id/generate-pilot                  │
+│  (Autenticado via HTTP Basic Auth)                                          │
 └──────────────────────────────────────┬──────────────────────────────────────┘
-                                       │ HTTP POST (Basic Auth + JSON)
+                                       │ HTTP POST (Same-Origin BFF)
                                        ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                     BACKEND (video_engine/api_v2.js)                        │
+│                     BACKEND EXPRESS (video_engine/api_v2.js)                │
 │                                                                             │
-│  Middleware de Proteção: basicAuthMiddleware                                │
-│  1. Valida Authorization: Basic contra PANEL_USER e PANEL_PASSWORD (.env)   │
-│  2. Se inválido/ausente: 401 Unauthorized                                   │
-│  3. Se válido:                                                              │
-│     Injeta internamente no servidor:                                        │
-│       broker_id = 'marcel'                                                  │
-│       source = 'web_panel'                                                  │
-│     Invoca diretamente o Job Core: initializeVideoJob(...)                  │
-│  4. Retorna resposta JSON padronizada (201 / 400 / 404 / 503 / 500)         │
-│  🔒 Chave VIDEO_ENGINE_API_KEY permanece 100% restrita ao servidor          │
+│  1. Valida existência do Job pelo :id                                       │
+│  2. Valida status (deve ser SCRIPT_READY ou PILOT_FAILED)                   │
+│  3. Se já em processamento (PILOT_SUBMITTED / RENDERING): 409 Conflict      │
+│  4. Atualiza status no PostgreSQL para PILOT_SUBMITTED                      │
+│  5. Dispara execução assíncrona em video_engine/pilot_service.js            │
+│  6. Retorna 202 Accepted { success: true, status: 'PILOT_SUBMITTED' }       │
 └──────────────────────────────────────┬──────────────────────────────────────┘
                                        │
                                        ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    video_engine/job_service.js (Job Core)                   │
+│                 ORQUESTRADOR DO PILOTO (video_engine/pilot_service.js)       │
 │                                                                             │
-│  • fetchImovelData(ref)                                                     │
-│  • generateCompleteScripts(imovel)                                          │
-│  • createVideoJob({ property_ref, broker_id: "marcel", source: "web_panel"}) │
+│  1. Carrega Job completo do PostgreSQL pelo UUID:                           │
+│     • property_snapshot (dados e fotos do imóvel)                           │
+│     • scripts_snapshot (Gancho 1 + Corpo com respectivos Looks)             │
+│  2. Submete clips na HeyGen (Voz clonada Marcel):                           │
+│     • Gancho 1: Look Terno, avatar normal                                   │
+│     • Corpo: Look Terno, avatar círculo, foto do imóvel ao fundo            │
+│  3. Registra heygen_video_id de cada clip em video_jobs.metadata.pilot      │
+│  4. Atualiza status para PILOT_RENDERING                                    │
+│  5. Realiza Polling na API HeyGen até conclusão                             │
+│  6. Faz download dos MP4 para diretório isolado:                            │
+│     outputs/jobs/<job_id>/hook_1.mp4                                        │
+│     outputs/jobs/<job_id>/body.mp4                                          │
+│  7. Concatena com FFmpeg em outputs/jobs/<job_id>/pilot.mp4                 │
+│  8. Valida integridade do arquivo gerado (tamanho > 0, duração válida)       │
+│  9. Atualiza PostgreSQL:                                                    │
+│     • status = 'PILOT_READY'                                                │
+│     • pilot_video_url = '/outputs/jobs/<job_id>/pilot.mp4'                  │
+│     • metadata.pilot.completed_at = now()                                   │
+│                                                                             │
+│  ⚠️ Em caso de qualquer erro:                                               │
+│     • status = 'PILOT_FAILED'                                               │
+│     • error_message = <detalhes do erro>                                    │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 3. Wireframe Textual da Interface (`video-painel.html`)
+## 4. Persistência Mínima Necessária no PostgreSQL
 
-```text
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ 🏢 BALI IMÓVEIS  |  🎬 Video Engine V2 — Painel Web de Jobs                  │
-│ [Status: 🟢 Core Ativo]                                                    │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  🔍 Iniciar Novo Job de Vídeo                                               │
-│  Digite a referência do imóvel para consultar no CRM e gerar os roteiros.   │
-│                                                                             │
-│  ┌───────────────────────────────────────────────┐  ┌─────────────────────┐ │
-│  │ Código ou Ref do Imóvel (ex: 1639)            │  │ 🚀 Buscar e Criar   │ │
-│  └───────────────────────────────────────────────┘  └─────────────────────┘ │
-│                                                                             │
-│  [⏳ Carregando dados do CRM e gerando roteiros inteligentes...]            │
-│  [⚠️ Alertas de erro renderizados dinamicamente (400, 404, 503, 500)]       │
-│                                                                             │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  📋 DETALHES DO JOB GERADO                                                  │
-│  ┌────────────────────────────────────────────────────────────────────────┐ │
-│  │ 🏷️ Job ID: 20e570ee-dadc-438a-9d7f-491807ffa1cb  [📋 Copiar UUID]       │ │
-│  │ 🟢 Status: SCRIPT_READY  |  🌐 Origem: web_panel  |  👤 Corretor: marcel│ │
-│  └────────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  🏠 RESUMO DO IMÓVEL (CRM)                                                  │
-│  ┌────────────────────────────────────────────────────────────────────────┐ │
-│  │ Apartamento com 2 quartos à venda, 75 m² - Centro - Taubaté/SP         │ │
-│  │ Ref: #1639  |  Local: Centro  |  Área: 75 m²  |  Quartos: 2            │ │
-│  └────────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  💰 SIMULAÇÃO FINANCEIRA                                                    │
-│  ┌──────────────┬──────────────┬──────────────┬──────────────┬────────────┐ │
-│  │ Valor Venda  │ Entrada Est. │ Financiamento│ Parcela Est. │ Renda Mín. │ │
-│  │ R$ 395.000   │ R$ 79.000    │ R$ 316.000   │ R$ 2.844/mês │ R$ 9.385   │ │
-│  └──────────────┴──────────────┴──────────────┴──────────────┴────────────┘ │
-│                                                                             │
-│  🎙️ ROTEIROS DE ANÚNCIO (3 GANCHOS + CORPO)                                 │
-│  ┌────────────────────────────────────────────────────────────────────────┐ │
-│  │ 💡 GANCHO 1 — Choque / Entrada (Look: Terno Executivo 👔)              │ │
-│  │ "395 mil num imóvel completo no Diana com entrada de apenas 79 mil?..."│ │
-│  ├────────────────────────────────────────────────────────────────────────┤ │
-│  │ 🔥 GANCHO 2 — Aluguel vs Parcela (Look: Podcaster no Microfone 🎙️)     │ │
-│  │ "Parcela de 2.844 reais num imóvel de 2 quartos todinho seu?..."       │ │
-│  ├────────────────────────────────────────────────────────────────────────┤ │
-│  │ 🌿 GANCHO 3 — Renda Familiar / Oportunidade (Look: Casual 🌿)          │ │
-│  │ "Com uma renda familiar a partir de 9.385 reais e 79 mil de entrada..."│ │
-│  ├────────────────────────────────────────────────────────────────────────┤ │
-│  │ 📖 DESENVOLVIMENTO DO IMÓVEL & BAIRRO (Corpo com CTA)                  │ │
-│  │ "Estamos falando de uma oportunidade com 75 metros quadrados..."       │ │
-│  └────────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+### 4.1. Migração Estrutural da Tabela `video_jobs`
+Será criada uma migração mínima `002_add_pilot_fields_to_video_jobs.sql`:
+
+```sql
+-- Adicionar colunas diretas para acesso rápido e indexação
+ALTER TABLE video_jobs 
+  ADD COLUMN IF NOT EXISTS pilot_video_url TEXT,
+  ADD COLUMN IF NOT EXISTS error_message TEXT;
+
+-- Índice para consultas de auditoria de status
+CREATE INDEX IF NOT EXISTS idx_video_jobs_pilot_status ON video_jobs (status, created_at DESC);
+```
+
+### 4.2. Estrutura dos Metadados do Piloto em `metadata.pilot` (JSONB)
+Todos os detalhes técnicos da renderização ficam registrados dentro do campo `metadata` já existente:
+
+```json
+{
+  "pilot": {
+    "hook1": {
+      "heygen_video_id": "v78a1bc90d",
+      "heygen_video_url": "https://resource.heygen.ai/...",
+      "local_path": "/var/www/bali-gestor/outputs/jobs/f8099b3d.../hook_1.mp4",
+      "rendered_at": "2026-09-05T03:00:00.000Z"
+    },
+    "body": {
+      "heygen_video_id": "v89b2cd01e",
+      "heygen_video_url": "https://resource.heygen.ai/...",
+      "local_path": "/var/www/bali-gestor/outputs/jobs/f8099b3d.../body.mp4",
+      "rendered_at": "2026-09-05T03:01:00.000Z"
+    },
+    "final": {
+      "local_path": "/var/www/bali-gestor/outputs/jobs/f8099b3d.../pilot.mp4",
+      "public_url": "/outputs/jobs/f8099b3d.../pilot.mp4",
+      "concatenated_at": "2026-09-05T03:01:30.000Z"
+    },
+    "attempts": 1,
+    "started_at": "2026-09-05T02:59:30.000Z",
+    "completed_at": "2026-09-05T03:01:30.000Z"
+  }
+}
 ```
 
 ---
 
-## 4. Contratos entre Browser e Backend
+## 5. Máquina de Estados Mínima do Job na Fase 2B
 
-### 1. Rota de Interface: `GET /video-painel`
-- **Proteção:** Requer HTTP Basic Auth (`PANEL_USER` / `PANEL_PASSWORD`).
-- **Sem Autenticação:** Retorna `HTTP 401 Unauthorized` com `WWW-Authenticate: Basic realm="Video Engine V2 Painel"`.
-- **Autenticado:** Retorna o conteúdo de `video-painel.html`.
+| Estado | Significado | Ações Permitidas |
+|---|---|---|
+| `SCRIPT_READY` | Imóvel e roteiros gerados no banco. Piloto não iniciado. | Marcel pode clicar em **"Gerar Piloto"**. |
+| `PILOT_SUBMITTED` | Pedido de piloto recebido; clips submetidos à HeyGen. | Painel exibe spinner e desabilita botões. |
+| `PILOT_RENDERING` | HeyGen processando áudio, sincronia labial e vídeo. | Painel realiza polling periódico (`GET /api/v2/panel/video-jobs/:id`). |
+| `PILOT_READY` | Clips baixados, concatenados com FFmpeg e validados. | Painel exibe player de vídeo, link de download e status verde. |
+| `PILOT_FAILED` | Falha na HeyGen, timeout, download corrompido ou erro FFmpeg. | Painel exibe erro amigável e botão **"Tentar Novamente"**. |
 
-### 2. Endpoint BFF: `POST /api/v2/panel/video-jobs`
-- **Proteção:** Requer HTTP Basic Auth (`PANEL_USER` / `PANEL_PASSWORD`).
-- **Headers:** `Content-Type: application/json`.
-- **Body:**
+#### Prevenção de Concorrência e Conflito de Estados:
+* Se uma requisição para gerar piloto chegar para um Job com status `PILOT_SUBMITTED` ou `PILOT_RENDERING`, a API rejeita imediatamente com `HTTP 409 Conflict`:
   ```json
   {
-    "property_ref": "1639"
+    "success": false,
+    "error": "PILOT_ALREADY_IN_PROGRESS",
+    "message": "A geração do piloto já está em andamento para este Job."
   }
   ```
-
-#### Mapeamento de Respostas na Interface:
-* **HTTP 201 Created (Sucesso Total):**  
-  Card verde de sucesso; preenche resumo do imóvel, simulação financeira, 3 ganchos, corpo e exibe o UUID do Job com status `SCRIPT_READY`.
-* **HTTP 401 Unauthorized (Não Autenticado / Credenciais Inválidas):**  
-  Navegador reapresenta solicitação de credenciais ou exibe *"Acesso não autorizado ao painel."*
-* **HTTP 404 Not Found (Imóvel Não Encontrado):**  
-  Card de alerta vermelho: *"Imóvel não encontrado no CRM para a referência informada."*
-* **HTTP 400 Bad Request (Parâmetro Inválido):**  
-  Card de alerta âmbar: *"Por favor, informe uma referência de imóvel válida."*
-* **HTTP 503 Service Unavailable (Modo Degradado / PostgreSQL Offline):**  
-  Badge amarelo de alerta: **"Roteiros gerados com sucesso, mas persistência em banco indisponível no momento."**  
-  *(Ajuste de linguagem: NÃO utilizar "persistência pendente", pois não existe fila nem retry automático nesta fase).* Exibe os roteiros e dados normalmente, com campo de Job ID indicando *"Persistência indisponível"*.
-* **HTTP 500 Internal Error (Falha Inesperada):**  
-  Card de erro: *"Erro interno ao processar solicitação. Tente novamente em instantes."*
-
-#### Prevenção de Ações Concorrentes (Client-Side):
-- Enquanto uma requisição estiver em processamento:
-  - O botão "Buscar e Criar" fica `disabled`;
-  - O texto do botão altera para *"⏳ Processando no CRM..."*;
-  - Um spinner de carregamento é ativado;
-  - O campo de input é bloqueado temporariamente para evitar duplo clique ou chamadas paralelas acidentais.
+* Se o status já for `PILOT_READY`, a API retorna `HTTP 200 OK` informando que o piloto já está pronto, devolvendo a URL existente sem gastar novos créditos de renderização.
 
 ---
 
-## 5. Arquivos a Criar e Modificar
+## 6. Isolamento e Estrutura de Arquivos em Disco
 
-1. **`video_engine/panel_auth.js` [NOVO]:**
-   - Middleware leve de autenticação HTTP Basic Auth:
-     ```javascript
-     function panelAuthMiddleware(req, res, next) {
-       const authHeader = req.headers['authorization'] || '';
-       if (!authHeader.startsWith('Basic ')) {
-         res.setHeader('WWW-Authenticate', 'Basic realm="Video Engine V2 Painel"');
-         return res.status(401).json({ error: 'UNAUTHORIZED_PANEL_ACCESS' });
-       }
-       const [user, pass] = Buffer.from(authHeader.slice(6), 'base64').toString('utf-8').split(':');
-       const expectedUser = process.env.PANEL_USER || 'admin';
-       const expectedPass = process.env.PANEL_PASSWORD;
-       if (!expectedPass || user !== expectedUser || pass !== expectedPass) {
-         res.setHeader('WWW-Authenticate', 'Basic realm="Video Engine V2 Painel"');
-         return res.status(401).json({ error: 'INVALID_CREDENTIALS' });
-       }
-       next();
-     }
-     ```
+Para erradicar qualquer conflito entre execuções e garantir rastreabilidade física:
 
-2. **`video-painel.html` [NOVO]:**
-   - Página HTML5 autocontida com CSS Dark Mode padronizado (Plus Jakarta Sans).
-   - JavaScript puro manipulando DOM e disparando `fetch('/api/v2/panel/video-jobs')`.
-   - **Zero chaves ou senhas no código-fonte.**
+```text
+/var/www/bali-gestor/outputs/
+└── jobs/
+    └── <job_id>/
+        ├── hook_1.mp4
+        ├── body.mp4
+        ├── concat_list.txt (temporário, removido após FFmpeg)
+        └── pilot.mp4
+```
+
+* Cada Job possui seu próprio subdiretório baseado no UUID (`outputs/jobs/<job_id>/`).
+* O vídeo piloto fica acessível publicamente no navegador via rota estática já existente:
+  `http://<host>/outputs/jobs/<job_id>/pilot.mp4`.
+
+---
+
+## 7. Estratégia de Recuperação e Resiliência em Caso de Restart do PM2
+
+O que acontece se o servidor ou o PM2 reiniciar durante o processo da HeyGen?
+
+1. **Gravação Imediata dos Identificadores HeyGen:**
+   - Assim que a HeyGen responde com o `video_id` de cada clip, eles são **imediatamente persistidos no PostgreSQL** (`metadata.pilot.hook1.heygen_video_id` e `metadata.pilot.body.heygen_video_id`), antes de iniciar o loop de espera.
+2. **Ao reiniciar ou ao consultar o Job:**
+   - Se o servidor reiniciar e o Job estiver em `PILOT_SUBMITTED` ou `PILOT_RENDERING`:
+     - O serviço inspeciona o `updated_at` e os `video_id` salvos.
+     - **Retomada Segura (Smart Resume):** Como os IDs existem no banco, o sistema pode consultar o status na HeyGen sem reenviar e sem gastar novos créditos. Se já estiverem prontos, realiza o download e monta o vídeo.
+     - **Falha Explícita (Timeout Fallback):** Se a solicitação tiver mais de 20 minutos ou a HeyGen tiver descartado os dados, o status é alterado de forma transparente para `PILOT_FAILED` com a mensagem: *"Processamento interrompido por reinicialização do servidor. Clique em Tentar Novamente."*
+3. **Nenhum contexto é esquecido ou deduzido.**
+
+---
+
+## 8. Alterações na Interface Web (`video-painel.html`)
+
+A interface continuará leve e em Vanilla JS, ganhando as seguintes capacidades visuais:
+
+1. **Seção de Ação do Piloto (no Card do Job):**
+   - Quando `status === 'SCRIPT_READY'`:
+     Exibe botão: `🎬 Gerar Vídeo Piloto (Gancho 1 + Corpo)`.
+   - Quando `status === 'PILOT_SUBMITTED'` ou `PILOT_RENDERING'`:
+     Botão desabilitado com spinner ativo: `⏳ Renderizando Piloto na HeyGen (pode levar 1 a 2 min)...`.
+     Inicia polling automático a cada 5 segundos para `GET /api/v2/panel/video-jobs/:id`.
+   - Quando `status === 'PILOT_READY'`:
+     Badge verde `PILOT_READY`.
+     Card de Vídeo com player HTML5 `<video controls src="/outputs/jobs/<job_id>/pilot.mp4">`.
+     Botão para abrir em nova aba / fazer download.
+   - Quando `status === 'PILOT_FAILED'`:
+     Badge vermelho `PILOT_FAILED`.
+     Alerta de erro com a mensagem descritiva.
+     Botão reabilitado: `🔄 Tentar Novamente`.
+
+---
+
+## 9. Arquivos a Criar e Modificar
+
+1. **`migrations/002_add_pilot_fields_to_video_jobs.sql` [NOVO]:**
+   - Adiciona `pilot_video_url` e `error_message` à tabela `video_jobs`.
+
+2. **`video_engine/pilot_service.js` [NOVO]:**
+   - Módulo isolado contendo as funções:
+     - `generatePilot(jobId)`
+     - `checkPilotStatus(jobId)`
+     - Chamadas à HeyGen (avatar, voz clonada, fundo dinâmico), downloads de stream para disco e concatenação FFmpeg.
 
 3. **`video_engine/api_v2.js` [MODIFICAR]:**
-   - Adicionar o endpoint BFF protegido pelo middleware:
-     ```javascript
-     router.post('/panel/video-jobs', panelAuthMiddleware, async (req, res) => {
-       // extrai property_ref
-       // chama jobService.initializeVideoJob({ property_ref, broker_id: 'marcel', source: 'web_panel' })
-       // mapeia 201, 400, 404, 503, 500
-     });
-     ```
+   - Adicionar rotas BFF do painel (protegidas por Basic Auth):
+     - `POST /api/v2/panel/video-jobs/:id/generate-pilot`
+     - `GET /api/v2/panel/video-jobs/:id`
+   - Adicionar rotas externas equivalentes (protegidas por Bearer Token):
+     - `POST /api/v2/video-jobs/:id/generate-pilot`
+     - `GET /api/v2/video-jobs/:id`
 
-4. **`gestor_server.js` [MODIFICAR]:**
-   - Proteger e servir a página:
-     ```javascript
-     app.get('/video-painel', panelAuthMiddleware, (req, res) => {
-       res.sendFile(path.join(__dirname, 'video-painel.html'));
-     });
-     ```
-
-5. **`.env` [CONFIGURAR NA VPS]:**
-   - Adicionar variáveis:
-     `PANEL_USER=admin`  
-     `PANEL_PASSWORD=<senha_forte_gerada_no_env>`  
-   - *(Valores mantidos exclusivamente no `.env`, nunca versionados no Git).*
+4. **`video-painel.html` [MODIFICAR]:**
+   - Inclusão do botão "Gerar Piloto", polling de status e player de vídeo para exibição do resultado.
 
 ---
 
-## 6. O Que Permanece Rigorosamente Intocado
+## 10. Limites Explícitos da Fase 2B
 
-* ❌ **Sem geração/renderização de vídeo pelo painel**: HeyGen, FFmpeg e R2 não são chamados pelo painel nesta fase.
-* ❌ **Sem biblioteca/histórico de vídeos**: Apenas o Job recém-criado é exibido.
-* ❌ **Fluxo WhatsApp V1 100% Intacto**: Sessões ativas (`activeVideoSessions`), áudios 1 a 4, `CLONE` e `OK` permanecem inalterados.
-* ❌ **API Externa da Fase 1D Intacta**: `POST /api/v2/video-jobs` continua protegida estritamente por `Authorization: Bearer <VIDEO_ENGINE_API_KEY>`.
-* ❌ **Regras de Negócio no Core**: O frontend apenas renderiza o retorno de `job_service.js`; nenhuma lógica de domínio é duplicada.
-
----
-
-## 7. Plano de Testes e Homologação da Fase 2A
-
-A homologação da Fase 2A executará a seguinte bateria estrita de testes:
-
-1. **Acesso ao Painel sem Autenticação (Negativa):**
-   - Requisição `GET /video-painel` sem cabeçalhos de autenticação.
-   - Deve retornar `HTTP 401 Unauthorized` com `WWW-Authenticate: Basic realm="Video Engine V2 Painel"`.
-2. **Chamada Direta ao Endpoint BFF sem Autenticação (Negativa):**
-   - Requisição `POST /api/v2/panel/video-jobs` com `{ "property_ref": "1639" }` sem autenticação.
-   - Deve retornar `HTTP 401 Unauthorized`.
-3. **Acesso Autenticado ao Painel (Positiva):**
-   - Requisição `GET /video-painel` com credenciais válidas (`PANEL_USER` / `PANEL_PASSWORD`).
-   - Deve retornar `HTTP 200 OK` e entregar o HTML da interface.
-4. **Auditoria de Código Entregue ao Navegador (Segurança):**
-   - Inspecionar o HTML e scripts entregues ao navegador.
-   - Comprovar ausência absoluta de `PANEL_PASSWORD`, `VIDEO_ENGINE_API_KEY`, tokens ou secrets.
-5. **Criação Nominal de Job pelo Painel (`#1639`):**
-   - Submissão autenticada de `POST /api/v2/panel/video-jobs` com `{ "property_ref": "1639" }`.
-   - Deve retornar `HTTP 201 Created` contendo dados do imóvel, simulação financeira, 3 ganchos, corpo e `job.id`.
-6. **Conferência no PostgreSQL:**
-   - Consultar tabela `video_jobs` para comprovar persistência com `source = 'web_panel'`, `broker_id = 'marcel'` e snapshots JSONB íntegros.
-7. **Prevenção de Duplo Clique e Concorrência:**
-   - Validar bloqueio do botão (`disabled`) e estado de loading durante processamento.
-8. **Imóvel Inexistente (`#99999999`):**
-   - Submeter referência inexistente.
-   - Deve retornar `HTTP 404 Not Found` e renderizar alerta de imóvel não encontrado.
-9. **Referência Inválida ou Vazia:**
-   - Submeter payload vazio.
-   - Deve retornar `HTTP 400 Bad Request`.
-10. **Modo Degradado / PostgreSQL Offline (HTTP 503):**
-    - Parar temporariamente o PostgreSQL (`systemctl stop postgresql@16-main`).
-    - Disparar requisição pelo painel com `#1639`.
-    - Deve retornar `HTTP 503 Service Unavailable` com corpo contendo imóvel e roteiros gerados, e `job: null`.
-    - Painel deve exibir os roteiros com o alerta exato: *"Roteiros gerados com sucesso, mas persistência em banco indisponível no momento."*
-    - Restaurar PostgreSQL para `active`.
-11. **Não-Regressão de WhatsApp e API Externa:**
-    - Validar que o fluxo WhatsApp V1 e o endpoint `POST /api/v2/video-jobs` (Bearer) continuam operando normalmente.
-12. **Saúde de Produção:**
-    - PM2 `bali-gestor` online e PostgreSQL active.
+* ❌ **Sem geração dos vídeos restantes**: Apenas o Piloto (Gancho 1 + Corpo) é produzido nesta fase. Ganchos 2 e 3 não são renderizados.
+* ❌ **Sem editor de vídeo ou customização manual de timeline**.
+* ❌ **Sem integração ou envio para Meta Ads / Facebook**.
+* ❌ **Sem gerenciador de biblioteca ou galeria histórica**.
+* ❌ **Fluxo WhatsApp V1 100% Intacto**: O comando `CLONE` e `activeVideoSessions` continuam operando paralelamente sem qualquer interferência.
 
 ---
 
-## 8. Limites Explícitos da Fase 2A
+## 11. Bateria de Testes e Homologação da Fase 2B
 
-* O painel NÃO renderiza vídeos nesta fase (apenas cria o Job e visualiza dados e roteiros).
-* Sem gestão multiusuário ou controle de permissões por perfil.
-* Toda mutação de estado de vídeo fica reservada para as fases subsequentes.
+1. **Job Inexistente:**  
+   Submeter `POST /api/v2/panel/video-jobs/00000000-0000-0000-0000-000000000000/generate-pilot`.  
+   Deve retornar `HTTP 404 Not Found` e recusar a operação sem tentar adivinhar imóvel.
+2. **Job Válido em `SCRIPT_READY`:**  
+   Submeter comando para Job existente.  
+   Deve retornar `HTTP 202 Accepted` e transitar status para `PILOT_SUBMITTED`.
+3. **Prevenção de Duplicidade:**  
+   Submeter nova chamada enquanto o piloto estiver renderizando.  
+   Deve retornar `HTTP 409 Conflict` impedindo gasto duplo de créditos.
+4. **Resiliência a Falhas de API (HeyGen com Erro):**  
+   Simular ou testar payload inválido; deve transitar para `PILOT_FAILED` e gravar `error_message`.
+5. **Resiliência a Falhas de Concatenação (FFmpeg):**  
+   Garantir captura de erro e transição segura para `PILOT_FAILED` sem travar o processo Express.
+6. **Ciclo Completo de Produção do Piloto:**  
+   Executar geração real para o imóvel `#1639`.  
+   Acompanhar transição: `PILOT_SUBMITTED` → `PILOT_RENDERING` → `PILOT_READY`.
+7. **Validação do Arquivo Gerado:**  
+   Verificar existência física de `outputs/jobs/<job_id>/pilot.mp4`, integridade do arquivo (> 0 bytes) e reprodução via `/outputs/jobs/<job_id>/pilot.mp4`.
+8. **Conferência no PostgreSQL:**  
+   Verificar preenchimento de `status = 'PILOT_READY'`, `pilot_video_url` e metadados com timestamps e IDs da HeyGen.
+9. **Zero Dependência de `activeVideoSessions`:**  
+   Comprovar que `activeVideoSessions` permanece inalterado e não é lido nem escrito pelo fluxo do painel.
+10. **Zero Advinhação de Body:**  
+    Comprovar que o vídeo foi gerado estritamente para o `job_id` sem reutilizar arquivos soltos de diretório.
+11. **Não-Regressão Total:**  
+    WhatsApp V1 (`#REF`, `CLONE`) e rotas criadas na Fase 1D/2A operando com 100% de normalidade.
+12. **Saúde de Produção:**  
+    PM2 `bali-gestor` online e PostgreSQL `active`.
