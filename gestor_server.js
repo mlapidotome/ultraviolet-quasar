@@ -57,9 +57,15 @@ app.use(express.static(path.join(__dirname)));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 app.use('/cards_gerados', express.static(path.join(__dirname, 'cards_gerados')));
+// Bloquear acesso estático direto a jobs da Video Engine
+app.use('/outputs/jobs', (req, res) => res.status(403).send('Forbidden: Acesso direto a jobs bloqueado'));
 app.use('/outputs', express.static(path.join(__dirname, 'outputs')));
 // Rotas da Video Engine V2 (Independente de WhatsApp)
 app.use('/api/v2', require('./video_engine/api_v2'));
+
+// Smart Resume no startup para Video Engine V2 (Fase 2B)
+const pilotService = require('./video_engine/pilot_service');
+pilotService.initStartupRecovery();
 
 // Rota rápida para escanear o QR Code do Robô de Vídeos
 app.get('/conectar-whatsapp', (req, res) => {
