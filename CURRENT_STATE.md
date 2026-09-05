@@ -1,17 +1,17 @@
 # Estado Atual da Video Engine — Bali Imóveis (V2)
 
 **Última Atualização:** 05/09/2026  
-**Fase Atual Concluída:** Fase 3B — Video Composer MVP (Timeline Engine orientada a Blueprint — Final Hardening Homologado)  
-**Próxima Fase:** Fase 3C — Editing Styles & Overlays Dinâmicos (B-roll, Overlays, Motion)  
+**Fase Atual:** Fase 3C.1 — Editing Styles & Overlays Dinâmicos (MVP) (Implementada e Homologada Localmente — Aguardando Revisão Externa)  
+**Próxima Fase:** Fase 3C.2 — B-roll & Picture-in-Picture (PIP)  
 **Ambiente:** VPS Ubuntu 24.04 (`159.223.118.129`)  
-**Status do PM2:** `bali-gestor` online (pid 82828)  
+**Status do PM2:** `bali-gestor` online (PID 86258)  
 **Status do Banco:** PostgreSQL 16 `active` (DB: `bali_gestor`)  
 
 ---
 
 ## 1. Arquitetura Atual Homologada
 
-A Video Engine possui capacidade completa de **criação de Jobs, geração de Vídeo Piloto, produção da Coleção Criativa de 3 vídeos (Ganchos 1, 2 e 3 + Corpo)**, fundação de **Catálogo de Assets (`video_assets`) e Creative Blueprints declarativos (`creative_blueprints`)**, e o primeiro **Video Composer determinístico orientado por Blueprint (`video_engine/composer_service.js`)**:
+A Video Engine possui capacidade completa de **criação de Jobs, geração de Vídeo Piloto, produção da Coleção Criativa de 3 vídeos (Ganchos 1, 2 e 3 + Corpo)**, fundação de **Catálogo de Assets (`video_assets`) e Creative Blueprints declarativos (`creative_blueprints`)**, o **Video Composer determinístico (`video_engine/composer_service.js`)**, e a camada declarativa de **Editing Styles Versionáveis (`video_engine/styles/presets.js`)** e **Overlay Engine (`video_engine/overlay_service.js`)**:
 
 ```
 [Canal WhatsApp (V1)]      [API Externa HTTP (V2)]        [Painel Web Visual (V2)]
@@ -25,7 +25,10 @@ video_anuncios_engine.js   POST /api/v2/video-jobs        GET /video-painel
          │                         │                      GET /api/v2/panel/video-jobs/:id/assets
          │                         │                      POST /api/v2/panel/video-jobs/:id/compose-shadow/:index
          │                         │                      GET /api/v2/panel/video-jobs/:id/compare-shadow/:index
-         │                         │                      GET /api/v2/panel/video-jobs/:id/shadow-video/:index
+         │                         │                      POST /api/v2/panel/video-jobs/:id/compose-shadow-3c/:index
+         │                         │                      GET /api/v2/panel/video-jobs/:id/shadow-3c-video/:index
+         │                         │                      GET /api/v2/panel/video-jobs/:id/compare-shadow-3c/:index
+         │                         │                      GET /api/v2/panel/editing-styles
          │                         │                      (HTTP Basic Auth server-side)
          │                         │                                  │
          └─────────────────────────┼──────────────────────────────────┘
@@ -45,126 +48,68 @@ video_anuncios_engine.js   POST /api/v2/video-jobs        GET /video-painel
                      └─────────────┬─────────────┘
                                    │
                                    ▼
+                     ┌───────────────────────────┐
+                     │ video_engine/styles/      │ ── Presets Versionados (performance_reels_v1,
+                     │ presets.js                │    clean_modern_v1), FONT_REGISTRY & style_hash
+                     └─────────────┬─────────────┘
+                                   │
+                                   ▼
+                     ┌───────────────────────────┐
+                     │video_engine/overlay_service── Sanitização (11 chars), Safe Rectangles,
+                     └─────────────┬─────────────┘   Text Wrapping, Fade & Punch Zoom Filtergraph
+                                   │
+                                   ▼
                      ┌────────────────────────────┐
-                     │video_engine/composer_service ── Composer MVP: render_key, Claim SQL,
-                     └─────────────┬──────────────┘    Trims Bilaterais, Re-encode Canônico, Shadow,
-                                   │                   Invariante de Claim & Recuperação READY
+                     │video_engine/composer_service ── Composer V2: Blueprint 1.0/1.1, render_key,
+                     └─────────────┬──────────────┘    Claim SQL, Trims Bilaterais, Overlays, Captions,
+                                   │                   Atomic Promotion, Idempotência & Shadow 3C
                                    ▼
                      PostgreSQL (video_jobs + video_assets)
 ```
 
-* **Video Composer MVP (`video_engine/composer_service.js`):**
-  - **Identidade Semântica Canônica:** `render_key` determinística (SHA-256 de todas as especificações e `file_hash` físico de cada clipe de entrada).
-  - **Claim Atômico SQL & Invariante Estrito:** Bloqueio persistente no PostgreSQL com lease e recuperação automática de `stale processing` (> 5 minutos). FFmpeg **NUNCA** executa sem `claim.acquired === true`.
-  - **Recuperação Controlada de READY Corrompido:** Casos de arquivo físico ausente ou adulteração de hash são detectados, invalidados no catálogo (`failed`) e re-reivindicados atomicamente antes da re-renderização. Concorrência ativa retorna estritamente HTTP 409 Conflict.
-  - **Asset Resolver & Pre-FFmpeg Validation:** Validação de contrato (schema_version 1.0, 1080x1920@30fps, 9:16, layer 0, trims bilaterais obrigatórios), regex restritiva em `creative_id` (`/^[a-zA-Z0-9_-]{1,64}$/`) e validação estrita anti-path-traversal garantindo contenção física dentro de `outputs/jobs/<jobId>/`.
-  - **Trims Físicos Bilaterais Reais:** Aplicação determinística de filtros `trim` + `setpts` e `atrim` + `asetpts` para vídeo e áudio nos pontos especificados em `source_in_ms` e `source_out_ms` (trims unilaterais são formalmente rejeitados).
-  - **Unidade Oficial de Duração:** Inteiro em milissegundos (`duration_ms`), descartando placeholders conceituais legados.
-  - **Pipeline Canônico de Re-encode:** Concatenação única padronizada FFmpeg via `filter_complex` codificada em H.264 (yuv420p, 1080x1920@30fps) e áudio AAC (192k stereo, 44100Hz) com `-movflags +faststart`.
-  - **Escrita Atômica, Cleanup Autônomo & QC Estrito:** Render em arquivo temporário `.tmp.<uuid>.mp4`, inspeção `ffprobe` (validação real de codecs H.264/AAC, dimensões 1080x1920 e medição de FPS físico real a partir de `avg_frame_rate`/`r_frame_rate`), política de remoção de órfãos antes da promoção, remoção autônoma de `.tmp` em caso de falha de QC e promoção atômica via `renameSync`.
-  - **Modo Shadow:** Produz artefatos paralelos (`shadow_crv_<id>_<render_key>.mp4`) com `asset_type = 'shadow_creative'` sem alterar campos oficiais da Fase 2C (`pilot_video_url`, `video2_url`, `video3_url`, `video_jobs.status`).
-  - **Comparador Semântico:** `compareLegacyVsComposer()` demonstra equivalência formal ($\Delta \le 250\text{ ms}$, dimensões e streams idênticos).
+* **Módulo de Editing Styles Versionáveis (`video_engine/styles/presets.js`):**
+  - Catálogo de presets declarativos versionados em código (`performance_reels_v1`, `clean_modern_v1`).
+  - `FONT_REGISTRY` imutável apontando para fontes físicas no servidor (`DejaVuSans-Bold.ttf`, `LiberationSans-Bold.ttf`, etc.) com validação no boot.
+  - Resolução estrita com fail-fast e cálculo de `style_hash = SHA-256(canonicalizeDeep(resolvedStyle))`.
 
-* **Núcleo de Domínio (`video_engine/job_service.js`):**  
-  Busca dados no CRM, calcula simulação financeira, gera scripts de copy (3 ganchos + corpo) e inicializa os 3 Creative Blueprints declarativos na coluna `creative_blueprints JSONB`.
+* **Overlay Engine (`video_engine/overlay_service.js`):**
+  - Tipos suportados: `headline`, `price_badge`, `location_tag`, `cta_banner`, `captions`.
+  - Defesa em profundidade contra filter injection sanitizando 11 caracteres (`:`, `\`, `'`, `%`, `[`, `]`, `,`, `;`, `=`, `\n`, `\r`).
+  - Safe Rectangles com text wrapping automático e fail-fast por layout overflow.
+  - Animações determinísticas de fade in/out e punch zoom.
 
-* **Catálogo de Assets & Blueprints (`video_engine/asset_service.js`):**  
-  - **Separação de Hashes:** `generation_key` determinística vs `file_hash` físico.
-  - **Lifecycle de Storage:** `pending`, `processing`, `remote_ready`, `ready`, `failed`, `archived`.
-  - **Imutabilidade Estrita:** Bloqueio de substituição de assets `ready` com bytes divergentes.
-  - **Asset Resolver:** Validação em runtime de existência física, contenção canônica anti-symlink e integridade anti-tampering.
-
-* **Orquestrador de Piloto e Coleção Criativa (`video_engine/pilot_service.js`):**  
-  Mantido 100% operacional no pipeline oficial da Fase 2C com Smart Retry, reaproveitamento de `body.mp4` e entrega dos 3 vídeos oficiais.
-
-* **Painel Web Visual (`video-painel.html` + `video_engine/api_v2.js`):**  
-  Interface responsiva com Dark Mode, busca de imóveis, criação de Jobs, disparo de piloto, aprovação/reprovação, streaming autenticado dos 3 vídeos oficiais e novos endpoints do Shadow Composer (`/compose-shadow/:index`, `/compare-shadow/:index`, `/shadow-video/:index`).
-
-* **Isolamento de Segurança:**  
-  Protegido com HTTP Basic Auth server-side no painel, Bearer Token na API externa, bloqueio estático de `/outputs/jobs` (`HTTP 403 Forbidden`) e proteção rigorosa anti-path-traversal e anti-symlink.
-
-* **Adaptador WhatsApp V1 (`video_anuncios_engine.js`):**  
-  Permanece 100% íntegro e operacional (`CLONE`, `OK`, áudios 1-4, `activeVideoSessions`).
+* **Video Composer Engine (`video_engine/composer_service.js`):**
+  - Suporte completo a Blueprint `1.0` (`composer_v1`) e `1.1` (`composer_v2`).
+  - Identidade de renderização determinística via `render_key` profunda.
+  - Concorrência protegida por claim atômico PostgreSQL com lease e recuperação de estado stale/corrompido.
+  - Pipeline canônico de re-encode FFmpeg H.264/AAC com atomicidade de saída.
+  - Modo Shadow 3C (`asset_type: 'shadow_creative_3c'`, prefixo `shadow_3c_`) 100% isolado da Fase 2C.
 
 ---
 
-## 2. Componentes e Estrutura de Arquivos
+## 2. Invariantes do Sistema
 
-* `/var/www/bali-gestor/video_engine/composer_service.js`:  
-  Motor do Video Composer MVP (contrato, render_key, claim atômico, trims bilaterais reais, re-encode FFmpeg, QC estrito, recuperação controlada de READY e modo shadow).
-
-* `/var/www/bali-gestor/video_engine/api_v2.js`:  
-  Endpoints da V2 incluindo rotas de shadow compose, comparação semântica e streaming de shadow videos.
-
-* `/var/www/bali-gestor/video_engine/asset_service.js`:  
-  Módulo de catálogo de assets, cálculo de `generation_key`, `file_hash`, resolução física, imutabilidade e construção de Creative Blueprints.
-
-* `/var/www/bali-gestor/migrations/004_create_video_assets_and_blueprints.sql`:  
-  Criação da tabela `video_assets`, adição da coluna `creative_blueprints JSONB` em `video_jobs` e índices B-Tree e GIN.
-
-* `/var/www/bali-gestor/video_engine/job_service.js`:  
-  Núcleo de domínio de imóveis, roteiros e geração fail-open de blueprints iniciais.
-
-* `/var/www/bali-gestor/video_engine/pilot_service.js`:  
-  Orquestrador oficial de piloto e coleção criativa da Fase 2C.
-
-* `/var/www/bali-gestor/video-painel.html`:  
-  Interface Web responsiva para gestão completa de vídeos da V2.
-
-* `/var/www/bali-gestor/video_anuncios_engine.js`:  
-  Adaptador do WhatsApp e motor de renderização legado V1.
+1. **Isolamento Total da Fase 2C:**
+   - As colunas `pilot_video_url`, `video2_url`, `video3_url` e `status` da tabela `video_jobs` não são alteradas pelo modo Shadow 3C.
+   - O job showcase `bbddf3ba-f7c6-44f5-a81a-2ac09dae611b` permanece 100% íntegro servindo os 3 vídeos oficiais com HTTP 200.
+2. **Segurança de Execução FFmpeg:**
+   - FFmpeg NUNCA executa sem `claim.acquired === true`.
+   - Nomes de arquivos e parâmetros são estritamente sanitizados contra command/filter injection e path traversal.
+3. **Imutabilidade e Idempotência:**
+   - Assets `READY` existentes com hash válido retornam imediatamente (< 50ms) sem re-renderização.
+   - Qualquer mutação em clipes, trims, estilo, tipografia, cores ou overlays altera a `render_key` determinística.
+4. **WhatsApp V1 Intacto:**
+   - `video_anuncios_engine.js` permanece inalterado e operacional.
+5. **Zero Downtime & Zero Migrations:**
+   - Nenhuma alteração estrutural no banco de dados.
 
 ---
 
-## 3. Histórico de Homologações
+## 3. Histórico de Homologação
 
-* **Fase 1A a 2C:**  
-  Fundação PostgreSQL, Shadow Jobs, Job Core, Job API, Painel Web V2, Geração de Piloto (2B) e Aprovação/Restantes 2 e 3 (2C).  
-  Commit Final Fase 2C: `6837749827104faf6ae198da0b77d055e0ec6e5f`
-
-* **Fase 3A (Asset Model & Creative Blueprint Foundation):**  
-  Tabela `video_assets`, coluna `creative_blueprints`, separação `generation_key` e `file_hash`, imutabilidade de assets ready, ownership físico de jobs e 26 testes homologados.  
-  Commit Final Fase 3A: `8e2bf0306f557c595e8070628ee3e646a599d759`
-
-* **Fase 3B (Video Composer MVP — Final Hardening Homologado):**  
-  Validação completa de **40 cenários automatizados no VPS (40/40 PASS)**:
-  1. Blueprint válido Hook+Body renderiza com sucesso;
-  2. Ordem sequencial dos clipes respeitada;
-  3. Asset inexistente rejeitado antes de invocar FFmpeg;
-  4. Asset não-ready rejeitado antes do FFmpeg;
-  5. Asset de outro Job rejeitado por violação de ownership físico;
-  6. Symlink externo rejeitado;
-  7. `file_hash` divergente (adulteração de bytes) rejeitado;
-  8. Blueprint vazio ou corrompido rejeitado;
-  9. `schema_version` não suportada rejeitada;
-  10. Camada não suportada (`layer > 0`) rejeitada no MVP;
-  11. Parâmetros de trim inválidos (`source_in >= source_out`) rejeitados;
-  12. Arquivo de saída contém stream de vídeo ativo;
-  13. Arquivo de saída contém stream de áudio ativo;
-  14. Duração de saída dentro da tolerância configurável de $\pm 250\text{ ms}$;
-  15. Resolução de saída estritamente 1080x1920;
-  16. Taxa de quadros de saída 30 fps e formato H.264 canônico;
-  17. Pipeline de re-encode padronizado único gera output íntegro;
-  18. Unidade de duração oficial (`duration_ms`) aplicada sem truncamento;
-  19. Placeholders antigos de metadata ignorados (fala completa preservada);
-  20. **Cleanup automático de `.tmp` em falha pós-render sem intervenção manual do teste;**
-  21. Arquivo final existente não corrompido em caso de erro no retry;
-  22. Mesma `render_key` gera retorno idempotente imediato sem invocar FFmpeg;
-  23. Mudança no `file_hash` de um asset de entrada altera a `render_key`;
-  24. Mudança no Blueprint (trims, ordem, formato) altera a `render_key`;
-  25. Asset READY nunca é sobrescrito fisicamente;
-  26. Claim atômico SQL impede duas renderizações simultâneas do mesmo criativo;
-  27. Recuperação automática de stale processing após lease de 5 minutos;
-  28. Shadow Composer gera arquivo paralelo sem tocar nos campos oficiais da 2C;
-  29. Comparação semântica entre Shadow Composer e concat legado demonstra equivalência;
-  30. Job showcase da Fase 2C permanece 100% íntegro servindo os 3 vídeos (HTTP 200);
-  31. WhatsApp V1 e bloqueio estático 403 em `/outputs/jobs/` permanecem intocados;
-  32. PM2 `bali-gestor` (processo verificado online via `pm2 jlist`) e PostgreSQL 16 saudáveis;
-  33. Trims bilaterais reais aplicados fisicamente no FFmpeg (clipe de 5s com trim 1s→3s gerou exatamente 2000ms);
-  34. Proteção contra arquivo órfão prévio em `finalPath` (removido com segurança antes da promoção);
-  35. QC estrito de Codecs físicos (H.264 / AAC) e FPS físico derivado de streams reais;
-  36. **Trims unilaterais estritamente rejeitados pelo contrato;**
-  37. **`creative_id` malicioso ou tentativa de path traversal (`../../`) rejeitados;**
-  38. **Recuperação controlada de READY corrompido (DB READY + arquivo físico ausente no disco);**
-  39. **Recuperação controlada de READY adulterado (DB READY + hash físico divergente);**
-  40. **Invariante estrito: FFmpeg NUNCA executa sem claim adquirido (Bloqueio 409 em concorrência ativa).**
+| Fase | Commit Base | Status | Suíte de Testes |
+|---|---|---|---|
+| **Fase 2C** | `bbddf3ba...` | Homologada | 100% Pass |
+| **Fase 3A** | `8e2bf030...` | Homologada | 100% Pass |
+| **Fase 3B** | `a215799d...` | Homologada | 100% Pass (40/40) |
+| **Fase 3C.1** | `7635bde6...` | Implementada / Aprovada Localmente | 100% Pass (50/50) |
