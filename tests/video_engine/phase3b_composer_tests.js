@@ -1,8 +1,8 @@
 /**
- * Suíte de Homologação Automatizada — Fase 3B Video Composer MVP
+ * Suíte de Homologação Automatizada Pós-Review — Fase 3B Video Composer MVP
  * Bali Imóveis (Video Engine V2)
  * 
- * Execução estrita dos 32 cenários na ordem exata do plano aprovado:
+ * Cenários Validados com Rigor Pós-Review:
  * 1. Blueprint válido Hook+Body renderiza com sucesso
  * 2. Ordem sequencial dos clipes respeitada
  * 3. Asset inexistente rejeitado antes de invocar FFmpeg
@@ -22,7 +22,7 @@
  * 17. Pipeline de re-encode padronizado único gera output íntegro
  * 18. Unidade de duração oficial (duration_ms) aplicada sem truncamento
  * 19. Placeholders antigos de metadata ignorados (fala completa preservada)
- * 20. Arquivo temporário .tmp deletado em caso de falha de renderização
+ * 20. [POST-REVIEW FIX] Cleanup automático de .tmp em falha sem intervenção manual do teste
  * 21. Arquivo final existente não corrompido em caso de erro no retry
  * 22. Mesma render_key gera retorno idempotente imediato sem invocar FFmpeg
  * 23. Mudança no file_hash de um asset de entrada altera a render_key
@@ -34,7 +34,10 @@
  * 29. Comparação semântica entre Shadow Composer e concat legado demonstra equivalência
  * 30. Job showcase da Fase 2C permanece 100% íntegro servindo os 3 vídeos (HTTP 200)
  * 31. WhatsApp V1 e bloqueio estático 403 em /outputs/jobs/ permanecem intocados
- * 32. PM2 bali-gestor e PostgreSQL 16 saudáveis
+ * 32. [POST-REVIEW FIX] Saúde real do PM2 (jlist online) e PostgreSQL 16
+ * 33. [POST-REVIEW FIX] Trims reais de vídeo e áudio aplicados fisicamente no FFmpeg (5s -> trim 1s-3s -> ≈2s)
+ * 34. [POST-REVIEW FIX] Arquivo órfão prévio em finalPath não é aceito cegamente e é removido antes da promoção
+ * 35. [POST-REVIEW FIX] QC estrito de codecs (H.264 / AAC) e FPS físico derivado de streams reais
  */
 
 const fs = require('fs');
@@ -48,9 +51,14 @@ const jobService = require('/var/www/bali-gestor/video_engine/job_service');
 const composerService = require('/var/www/bali-gestor/video_engine/composer_service');
 
 const BASE_URL = 'http://127.0.0.1:3005';
+
+// [POST-REVIEW FIX 5]: Remover credencial fallback literal. Exigir estritamente variável de ambiente.
+if (!process.env.PANEL_PASSWORD) {
+  throw new Error('[FATAL ERROR] Variável de ambiente PANEL_PASSWORD não definida no ambiente!');
+}
 const PANEL_AUTH = {
   username: 'marcel',
-  password: process.env.PANEL_PASSWORD || 'bali:secure:video:engine:2026!'
+  password: process.env.PANEL_PASSWORD
 };
 
 const SHOWCASE_JOB_ID = 'bbddf3ba-f7c6-44f5-a81a-2ac09dae611b';
@@ -70,7 +78,7 @@ function assert(condition, scenarioNum, message) {
 
 async function runTests() {
   console.log('================================================================');
-  console.log(' HOMOLOGAÇÃO AUTOMATIZADA COMPLETA — FASE 3B (VIDEO COMPOSER MVP)');
+  console.log(' HOMOLOGAÇÃO AUTOMATIZADA COMPLETA PÓS-REVIEW — FASE 3B (COMPOSER)');
   console.log('================================================================\n');
 
   const pool = getPool();
@@ -79,7 +87,7 @@ async function runTests() {
   console.log('--- SETUP: Preparando Ambiente do Teste ---');
   const initRes = await jobService.initializeVideoJob({
     property_ref: '1639',
-    broker_id: 'phase3b_homologation',
+    broker_id: 'phase3b_post_review',
     source: 'composer_mvp_suite'
   });
   const testJobId = initRes.job.id;
@@ -155,7 +163,7 @@ async function runTests() {
     [JSON.stringify([testBlueprint]), testJobId]
   );
 
-  console.log('\n--- EXECUTANDO OS 32 CENÁRIOS HOMOLOGADOS ---');
+  console.log('\n--- EXECUTANDO A SUÍTE DE HOMOLOGAÇÃO PÓS-REVIEW ---');
 
   // Cenário 1: Blueprint válido Hook+Body renderiza com sucesso
   const compResult = await composerService.composeCreative({
@@ -331,23 +339,33 @@ async function runTests() {
   // Cenário 19: Placeholders antigos de metadata ignorados (fala completa preservada)
   assert(Math.abs(compResult.specs.duration_ms - 8000) <= 250, 19, `Placeholders antigos de metadata ignorados; duração física exata calculada a partir de specs reais (${compResult.specs.duration_ms}ms) -> PASS`);
 
-  // Cenário 20: Arquivo temporário .tmp deletado em caso de falha de renderização
-  const tempUuid = 'deadbeef_test';
-  const orphanTmpPath = path.join(testJobDir, `shadow_tmp_test.tmp.${tempUuid}.mp4`);
-  fs.writeFileSync(orphanTmpPath, 'fake_temp_content');
-  let c20Passed = false;
+  // Cenário 20: [POST-REVIEW FIX 4] Cleanup automático de .tmp em falha sem intervenção manual do teste
+  const badTimelineJobId = testJobId;
+  const badBlueprint = {
+    ...testBlueprint,
+    creative_id: `crv_${testJobShortId}_fail_cleanup`,
+    timeline: [
+      { segment_index: 1, role: 'hook', asset_id: hookAssetId, layer: 0 }
+    ]
+  };
+  // Corromper intencionalmente temporariamente o storage_path do asset para provocar erro no FFmpeg durante o compose
+  await pool.query("UPDATE video_assets SET storage_path = '/var/www/bali-gestor/outputs/jobs/nonexistent_fail.mp4' WHERE id = $1", [hookAssetId]);
+  let failedAsExpected = false;
   try {
-    await composerService.renderTimelineFFmpeg({
-      executionPlan: { segments: [{ storage_path: '/caminho/completamente/invalido/inexistente.mp4' }] },
-      tempOutputPath: orphanTmpPath
+    await composerService.composeCreative({
+      jobId: testJobId,
+      blueprint: badBlueprint,
+      isShadow: true
     });
-  } catch (e) {
-    if (fs.existsSync(orphanTmpPath)) {
-      try { fs.unlinkSync(orphanTmpPath); } catch (err) {}
-    }
-    c20Passed = !fs.existsSync(orphanTmpPath);
+  } catch (err) {
+    failedAsExpected = true;
   }
-  assert(c20Passed, 20, 'Arquivo temporário .tmp deletado em caso de falha de renderização -> PASS');
+  // Restaurar storage_path
+  await pool.query('UPDATE video_assets SET storage_path = $1 WHERE id = $2', [hookFile, hookAssetId]);
+  // Verificar que NENHUM arquivo .tmp com o prefixo do fail_cleanup restou no disco (limpo automaticamente pelo composer_service)
+  const dirFiles = fs.readdirSync(testJobDir);
+  const leftoverTmp = dirFiles.find(f => f.includes('fail_cleanup') && f.includes('.tmp.'));
+  assert(failedAsExpected && !leftoverTmp, 20, 'Arquivo temporário .tmp limpo automaticamente pelo composer_service após falha (sem intervenção do teste) -> PASS');
 
   // Cenário 21: Arquivo final existente não corrompido em caso de erro no retry
   const originalOutputBytes = fs.readFileSync(compResult.output_path);
@@ -495,12 +513,106 @@ async function runTests() {
   const c31V1Intact = fs.existsSync(v1File);
   assert(c31Static403 && c31V1Intact, 31, 'WhatsApp V1 e bloqueio estático 403 em /outputs/jobs/ permanecem intocados -> PASS');
 
-  // Cenário 32: PM2 bali-gestor e PostgreSQL 16 saudáveis
+  // Cenário 32: [POST-REVIEW FIX 4] PM2 bali-gestor (jlist online) e PostgreSQL 16 saudáveis
+  let pm2Online = false;
+  try {
+    const pm2Output = JSON.parse(execSync('pm2 jlist').toString());
+    const baliApp = pm2Output.find(a => a.name === 'bali-gestor');
+    pm2Online = baliApp && baliApp.pm2_env && baliApp.pm2_env.status === 'online';
+  } catch (e) {}
   const dbHealth = await pool.query('SELECT 1 as alive');
-  assert(dbHealth.rows[0].alive === 1, 32, 'PM2 bali-gestor e PostgreSQL 16 saudáveis -> PASS');
+  assert(pm2Online && dbHealth.rows[0].alive === 1, 32, 'PM2 bali-gestor (processo verificado online via jlist) e PostgreSQL 16 saudáveis -> PASS');
+
+  // Cenário 33: [POST-REVIEW FIX 1] Trims reais de vídeo e áudio aplicados fisicamente no FFmpeg
+  console.log('\n--- Testando Trims Reais (FFmpeg trim + atrim) ---');
+  // Criar blueprint com clipe de 5s (body) recortado de 1000ms a 3000ms (duração esperada = 2000ms)
+  const trimBlueprint = {
+    creative_id: `crv_${testJobShortId}_trimmed`,
+    variant_index: 2,
+    schema_version: '1.0',
+    blueprint_version: 1,
+    format: { aspect_ratio: '9:16', width: 1080, height: 1920, fps: 30 },
+    timeline: [
+      {
+        segment_index: 1,
+        role: 'trimmed_body',
+        asset_id: bodyAssetId, // 5.0s no disco
+        source_in_ms: 1000,
+        source_out_ms: 3000,
+        layer: 0
+      }
+    ]
+  };
+
+  const trimResult = await composerService.composeCreative({
+    jobId: testJobId,
+    blueprint: trimBlueprint,
+    isShadow: true
+  });
+
+  const trimDurationMs = trimResult.specs.duration_ms;
+  const isTrimAccurate = Math.abs(trimDurationMs - 2000) <= 250;
+  const notFullDuration = trimDurationMs < 3500; // Garantir que NÃO renderizou os 5s originais
+  assert(
+    trimResult.success && isTrimAccurate && notFullDuration,
+    33,
+    `Trims reais aplicados fisicamente no FFmpeg: clipe de 5s trimado (1s→3s) gerou exatamente ${trimDurationMs}ms (esperado ≈ 2000ms, < 3500ms) -> PASS`
+  );
+
+  // Cenário 34: [POST-REVIEW FIX 2] Arquivo órfão prévio em finalPath não é aceito cegamente e é removido antes da promoção
+  console.log('\n--- Testando Proteção de Promoção contra Arquivos Órfãos Prévios ---');
+  const orphanTestBlueprint = {
+    creative_id: `crv_${testJobShortId}_orphan_test`,
+    variant_index: 3,
+    schema_version: '1.0',
+    blueprint_version: 1,
+    format: { aspect_ratio: '9:16', width: 1080, height: 1920, fps: 30 },
+    timeline: [
+      { segment_index: 1, role: 'hook', asset_id: hookAssetId, layer: 0 }
+    ]
+  };
+
+  const orphanResolved = await composerService.resolveTimelineAssets(testJobId, orphanTestBlueprint.timeline);
+  const orphanRenderKey = composerService.computeRenderKey(orphanTestBlueprint, orphanResolved);
+  const orphanShortKey = orphanRenderKey.slice(0, 10);
+  const orphanFinalPath = path.join(testJobDir, `shadow_${orphanTestBlueprint.creative_id}_${orphanShortKey}.mp4`);
+
+  // Injetar arquivo falso/órfão no finalPath antes do compose
+  fs.writeFileSync(orphanFinalPath, 'UNTRUSTED_ORPHAN_BYTES_NOT_A_VALID_MP4');
+  const orphanFakeHash = assetService.computeFileHash(orphanFinalPath);
+
+  // Executar composeCreative
+  const orphanComposeRes = await composerService.composeCreative({
+    jobId: testJobId,
+    blueprint: orphanTestBlueprint,
+    isShadow: true
+  });
+
+  // Verificar que o arquivo promovido agora é um MP4 válido e NÃO tem os bytes do arquivo falso
+  const newFinalBytes = fs.readFileSync(orphanFinalPath);
+  const newFinalHash = crypto.createHash('sha256').update(newFinalBytes).digest('hex');
+  assert(
+    orphanComposeRes.success &&
+    newFinalHash !== orphanFakeHash &&
+    orphanComposeRes.specs.hasVideo === true &&
+    orphanComposeRes.specs.width === 1080,
+    34,
+    'Arquivo órfão prévio em finalPath foi substituído com sucesso e a saída recém-validada foi promovida -> PASS'
+  );
+
+  // Cenário 35: [POST-REVIEW FIX 3] QC estrito de codecs (H.264 / AAC) e FPS físico derivado de streams reais
+  assert(
+    compResult.specs.codec_video === 'h264' &&
+    compResult.specs.codec_audio === 'aac' &&
+    compResult.specs.fps === 30 &&
+    compResult.specs.width === 1080 &&
+    compResult.specs.height === 1920,
+    35,
+    `QC estrito de codecs e streams: vídeo ${compResult.specs.codec_video} (${compResult.specs.width}x${compResult.specs.height}@${compResult.specs.fps}fps), áudio ${compResult.specs.codec_audio} -> PASS`
+  );
 
   console.log('\n================================================================');
-  console.log(` RESULTADO FINAL FASE 3B: ${passedTests}/${totalTests} CENÁRIOS HOMOLOGADOS COM SUCESSO!`);
+  console.log(` RESULTADO FINAL FASE 3B (PÓS-REVIEW): ${passedTests}/${totalTests} CENÁRIOS HOMOLOGADOS COM SUCESSO!`);
   console.log('================================================================\n');
 
   process.exit(0);
