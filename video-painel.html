@@ -302,13 +302,19 @@
       border: 1px solid rgba(239, 68, 68, 0.3);
     }
 
+    .badge-rejected {
+      background: rgba(107, 114, 128, 0.2);
+      color: var(--text-muted);
+      border: 1px solid rgba(107, 114, 128, 0.4);
+    }
+
     .badge-degraded {
       background: rgba(245, 158, 11, 0.15);
       color: var(--warning);
       border: 1px solid rgba(245, 158, 11, 0.3);
     }
 
-    /* Pilot Action Box */
+    /* Action Cards */
     .pilot-action-card {
       background: linear-gradient(180deg, rgba(31, 41, 55, 0.7) 0%, rgba(17, 24, 39, 0.9) 100%);
       border: 1px solid rgba(59, 130, 246, 0.3);
@@ -347,6 +353,50 @@
       transform: none;
     }
 
+    .btn-approve {
+      background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 8px;
+      padding: 0.85rem 1.5rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-approve:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-reject {
+      background: rgba(239, 68, 68, 0.15);
+      color: #F87171;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-radius: 8px;
+      padding: 0.85rem 1.5rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .btn-reject:hover:not(:disabled) {
+      background: rgba(239, 68, 68, 0.25);
+      border-color: #EF4444;
+      color: #FCA5A5;
+    }
+
     /* Video Player Box */
     .video-player-container {
       display: none;
@@ -370,6 +420,38 @@
       border: 1px solid var(--border-color);
       background-color: #000;
       outline: none;
+    }
+
+    /* Creative Set Grid */
+    .creative-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .creative-card {
+      background-color: var(--bg-card-sub);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .creative-card video {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .creative-tag {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
     }
 
     /* Job Metadata Box */
@@ -416,6 +498,7 @@
       align-items: center;
       gap: 0.3rem;
       transition: all 0.2s;
+      text-decoration: none;
     }
 
     .btn-copy:hover {
@@ -543,6 +626,8 @@
       .search-form { flex-direction: column; }
       .btn-submit { width: 100%; justify-content: center; }
       .btn-pilot { width: 100%; justify-content: center; }
+      .btn-approve { width: 100%; justify-content: center; }
+      .btn-reject { width: 100%; justify-content: center; }
     }
   </style>
 </head>
@@ -598,22 +683,66 @@
     <!-- Resultados Renderizados -->
     <div id="resultSection" class="result-section">
       
-      <!-- Card de Ação do Piloto (Fase 2B) -->
-      <section class="pilot-action-card">
+      <!-- Card de Ação do Piloto e Restantes (Fase 2B / Fase 2C) -->
+      <section class="pilot-action-card" id="pipelineActionCard">
         <div class="card-header" style="border: none; padding: 0; margin-bottom: 0.5rem;">
-          <h3 class="card-title">🎬 Produção do Vídeo Piloto (Gancho 1 + Corpo)</h3>
-          <span id="pilotStatusBadge" class="badge badge-ready">SCRIPT_READY</span>
+          <h3 class="card-title" id="pipelineActionTitle">🎬 Produção de Vídeos</h3>
+          <span id="pipelineStatusBadge" class="badge badge-ready">SCRIPT_READY</span>
         </div>
-        <p style="font-size: 0.85rem; color: var(--text-secondary);">
-          Produza o primeiro vídeo com o <strong>Gancho 1</strong> e o <strong>Desenvolvimento/Corpo com a foto do imóvel ao fundo</strong> na HeyGen.
+        <p id="pipelineActionDesc" style="font-size: 0.85rem; color: var(--text-secondary);">
+          Produza o primeiro vídeo com o <strong>Gancho 1</strong> e o <strong>Corpo com a foto do imóvel ao fundo</strong> na HeyGen.
         </p>
 
-        <!-- Botão de Disparo / Retry -->
-        <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+        <!-- Botão de Disparo do Piloto (quando SCRIPT_READY ou PILOT_FAILED) -->
+        <div id="pilotTriggerBox" style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
           <button type="button" id="btnGeneratePilot" class="btn-pilot" onclick="handleGeneratePilot()">
             <span>🎬 Gerar Vídeo Piloto</span>
           </button>
           <span id="pilotProcessMsg" style="font-size: 0.85rem; color: var(--text-muted); display: none;"></span>
+        </div>
+
+        <!-- Banner de Decisão do Piloto (quando PILOT_READY) -->
+        <div id="pilotDecisionBox" style="display: none; flex-direction: column; gap: 1rem; padding: 1.25rem; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 8px;">
+          <div style="font-size: 0.95rem; font-weight: 700; color: var(--success); display: flex; align-items: center; gap: 0.5rem;">
+            <span>✅ Vídeo Piloto Aprovado para Avaliação!</span>
+          </div>
+          <p style="font-size: 0.85rem; color: #D1D5DB;">
+            Avalie o vídeo piloto abaixo. Se estiver satisfatório, aprove para produzir os <strong>Ganchos 2 e 3</strong> reutilizando o mesmo corpo sem custo adicional.
+          </p>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <button type="button" id="btnApprovePilot" class="btn-approve" onclick="handleApprovePilot()">
+              <span>✅ Aprovar Piloto & Gerar Restantes (Ganchos 2 e 3)</span>
+            </button>
+            <button type="button" id="btnRejectPilot" class="btn-reject" onclick="handleRejectPilot()">
+              <span>❌ Reprovar Piloto</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Banner de Processamento dos Restantes (quando REMAINDER_SUBMITTED ou RENDERING) -->
+        <div id="remainderProcessingBox" style="display: none; align-items: center; gap: 0.75rem; padding: 1rem; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 8px;">
+          <span style="font-size: 1.4rem;">⏳</span>
+          <div>
+            <div style="font-weight: 700; color: var(--purple);">Renderizando Coleção Criativa...</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary);">Processando Ganchos 2 e 3 na HeyGen e montando com o corpo original. Aguarde...</div>
+          </div>
+        </div>
+
+        <!-- Banner de Falha / Retry dos Restantes (quando REMAINDER_FAILED) -->
+        <div id="remainderErrorBox" class="banner banner-error" style="margin-top: 0.5rem;">
+          <span class="banner-icon">❌</span>
+          <div style="flex: 1;">
+            <div id="remainderErrorText" style="margin-bottom: 0.5rem;">Falha na renderização dos vídeos restantes.</div>
+            <button type="button" class="btn-pilot" style="padding: 0.5rem 1rem; font-size: 0.85rem;" onclick="handleApprovePilot()">
+              <span>🔄 Tentar Novamente (Continuar do Ponto Faltante)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Banner de Piloto Reprovado (quando PILOT_REJECTED) -->
+        <div id="pilotRejectedBox" class="banner banner-warning" style="margin-top: 0.5rem;">
+          <span class="banner-icon">🚫</span>
+          <div><strong>Piloto Reprovado:</strong> A produção adicional para este Job foi cancelada por decisão do usuário.</div>
         </div>
 
         <!-- Banner de Erro do Piloto -->
@@ -622,20 +751,63 @@
           <div id="pilotErrorText">Falha na renderização do piloto.</div>
         </div>
 
-        <!-- Player do Vídeo Piloto -->
+        <!-- Player do Vídeo Piloto (Visível em PILOT_READY ou quando o piloto existe) -->
         <div id="videoPlayerContainer" class="video-player-container">
           <div style="font-size: 0.9rem; font-weight: 700; color: var(--success); display: flex; align-items: center; gap: 0.4rem;">
-            <span>✅ Vídeo Piloto Pronto</span>
+            <span>🎬 Player do Vídeo Piloto (Gancho 1 + Corpo)</span>
           </div>
           <video id="pilotVideoElement" controls playsinline preload="metadata">
             Seu navegador não suporta reprodução direta de vídeo.
           </video>
           <div style="display: flex; gap: 0.75rem;">
-            <a id="downloadPilotLink" href="#" target="_blank" class="btn-copy" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; text-decoration: none;">
-              📥 Abrir / Baixar Vídeo Completo
+            <a id="downloadPilotLink" href="#" target="_blank" class="btn-copy" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+              📥 Abrir / Baixar Vídeo Piloto
             </a>
           </div>
         </div>
+
+        <!-- Grade da Coleção Criativa Completa (quando CREATIVE_SET_READY) -->
+        <div id="creativeSetContainer" style="display: none; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+          <div style="padding: 1rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px;">
+            <span style="font-size: 1.1rem; font-weight: 800; color: var(--success);">🎉 COLEÇÃO CRIATIVA PRONTA (3 VÍDEOS COMPLETOS)</span>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">
+              Todos os 3 ganchos foram renderizados e montados com o corpo do imóvel. Prontos para publicação nos anúncios!
+            </p>
+          </div>
+
+          <div class="creative-grid">
+            <!-- Vídeo 1 -->
+            <div class="creative-card">
+              <div class="creative-tag">💡 VÍDEO 1 — Choque / Entrada</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Look: Terno Executivo 👔</div>
+              <video id="video1Element" controls playsinline preload="metadata"></video>
+              <a id="downloadVideo1Link" href="#" target="_blank" class="btn-copy" style="justify-content: center;">
+                📥 Baixar Vídeo 1
+              </a>
+            </div>
+
+            <!-- Vídeo 2 -->
+            <div class="creative-card">
+              <div class="creative-tag">🔥 VÍDEO 2 — Aluguel vs Parcela</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Look: Podcaster no Microfone 🎙️</div>
+              <video id="video2Element" controls playsinline preload="metadata"></video>
+              <a id="downloadVideo2Link" href="#" target="_blank" class="btn-copy" style="justify-content: center;">
+                📥 Baixar Vídeo 2
+              </a>
+            </div>
+
+            <!-- Vídeo 3 -->
+            <div class="creative-card">
+              <div class="creative-tag">🌿 VÍDEO 3 — Renda Familiar / Oportunidade</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Look: Casual 🌿</div>
+              <video id="video3Element" controls playsinline preload="metadata"></video>
+              <a id="downloadVideo3Link" href="#" target="_blank" class="btn-copy" style="justify-content: center;">
+                📥 Baixar Vídeo 3
+              </a>
+            </div>
+          </div>
+        </div>
+
       </section>
 
       <!-- Detalhes do Job -->
@@ -719,7 +891,7 @@
           <!-- Gancho 1 -->
           <div class="script-item">
             <div class="script-header">
-              <span class="script-tag">💡 GANCHO 1 — Choque / Entrada (Incluído no Piloto)</span>
+              <span class="script-tag">💡 GANCHO 1 — Choque / Entrada (Incluído no Vídeo 1)</span>
               <span class="script-look">Look: Terno Executivo 👔</span>
             </div>
             <div class="script-text" id="scriptHook1">--</div>
@@ -731,7 +903,7 @@
           <!-- Gancho 2 -->
           <div class="script-item">
             <div class="script-header">
-              <span class="script-tag">🔥 GANCHO 2 — Aluguel vs Parcela</span>
+              <span class="script-tag">🔥 GANCHO 2 — Aluguel vs Parcela (Incluído no Vídeo 2)</span>
               <span class="script-look">Look: Podcaster no Microfone 🎙️</span>
             </div>
             <div class="script-text" id="scriptHook2">--</div>
@@ -743,7 +915,7 @@
           <!-- Gancho 3 -->
           <div class="script-item">
             <div class="script-header">
-              <span class="script-tag">🌿 GANCHO 3 — Renda Familiar / Oportunidade</span>
+              <span class="script-tag">🌿 GANCHO 3 — Renda Familiar / Oportunidade (Incluído no Vídeo 3)</span>
               <span class="script-look">Look: Casual 🌿</span>
             </div>
             <div class="script-text" id="scriptHook3">--</div>
@@ -755,7 +927,7 @@
           <!-- Corpo -->
           <div class="script-item">
             <div class="script-header">
-              <span class="script-tag">📖 DESENVOLVIMENTO & BAIRRO (Incluído no Piloto)</span>
+              <span class="script-tag">📖 DESENVOLVIMENTO & BAIRRO (Reutilizado nos 3 Vídeos)</span>
               <span class="script-look">Corpo Principal com Foto ao Fundo</span>
             </div>
             <div class="script-text" id="scriptBody">--</div>
@@ -794,7 +966,6 @@
         return;
       }
 
-      // Parar polling anterior se houver
       stopPolling();
 
       errorBanner.classList.remove('visible');
@@ -817,12 +988,12 @@
         if (response.status === 201 && data && data.success) {
           currentJobId = data.job_id;
           renderJobData(data, false);
-          updatePilotState(data.status, data.error_message, data.pilot_video_url);
+          updatePipelineState(data.status, data.error_message, data);
         } else if (response.status === 503 && data) {
           currentJobId = null;
           degradedBanner.classList.add('visible');
           renderJobData(data, true);
-          updatePilotState('DEGRADED', null, null);
+          updatePipelineState('DEGRADED', null, data);
         } else if (response.status === 404) {
           resultSection.classList.remove('visible');
           showError('Imóvel não encontrado no CRM para a referência informada.');
@@ -869,12 +1040,12 @@
         const data = await res.json().catch(() => null);
 
         if (res.status === 202) {
-          updatePilotState('PILOT_SUBMITTED');
+          updatePipelineState('PILOT_SUBMITTED', null, data);
           startPolling();
         } else if (res.status === 200 && data.status === 'PILOT_READY') {
-          updatePilotState('PILOT_READY', null, data.pilot_video_url);
+          updatePipelineState('PILOT_READY', null, data);
         } else if (res.status === 409) {
-          updatePilotState(data.status || 'PILOT_RENDERING');
+          updatePipelineState(data.status || 'PILOT_RENDERING', null, data);
           startPolling();
         } else {
           showPilotError(data?.message || 'Erro ao iniciar piloto.');
@@ -888,6 +1059,78 @@
       }
     }
 
+    // Gerenciador de Aprovação do Piloto e Disparo dos Restantes (Fase 2C)
+    async function handleApprovePilot() {
+      if (!currentJobId) return;
+
+      const btnApprove = document.getElementById('btnApprovePilot');
+      const btnReject = document.getElementById('btnRejectPilot');
+      if (btnApprove) btnApprove.disabled = true;
+      if (btnReject) btnReject.disabled = true;
+
+      try {
+        const res = await fetch(`/api/v2/panel/video-jobs/${currentJobId}/approve-pilot`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        const data = await res.json().catch(() => null);
+
+        if (res.status === 202) {
+          updatePipelineState('REMAINDER_SUBMITTED', null, data);
+          startPolling();
+        } else if (res.status === 200 && data.status === 'CREATIVE_SET_READY') {
+          updatePipelineState('CREATIVE_SET_READY', null, data);
+        } else if (res.status === 409) {
+          updatePipelineState(data.status || 'REMAINDER_RENDERING', null, data);
+          startPolling();
+        } else {
+          showRemainderError(data?.message || 'Erro ao aprovar piloto.');
+          if (btnApprove) btnApprove.disabled = false;
+          if (btnReject) btnReject.disabled = false;
+        }
+      } catch (err) {
+        showRemainderError('Falha de rede ao aprovar piloto.');
+        if (btnApprove) btnApprove.disabled = false;
+        if (btnReject) btnReject.disabled = false;
+      }
+    }
+
+    // Gerenciador de Reprovação do Piloto (Fase 2C)
+    async function handleRejectPilot() {
+      if (!currentJobId) return;
+      if (!confirm('Deseja realmente reprovar o piloto? A produção de ganchos restantes não será iniciada.')) {
+        return;
+      }
+
+      const btnApprove = document.getElementById('btnApprovePilot');
+      const btnReject = document.getElementById('btnRejectPilot');
+      if (btnApprove) btnApprove.disabled = true;
+      if (btnReject) btnReject.disabled = true;
+
+      try {
+        const res = await fetch(`/api/v2/panel/video-jobs/${currentJobId}/reject-pilot`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        const data = await res.json().catch(() => null);
+
+        if (res.status === 200) {
+          stopPolling();
+          updatePipelineState('PILOT_REJECTED', null, data);
+        } else {
+          alert(data?.message || 'Erro ao reprovar piloto.');
+          if (btnApprove) btnApprove.disabled = false;
+          if (btnReject) btnReject.disabled = false;
+        }
+      } catch (err) {
+        alert('Falha de rede ao reprovar piloto.');
+        if (btnApprove) btnApprove.disabled = false;
+        if (btnReject) btnReject.disabled = false;
+      }
+    }
+
     // Polling Read-Only de Estado do Job
     function startPolling() {
       stopPolling();
@@ -898,10 +1141,12 @@
           const res = await fetch(`/api/v2/panel/video-jobs/${currentJobId}`);
           if (res.status === 200) {
             const data = await res.json();
-            updatePilotState(data.status, data.error_message, data.pilot_video_url);
+            updatePipelineState(data.status, data.error_message, data);
 
-            if (data.status === 'PILOT_READY' || data.status === 'PILOT_FAILED') {
-              stopPolling();
+            if (['CREATIVE_SET_READY', 'REMAINDER_FAILED', 'PILOT_READY', 'PILOT_FAILED', 'PILOT_REJECTED'].includes(data.status)) {
+              if (data.status !== 'PILOT_SUBMITTED' && data.status !== 'PILOT_RENDERING' && data.status !== 'REMAINDER_SUBMITTED' && data.status !== 'REMAINDER_RENDERING') {
+                stopPolling();
+              }
             }
           }
         } catch (e) {
@@ -917,69 +1162,114 @@
       }
     }
 
-    function updatePilotState(status, errorMessage, pilotVideoUrl) {
-      const pilotStatusBadge = document.getElementById('pilotStatusBadge');
+    // Gerenciador de Estados do Pipeline (Fase 2A, 2B e 2C)
+    function updatePipelineState(status, errorMessage, fullJobData) {
+      const pipelineStatusBadge = document.getElementById('pipelineStatusBadge');
       const jobStatusBadge = document.getElementById('jobStatusBadge');
-      const btn = document.getElementById('btnGeneratePilot');
-      const msg = document.getElementById('pilotProcessMsg');
-      const errorBox = document.getElementById('pilotErrorBox');
-      const errorText = document.getElementById('pilotErrorText');
-      const videoContainer = document.getElementById('videoPlayerContainer');
-      const videoElement = document.getElementById('pilotVideoElement');
-      const downloadLink = document.getElementById('downloadPilotLink');
+      const pilotTriggerBox = document.getElementById('pilotTriggerBox');
+      const btnGeneratePilot = document.getElementById('btnGeneratePilot');
+      const pilotProcessMsg = document.getElementById('pilotProcessMsg');
+      const pilotDecisionBox = document.getElementById('pilotDecisionBox');
+      const remainderProcessingBox = document.getElementById('remainderProcessingBox');
+      const remainderErrorBox = document.getElementById('remainderErrorBox');
+      const remainderErrorText = document.getElementById('remainderErrorText');
+      const pilotRejectedBox = document.getElementById('pilotRejectedBox');
+      const pilotErrorBox = document.getElementById('pilotErrorBox');
+      const videoPlayerContainer = document.getElementById('videoPlayerContainer');
+      const pilotVideoElement = document.getElementById('pilotVideoElement');
+      const downloadPilotLink = document.getElementById('downloadPilotLink');
+      const creativeSetContainer = document.getElementById('creativeSetContainer');
 
-      // Atualizar badge
-      pilotStatusBadge.textContent = status;
+      pipelineStatusBadge.textContent = status;
       jobStatusBadge.textContent = status;
 
-      pilotStatusBadge.className = 'badge';
-      if (status === 'PILOT_READY') pilotStatusBadge.classList.add('badge-ready');
-      else if (status === 'PILOT_SUBMITTED') pilotStatusBadge.classList.add('badge-submitted');
-      else if (status === 'PILOT_RENDERING') pilotStatusBadge.classList.add('badge-rendering');
-      else if (status === 'PILOT_FAILED') pilotStatusBadge.classList.add('badge-failed');
-      else pilotStatusBadge.classList.add('badge-ready');
+      pipelineStatusBadge.className = 'badge';
+      if (status === 'PILOT_READY' || status === 'CREATIVE_SET_READY') pipelineStatusBadge.classList.add('badge-ready');
+      else if (status === 'PILOT_SUBMITTED' || status === 'REMAINDER_SUBMITTED') pipelineStatusBadge.classList.add('badge-submitted');
+      else if (status === 'PILOT_RENDERING' || status === 'REMAINDER_RENDERING') pipelineStatusBadge.classList.add('badge-rendering');
+      else if (status === 'PILOT_FAILED' || status === 'REMAINDER_FAILED') pipelineStatusBadge.classList.add('badge-failed');
+      else if (status === 'PILOT_REJECTED') pipelineStatusBadge.classList.add('badge-rejected');
+      else pipelineStatusBadge.classList.add('badge-ready');
+
+      // Resetar visibilidade padrão dos painéis
+      pilotTriggerBox.style.display = 'none';
+      pilotDecisionBox.style.display = 'none';
+      remainderProcessingBox.style.display = 'none';
+      remainderErrorBox.classList.remove('visible');
+      pilotRejectedBox.classList.remove('visible');
+      pilotErrorBox.classList.remove('visible');
+      videoPlayerContainer.classList.remove('visible');
+      creativeSetContainer.style.display = 'none';
 
       if (status === 'SCRIPT_READY') {
-        btn.style.display = 'inline-flex';
-        btn.disabled = false;
-        btn.innerHTML = '<span>🎬 Gerar Vídeo Piloto</span>';
-        msg.style.display = 'none';
-        errorBox.classList.remove('visible');
-        videoContainer.classList.remove('visible');
+        pilotTriggerBox.style.display = 'flex';
+        btnGeneratePilot.disabled = false;
+        btnGeneratePilot.innerHTML = '<span>🎬 Gerar Vídeo Piloto</span>';
+        pilotProcessMsg.style.display = 'none';
       } else if (status === 'PILOT_SUBMITTED' || status === 'PILOT_RENDERING') {
-        btn.style.display = 'inline-flex';
-        btn.disabled = true;
-        btn.innerHTML = '<span>⏳ Renderizando na HeyGen...</span>';
-        msg.textContent = 'Processando Gancho 1 e Corpo. Pode levar de 1 a 2 minutos...';
-        msg.style.display = 'inline';
-        errorBox.classList.remove('visible');
-        videoContainer.classList.remove('visible');
+        pilotTriggerBox.style.display = 'flex';
+        btnGeneratePilot.disabled = true;
+        btnGeneratePilot.innerHTML = '<span>⏳ Renderizando na HeyGen...</span>';
+        pilotProcessMsg.textContent = 'Processando Gancho 1 e Corpo. Pode levar de 1 a 2 minutos...';
+        pilotProcessMsg.style.display = 'inline';
       } else if (status === 'PILOT_READY') {
-        btn.style.display = 'none';
-        msg.style.display = 'none';
-        errorBox.classList.remove('visible');
-
-        const videoSrc = `/api/v2/panel/video-jobs/${currentJobId}/pilot`;
-        videoElement.src = videoSrc;
-        downloadLink.href = videoSrc;
-        videoContainer.classList.add('visible');
+        pilotDecisionBox.style.display = 'flex';
+        const videoSrc = `/api/v2/panel/video-jobs/${currentJobId}/video/1`;
+        pilotVideoElement.src = videoSrc;
+        downloadPilotLink.href = videoSrc;
+        videoPlayerContainer.classList.add('visible');
       } else if (status === 'PILOT_FAILED') {
-        btn.style.display = 'inline-flex';
-        btn.disabled = false;
-        btn.innerHTML = '<span>🔄 Tentar Novamente</span>';
-        msg.style.display = 'none';
+        pilotTriggerBox.style.display = 'flex';
+        btnGeneratePilot.disabled = false;
+        btnGeneratePilot.innerHTML = '<span>🔄 Tentar Novamente (Piloto)</span>';
         showPilotError(errorMessage || 'A renderização do piloto falhou. Tente novamente.');
-        videoContainer.classList.remove('visible');
-      } else if (status === 'DEGRADED') {
-        btn.style.display = 'none';
-        msg.style.display = 'none';
-        videoContainer.classList.remove('visible');
+      } else if (status === 'PILOT_REJECTED') {
+        pilotRejectedBox.classList.add('visible');
+        const videoSrc = `/api/v2/panel/video-jobs/${currentJobId}/video/1`;
+        pilotVideoElement.src = videoSrc;
+        downloadPilotLink.href = videoSrc;
+        videoPlayerContainer.classList.add('visible');
+      } else if (status === 'REMAINDER_SUBMITTED' || status === 'REMAINDER_RENDERING') {
+        remainderProcessingBox.style.display = 'flex';
+        // Manter o player do piloto visível enquanto renderiza restantes
+        const videoSrc = `/api/v2/panel/video-jobs/${currentJobId}/video/1`;
+        pilotVideoElement.src = videoSrc;
+        downloadPilotLink.href = videoSrc;
+        videoPlayerContainer.classList.add('visible');
+      } else if (status === 'REMAINDER_FAILED') {
+        remainderErrorBox.classList.add('visible');
+        remainderErrorText.textContent = errorMessage || 'Erro ao processar Ganchos 2 e 3 ou montagem FFmpeg.';
+        const videoSrc = `/api/v2/panel/video-jobs/${currentJobId}/video/1`;
+        pilotVideoElement.src = videoSrc;
+        downloadPilotLink.href = videoSrc;
+        videoPlayerContainer.classList.add('visible');
+      } else if (status === 'CREATIVE_SET_READY') {
+        creativeSetContainer.style.display = 'flex';
+        const v1Src = `/api/v2/panel/video-jobs/${currentJobId}/video/1`;
+        const v2Src = `/api/v2/panel/video-jobs/${currentJobId}/video/2`;
+        const v3Src = `/api/v2/panel/video-jobs/${currentJobId}/video/3`;
+
+        document.getElementById('video1Element').src = v1Src;
+        document.getElementById('downloadVideo1Link').href = v1Src;
+
+        document.getElementById('video2Element').src = v2Src;
+        document.getElementById('downloadVideo2Link').href = v2Src;
+
+        document.getElementById('video3Element').src = v3Src;
+        document.getElementById('downloadVideo3Link').href = v3Src;
       }
     }
 
     function showPilotError(msg) {
       const errorBox = document.getElementById('pilotErrorBox');
       const errorText = document.getElementById('pilotErrorText');
+      errorText.textContent = msg;
+      errorBox.classList.add('visible');
+    }
+
+    function showRemainderError(msg) {
+      const errorBox = document.getElementById('remainderErrorBox');
+      const errorText = document.getElementById('remainderErrorText');
       errorText.textContent = msg;
       errorBox.classList.add('visible');
     }
