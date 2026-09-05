@@ -514,6 +514,14 @@ router.post('/panel/video-jobs/:id/compose-shadow-3c/:index', panelAuthMiddlewar
   const numIndex = parseInt(index, 10);
   const { style_id = 'performance_reels_v1', style_version = 1 } = req.body || req.query || {};
 
+  if (!UUID_REGEX.test(id)) {
+    return res.status(400).json({
+      success: false,
+      error: 'INVALID_UUID',
+      message: 'ID do Job deve ser um UUID válido'
+    });
+  }
+
   if (![1, 2, 3].includes(numIndex)) {
     return res.status(400).json({
       success: false,
@@ -638,6 +646,15 @@ router.post('/panel/video-jobs/:id/compose-shadow-3c/:index', panelAuthMiddlewar
 router.get('/panel/video-jobs/:id/shadow-3c-video/:index', panelAuthMiddleware, async (req, res) => {
   const { id, index } = req.params;
   const numIndex = parseInt(index, 10);
+
+  if (!UUID_REGEX.test(id)) {
+    return res.status(400).json({
+      success: false,
+      error: 'INVALID_UUID',
+      message: 'ID do Job deve ser um UUID válido'
+    });
+  }
+
   if (![1, 2, 3].includes(numIndex)) {
     return res.status(400).json({
       success: false,
@@ -666,15 +683,18 @@ router.get('/panel/video-jobs/:id/shadow-3c-video/:index', panelAuthMiddleware, 
 
     const filePath = shadowRes.rows[0].storage_path;
     const expectedJobDir = path.resolve(__dirname, '..', 'outputs', 'jobs', id);
-    if (!filePath.startsWith(expectedJobDir)) {
+    const resolvedFilePath = path.resolve(filePath);
+    const relPath = path.relative(expectedJobDir, resolvedFilePath);
+
+    if (relPath.startsWith('..') || path.isAbsolute(relPath) || path.dirname(resolvedFilePath) !== expectedJobDir) {
       return res.status(403).json({
         success: false,
         error: 'FORBIDDEN',
-        message: 'Acesso não autorizado'
+        message: 'Acesso não autorizado: caminho fora do job'
       });
     }
 
-    if (!fs.existsSync(filePath)) {
+    if (!fs.existsSync(resolvedFilePath)) {
       return res.status(404).json({
         success: false,
         error: 'FILE_NOT_FOUND',
@@ -682,7 +702,16 @@ router.get('/panel/video-jobs/:id/shadow-3c-video/:index', panelAuthMiddleware, 
       });
     }
 
-    const stat = fs.statSync(filePath);
+    const realPath = fs.realpathSync(resolvedFilePath);
+    if (!realPath.startsWith(expectedJobDir)) {
+      return res.status(403).json({
+        success: false,
+        error: 'FORBIDDEN',
+        message: 'Acesso não autorizado: symlink escape detectado'
+      });
+    }
+
+    const stat = fs.statSync(resolvedFilePath);
     const fileSize = stat.size;
     const range = req.headers.range;
 
@@ -691,7 +720,7 @@ router.get('/panel/video-jobs/:id/shadow-3c-video/:index', panelAuthMiddleware, 
       const start = parseInt(parts[0], 10);
       const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
       const chunksize = end - start + 1;
-      const file = fs.createReadStream(filePath, { start, end });
+      const file = fs.createReadStream(resolvedFilePath, { start, end });
       const head = {
         'Content-Range': `bytes ${start}-${end}/${fileSize}`,
         'Accept-Ranges': 'bytes',
@@ -706,7 +735,7 @@ router.get('/panel/video-jobs/:id/shadow-3c-video/:index', panelAuthMiddleware, 
         'Content-Type': 'video/mp4',
       };
       res.writeHead(200, head);
-      fs.createReadStream(filePath).pipe(res);
+      fs.createReadStream(resolvedFilePath).pipe(res);
     }
   } catch (err) {
     console.error('[API_V2 ERROR] Erro ao servir shadow 3c video:', err.message);
@@ -725,6 +754,15 @@ router.get('/panel/video-jobs/:id/shadow-3c-video/:index', panelAuthMiddleware, 
 router.get('/panel/video-jobs/:id/compare-shadow-3c/:index', panelAuthMiddleware, async (req, res) => {
   const { id, index } = req.params;
   const numIndex = parseInt(index, 10);
+
+  if (!UUID_REGEX.test(id)) {
+    return res.status(400).json({
+      success: false,
+      error: 'INVALID_UUID',
+      message: 'ID do Job deve ser um UUID válido'
+    });
+  }
+
   if (![1, 2, 3].includes(numIndex)) {
     return res.status(400).json({
       success: false,
@@ -735,7 +773,8 @@ router.get('/panel/video-jobs/:id/compare-shadow-3c/:index', panelAuthMiddleware
 
   try {
     const legacyFilename = numIndex === 1 ? 'pilot.mp4' : `video_${numIndex}.mp4`;
-    const legacyPath = path.resolve(__dirname, '..', 'outputs', 'jobs', id, legacyFilename);
+    const expectedJobDir = path.resolve(__dirname, '..', 'outputs', 'jobs', id);
+    const legacyPath = path.resolve(expectedJobDir, legacyFilename);
 
     const pool = getPool();
     const shadowRes = await pool.query(
@@ -755,12 +794,36 @@ router.get('/panel/video-jobs/:id/compare-shadow-3c/:index', panelAuthMiddleware
     }
 
     const shadowPath = shadowRes.rows[0].storage_path;
-    const comparison = await composerService.compareShadow3cWithLegacy(legacyPath, shadowPath);
+    const resolvedShadowPath = path.resolve(shadowPath);
+    const relPath = path.relative(expectedJobDir, resolvedShadowPath);
+
+    if (relPath.startsWith('..') || path.isAbsolute(relPath) || path.dirname(resolvedShadowPath) !== expectedJobDir) {
+      return res.status(403).json({
+        success: false,
+        error: 'FORBIDDEN',
+        message: 'Acesso não autorizado: caminho fora do job'
+      });
+    }
+
+    let comparison = null;
+    if (fs.existsSync(legacyPath)) {
+      comparison = await composerService.compareShadow3cWithLegacy(legacyPath, resolvedShadowPath);
+    } else {
+      comparison = {
+        comparable: false,
+        reason: 'LEGACY_FILE_NOT_FOUND',
+        message: 'Vídeo legado ainda não foi renderizado neste job'
+      };
+    }
+
+    // Sanitizar retorno para não vazar storage_path físico interno
+    const sanitizedAsset = { ...shadowRes.rows[0] };
+    delete sanitizedAsset.storage_path;
 
     return res.json({
       success: true,
       comparison,
-      shadow_asset: shadowRes.rows[0]
+      shadow_asset: sanitizedAsset
     });
   } catch (err) {
     console.error('[API_V2 ERROR] Erro ao comparar shadow 3c:', err.message);
