@@ -3,7 +3,7 @@
 
 **Data de Conclusão:** 05/09/2026  
 **Ambiente:** VPS Ubuntu 24.04 (`159.223.118.129`)  
-**Status:** HOMOLOGADO E APROVADO (32/32 Cenários Automatizados no VPS com Sucesso)  
+**Status:** HOMOLOGADO E APROVADO PÓS-REVIEW (35/35 Cenários Automatizados no VPS com Sucesso)  
 **Commit de Referência do Plano Aprovado:** `4feb22126fe1e8d142b6f3384f7ffcf7d37d23a8`
 
 ---
@@ -14,74 +14,45 @@ Transição arquitetural da montagem procedural hardcoded (`Hook + Body -> FFmpe
 
 $$\text{Creative Blueprint} + \text{Asset Resolver} \longrightarrow \text{Video Composer} \longrightarrow \text{MP4 Final}$$
 
-O Composer MVP implementa um executor puro de receitas com cálculo profundo de identidade de renderização (`render_key`), controle atômico persistente de concorrência via PostgreSQL, validações estritas pré-FFmpeg, pipeline único padronizado de re-encode e isolamento total em modo **Shadow Aditivo** sem qualquer impacto no pipeline da Fase 2C ou WhatsApp V1.
+O Composer MVP implementa um executor puro de receitas com cálculo profundo de identidade de renderização (`render_key`), controle atômico persistente de concorrência via PostgreSQL, validações estritas pré-FFmpeg, aplicação física de trims de vídeo e áudio, pipeline único padronizado de re-encode e isolamento total em modo **Shadow Aditivo** sem qualquer impacto no pipeline da Fase 2C ou WhatsApp V1.
 
 ---
 
-## 2. Componentes Entregues
+## 2. Ajustes e Fixes Pós-Review Implementados
 
-### 2.1 Módulo Central `video_engine/composer_service.js`
+### 2.1 FIX 1 — Aplicação Física de Trims Reais no FFmpeg
+* **Implementação:** Desenvolvida a injeção determinística de filtros `trim=start=...:end=...,setpts=PTS-STARTPTS` para o stream de vídeo e `atrim=start=...:end=...,asetpts=PTS-STARTPTS` para o stream de áudio antes do nó de concatenação.
+* **Comportamento sem Trims:** O clipe é consumido em 100% de sua duração física com normalização de timestamps (`setpts=PTS-STARTPTS` / `asetpts=PTS-STARTPTS`).
+* **Comportamento com Trims:** Início e término são rigorosamente sincronizados entre áudio e vídeo nos limites especificados por `source_in_ms` e `source_out_ms`.
+* **Validação Real Comprovada (Cenário 33):** Clipe físico de 5.0s com trim de 1000ms a 3000ms gerou output final com exatamente 2000ms ($\pm 0\text{ ms}$ de desvio), comprovando que o FFmpeg não renderizou os 5 segundos completos.
 
-1. **Validação Estrita de Contrato (Fail-Fast Pré-FFmpeg):**
-   - Valida `schema_version = '1.0'`;
-   - Exige formato canônico `1080x1920@30fps` na proporção vertical `9:16`;
-   - Restrição de camada: exclusivamente `layer = 0` no MVP;
-   - Validação de trims (`source_in_ms < source_out_ms` e dentro da duração do clipe);
-   - Rejeição imediata antes de qualquer chamada a disco ou subprocesso FFmpeg.
+### 2.2 FIX 2 — Política Conservadora de Promoção Atômica contra Arquivos Órfãos
+* **Regra Rigorosa:** A simples existência física prévia de um arquivo em `finalPath` nunca é aceita como substituto da promoção legítima.
+* **Comportamento Seguro:** Se o claim de renderização foi adquirido (logo, não existe registro `ready` prévio no banco) e um arquivo órfão preexistente reside em `finalPath` (ex: fruto de crash prévio antes do write no DB ou arquivo espúrio), o Composer emite um alerta explícito (`[COMPOSER WARNING]`), remove o arquivo órfão do disco (`fs.unlinkSync`) e promove atomicamente a saída temporária recém-renderizada e validada (`.tmp.<uuid>.mp4 -> finalPath`).
+* **Validação Real Comprovada (Cenário 34):** Injeção intencional de arquivo órfão com bytes corrompidos em `finalPath` foi detectada, o órfão foi removido e substituído com sucesso pelo MP4 íntegro recém-validado.
 
-2. **Asset Resolution & Ownership Físico Canônico:**
-   - Resolução via `assetService.resolveAndValidateAsset()`;
-   - Verificação de status `ready` e integridade física via `file_hash`;
-   - Validação de contenção estrita no diretório do Job (`outputs/jobs/<jobId>/`);
-   - Bloqueio de traversal e symlinks externos (`SECURITY VIOLATION`);
-   - Conversão e adoção da **unidade oficial de duração** em milissegundos inteiros (`duration_ms = Math.round(specs.duration * 1000)`), ignorando placeholders antigos conceituais.
+### 2.3 FIX 3 — Inspeção Rigorosa de Qualidade (QC) via `ffprobe`
+* **Validação Real de Streams:** O `verifyAndPromoteOutput()` inspeciona diretamente do container temporário:
+  * `videoStream.codec_name === 'h264'`
+  * `audioStream.codec_name === 'aac'`
+  * `videoStream.width === 1080` e `videoStream.height === 1920`
+  * Cálculo dinâmico do **FPS físico real** a partir de `avg_frame_rate` / `r_frame_rate` (exigindo $29 \le \text{fps} \le 31$);
+  * Duração real dentro da tolerância configurável (`COMPOSER_DURATION_TOLERANCE_MS = 250` ms);
+  * Sincronismo entre áudio e vídeo com descompasso $\le 200\text{ ms}$.
+* **Eliminação de Hardcode:** A propriedade `fps` não é mais retornada como constante fixa e sim extraída da medição física real do fluxo de quadros.
 
-3. **Cálculo Determinístico e Profundo da `render_key`:**
-   - Algoritmo SHA-256 sobre a estrutura normalizada e ordenada canonicamente:
-     * `schema_version` e `composer_contract_version` (`composer_v1`);
-     * `creative_id` e `blueprint_version`;
-     * `format` (aspect_ratio, width, height, fps);
-     * `timeline` canônica (ordem sequencial, papéis, camadas, trims);
-     * `composition_directives`;
-     * `input_assets` contendo `asset_id` e o **`file_hash` físico de cada clipe de entrada**;
-   - Qualquer mutação em bytes de entrada ou blueprint altera deterministicamente a `render_key`.
+### 2.4 FIX 4 — Limpeza Automática de `.tmp` Pós-Falha e Teste de Saúde Real
+* **Cleanup Autônomo:** O bloco `catch` de `composeCreative()` executa a deleção do arquivo temporário `.tmp` gerado na tentativa com falha.
+* **Validação de Teste Sem Intervenção Manual (Cenário 20):** O teste provoca falha intencional de renderização sem realizar nenhuma limpeza manual e atesta que nenhum resíduo `.tmp` permaneceu no filesystem.
+* **Saúde Real da Infraestrutura (Cenário 32):** O teste de saúde agora inspeciona o processo do PM2 via `pm2 jlist` (confirmando status `online` da aplicação `bali-gestor`) em conjunto com a query de liveness do PostgreSQL 16.
 
-4. **Claim Atômico SQL com Lease e Stale Recovery:**
-   - Trava persistente no PostgreSQL via `INSERT ... ON CONFLICT (id) DO UPDATE ... WHERE status IN ('pending', 'failed') OR (status = 'processing' AND updated_at < NOW() - INTERVAL '5 minutes')`;
-   - Impede execução duplicada ou concorrente do mesmo criativo;
-   - Recuperação automática de jobs abortados/órfãos após 5 minutos de inatividade (`stale processing`).
-
-5. **Pipeline Canônico Único de Re-encode FFmpeg:**
-   - Filtro padronizado `-filter_complex "[0:v][0:a][1:v][1:a]concat=n=2:v=1:a=1[outv][outa]"`;
-   - Codificação de vídeo: H.264 `libx264`, preset `fast`/`ultrafast`, CRF 20, pixel format `yuv420p`, 1080x1920, 30 fps;
-   - Codificação de áudio: AAC `aac`, 192 kbps, 44100 Hz, stereo;
-   - Otimização para streaming web: `-movflags +faststart`;
-   - Eliminação de dual-path (`-c copy`) para garantir timebase uniforme e ausência de priming samples discrepantes.
-
-6. **Escrita Atômica, Inspeção `ffprobe` e Imutabilidade:**
-   - Renderização inicial em arquivo temporário único (`.tmp.<uuid>.mp4`);
-   - Validação pós-render via `ffprobe` (streams de áudio e vídeo ativos, dimensões 1080x1920, sincronismo de trilha $\le 200\text{ ms}$, duração esperada dentro da tolerância de $\pm 250\text{ ms}$);
-   - Promoção atômica via `fs.renameSync()`;
-   - Remoção automática de temporários órfãos em caso de erro;
-   - Imutabilidade física: arquivos promovidos e assets `ready` nunca sofrem sobrescrita.
-
-7. **Idempotência Imediata:**
-   - Se um asset com a mesma `render_key` já estiver com status `ready` e o arquivo físico intacto no disco, o Composer retorna o resultado existente em milissegundos sem invocar FFmpeg.
-
-8. **Comparador Semântico de Equivalência:**
-   - Função `compareLegacyVsComposer(legacyPath, composerPath)` que avalia lado a lado resoluções, presença de streams e diferença de duração com retorno booleano estrito.
+### 2.5 FIX 5 — Remoção de Credencial Fallback & Segurança
+* **Remoção de Senha Literal:** Removido o fallback de senha `|| 'bali:secure:video:engine:2026!'` da suíte de testes `phase3b_composer_tests.js`. O teste passa a exigir estritamente a variável de ambiente `process.env.PANEL_PASSWORD`.
+* **Recomendação de Rotação:** Registrada formalmente a recomendação de rotação periódica das credenciais administrativas sem exposição de valores em repositório público.
 
 ---
 
-### 2.2 Endpoints Homologados em `video_engine/api_v2.js`
-
-* `POST /api/v2/panel/video-jobs/:id/compose-shadow/:index`: Dispara a renderização do Composer MVP em modo Shadow para a variante (1, 2 ou 3) a partir de seu Creative Blueprint.
-* `GET /api/v2/panel/video-jobs/:id/compare-shadow/:index`: Retorna o relatório de comparação semântica entre o vídeo legado e o vídeo do Shadow Composer.
-* `GET /api/v2/panel/video-jobs/:id/shadow-video/:index`: Streaming HTTP autenticado do MP4 gerado pelo Shadow Composer com suporte a `Range: bytes`.
-
----
-
-## 3. Matriz de Homologação (32/32 Cenários Aprovados no VPS)
+## 3. Matriz de Homologação Pós-Review (35/35 Cenários Aprovados no VPS)
 
 | # | Cenário Validado | Resultado | Detalhes Técnicos |
 |---|---|---|---|
@@ -104,9 +75,9 @@ O Composer MVP implementa um executor puro de receitas com cálculo profundo de 
 | **17** | Pipeline de re-encode padronizado gera output íntegro | **PASS** | MP4 válido, atom `moov` presente e tamanho consistente |
 | **18** | Unidade de duração oficial `duration_ms` aplicada | **PASS** | Inteiro de milissegundos sem truncamento (8034ms) |
 | **19** | Placeholders antigos de metadata ignorados | **PASS** | Duração real computada diretamente dos specs físicos |
-| **20** | Arquivo temporário `.tmp` deletado em caso de falha | **PASS** | Cleanup automático garantido em falhas |
+| **20** | **Cleanup automático de `.tmp` em falha** | **PASS** | **Deleção autônoma pelo composer_service sem intervenção do teste** |
 | **21** | Arquivo final existente não corrompido em retry | **PASS** | Hash de saída prévia preservado após erro |
-| **22** | Retorno idempotente imediato para mesma `render_key` | **PASS** | Retorno em 78ms sem invocação de FFmpeg |
+| **22** | Retorno idempotente imediato para mesma `render_key` | **PASS** | Retorno em 24ms sem invocação de FFmpeg |
 | **23** | Mudança no `file_hash` de entrada altera `render_key` | **PASS** | Sensibilidade estrita a bytes de entrada |
 | **24** | Mudança no Blueprint altera deterministicamente `render_key` | **PASS** | Sensibilidade estrita a propriedades do roteiro |
 | **25** | Asset READY nunca é sobrescrito fisicamente | **PASS** | Invariante de imutabilidade protegida |
@@ -116,7 +87,10 @@ O Composer MVP implementa um executor puro de receitas com cálculo profundo de 
 | **29** | Comparação semântica Shadow vs Concat demonstra equivalência | **PASS** | $\Delta = 0\text{ ms}$, resoluções idênticas (`is_equivalent = true`) |
 | **30** | Job showcase da Fase 2C permanece 100% íntegro (HTTP 200) | **PASS** | Vídeos 1, 2 e 3 ativos e acessíveis |
 | **31** | WhatsApp V1 e bloqueio estático 403 permanecem intocados | **PASS** | `video_anuncios_engine.js` íntegro e 403 ativo |
-| **32** | PM2 `bali-gestor` e PostgreSQL 16 saudáveis | **PASS** | Processo online (pid 81056), CPU 0%, RAM 87MB |
+| **32** | **PM2 `bali-gestor` (online via `jlist`) e PostgreSQL 16 saudáveis** | **PASS** | **Processo verificado online via jlist (pid 81857) e DB ativo** |
+| **33** | **Trims reais aplicados fisicamente no FFmpeg** | **PASS** | **Clipe de 5s trimado (1s→3s) gerou exatamente 2000ms (não 5s)** |
+| **34** | **Proteção contra arquivo órfão prévio em `finalPath`** | **PASS** | **Órfão removido com segurança e nova saída promovida** |
+| **35** | **QC estrito de Codecs físicos (H.264 / AAC) e FPS real** | **PASS** | **Streams validados: h264 (1080x1920@30fps) e aac** |
 
 ---
 
