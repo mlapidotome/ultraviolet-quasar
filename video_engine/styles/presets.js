@@ -119,6 +119,45 @@ const PRESETS = {
         box_color: '#000000E6',
         text_color: '#FFFFFF'
       }
+    },
+    pip_presets: {
+      'bottom_right': {
+        x: 680,
+        y: 1140,
+        width: 340,
+        height: 510,
+        shape: 'rounded_rect',
+        border_radius: 24,
+        border_width: 4,
+        border_color: '#FFFFFF'
+      },
+      'bottom_left': {
+        x: 60,
+        y: 1140,
+        width: 340,
+        height: 510,
+        shape: 'rounded_rect',
+        border_radius: 24,
+        border_width: 4,
+        border_color: '#FFFFFF'
+      },
+      'center_right': {
+        x: 680,
+        y: 700,
+        width: 340,
+        height: 510,
+        shape: 'rounded_rect',
+        border_radius: 24,
+        border_width: 4,
+        border_color: '#FFFFFF'
+      }
+    },
+    motion_presets: {
+      'ken_burns_zoom_in': { start_scale: 1.00, target_scale: 1.10 },
+      'ken_burns_zoom_out': { start_scale: 1.10, target_scale: 1.00 },
+      'pan_left': { start_scale: 1.10, target_scale: 1.10 },
+      'pan_right': { start_scale: 1.10, target_scale: 1.10 },
+      'static': { start_scale: 1.00, target_scale: 1.00 }
     }
   },
 
@@ -207,6 +246,45 @@ const PRESETS = {
         box_color: '#1A1A1AF2',
         text_color: '#00E5FF'
       }
+    },
+    pip_presets: {
+      'bottom_right': {
+        x: 680,
+        y: 1140,
+        width: 340,
+        height: 510,
+        shape: 'rounded_rect',
+        border_radius: 20,
+        border_width: 3,
+        border_color: '#00E5FF'
+      },
+      'bottom_left': {
+        x: 60,
+        y: 1140,
+        width: 340,
+        height: 510,
+        shape: 'rounded_rect',
+        border_radius: 20,
+        border_width: 3,
+        border_color: '#00E5FF'
+      },
+      'center_right': {
+        x: 680,
+        y: 700,
+        width: 340,
+        height: 510,
+        shape: 'rounded_rect',
+        border_radius: 20,
+        border_width: 3,
+        border_color: '#00E5FF'
+      }
+    },
+    motion_presets: {
+      'ken_burns_zoom_in': { start_scale: 1.00, target_scale: 1.08 },
+      'ken_burns_zoom_out': { start_scale: 1.08, target_scale: 1.00 },
+      'pan_left': { start_scale: 1.08, target_scale: 1.08 },
+      'pan_right': { start_scale: 1.08, target_scale: 1.08 },
+      'static': { start_scale: 1.00, target_scale: 1.00 }
     }
   }
 };

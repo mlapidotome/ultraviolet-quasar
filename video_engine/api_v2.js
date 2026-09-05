@@ -835,4 +835,387 @@ router.get('/panel/video-jobs/:id/compare-shadow-3c/:index', panelAuthMiddleware
   }
 });
 
+/**
+ * POST /api/v2/panel/video-jobs/:id/compose-shadow-3c2
+ * Renderização declarativa do Shadow Composer 3C.2 (B-Roll Dinâmico + PIP)
+ */
+router.post('/panel/video-jobs/:id/compose-shadow-3c2', panelAuthMiddleware, async (req, res) => {
+  const { id } = req.params;
+  const { creative_index = 1, style_id = 'performance_reels_v1', style_version = 1 } = req.body || {};
+  const numIndex = parseInt(creative_index, 10);
+
+  if (!UUID_REGEX.test(id)) {
+    return res.status(400).json({
+      success: false,
+      error: 'INVALID_UUID',
+      message: 'ID do Job deve ser um UUID válido'
+    });
+  }
+
+  if (![1, 2, 3].includes(numIndex)) {
+    return res.status(400).json({
+      success: false,
+      error: 'INVALID_INDEX',
+      message: 'creative_index deve ser 1, 2 ou 3'
+    });
+  }
+
+  try {
+    const pool = getPool();
+    const jobRes = await pool.query('SELECT * FROM video_jobs WHERE id = $1', [id]);
+    if (jobRes.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'JOB_NOT_FOUND',
+        message: 'Job não encontrado'
+      });
+    }
+
+    const job = jobRes.rows[0];
+    const baseBlueprints = job.creative_blueprints || [];
+    const baseBp = baseBlueprints.find(b => b.creative_id === `crv_${id.slice(0, 8)}_var${numIndex}`) || baseBlueprints[numIndex - 1] || baseBlueprints[0];
+
+    // Buscar assets de vídeo do apresentador registrados para o job
+    const assetsRes = await pool.query(
+      `SELECT * FROM video_assets WHERE job_id = $1 AND status = 'ready' ORDER BY created_at ASC`,
+      [id]
+    );
+    const readyAssets = assetsRes.rows;
+    
+    // Identificar asset de vídeo do apresentador (avatar)
+    const presenterAsset = readyAssets.find(a => 
+      a.asset_type === 'hook_video' || 
+      a.asset_type === 'body_video' || 
+      a.asset_type === 'pilot_video' ||
+      a.storage_path?.endsWith('.mp4')
+    );
+
+    if (!presenterAsset) {
+      return res.status(400).json({
+        success: false,
+        error: 'PRESENTER_ASSET_NOT_FOUND',
+        message: 'Nenhum vídeo de apresentador/avatar encontrado para o Job. Gere o piloto primeiro.'
+      });
+    }
+
+    const presenterDurationMs = Math.round(parseFloat(presenterAsset.specs?.duration || '30') * 1000);
+
+    // Identificar ou registrar fotos do imóvel no catálogo
+    const imageAssets = readyAssets.filter(a => a.specs?.media_type === 'image' || a.storage_path?.match(/\.(jpg|jpeg|png)$/i));
+    
+    // Se não houver fotos registradas no job, registrar a imagem de fundo padrão do job
+    let photoAssetList = imageAssets;
+    if (photoAssetList.length === 0) {
+      const bgImgPath = path.resolve(__dirname, '..', 'outputs', 'jobs', id, 'background.jpg');
+      if (fs.existsSync(bgImgPath)) {
+        const fileHash = assetService.computeFileHash(bgImgPath);
+        const bgAsset = await assetService.createAsset({
+          id: `ast_photo_bg_${id.slice(0, 8)}`,
+          job_id: id,
+          property_ref: job.property_ref,
+          asset_type: 'property_photo',
+          storage_type: 'local_file',
+          storage_path: bgImgPath,
+          file_hash: fileHash,
+          generation_key: assetService.computeGenerationKey({ asset_type: 'property_photo', path: bgImgPath }),
+          status: 'ready',
+          specs: { media_type: 'image', width: 1080, height: 1920, file_hash: fileHash }
+        });
+        photoAssetList = [bgAsset];
+      }
+    }
+
+    const fallbackPhotoId = photoAssetList[0]?.id || presenterAsset.id;
+    const photo1Id = photoAssetList[0]?.id || fallbackPhotoId;
+    const photo2Id = photoAssetList[1]?.id || photo1Id;
+    const photo3Id = photoAssetList[2]?.id || photo2Id;
+    const photo4Id = photoAssetList[3]?.id || photo1Id;
+
+    const prop = job.property_snapshot || {};
+    const scripts = job.scripts_snapshot || {};
+    const hookKey = `gancho_${numIndex}`;
+    const hookTitle = (scripts[hookKey]?.title || prop.bairro || 'OPORTUNIDADE EXCLUSIVA').toUpperCase();
+    const priceText = prop.valor ? `R$ ${prop.valor}` : (prop.preco_venda_formatado || 'R$ 395.000');
+    const locationText = prop.bairro ? `${prop.bairro} - ${prop.cidade || 'SP'}`.toUpperCase() : 'CENTRO - TAUBATÉ';
+
+    // Montar Timeline Visual Multicamada 1.2
+    // 0.0s – 2.0s: Apresentador Fullscreen
+    // 2.0s – 8.0s: Foto 1 (Fachada com Ken Burns Zoom In)
+    // 8.0s – 16.0s: Foto 2 (Sala com Ken Burns Zoom Out + PIP Apresentador)
+    // 16.0s – 24.0s: Foto 3 (Varanda com Pan)
+    // 24.0s – presenterDurationMs: Foto 4 (Suíte com Zoom In)
+    const visualTimeline = [
+      {
+        id: 'vseg_1_fullscreen',
+        asset_id: presenterAsset.id,
+        asset_type: 'video',
+        role: 'presenter_fullscreen',
+        start_ms: 0,
+        end_ms: 2000,
+        source_in_ms: 0,
+        source_out_ms: 2000,
+        fit: 'cover',
+        transition_in: { type: 'cut' }
+      },
+      {
+        id: 'vseg_2_photo1',
+        asset_id: photo1Id,
+        asset_type: 'image',
+        role: 'broll_fachada',
+        start_ms: 2000,
+        end_ms: 8000,
+        fit: 'cover',
+        motion: { type: 'ken_burns_zoom_in', start_scale: 1.00, target_scale: 1.10 },
+        transition_in: { type: 'cut' }
+      },
+      {
+        id: 'vseg_3_photo2',
+        asset_id: photo2Id,
+        asset_type: 'image',
+        role: 'broll_sala',
+        start_ms: 8000,
+        end_ms: 16000,
+        fit: 'cover',
+        motion: { type: 'ken_burns_zoom_out', start_scale: 1.10, target_scale: 1.00 },
+        transition_in: { type: 'cut' }
+      },
+      {
+        id: 'vseg_4_photo3',
+        asset_id: photo3Id,
+        asset_type: 'image',
+        role: 'broll_varanda',
+        start_ms: 16000,
+        end_ms: 24000,
+        fit: 'cover',
+        motion: { type: 'pan_left', start_scale: 1.08, target_scale: 1.08 },
+        transition_in: { type: 'cut' }
+      },
+      {
+        id: 'vseg_5_photo4',
+        asset_id: photo4Id,
+        asset_type: 'image',
+        role: 'broll_suite',
+        start_ms: 24000,
+        end_ms: presenterDurationMs,
+        fit: 'cover',
+        motion: { type: 'ken_burns_zoom_in', start_scale: 1.00, target_scale: 1.10 },
+        transition_in: { type: 'cut' }
+      }
+    ];
+
+    const blueprint12 = {
+      schema_version: '1.2',
+      creative_id: `crv_3c2_${id.slice(0, 8)}_var${numIndex}`,
+      blueprint_version: 1,
+      property_ref: job.property_ref,
+      format: {
+        aspect_ratio: '9:16',
+        width: 1080,
+        height: 1920,
+        fps: 30
+      },
+      editing_style: {
+        style_id: String(style_id),
+        version: parseInt(style_version, 10)
+      },
+      audio_track: {
+        primary_asset_id: presenterAsset.id,
+        broll_audio_policy: 'mute_all_broll'
+      },
+      visual_timeline: visualTimeline,
+      pip: {
+        enabled: true,
+        asset_id: presenterAsset.id,
+        windows: [
+          {
+            start_ms: 8000,
+            end_ms: 16000,
+            source_in_ms: 8000,
+            source_out_ms: 16000,
+            position: 'center_right',
+            shape: 'rounded_rect'
+          }
+        ]
+      },
+      overlays: [
+        {
+          id: 'ov_headline',
+          layer_order: 10,
+          type: 'headline',
+          text: hookTitle.slice(0, 55),
+          start_ms: 200,
+          end_ms: 2200,
+          position: 'top_safe',
+          preset: 'bold_headline'
+        },
+        {
+          id: 'ov_price',
+          layer_order: 20,
+          type: 'price_badge',
+          text: priceText.slice(0, 24),
+          start_ms: 2500,
+          end_ms: 7500,
+          position: 'lower_third',
+          preset: 'price_punch'
+        },
+        {
+          id: 'ov_location',
+          layer_order: 25,
+          type: 'location_tag',
+          text: locationText.slice(0, 38),
+          start_ms: 18000,
+          end_ms: 24000,
+          position: 'top_safe',
+          preset: 'location_badge'
+        },
+        {
+          id: 'ov_cta',
+          layer_order: 30,
+          type: 'cta_banner',
+          text: 'ENTRADA FACILITADA • SAIBA MAIS',
+          start_ms: 26000,
+          end_ms: Math.min(presenterDurationMs, 39000),
+          position: 'bottom_safe',
+          preset: 'cta_bar'
+        }
+      ],
+      captions: [
+        { start_ms: 0, end_ms: 2200, text: (scripts[hookKey]?.text || 'Confira esta oportunidade única.').slice(0, 40) },
+        { start_ms: 2500, end_ms: 7800, text: (scripts.corpo?.text || 'Apartamento com excelente acabamento.').slice(0, 40) },
+        { start_ms: 8000, end_ms: 16000, text: 'Alto padrão e lazer completo para você.' },
+        { start_ms: 16500, end_ms: 25500, text: 'Localização privilegiada em Taubaté.' },
+        { start_ms: 26000, end_ms: Math.min(presenterDurationMs, 39000), text: 'Agende sua visita com a Bali Imóveis!' }
+      ]
+    };
+
+    const composeResult = await composerService.composeCreative({
+      jobId: id,
+      blueprint: blueprint12,
+      isShadow: true
+    });
+
+    return res.status(200).json({
+      success: true,
+      result: composeResult
+    });
+  } catch (err) {
+    console.error('[API_V2 ERROR] Erro no compose-shadow-3c2:', err.message);
+    const statusCode = err.statusCode || (err.message.includes('VALIDATION') || err.message.includes('COLLISION') ? 400 : 500);
+    return res.status(statusCode).json({
+      success: false,
+      error: 'COMPOSER_3C2_ERROR',
+      message: err.message
+    });
+  }
+});
+
+/**
+ * GET /api/v2/panel/video-jobs/:id/shadow-3c2-video/:index
+ * Streaming autenticado do vídeo gerado pelo Shadow Composer 3C.2 (B-Roll + PIP)
+ */
+router.get('/panel/video-jobs/:id/shadow-3c2-video/:index', panelAuthMiddleware, async (req, res) => {
+  const { id, index } = req.params;
+  const numIndex = parseInt(index, 10);
+
+  if (!UUID_REGEX.test(id)) {
+    return res.status(400).json({
+      success: false,
+      error: 'INVALID_UUID',
+      message: 'ID do Job deve ser um UUID válido'
+    });
+  }
+
+  if (![1, 2, 3].includes(numIndex)) {
+    return res.status(400).json({
+      success: false,
+      error: 'INVALID_INDEX',
+      message: 'Índice deve ser 1, 2 ou 3'
+    });
+  }
+
+  try {
+    const pool = getPool();
+    const shadowRes = await pool.query(
+      `SELECT * FROM video_assets 
+       WHERE job_id = $1 AND asset_type = 'shadow_creative_3c2' AND status = 'ready'
+       AND metadata->>'creative_id' LIKE $2
+       ORDER BY updated_at DESC LIMIT 1`,
+      [id, `%var${numIndex}%`]
+    );
+
+    if (shadowRes.rows.length === 0 || !shadowRes.rows[0].storage_path) {
+      return res.status(404).json({
+        success: false,
+        error: 'SHADOW_3C2_NOT_FOUND',
+        message: 'Vídeo Shadow 3C.2 não encontrado ou não está pronto'
+      });
+    }
+
+    const filePath = shadowRes.rows[0].storage_path;
+    const expectedJobDir = path.resolve(__dirname, '..', 'outputs', 'jobs', id);
+    const resolvedFilePath = path.resolve(filePath);
+    const relPath = path.relative(expectedJobDir, resolvedFilePath);
+
+    if (relPath.startsWith('..') || path.isAbsolute(relPath) || path.dirname(resolvedFilePath) !== expectedJobDir) {
+      return res.status(403).json({
+        success: false,
+        error: 'FORBIDDEN',
+        message: 'Acesso não autorizado: caminho fora do job'
+      });
+    }
+
+    if (!fs.existsSync(resolvedFilePath)) {
+      return res.status(404).json({
+        success: false,
+        error: 'FILE_NOT_FOUND',
+        message: 'Arquivo físico do Shadow 3C.2 não encontrado'
+      });
+    }
+
+    const realPath = fs.realpathSync(resolvedFilePath);
+    if (!realPath.startsWith(expectedJobDir)) {
+      return res.status(403).json({
+        success: false,
+        error: 'FORBIDDEN',
+        message: 'Acesso não autorizado: symlink escape detectado'
+      });
+    }
+
+    const stat = fs.statSync(resolvedFilePath);
+    const fileSize = stat.size;
+    const range = req.headers.range;
+
+    if (range) {
+      const parts = range.replace(/bytes=/, '').split('-');
+      const start = parseInt(parts[0], 10);
+      const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+      const chunksize = end - start + 1;
+      const file = fs.createReadStream(resolvedFilePath, { start, end });
+      const head = {
+        'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+        'Accept-Ranges': 'bytes',
+        'Content-Length': chunksize,
+        'Content-Type': 'video/mp4',
+      };
+      res.writeHead(206, head);
+      file.pipe(res);
+    } else {
+      const head = {
+        'Content-Length': fileSize,
+        'Content-Type': 'video/mp4',
+      };
+      res.writeHead(200, head);
+      fs.createReadStream(resolvedFilePath).pipe(res);
+    }
+  } catch (err) {
+    console.error('[API_V2 ERROR] Erro ao servir shadow 3c2 video:', err.message);
+    return res.status(500).json({
+      success: false,
+      error: 'STREAMING_ERROR',
+      message: 'Erro ao servir vídeo shadow 3c2'
+    });
+  }
+});
+
 module.exports = router;
+
