@@ -941,13 +941,13 @@
       </section>
 
       <!-- Card do Shadow Composer 3C.2 (Fase 3C.2 - B-Roll + PIP) -->
-      <section class="card" style="border: 1px solid #10B981; background: rgba(16, 185, 129, 0.05);">
+      <section class="card" id="shadow3c2Section" style="border: 2px solid #10B981; background: rgba(16, 185, 129, 0.05); box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15);">
         <div class="card-header">
-          <h3 class="card-title" style="color: #10B981;">🚀 Shadow Composer 3C.2 (B-Roll Dinâmico + PIP)</h3>
-          <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #10B981; border: 1px solid #10B981;">FASE 3C.2</span>
+          <h3 class="card-title" style="color: #10B981; font-size: 1.2rem;">🚀 Shadow Composer 3C.2 (B-Roll Dinâmico + PIP)</h3>
+          <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #10B981; border: 1px solid #10B981; font-size: 0.85rem;">FASE 3C.2 HOMOLOGAÇÃO</span>
         </div>
-        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
-          Gere uma versão cinematográfica com <strong>Múltiplos B-rolls do Imóvel</strong>, <strong>Ken Burns suave</strong>, <strong>Apresentador em Picture-in-Picture (PIP) com Lip-Sync</strong> e <strong>Overlays Dinâmicos</strong> em modo Shadow.
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">
+          Versão cinematográfica com <strong>4 Fotos Reais do CRM (Edifício Diana)</strong>, <strong>Ken Burns determinístico</strong>, <strong>Apresentador em Picture-in-Picture (PIP) com Lip-Sync</strong> e <strong>Overlays Dinâmicos</strong>.
         </p>
 
         <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end; margin-bottom: 1rem;">
@@ -959,27 +959,47 @@
             </select>
           </div>
           <div>
-            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Variante / Gancho:</label>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Renderizar Variante:</label>
             <select id="shadow3c2VarSelect" class="input-field" style="padding: 0.5rem 0.75rem; font-size: 0.85rem; width: auto;">
-              <option value="1">Vídeo 1 (Gancho 1)</option>
-              <option value="2">Vídeo 2 (Gancho 2)</option>
-              <option value="3">Vídeo 3 (Gancho 3)</option>
+              <option value="1">Vídeo 1 (C1 - Choque / Entrada)</option>
+              <option value="2">Vídeo 2 (C2 - Aluguel vs Parcela)</option>
+              <option value="3">Vídeo 3 (C3 - Renda / Oportunidade)</option>
             </select>
           </div>
           <button type="button" id="btnComposeShadow3c2" class="btn-pilot" style="background: #10B981; padding: 0.6rem 1.25rem;" onclick="handleComposeShadow3c2()">
-            <span>🚀 Renderizar Edição Shadow 3C.2</span>
+            <span>🚀 Re-renderizar Selecionado</span>
           </button>
         </div>
 
-        <div id="shadow3c2Status" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; display: none;"></div>
+        <div id="shadow3c2Status" style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.75rem; display: none;"></div>
+
+        <!-- Seletor de Abas de Criativos C1, C2, C3 -->
+        <div id="shadow3c2TabsContainer" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+          <button type="button" id="tab3c2C1" class="btn-submit" style="background: #10B981; color: #fff; font-size: 0.85rem; padding: 0.5rem 1rem; border-radius: 6px;" onclick="switchShadow3c2Tab(1)">
+            <span>💡 Criativo 1 (C1 — Choque / Entrada)</span>
+          </button>
+          <button type="button" id="tab3c2C2" class="btn-submit" style="background: rgba(255,255,255,0.1); color: var(--text-secondary); font-size: 0.85rem; padding: 0.5rem 1rem; border-radius: 6px;" onclick="switchShadow3c2Tab(2)">
+            <span>🔥 Criativo 2 (C2 — Aluguel vs Parcela)</span>
+          </button>
+          <button type="button" id="tab3c2C3" class="btn-submit" style="background: rgba(255,255,255,0.1); color: var(--text-secondary); font-size: 0.85rem; padding: 0.5rem 1rem; border-radius: 6px;" onclick="switchShadow3c2Tab(3)">
+            <span>🌿 Criativo 3 (C3 — Renda / Oportunidade)</span>
+          </button>
+        </div>
 
         <!-- Player do Shadow 3C.2 -->
-        <div id="shadow3c2PlayerBox" style="display: none; flex-direction: column; gap: 0.75rem; margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid var(--border-color);">
-          <div style="font-size: 0.85rem; font-weight: 700; color: #10B981; display: flex; align-items: center; gap: 0.4rem;">
-            <span>🎬 Vídeo Editado Shadow 3C.2 (B-Roll + PIP Preview)</span>
+        <div id="shadow3c2PlayerBox" style="display: none; flex-direction: column; gap: 0.85rem; padding: 1.25rem; background: rgba(0,0,0,0.4); border-radius: 10px; border: 1px solid rgba(16, 185, 129, 0.3);">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <div style="font-size: 0.95rem; font-weight: 700; color: #10B981; display: flex; align-items: center; gap: 0.4rem;">
+              <span id="shadow3c2ActiveTitle">🎬 Vídeo Editado Shadow 3C.2 (C1)</span>
+            </div>
+            <a id="shadow3c2DownloadLink" href="#" target="_blank" class="btn-copy" style="padding: 0.35rem 0.75rem; font-size: 0.85rem; color: #10B981; border-color: #10B981;">
+              📥 Baixar MP4 deste Criativo
+            </a>
           </div>
-          <video id="shadow3c2VideoElement" controls playsinline preload="metadata" style="max-width: 320px; border-radius: 6px;"></video>
-          <div id="shadow3c2MetaText" style="font-size: 0.75rem; color: var(--text-muted);"></div>
+
+          <video id="shadow3c2VideoElement" controls playsinline preload="metadata" style="max-width: 400px; width: 100%; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.4);"></video>
+          
+          <div id="shadow3c2MetaText" style="font-size: 0.85rem; line-height: 1.5; color: #D1D5DB; background: rgba(0,0,0,0.2); padding: 0.75rem; border-radius: 6px;"></div>
         </div>
       </section>
 
@@ -1453,8 +1473,62 @@
       }
     }
 
+    // Gerenciador de Abas do Shadow 3C.2 (C1, C2, C3)
+    function switchShadow3c2Tab(index) {
+      if (!currentJobId) return;
+      const numIdx = parseInt(index, 10) || 1;
+
+      // Atualizar botões de aba
+      [1, 2, 3].forEach(i => {
+        const tabBtn = document.getElementById(`tab3c2C${i}`);
+        if (tabBtn) {
+          if (i === numIdx) {
+            tabBtn.style.background = '#10B981';
+            tabBtn.style.color = '#FFFFFF';
+            tabBtn.style.fontWeight = '700';
+            tabBtn.style.boxShadow = '0 0 10px rgba(16, 185, 129, 0.4)';
+          } else {
+            tabBtn.style.background = 'rgba(255, 255, 255, 0.08)';
+            tabBtn.style.color = 'var(--text-secondary)';
+            tabBtn.style.fontWeight = '500';
+            tabBtn.style.boxShadow = 'none';
+          }
+        }
+      });
+
+      const videoElem = document.getElementById('shadow3c2VideoElement');
+      const playerBox = document.getElementById('shadow3c2PlayerBox');
+      const activeTitle = document.getElementById('shadow3c2ActiveTitle');
+      const downloadLink = document.getElementById('shadow3c2DownloadLink');
+      const metaText = document.getElementById('shadow3c2MetaText');
+      const varSelect = document.getElementById('shadow3c2VarSelect');
+
+      if (varSelect) varSelect.value = String(numIdx);
+
+      const streamUrl = `/api/v2/panel/video-jobs/${currentJobId}/shadow-3c2-video/${numIdx}?t=${Date.now()}`;
+      videoElem.src = streamUrl;
+      downloadLink.href = streamUrl;
+
+      const titles = {
+        1: '🎬 Criativo 1 (C1) — Choque / Entrada no Imóvel',
+        2: '🎬 Criativo 2 (C2) — Aluguel vs Parcela Financiada',
+        3: '🎬 Criativo 3 (C3) — Renda Familiar / Oportunidade'
+      };
+
+      const looks = {
+        1: 'Look: Terno Executivo 👔 | Hook: 395 mil no Diana com 79 mil de entrada',
+        2: 'Look: Podcaster no Microfone 🎙️ | Hook: Comparativo Aluguel vs Compra',
+        3: 'Look: Casual 🌿 | Hook: Renda e condições especiais'
+      };
+
+      activeTitle.textContent = titles[numIdx] || `🎬 Criativo ${numIdx} (C${numIdx})`;
+      metaText.innerHTML = `<strong>${titles[numIdx]}</strong><br>${looks[numIdx]}<br><strong>Composição:</strong> 0-2s Presenter Fullscreen → 2-8s Foto 1 (Ken Burns Zoom + Preço) → 8-16s Foto 2 (Ken Burns Zoom Out + <strong>Presenter PIP</strong>) → 16-24s Foto 3 (Pan + Localização) → 24-39s Foto 4 (Varanda Gourmet + CTA)`;
+
+      playerBox.style.display = 'flex';
+    }
+
     // Carregar Job específico (ex: Showcase)
-    async function loadJobById(jobId) {
+    async function loadJobById(jobId, targetShowcase = '3c2') {
       stopPolling();
       const errorBanner = document.getElementById('errorBanner');
       const degradedBanner = document.getElementById('degradedBanner');
@@ -1470,7 +1544,13 @@
           renderJobData(data, false);
           updatePipelineState(data.status, data.error_message, data);
 
-          // Carregar Player do Shadow 3C
+          // Carregar Player do Shadow 3C.2 (B-Roll + PIP)
+          const shadow3c2Status = document.getElementById('shadow3c2Status');
+          switchShadow3c2Tab(1);
+          shadow3c2Status.style.display = 'block';
+          shadow3c2Status.innerHTML = `<span style="color: #10B981; font-weight: 700;">🚀 Showcase Fase 3C.2 (B-Roll Dinâmico + PIP) com fotos reais carregado com sucesso! Selecione C1, C2 ou C3 abaixo:</span>`;
+
+          // Carregar Player do Shadow 3C.1 (Legado Overlays)
           const shadowPlayerBox = document.getElementById('shadow3cPlayerBox');
           const shadowVideoElem = document.getElementById('shadow3cVideoElement');
           const shadowMetaText = document.getElementById('shadow3cMetaText');
@@ -1478,14 +1558,20 @@
 
           const shadowStreamUrl = `/api/v2/panel/video-jobs/${currentJobId}/shadow-3c-video/1?t=${Date.now()}`;
           shadowVideoElem.src = shadowStreamUrl;
-          shadowMetaText.innerHTML = `<strong>Showcase Homologação Fase 3C.1</strong> (Ref: ${data.property_ref})<br><strong>Estilo:</strong> performance_reels_v1 (v1)<br><strong>Timestamps:</strong> 0-6s Headline | 8-14s Price Punch | 18-24s Location Tag | 28-39s CTA Banner + Legendas`;
+          shadowMetaText.innerHTML = `<strong>Showcase Fase 3C.1 (Overlays Únicos)</strong> (Ref: ${data.property_ref})<br><strong>Estilo:</strong> performance_reels_v1 (v1)`;
           shadowPlayerBox.style.display = 'flex';
           shadowStatus.style.display = 'block';
-          shadowStatus.innerHTML = `<span style="color: var(--success); font-weight: 600;">✨ Vídeo da Fase 3C.1 carregado com sucesso no player Shadow 3C abaixo!</span>`;
+          shadowStatus.innerHTML = `<span style="color: var(--purple); font-weight: 600;">✨ Versão 3C.1 disponível abaixo.</span>`;
 
-          // Rolar suavemente até o player 3C
+          // Rolar suavemente até a seção apropriada
           setTimeout(() => {
-            shadowPlayerBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (targetShowcase === '3c2') {
+              const sec = document.getElementById('shadow3c2Section');
+              if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+              const sec = document.getElementById('shadow3cPlayerBox');
+              if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
           }, 300);
 
           return true;
@@ -1559,9 +1645,6 @@
       const styleSelect = document.getElementById('shadow3c2StyleSelect');
       const varSelect = document.getElementById('shadow3c2VarSelect');
       const statusDiv = document.getElementById('shadow3c2Status');
-      const playerBox = document.getElementById('shadow3c2PlayerBox');
-      const videoElem = document.getElementById('shadow3c2VideoElement');
-      const metaText = document.getElementById('shadow3c2MetaText');
 
       const styleId = styleSelect.value;
       const varIndex = varSelect.value;
@@ -1569,7 +1652,7 @@
       btn.disabled = true;
       btn.innerHTML = '<span>⏳ Renderizando Shadow 3C.2 (B-Roll + PIP)...</span>';
       statusDiv.style.display = 'block';
-      statusDiv.textContent = 'Enviando requisição de renderização Shadow 3C.2 ao Composer...';
+      statusDiv.textContent = `Enviando requisição de renderização da Variante ${varIndex} ao Composer 3C.2...`;
 
       try {
         const res = await fetch(`/api/v2/panel/video-jobs/${currentJobId}/compose-shadow-3c2`, {
@@ -1582,11 +1665,9 @@
         });
         const data = await res.json();
         if (res.status === 200 && data.success) {
-          statusDiv.innerHTML = `<span style="color: #10B981; font-weight: 600;">✅ Renderizado com sucesso em ${data.render_duration_ms || data.result?.specs?.duration}s! (Estilo: ${data.style_id || styleId})</span>`;
-          const streamUrl = `/api/v2/panel/video-jobs/${currentJobId}/shadow-3c2-video/${varIndex}?t=${Date.now()}`;
-          videoElem.src = streamUrl;
-          metaText.innerHTML = `<strong>Asset ID:</strong> ${data.asset_id || data.result?.asset_id}<br><strong>Render Key:</strong> <code>${data.render_key || data.result?.render_key}</code><br><strong>Composição:</strong> Presenter Fullscreen + 4 B-rolls (Ken Burns) + Presenter PIP + Overlays 3C.1`;
-          playerBox.style.display = 'flex';
+          statusDiv.innerHTML = `<span style="color: #10B981; font-weight: 600;">✅ Criativo C${varIndex} renderizado com sucesso em ${data.render_duration_ms || data.result?.specs?.duration}s!</span>`;
+          switchShadow3c2Tab(varIndex);
+          const videoElem = document.getElementById('shadow3c2VideoElement');
           videoElem.play().catch(() => {});
         } else {
           statusDiv.innerHTML = `<span style="color: var(--error);">❌ Erro: ${data.message || 'Falha na renderização 3C.2'}</span>`;
@@ -1595,7 +1676,7 @@
         statusDiv.innerHTML = `<span style="color: var(--error);">❌ Falha de rede: ${err.message}</span>`;
       } finally {
         btn.disabled = false;
-        btn.innerHTML = '<span>🚀 Renderizar Edição Shadow 3C.2</span>';
+        btn.innerHTML = '<span>🚀 Re-renderizar Selecionado</span>';
       }
     }
 
@@ -1605,11 +1686,11 @@
       const jobIdParam = urlParams.get('job_id');
       const showcaseParam = urlParams.get('showcase');
       if (jobIdParam) {
-        loadJobById(jobIdParam);
-      } else if (showcaseParam === '3c2') {
-        loadJobById('c3c10000-0000-4000-8000-000000001639');
-      } else if (showcaseParam === '3c1' || showcaseParam === 'true') {
-        loadJobById('c3c10000-0000-4000-8000-000000001639');
+        loadJobById(jobIdParam, '3c2');
+      } else if (showcaseParam === '3c2' || !showcaseParam) {
+        loadJobById('c3c10000-0000-4000-8000-000000001639', '3c2');
+      } else if (showcaseParam === '3c1') {
+        loadJobById('c3c10000-0000-4000-8000-000000001639', '3c1');
       }
     });
   </script>
