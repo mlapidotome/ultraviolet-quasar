@@ -1,0 +1,267 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-09-05T22:09:45.966321+00:00",
+  "audit_type": "REAL_PILOT_GROUND_TRUTH_REVEAL",
+  "upstream_manifests": {
+    "blind_predictions_v1_path": "brain/address_finder/phase_real_listing_blind_predictions.json",
+    "blind_predictions_v1_sha256": "a6ba9cfad39e864586e65f04486a0367ca088baa42242ea1e95d20e9cce72266",
+    "blind_predictions_v2_path": "brain/address_finder/phase_real_listing_blind_predictions_v2_map.json",
+    "blind_predictions_v2_sha256": "70d7afc19277e2d257e9c3b1e02440c5c94b7d3a02c93abf9fb3f6c946424255",
+    "public_inputs_target_owned_path": "brain/address_finder/phase_real_listing_public_inputs_target_owned.json",
+    "public_inputs_target_owned_sha256": "6968654618d489431d46831668ed47bad5f16bc97bde250baca415db01d04f46",
+    "map_location_audit_path": "brain/address_finder/phase_real_listing_map_location_audit.json",
+    "map_location_audit_sha256": "cfdc947e8e1b1a7281634412e7adc3eb3511d0300a621fb9988af7d85a25d4a9",
+    "candidate_corpus_path": "acervo_casas_taubate.json",
+    "candidate_corpus_sha256": "42e9816f81a7acd37e4e8d610faed225d5b71d889eb0bcea5da4d31397952a7b"
+  },
+  "cohort_summary": {
+    "total_listings": 10,
+    "eligible_listings": 8,
+    "preselection_eligibility_errors": 2,
+    "preselection_error_ids": [
+      "32738189",
+      "40591449"
+    ],
+    "corpus_membership_counts": {
+      "KNOWN_FULL_BC_IN_CORPUS": 0,
+      "KNOWN_DSQLLL_IN_CORPUS": 0,
+      "SAME_DSQ_ONLY_IN_CORPUS": 1,
+      "NOT_PRESENT_IN_CORPUS": 9
+    }
+  },
+  "listings": [
+    {
+      "listing_id": "26230879",
+      "eligibility_status": "ELIGIBLE",
+      "broker_name": "BONFIM IMÓVEIS",
+      "broker_reference": "SB00079",
+      "gt_status": "GT_PARTIALLY_RESOLVED",
+      "resolved_neighbourhood": "Jardim Gurilândia",
+      "resolved_street": null,
+      "resolved_house_number": null,
+      "resolved_cep": null,
+      "resolved_coordinates": null,
+      "evidence_sources": [
+        "Broker ad: Bonfim Imóveis Ref SB00079",
+        "Listing title: Casa com 2 quartos no Jardim Gurilândia, Taubaté - SP",
+        "Listing description: Sobrado 170m² com 2 dormitórios (1 suíte), 2 espaços comerciais na frente, valor R$ 400.000 / R$ 649.000, permuta por Mogi das Cruzes",
+        "Street name withheld by broker in public listing"
+      ],
+      "cadastral_bc": null,
+      "corpus_membership_status": "NOT_PRESENT_IN_CORPUS",
+      "corpus_membership_rationale": "Jardim Gurilândia has zero parcels in acervo_casas_taubate.json (0/3002 parcels)."
+    },
+    {
+      "listing_id": "30744879",
+      "eligibility_status": "ELIGIBLE",
+      "broker_name": "MURILO BECKER IMÓVEIS",
+      "broker_reference": "CA3009",
+      "gt_status": "GT_STREET_RESOLVED_NUMBER_ABSENT",
+      "resolved_neighbourhood": "Jardim Continental III",
+      "resolved_street": "Rua Doutor Cyro Lemos de Oliveira",
+      "resolved_house_number": null,
+      "resolved_cep": "12093-720",
+      "resolved_coordinates": {
+        "latitude": -23.0644368,
+        "longitude": -45.5775586
+      },
+      "evidence_sources": [
+        "Broker ad: Murilo Becker Imóveis Ref CA3009 (CRECI 25324J)",
+        "Listing title & URL: Rua Doutor Cyro Lemos de Oliveira, Jardim Continental III",
+        "Map card coordinates: (-23.0644368, -45.5775586)",
+        "Property metrics: Terreno 125m², Área construída 70m², 2 dormitórios",
+        "House number withheld by broker in public advertisement"
+      ],
+      "cadastral_bc": null,
+      "corpus_membership_status": "NOT_PRESENT_IN_CORPUS",
+      "corpus_membership_rationale": "Jardim Continental III has zero parcels in acervo_casas_taubate.json (0/3002 parcels)."
+    },
+    {
+      "listing_id": "32738189",
+      "eligibility_status": "PRESELECTION_ELIGIBILITY_ERROR_CONDO",
+      "broker_name": "PIRÂMIDE IMÓVEIS",
+      "broker_reference": "SO0140_PIRQ",
+      "gt_status": "GT_CONDO_RESOLVED",
+      "resolved_neighbourhood": "Jardim Santa Tereza",
+      "resolved_condominium": "Condomínio Ouro Ville",
+      "resolved_street": null,
+      "resolved_house_number": null,
+      "resolved_cep": null,
+      "resolved_coordinates": null,
+      "evidence_sources": [
+        "Broker ad: Pirâmide Imóveis Ref SO0140_PIRQ",
+        "Ad headline: Sobrado à venda, 310 m² por R$ 1.500.000,00 - Condomínio Ouro Ville - Taubaté/SP",
+        "Target-owned image alt text: Sobrado à venda, 310 m² por R$ 1.500.000,00 - Condomínio Ouro Ville - Taubaté/SP",
+        "Preselection error: Gated condominium excluded by main pilot protocol"
+      ],
+      "cadastral_bc": null,
+      "corpus_membership_status": "NOT_PRESENT_IN_CORPUS",
+      "corpus_membership_rationale": "Condomínio Ouro Ville / Jardim Santa Tereza has zero parcels in acervo_casas_taubate.json (0/3002 parcels)."
+    },
+    {
+      "listing_id": "37154734",
+      "eligibility_status": "ELIGIBLE",
+      "broker_name": "FRANCO CONSULTORIA DE IMÓVEIS",
+      "broker_reference": "CA2233 / CA2233-FRCX",
+      "gt_status": "GT_STREET_RESOLVED_NUMBER_ABSENT",
+      "resolved_neighbourhood": "Jardim Eulália",
+      "resolved_street": "Travessa São Benedito",
+      "resolved_house_number": null,
+      "resolved_cep": null,
+      "resolved_coordinates": {
+        "latitude": -23.01943,
+        "longitude": -45.56438
+      },
+      "evidence_sources": [
+        "Broker ad: Franco Consultoria de Imóveis Ref CA2233-FRCX",
+        "Target-owned CDN image upload path: .../37154734/sp-taubate-jardim-eulalia-travessa-sao-benedito-casa-sobrado-a-venda-2-quartos-69267077-1.jpg",
+        "Map card coordinates: (-23.01943, -45.56438)",
+        "Listing description: 170m² de área construída, terreno 360m², sobrado com edícula independente, R$ 380.000",
+        "House number withheld by broker in public listing"
+      ],
+      "cadastral_bc": null,
+      "corpus_membership_status": "NOT_PRESENT_IN_CORPUS",
+      "corpus_membership_rationale": "Jardim Eulália has zero parcels in acervo_casas_taubate.json (0/3002 parcels)."
+    },
+    {
+      "listing_id": "38732282",
+      "eligibility_status": "ELIGIBLE",
+      "broker_name": "META NEGÓCIOS IMOBILIÁRIOS",
+      "broker_reference": "CA0355 / CA0355-METH",
+      "gt_status": "GT_PARTIALLY_RESOLVED",
+      "resolved_neighbourhood": "Jardim Mourisco",
+      "resolved_street": null,
+      "resolved_house_number": null,
+      "resolved_cep": null,
+      "resolved_coordinates": null,
+      "evidence_sources": [
+        "Broker ad: Meta Negócios Imobiliários Ref CA0355-METH (CRECI J9093)",
+        "Ad headline: Casa com 3 dormitórios à venda, 160 m² por R$ 520.000,00 - Jardim Mourisco - Taubaté/SP",
+        "Property metrics: Terreno 248,28m², Área construída 160m², 3 dormitórios (1 suíte), 4 garagens, rancho com fogão a lenha",
+        "Street name withheld by broker on public website"
+      ],
+      "cadastral_bc": null,
+      "corpus_membership_status": "SAME_DSQ_ONLY_IN_CORPUS",
+      "corpus_membership_rationale": "Jardim Mourisco belongs to cadastral sector 5.2. acervo_casas_taubate.json contains 48 parcels in sector 5.2 (quadras 048, 049, 050, 051, 053, 054, 058), but the exact street/house number was not published by the broker to resolve full BC."
+    },
+    {
+      "listing_id": "38813993",
+      "eligibility_status": "ELIGIBLE",
+      "broker_name": "DAVALE NEGÓCIOS IMOBILIÁRIOS",
+      "broker_reference": "CA0843",
+      "gt_status": "GT_STREET_RESOLVED_NUMBER_ABSENT",
+      "resolved_neighbourhood": "Campos Elíseos",
+      "resolved_street": "Rua das Estrelízias",
+      "resolved_house_number": null,
+      "resolved_cep": null,
+      "resolved_coordinates": {
+        "latitude": -23.01684,
+        "longitude": -45.56454
+      },
+      "evidence_sources": [
+        "Broker ad: Davale Negócios Imobiliários Ref CA0843",
+        "Target-owned CDN image upload path: .../38813993/sp-taubate-campos-eliseos-rua-das-estrelizeas-casa-sobrado-a-venda-4-quartos-69742816-1.jpg",
+        "Map card coordinates: (-23.01684, -45.56454)",
+        "Listing description: 185m² de área construída, 4 dormitórios, 4 vagas de garagem, R$ 890.000",
+        "House number withheld by broker in public listing"
+      ],
+      "cadastral_bc": null,
+      "corpus_membership_status": "NOT_PRESENT_IN_CORPUS",
+      "corpus_membership_rationale": "Campos Elíseos has zero parcels in acervo_casas_taubate.json (0/3002 parcels)."
+    },
+    {
+      "listing_id": "40591449",
+      "eligibility_status": "PRESELECTION_ELIGIBILITY_ERROR_CONDO",
+      "broker_name": "JEREMIAS RODRIGUES IMÓVEIS DE ALTO PADRÃO",
+      "broker_reference": "IMOV-22043",
+      "gt_status": "GT_CONDO_RESOLVED",
+      "resolved_neighbourhood": "Jardim Oasis",
+      "resolved_condominium": "Condomínio Jardim Oásis",
+      "resolved_street": "Avenida Carlos Pedroso da Silveira",
+      "resolved_house_number": null,
+      "resolved_cep": "12043-000",
+      "resolved_coordinates": {
+        "latitude": -23.02648,
+        "longitude": -45.59912
+      },
+      "evidence_sources": [
+        "Broker ad: Jeremias Rodrigues Imóveis de Alto Padrão Ref IMOV-22043",
+        "Listing title & description: Avenida Carlos Pedroso da Silveira, Condomínio Jardim Oásis em Taubaté",
+        "Target-owned CDN image upload path: .../40591449/sp-taubate-jardim-oasis-avenida-carlos-pedroso-da-silveira-casa-sobrado-a-venda-3-quartos-69ba9d07-1.jpg",
+        "Map card coordinates: (-23.02648, -45.59912)",
+        "Property metrics: Terreno 500m², Área construída 271m², 3 suítes, piscina, 6 vagas de garagem, R$ 990.000",
+        "Preselection error: Gated condominium excluded by main pilot protocol"
+      ],
+      "cadastral_bc": null,
+      "corpus_membership_status": "NOT_PRESENT_IN_CORPUS",
+      "corpus_membership_rationale": "Condomínio Jardim Oásis has zero parcels in acervo_casas_taubate.json (0/3002 parcels)."
+    },
+    {
+      "listing_id": "40712114",
+      "eligibility_status": "ELIGIBLE",
+      "broker_name": "CELTEMAE IMOVEIS CONSULTORIA IMOBILIARIA",
+      "broker_reference": "V1222",
+      "gt_status": "GT_PARTIALLY_RESOLVED",
+      "resolved_neighbourhood": "Vila Santa Isabel",
+      "resolved_street": null,
+      "resolved_house_number": null,
+      "resolved_cep": null,
+      "resolved_coordinates": null,
+      "evidence_sources": [
+        "Broker ad: Celtemae Imóveis Consultoria Imobiliária Ref V1222",
+        "Listing description: Vila Santa Isabel, próximo da Avenida Vila Rica, na Estiva; rua sem saída; 4 quartos, 3 garagens, piscina, 219m², R$ 690.000",
+        "Street name withheld by broker in public listing"
+      ],
+      "cadastral_bc": null,
+      "corpus_membership_status": "NOT_PRESENT_IN_CORPUS",
+      "corpus_membership_rationale": "Vila Santa Isabel has zero parcels in acervo_casas_taubate.json (0/3002 parcels)."
+    },
+    {
+      "listing_id": "42910754",
+      "eligibility_status": "ELIGIBLE",
+      "broker_name": "BRASIL CORRETORES ASSOCIADOS",
+      "broker_reference": "SCMV53",
+      "gt_status": "GT_STREET_RESOLVED_NUMBER_ABSENT",
+      "resolved_neighbourhood": "Jardim Oasis",
+      "resolved_street": "Rua Edu Mattos Ortiz",
+      "resolved_house_number": null,
+      "resolved_cep": "12042-247",
+      "resolved_coordinates": {
+        "latitude": -23.03653,
+        "longitude": -45.58457
+      },
+      "evidence_sources": [
+        "Broker ad: Brasil Corretores Associados Ref SCMV53 (Corretor Sebastião Moura CRECI 154501)",
+        "Listing title & URL: Rua Edu Mattos Ortiz, Jardim Oasis, Taubaté - SP",
+        "Target-owned CDN image upload path: .../42910754/sp-taubate-jardim-oasis-rua-edu-mattos-ortiz-casa-sobrado-a-venda-2-quartos-6a118bfe-1.jpg",
+        "Map card coordinates: (-23.03653, -45.58457)",
+        "Property metrics: 70m² construção, terreno 150m², 2 quartos (1 suíte), 2 garagens, R$ 360.000",
+        "House number withheld by broker in public listing"
+      ],
+      "cadastral_bc": null,
+      "corpus_membership_status": "NOT_PRESENT_IN_CORPUS",
+      "corpus_membership_rationale": "Jardim Oasis has zero parcels in acervo_casas_taubate.json (0/3002 parcels)."
+    },
+    {
+      "listing_id": "44628622",
+      "eligibility_status": "ELIGIBLE",
+      "broker_name": "VALLEY GOLD IMÓVEIS",
+      "broker_reference": "CA2581 MP",
+      "gt_status": "GT_STREET_RESOLVED_NUMBER_ABSENT",
+      "resolved_neighbourhood": "Jardim Continental III",
+      "resolved_street": "Rua Doutor Cyro Lemos de Oliveira",
+      "resolved_house_number": null,
+      "resolved_cep": null,
+      "resolved_coordinates": null,
+      "evidence_sources": [
+        "Broker ad: Valley Gold Imóveis Ref CA2581 MP",
+        "Target-owned CDN image upload path: .../44628622/sp-taubate-jardim-continental-iii-rua-doutor-cyro-lemos-de-oliveira-casa-a-venda-2-quartos-6a54f7a1-00.jpg",
+        "Listing description: Terreno 125m², área construída 70m², 2 dormitórios, 1 vaga, despensa nos fundos, R$ 340.000",
+        "House number withheld by broker in public listing"
+      ],
+      "cadastral_bc": null,
+      "corpus_membership_status": "NOT_PRESENT_IN_CORPUS",
+      "corpus_membership_rationale": "Jardim Continental III has zero parcels in acervo_casas_taubate.json (0/3002 parcels)."
+    }
+  ]
+}
