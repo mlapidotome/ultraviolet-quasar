@@ -2,7 +2,7 @@
   "metadata": {
     "phase": "2.3Y",
     "title": "PUBLIC SPATIAL GROUND-TRUTH SOURCE CATALOG",
-    "generated_at": "2026-09-05T01:52:44.138683+00:00",
+    "generated_at": "2026-09-05T01:58:21.285927+00:00",
     "taxonomic_levels": {
       "LEVEL_0": "Street / neighborhood only (Nominatim / OSM without door numbers)",
       "LEVEL_1": "Street + house number (Geocoded address points without lot/cadastral binding)",
