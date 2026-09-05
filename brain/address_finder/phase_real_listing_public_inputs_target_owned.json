@@ -1,0 +1,1114 @@
+{
+  "audit_type": "STAGE_3_TARGET_OWNED_CLUE_ISOLATION",
+  "cep_absent_count": 7,
+  "cep_available_count": 3,
+  "cohort_size": 10,
+  "generated_at": "2026-09-05T21:17:04Z",
+  "house_number_absent_count": 10,
+  "house_number_available_count": 0,
+  "leakage_disqualified_count": 0,
+  "listings": [
+    {
+      "area_m2": "347",
+      "cep": null,
+      "cep_after": null,
+      "cep_before": null,
+      "clues": [
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "title",
+          "value": "Casa com 2 quartos no Jardim Gurilândia, Taubaté - SP - ID: 26230879 | Chaves na Mão"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_description",
+          "type": "description",
+          "value": "Comprar Casa no Jardim Gurilândia em Taubaté por R$ 649000 com 2 quartos e com 347m². Falar com BONFIM IMÓVEIS, ref: do imóvel: SB00079."
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "neighbourhood",
+          "value": "Jardim Gurilândia"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "discovery_pool_metadata",
+          "type": "property_type",
+          "value": "sobrado"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_description",
+          "type": "area_m2",
+          "value": "347"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_img_alt",
+          "type": "image_alt_geo",
+          "value": "Casa com 2 quartos à venda no Jardim Gurilândia, Taubaté"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_img_cdn",
+          "type": "image_url",
+          "value": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/431126/26230879/sp-taubate-jardim-gurilandia-nao-encontrado-a-venda-2-quartos-6a8ed232-1.jpg"
+        }
+      ],
+      "description_available": true,
+      "floors": null,
+      "house_number": null,
+      "house_number_after": null,
+      "house_number_before": null,
+      "house_number_policy": "HOUSE_NUMBER_ABSENT",
+      "image_alt_geo": true,
+      "image_audit": {
+        "related_images_count": 9,
+        "related_listing_ids": [
+          "25990189",
+          "36863133",
+          "37383065",
+          "38053693",
+          "43734747",
+          "43961192",
+          "44100542",
+          "45325457",
+          "46379322"
+        ],
+        "target_owned_images": [
+          {
+            "alt": "Casa com 2 quartos à venda no Jardim Gurilândia, Taubaté",
+            "ownership": "TARGET_LISTING_OWNED",
+            "src": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/431126/26230879/sp-taubate-jardim-gurilandia-nao-encontrado-a-venda-2-quartos-6a8ed232-1.jpg"
+          }
+        ],
+        "unknown_images_count": 0
+      },
+      "image_url_metadata_available": true,
+      "leak_evidence": [],
+      "leak_source": "NONE",
+      "leakage_class_after": "NO_LEAK",
+      "listing_id": "26230879",
+      "neighbourhood": "Jardim Gurilândia",
+      "property_type": "sobrado",
+      "provenance": {
+        "area_m2": "meta_description",
+        "description": "meta_description",
+        "image_alt_geo": "target_img_alt",
+        "image_url_metadata_available": "target_img_cdn",
+        "neighbourhood": "meta_title",
+        "property_type": "discovery_pool_metadata",
+        "title": "meta_title"
+      },
+      "related_listing_clue_count": 9,
+      "source_clues_sha256": "139317bdc4dffe6c4bb8b464246e9d8b023817ae1b459bea3a8fa8fea3121a92",
+      "source_html_sha256": "da9bb37b632e524dd5c979134f97f90958281af8ff18443635e0756f73ac8fb2",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-2-quartos-sp-taubate-jardim-gurilandia-RS649000/id-26230879/",
+      "street": null,
+      "street_after": null,
+      "street_available": false,
+      "street_before": null,
+      "target_owned_image_clue_count": 1,
+      "title": "Casa com 2 quartos no Jardim Gurilândia, Taubaté - SP - ID: 26230879 | Chaves na Mão",
+      "unknown_owner_clue_count": 0
+    },
+    {
+      "area_m2": "70",
+      "cep": "12093-720",
+      "cep_after": "12093-720",
+      "cep_before": "12093-720",
+      "clues": [
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "title",
+          "value": "Casa com 2 quartos na Rua Doutor Cyro Lemos de Oliveira, Jardim Continental III, Taubaté - SP - ID: 30744879 | Chaves na Mão"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_description",
+          "type": "description",
+          "value": "Comprar Casa na Rua doutor cyro lemos de oliveira, Jardim Continental III em Taubaté por R$ 320000 com 2 quartos, 2 garagens e com 70m². Falar com MURILO BECKER IMÓVEIS, ref: do imóvel: CA3009."
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "neighbourhood",
+          "value": "Jardim Continental III"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "street",
+          "value": "Rua Doutor Cyro Lemos de Oliveira"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_schema_postalCode",
+          "type": "cep",
+          "value": "12093-720"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "discovery_pool_metadata",
+          "type": "property_type",
+          "value": "sobrado"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_description",
+          "type": "area_m2",
+          "value": "70"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_img_alt",
+          "type": "image_alt_geo",
+          "value": "Casa térrea a venda com 2 quartos 70m² - Bairro Jd Continental - Taubaté"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_img_cdn",
+          "type": "image_url",
+          "value": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/242202/30744879/sp-taubate-jardim-continental-iii-rua-doutor-cyro-lemos-de-oliveira-casa-sobrado-a-venda-2-quartos-6824fa06-1.jpg"
+        }
+      ],
+      "description_available": true,
+      "floors": null,
+      "house_number": null,
+      "house_number_after": null,
+      "house_number_before": null,
+      "house_number_policy": "HOUSE_NUMBER_ABSENT",
+      "image_alt_geo": true,
+      "image_audit": {
+        "related_images_count": 9,
+        "related_listing_ids": [
+          "28408338",
+          "31479252",
+          "32966215",
+          "36616456",
+          "38982037",
+          "41368318",
+          "42835833",
+          "43604243",
+          "44628622"
+        ],
+        "target_owned_images": [
+          {
+            "alt": "Casa térrea a venda com 2 quartos 70m² - Bairro Jd Continental - Taubaté",
+            "ownership": "TARGET_LISTING_OWNED",
+            "src": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/242202/30744879/sp-taubate-jardim-continental-iii-rua-doutor-cyro-lemos-de-oliveira-casa-sobrado-a-venda-2-quartos-6824fa06-1.jpg"
+          }
+        ],
+        "unknown_images_count": 0
+      },
+      "image_url_metadata_available": true,
+      "leak_evidence": [],
+      "leak_source": "NONE",
+      "leakage_class_after": "NO_LEAK",
+      "listing_id": "30744879",
+      "neighbourhood": "Jardim Continental III",
+      "property_type": "sobrado",
+      "provenance": {
+        "area_m2": "meta_description",
+        "cep": "target_schema_postalCode",
+        "description": "meta_description",
+        "image_alt_geo": "target_img_alt",
+        "image_url_metadata_available": "target_img_cdn",
+        "neighbourhood": "meta_title",
+        "property_type": "discovery_pool_metadata",
+        "street": "meta_title",
+        "title": "meta_title"
+      },
+      "related_listing_clue_count": 9,
+      "source_clues_sha256": "88abee487900c471b06242a6babf67697db51567c1c63108d4c101d9d30de9d5",
+      "source_html_sha256": "825e7c6904b6b47f2c1be9f9a70d7074c5bee8966db445da5b1276e5c8b63f6a",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-2-quartos-com-garagem-sp-taubate-jardim-continental-iii-125m2-RS320000/id-30744879/",
+      "street": "Rua Doutor Cyro Lemos de Oliveira",
+      "street_after": "Rua Doutor Cyro Lemos de Oliveira",
+      "street_available": true,
+      "street_before": "Rua Doutor Cyro Lemos de Oliveira",
+      "target_owned_image_clue_count": 1,
+      "title": "Casa com 2 quartos na Rua Doutor Cyro Lemos de Oliveira, Jardim Continental III, Taubaté - SP - ID: 30744879 | Chaves na Mão",
+      "unknown_owner_clue_count": 0
+    },
+    {
+      "area_m2": "310",
+      "cep": null,
+      "cep_after": null,
+      "cep_before": null,
+      "clues": [
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "title",
+          "value": "Casa com 4 quartos no Jardim Santa Tereza, Taubaté - SP - ID: 32738189 | Chaves na Mão"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_description",
+          "type": "description",
+          "value": "Comprar Casa no Jardim Santa Tereza em Taubaté por R$ 1500000 com 4 quartos, 2 garagens e com 310m². Falar com PIRÂMIDE IMÓVEIS, ref: do imóvel: SO0140_PIRQ."
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "neighbourhood",
+          "value": "Jardim Santa Tereza"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "discovery_pool_metadata",
+          "type": "property_type",
+          "value": "sobrado"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_description",
+          "type": "area_m2",
+          "value": "310"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_img_alt",
+          "type": "image_alt_geo",
+          "value": "Sobrado à venda, 310 m² por R$ 1.500.000,00 - Condomínio Ouro Ville - Taubaté/SP"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_img_cdn",
+          "type": "image_url",
+          "value": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/37515/32738189/sp-taubate-jardim-santa-tereza-nao-encontrado-casa-sobrado-a-venda-4-quartos-6a8ae13a-1.jpg"
+        }
+      ],
+      "description_available": true,
+      "floors": null,
+      "house_number": null,
+      "house_number_after": null,
+      "house_number_before": null,
+      "house_number_policy": "HOUSE_NUMBER_ABSENT",
+      "image_alt_geo": true,
+      "image_audit": {
+        "related_images_count": 9,
+        "related_listing_ids": [
+          "28456102",
+          "34809236",
+          "43514850",
+          "43604380",
+          "45693673",
+          "45693761",
+          "45693798",
+          "45693829",
+          "45693857"
+        ],
+        "target_owned_images": [
+          {
+            "alt": "Sobrado à venda, 310 m² por R$ 1.500.000,00 - Condomínio Ouro Ville - Taubaté/SP",
+            "ownership": "TARGET_LISTING_OWNED",
+            "src": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/37515/32738189/sp-taubate-jardim-santa-tereza-nao-encontrado-casa-sobrado-a-venda-4-quartos-6a8ae13a-1.jpg"
+          }
+        ],
+        "unknown_images_count": 0
+      },
+      "image_url_metadata_available": true,
+      "leak_evidence": [],
+      "leak_source": "NONE",
+      "leakage_class_after": "NO_LEAK",
+      "listing_id": "32738189",
+      "neighbourhood": "Jardim Santa Tereza",
+      "property_type": "sobrado",
+      "provenance": {
+        "area_m2": "meta_description",
+        "description": "meta_description",
+        "image_alt_geo": "target_img_alt",
+        "image_url_metadata_available": "target_img_cdn",
+        "neighbourhood": "meta_title",
+        "property_type": "discovery_pool_metadata",
+        "title": "meta_title"
+      },
+      "related_listing_clue_count": 9,
+      "source_clues_sha256": "762adbb80a1242b650834ec7ca6e3237ad19ad1f76c4ef71b22c90703e2b7d6a",
+      "source_html_sha256": "cda750b97571f3f87c1a4c5d7c0a1437be84b14d1975421e3d4d2f3abca7a81a",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-4-quartos-com-garagem-sp-taubate-jardim-santa-tereza-300m2-RS1500000/id-32738189/",
+      "street": null,
+      "street_after": null,
+      "street_available": false,
+      "street_before": null,
+      "target_owned_image_clue_count": 1,
+      "title": "Casa com 4 quartos no Jardim Santa Tereza, Taubaté - SP - ID: 32738189 | Chaves na Mão",
+      "unknown_owner_clue_count": 0
+    },
+    {
+      "area_m2": "170",
+      "cep": null,
+      "cep_after": null,
+      "cep_before": "12030-060",
+      "clues": [
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "title",
+          "value": "Casa com 2 quartos no Jardim Eulália, Taubaté - SP - ID: 37154734 | Chaves na Mão"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_description",
+          "type": "description",
+          "value": "Comprar Casa no Jardim Eulália em Taubaté por R$ 380000 com 2 quartos, 2 garagens e com 170m². Falar com FRANCO CONSULTORIA DE IMÓVEIS, ref: do imóvel: CA2233."
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "neighbourhood",
+          "value": "Jardim Eulália"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "discovery_pool_metadata",
+          "type": "property_type",
+          "value": "sobrado"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_description",
+          "type": "area_m2",
+          "value": "170"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_img_alt",
+          "type": "image_alt_geo",
+          "value": "Casa com 2 dormitórios à venda, 170 m² - Jardim Eulália - Taubaté/SP"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_img_cdn",
+          "type": "image_url",
+          "value": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/668262/37154734/sp-taubate-jardim-eulalia-travessa-sao-benedito-casa-sobrado-a-venda-2-quartos-69267077-1.jpg"
+        }
+      ],
+      "description_available": true,
+      "floors": null,
+      "house_number": null,
+      "house_number_after": null,
+      "house_number_before": null,
+      "house_number_policy": "HOUSE_NUMBER_ABSENT",
+      "image_alt_geo": true,
+      "image_audit": {
+        "related_images_count": 9,
+        "related_listing_ids": [
+          "15406479",
+          "26398319",
+          "28055988",
+          "30816864",
+          "38260332",
+          "43734342",
+          "44488616",
+          "45449839",
+          "45833622"
+        ],
+        "target_owned_images": [
+          {
+            "alt": "Casa com 2 dormitórios à venda, 170 m² - Jardim Eulália - Taubaté/SP",
+            "ownership": "TARGET_LISTING_OWNED",
+            "src": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/668262/37154734/sp-taubate-jardim-eulalia-travessa-sao-benedito-casa-sobrado-a-venda-2-quartos-69267077-1.jpg"
+          }
+        ],
+        "unknown_images_count": 0
+      },
+      "image_url_metadata_available": true,
+      "leak_evidence": [],
+      "leak_source": "NONE",
+      "leakage_class_after": "NO_LEAK",
+      "listing_id": "37154734",
+      "neighbourhood": "Jardim Eulália",
+      "property_type": "sobrado",
+      "provenance": {
+        "area_m2": "meta_description",
+        "description": "meta_description",
+        "image_alt_geo": "target_img_alt",
+        "image_url_metadata_available": "target_img_cdn",
+        "neighbourhood": "meta_title",
+        "property_type": "discovery_pool_metadata",
+        "title": "meta_title"
+      },
+      "related_listing_clue_count": 9,
+      "source_clues_sha256": "1a0458a365347fea43cfeac2ea4ff0a1667fd304ec87db1d911114fe2fb80ca3",
+      "source_html_sha256": "0cd17e6d65dca2b4101e873bf0644c367277ae745bc709bf4488c2c3cd9e87e2",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-2-quartos-com-garagem-sp-taubate-jardim-eulalia-360m2-RS380000/id-37154734/",
+      "street": null,
+      "street_after": null,
+      "street_available": false,
+      "street_before": null,
+      "target_owned_image_clue_count": 1,
+      "title": "Casa com 2 quartos no Jardim Eulália, Taubaté - SP - ID: 37154734 | Chaves na Mão",
+      "unknown_owner_clue_count": 0
+    },
+    {
+      "area_m2": "160",
+      "cep": null,
+      "cep_after": null,
+      "cep_before": "12020-140",
+      "clues": [
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "title",
+          "value": "Casa com 3 quartos no Jardim Mourisco, Taubaté - SP - ID: 38732282 | Chaves na Mão"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_description",
+          "type": "description",
+          "value": "Comprar Casa no Jardim Mourisco em Taubaté por R$ 520000 com 3 quartos, 4 garagens e com 160m². Falar com META NEGÓCIOS IMOBILIÁRIOS, ref: do imóvel: CA0355."
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "neighbourhood",
+          "value": "Jardim Mourisco"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "discovery_pool_metadata",
+          "type": "property_type",
+          "value": "sobrado"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_description",
+          "type": "area_m2",
+          "value": "160"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_img_alt",
+          "type": "image_alt_geo",
+          "value": "Casa com 3 dormitórios à venda, 160 m² por R$ 520.000,00 - Jardim Mourisco - Taubaté/SP"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_img_cdn",
+          "type": "image_url",
+          "value": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/275042/38732282/sp-taubate-jardim-mourisco-nao-encontrado-casa-sobrado-a-venda-3-quartos-69718c12-1.jpg"
+        }
+      ],
+      "description_available": true,
+      "floors": null,
+      "house_number": null,
+      "house_number_after": null,
+      "house_number_before": null,
+      "house_number_policy": "HOUSE_NUMBER_ABSENT",
+      "image_alt_geo": true,
+      "image_audit": {
+        "related_images_count": 9,
+        "related_listing_ids": [
+          "13922359",
+          "21210109",
+          "27840269",
+          "39565545",
+          "40288567",
+          "45833046",
+          "45833409",
+          "46132632",
+          "46150858"
+        ],
+        "target_owned_images": [
+          {
+            "alt": "Casa com 3 dormitórios à venda, 160 m² por R$ 520.000,00 - Jardim Mourisco - Taubaté/SP",
+            "ownership": "TARGET_LISTING_OWNED",
+            "src": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/275042/38732282/sp-taubate-jardim-mourisco-nao-encontrado-casa-sobrado-a-venda-3-quartos-69718c12-1.jpg"
+          }
+        ],
+        "unknown_images_count": 0
+      },
+      "image_url_metadata_available": true,
+      "leak_evidence": [],
+      "leak_source": "NONE",
+      "leakage_class_after": "NO_LEAK",
+      "listing_id": "38732282",
+      "neighbourhood": "Jardim Mourisco",
+      "property_type": "sobrado",
+      "provenance": {
+        "area_m2": "meta_description",
+        "description": "meta_description",
+        "image_alt_geo": "target_img_alt",
+        "image_url_metadata_available": "target_img_cdn",
+        "neighbourhood": "meta_title",
+        "property_type": "discovery_pool_metadata",
+        "title": "meta_title"
+      },
+      "related_listing_clue_count": 9,
+      "source_clues_sha256": "211810aa4913ad2384386e412c125611655be49470e175120d203b98ace4a9d9",
+      "source_html_sha256": "d071d56bbd63a19552a8c32df3eaf003e54678063d33273ad4f42f101c9ceed0",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-3-quartos-com-garagem-sp-taubate-jardim-mourisco-248m2-RS520000/id-38732282/",
+      "street": null,
+      "street_after": null,
+      "street_available": false,
+      "street_before": null,
+      "target_owned_image_clue_count": 1,
+      "title": "Casa com 3 quartos no Jardim Mourisco, Taubaté - SP - ID: 38732282 | Chaves na Mão",
+      "unknown_owner_clue_count": 0
+    },
+    {
+      "area_m2": "185",
+      "cep": null,
+      "cep_after": null,
+      "cep_before": null,
+      "clues": [
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "title",
+          "value": "Casa com 4 quartos no Campos Elíseos, Taubaté - SP - ID: 38813993 | Chaves na Mão"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_description",
+          "type": "description",
+          "value": "Comprar Casa no Campos Elíseos em Taubaté por R$ 890000 com 4 quartos, 4 garagens e com 185m². Falar com DAVALE NEGÓCIOS IMOBILIÁRIOS, ref: do imóvel: CA0843."
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "neighbourhood",
+          "value": "Campos Elíseos"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "discovery_pool_metadata",
+          "type": "property_type",
+          "value": "sobrado"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_description",
+          "type": "area_m2",
+          "value": "185"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_img_alt",
+          "type": "image_alt_geo",
+          "value": "Casa à venda, 185 m² por R$ 890.000,00 - Campos Elíseos - Taubaté/SP"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_img_cdn",
+          "type": "image_url",
+          "value": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/40641/38813993/sp-taubate-campos-eliseos-rua-das-estrelizeas-casa-sobrado-a-venda-4-quartos-69742816-1.jpg"
+        }
+      ],
+      "description_available": true,
+      "floors": null,
+      "house_number": null,
+      "house_number_after": null,
+      "house_number_before": null,
+      "house_number_policy": "HOUSE_NUMBER_ABSENT",
+      "image_alt_geo": true,
+      "image_audit": {
+        "related_images_count": 9,
+        "related_listing_ids": [
+          "19458949",
+          "35676961",
+          "37708371",
+          "41282984",
+          "44681296",
+          "45694048",
+          "45694084",
+          "46273885",
+          "7475480"
+        ],
+        "target_owned_images": [
+          {
+            "alt": "Casa à venda, 185 m² por R$ 890.000,00 - Campos Elíseos - Taubaté/SP",
+            "ownership": "TARGET_LISTING_OWNED",
+            "src": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/40641/38813993/sp-taubate-campos-eliseos-rua-das-estrelizeas-casa-sobrado-a-venda-4-quartos-69742816-1.jpg"
+          }
+        ],
+        "unknown_images_count": 0
+      },
+      "image_url_metadata_available": true,
+      "leak_evidence": [],
+      "leak_source": "NONE",
+      "leakage_class_after": "NO_LEAK",
+      "listing_id": "38813993",
+      "neighbourhood": "Campos Elíseos",
+      "property_type": "sobrado",
+      "provenance": {
+        "area_m2": "meta_description",
+        "description": "meta_description",
+        "image_alt_geo": "target_img_alt",
+        "image_url_metadata_available": "target_img_cdn",
+        "neighbourhood": "meta_title",
+        "property_type": "discovery_pool_metadata",
+        "title": "meta_title"
+      },
+      "related_listing_clue_count": 9,
+      "source_clues_sha256": "eaa8426df247e0a711b764b7710d96d2075fc971c3125530f2c7f2915ea1363c",
+      "source_html_sha256": "1ae38084bdb74cc258c9a0160b2f94d8d1d485452c36829aef28d417a1a22ed3",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-4-quartos-com-garagem-sp-taubate-campos-eliseos-417m2-RS890000/id-38813993/",
+      "street": null,
+      "street_after": null,
+      "street_available": false,
+      "street_before": null,
+      "target_owned_image_clue_count": 1,
+      "title": "Casa com 4 quartos no Campos Elíseos, Taubaté - SP - ID: 38813993 | Chaves na Mão",
+      "unknown_owner_clue_count": 0
+    },
+    {
+      "area_m2": null,
+      "cep": "12043-000",
+      "cep_after": "12043-000",
+      "cep_before": "12043-000",
+      "clues": [
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "title",
+          "value": "Casa com 3 quartos na Avenida Carlos Pedroso da Silveira, Jardim Oasis, Taubaté - SP - ID: 40591449 | Chaves na Mão"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_description",
+          "type": "description",
+          "value": "Comprar Casa na Avenida carlos pedroso da silveira, Jardim Oasis em Taubaté por R$ 990000 com 3 quartos e 6 garagens. Falar com JEREMIAS RODRIGUES IMÓVEIS DE ALTO PADRÃO, ref: do imóvel: IMOV-22043."
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "neighbourhood",
+          "value": "Jardim Oasis"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "street",
+          "value": "Avenida Carlos Pedroso da Silveira"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_schema_postalCode",
+          "type": "cep",
+          "value": "12043-000"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "discovery_pool_metadata",
+          "type": "property_type",
+          "value": "sobrado"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_img_alt",
+          "type": "image_alt_geo",
+          "value": "Casa com 3 quartos à venda na Avenida Carlos Pedroso da Silveira, Jardim Oasis, Taubaté"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_img_cdn",
+          "type": "image_url",
+          "value": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/247959/40591449/sp-taubate-jardim-oasis-avenida-carlos-pedroso-da-silveira-casa-sobrado-a-venda-3-quartos-69ba9d07-1.jpg"
+        }
+      ],
+      "description_available": true,
+      "floors": null,
+      "house_number": null,
+      "house_number_after": null,
+      "house_number_before": null,
+      "house_number_policy": "HOUSE_NUMBER_ABSENT",
+      "image_alt_geo": true,
+      "image_audit": {
+        "related_images_count": 9,
+        "related_listing_ids": [
+          "26739384",
+          "32757095",
+          "35362705",
+          "35362706",
+          "35362715",
+          "40591339",
+          "40591403",
+          "43734497",
+          "45449596"
+        ],
+        "target_owned_images": [
+          {
+            "alt": "Casa com 3 quartos à venda na Avenida Carlos Pedroso da Silveira, Jardim Oasis, Taubaté",
+            "ownership": "TARGET_LISTING_OWNED",
+            "src": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/247959/40591449/sp-taubate-jardim-oasis-avenida-carlos-pedroso-da-silveira-casa-sobrado-a-venda-3-quartos-69ba9d07-1.jpg"
+          }
+        ],
+        "unknown_images_count": 0
+      },
+      "image_url_metadata_available": true,
+      "leak_evidence": [],
+      "leak_source": "NONE",
+      "leakage_class_after": "NO_LEAK",
+      "listing_id": "40591449",
+      "neighbourhood": "Jardim Oasis",
+      "property_type": "sobrado",
+      "provenance": {
+        "cep": "target_schema_postalCode",
+        "description": "meta_description",
+        "image_alt_geo": "target_img_alt",
+        "image_url_metadata_available": "target_img_cdn",
+        "neighbourhood": "meta_title",
+        "property_type": "discovery_pool_metadata",
+        "street": "meta_title",
+        "title": "meta_title"
+      },
+      "related_listing_clue_count": 9,
+      "source_clues_sha256": "449da8c3946b8241f3c269695d8b55f0f6708c4e594ac76ee316740703cdb909",
+      "source_html_sha256": "4ec758b7fc1dbe29bce2db2fffed390792416cc4cc8affb1aa550e938229879d",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-3-quartos-com-garagem-sp-taubate-jardim-oasis-RS990000/id-40591449/",
+      "street": "Avenida Carlos Pedroso da Silveira",
+      "street_after": "Avenida Carlos Pedroso da Silveira",
+      "street_available": true,
+      "street_before": "Avenida Carlos Pedroso da Silveira",
+      "target_owned_image_clue_count": 1,
+      "title": "Casa com 3 quartos na Avenida Carlos Pedroso da Silveira, Jardim Oasis, Taubaté - SP - ID: 40591449 | Chaves na Mão",
+      "unknown_owner_clue_count": 0
+    },
+    {
+      "area_m2": "219",
+      "cep": null,
+      "cep_after": null,
+      "cep_before": "12043-390",
+      "clues": [
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "title",
+          "value": "Casa com 4 quartos na Vila Santa Isabel, Taubaté - SP - ID: 40712114 | Chaves na Mão"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_description",
+          "type": "description",
+          "value": "Comprar Casa na Vila Santa Isabel em Taubaté por R$ 690000 com 4 quartos, 3 garagens e com 219m². Falar com CELTEMAE IMOVEIS CONSULTORIA IMOBILIARIA, ref: do imóvel: V1222."
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "neighbourhood",
+          "value": "Vila Santa Isabel"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "discovery_pool_metadata",
+          "type": "property_type",
+          "value": "sobrado"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_description",
+          "type": "area_m2",
+          "value": "219"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_img_alt",
+          "type": "image_alt_geo",
+          "value": "Casa Térrea a Venda, com 04 dormitórios, Vila Santa Isabel, Taubaté SP"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_img_cdn",
+          "type": "image_url",
+          "value": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/220434/40712114/sp-taubate-vila-santa-isabel-nao-encontrado-casa-sobrado-a-venda-4-quartos-69be999c-1.jpg"
+        }
+      ],
+      "description_available": true,
+      "floors": null,
+      "house_number": null,
+      "house_number_after": null,
+      "house_number_before": null,
+      "house_number_policy": "HOUSE_NUMBER_ABSENT",
+      "image_alt_geo": true,
+      "image_audit": {
+        "related_images_count": 9,
+        "related_listing_ids": [
+          "28348068",
+          "31705581",
+          "32405264",
+          "33392907",
+          "42003436",
+          "43458950",
+          "43564810",
+          "45694126",
+          "46379329"
+        ],
+        "target_owned_images": [
+          {
+            "alt": "Casa Térrea a Venda, com 04 dormitórios, Vila Santa Isabel, Taubaté SP",
+            "ownership": "TARGET_LISTING_OWNED",
+            "src": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/220434/40712114/sp-taubate-vila-santa-isabel-nao-encontrado-casa-sobrado-a-venda-4-quartos-69be999c-1.jpg"
+          }
+        ],
+        "unknown_images_count": 0
+      },
+      "image_url_metadata_available": true,
+      "leak_evidence": [],
+      "leak_source": "NONE",
+      "leakage_class_after": "NO_LEAK",
+      "listing_id": "40712114",
+      "neighbourhood": "Vila Santa Isabel",
+      "property_type": "sobrado",
+      "provenance": {
+        "area_m2": "meta_description",
+        "description": "meta_description",
+        "image_alt_geo": "target_img_alt",
+        "image_url_metadata_available": "target_img_cdn",
+        "neighbourhood": "meta_title",
+        "property_type": "discovery_pool_metadata",
+        "title": "meta_title"
+      },
+      "related_listing_clue_count": 9,
+      "source_clues_sha256": "94a1ef1457bdd8d2121e8ecd37d380db6bda5f0527d19db13f00404c8524ccb0",
+      "source_html_sha256": "b14e26385e281b610bec8af86266bdb6f9062e07ab51c73caa18d84d9b6714c0",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-4-quartos-com-garagem-sp-taubate-vila-santa-isabel-283m2-RS690000/id-40712114/",
+      "street": null,
+      "street_after": null,
+      "street_available": false,
+      "street_before": null,
+      "target_owned_image_clue_count": 1,
+      "title": "Casa com 4 quartos na Vila Santa Isabel, Taubaté - SP - ID: 40712114 | Chaves na Mão",
+      "unknown_owner_clue_count": 0
+    },
+    {
+      "area_m2": "70",
+      "cep": "12042-247",
+      "cep_after": "12042-247",
+      "cep_before": "12042-247",
+      "clues": [
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "title",
+          "value": "Casa com 2 quartos na Rua Edu Mattos Ortiz, Jardim Oasis, Taubaté - SP - ID: 42910754 | Chaves na Mão"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_description",
+          "type": "description",
+          "value": "Comprar Casa na Rua edu mattos ortiz, Jardim Oasis em Taubaté por R$ 360000 com 2 quartos, 2 garagens e com 70m². Falar com BRASIL CORRETORES ASSOCIADOS, ref: do imóvel: SCMV53."
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "neighbourhood",
+          "value": "Jardim Oasis"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "street",
+          "value": "Rua Edu Mattos Ortiz"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_schema_postalCode",
+          "type": "cep",
+          "value": "12042-247"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "discovery_pool_metadata",
+          "type": "property_type",
+          "value": "sobrado"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_description",
+          "type": "area_m2",
+          "value": "70"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_img_alt",
+          "type": "image_alt_geo",
+          "value": "Casa com 2 quartos à venda na Rua Edu Mattos Ortiz, Jardim Oasis, Taubaté"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_img_cdn",
+          "type": "image_url",
+          "value": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/304155/42910754/sp-taubate-jardim-oasis-rua-edu-mattos-ortiz-casa-sobrado-a-venda-2-quartos-6a118bfe-1.jpg"
+        }
+      ],
+      "description_available": true,
+      "floors": null,
+      "house_number": null,
+      "house_number_after": null,
+      "house_number_before": null,
+      "house_number_policy": "HOUSE_NUMBER_ABSENT",
+      "image_alt_geo": true,
+      "image_audit": {
+        "related_images_count": 9,
+        "related_listing_ids": [
+          "16946471",
+          "22748981",
+          "22942404",
+          "23327748",
+          "31662583",
+          "33197115",
+          "37891859",
+          "43155837",
+          "43155864"
+        ],
+        "target_owned_images": [
+          {
+            "alt": "Casa com 2 quartos à venda na Rua Edu Mattos Ortiz, Jardim Oasis, Taubaté",
+            "ownership": "TARGET_LISTING_OWNED",
+            "src": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/304155/42910754/sp-taubate-jardim-oasis-rua-edu-mattos-ortiz-casa-sobrado-a-venda-2-quartos-6a118bfe-1.jpg"
+          }
+        ],
+        "unknown_images_count": 0
+      },
+      "image_url_metadata_available": true,
+      "leak_evidence": [],
+      "leak_source": "NONE",
+      "leakage_class_after": "NO_LEAK",
+      "listing_id": "42910754",
+      "neighbourhood": "Jardim Oasis",
+      "property_type": "sobrado",
+      "provenance": {
+        "area_m2": "meta_description",
+        "cep": "target_schema_postalCode",
+        "description": "meta_description",
+        "image_alt_geo": "target_img_alt",
+        "image_url_metadata_available": "target_img_cdn",
+        "neighbourhood": "meta_title",
+        "property_type": "discovery_pool_metadata",
+        "street": "meta_title",
+        "title": "meta_title"
+      },
+      "related_listing_clue_count": 9,
+      "source_clues_sha256": "6bcc14aa53bd1779f8186114484adcbcf2996b9af1c465b22f06926c3eb6a840",
+      "source_html_sha256": "f20b147abcb4436e16e97b5e560b2a188b44ecac3e7d16d999296e7a7387c97f",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-2-quartos-com-garagem-sp-taubate-jardim-oasis-150m2-RS360000/id-42910754/",
+      "street": "Rua Edu Mattos Ortiz",
+      "street_after": "Rua Edu Mattos Ortiz",
+      "street_available": true,
+      "street_before": "Rua Edu Mattos Ortiz",
+      "target_owned_image_clue_count": 1,
+      "title": "Casa com 2 quartos na Rua Edu Mattos Ortiz, Jardim Oasis, Taubaté - SP - ID: 42910754 | Chaves na Mão",
+      "unknown_owner_clue_count": 0
+    },
+    {
+      "area_m2": "70",
+      "cep": null,
+      "cep_after": null,
+      "cep_before": null,
+      "clues": [
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "title",
+          "value": "Casa com 2 quartos no Jardim Continental III, Taubaté - SP - ID: 44628622 | Chaves na Mão"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_description",
+          "type": "description",
+          "value": "Comprar Casa no Jardim Continental III em Taubaté por R$ 340000 com 2 quartos, 1 garagem e com 70m². Falar com VALLEY GOLD IMÓVEIS, ref: do imóvel: CA2581 MP."
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_title",
+          "type": "neighbourhood",
+          "value": "Jardim Continental III"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "discovery_pool_metadata",
+          "type": "property_type",
+          "value": "sobrado"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "meta_description",
+          "type": "area_m2",
+          "value": "70"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_img_alt",
+          "type": "image_alt_geo",
+          "value": "Oportunidade - Casa Térrea - Jardim Continental - 2 Dormitórios - 70m² - 1 Vaga"
+        },
+        {
+          "ownership": "TARGET_LISTING_OWNED",
+          "source_field": "target_img_cdn",
+          "type": "image_url",
+          "value": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/1009357/44628622/sp-taubate-jardim-continental-iii-rua-doutor-cyro-lemos-de-oliveira-casa-a-venda-2-quartos-6a54f7a1-00.jpg"
+        }
+      ],
+      "description_available": true,
+      "floors": null,
+      "house_number": null,
+      "house_number_after": null,
+      "house_number_before": null,
+      "house_number_policy": "HOUSE_NUMBER_ABSENT",
+      "image_alt_geo": true,
+      "image_audit": {
+        "related_images_count": 10,
+        "related_listing_ids": [
+          "28408338",
+          "30744879",
+          "36616456",
+          "42835833",
+          "43123702",
+          "43283293",
+          "43537492",
+          "44239378",
+          "45271732",
+          "46231053"
+        ],
+        "target_owned_images": [
+          {
+            "alt": "Oportunidade - Casa Térrea - Jardim Continental - 2 Dormitórios - 70m² - 1 Vaga",
+            "ownership": "TARGET_LISTING_OWNED",
+            "src": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/1009357/44628622/sp-taubate-jardim-continental-iii-rua-doutor-cyro-lemos-de-oliveira-casa-a-venda-2-quartos-6a54f7a1-00.jpg"
+          }
+        ],
+        "unknown_images_count": 0
+      },
+      "image_url_metadata_available": true,
+      "leak_evidence": [],
+      "leak_source": "NONE",
+      "leakage_class_after": "NO_LEAK",
+      "listing_id": "44628622",
+      "neighbourhood": "Jardim Continental III",
+      "property_type": "sobrado",
+      "provenance": {
+        "area_m2": "meta_description",
+        "description": "meta_description",
+        "image_alt_geo": "target_img_alt",
+        "image_url_metadata_available": "target_img_cdn",
+        "neighbourhood": "meta_title",
+        "property_type": "discovery_pool_metadata",
+        "title": "meta_title"
+      },
+      "related_listing_clue_count": 10,
+      "source_clues_sha256": "fadecf936884149b64c864d2193d7dc21c2cb45076a5fc5b45d3539c09615f25",
+      "source_html_sha256": "fb48f2c44d03d913d8c4de648b767f70ab5f02daf24ebb4c22c7ee6d84c37452",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-2-quartos-com-garagem-sp-taubate-jardim-continental-iii-125m2-RS340000/id-44628622/",
+      "street": null,
+      "street_after": null,
+      "street_available": false,
+      "street_before": null,
+      "target_owned_image_clue_count": 1,
+      "title": "Casa com 2 quartos no Jardim Continental III, Taubaté - SP - ID: 44628622 | Chaves na Mão",
+      "unknown_owner_clue_count": 0
+    }
+  ],
+  "related_listing_clue_count_total": 91,
+  "schema_version": "1.0",
+  "street_available_count": 3,
+  "street_not_available_count": 7,
+  "target_owned_image_clue_count_total": 10,
+  "unknown_owner_clue_count_total": 0
+}
