@@ -1,4 +1,6 @@
-# Implementation Plan — Phase Anchor to Target Street LLL Prediction
+import os
+
+plan_text = r"""# Implementation Plan — Phase Anchor to Target Street LLL Prediction
 ## Directed Cadastral Candidate Generation, House-Number Reliability & Structural Interval Prediction
 
 ## 1. Problem Statement & Scientific Objective
@@ -168,3 +170,12 @@ Evaluated strictly on the primary `TARGET_STREET_ONLY` model across Blind Holdou
   - `brain/address_finder/LATEST_PHASE_RESULTS.json`
 - Commit and push to `origin main`.
 - Conclude with `STOP_FOR_HUMAN_REVIEW`.
+"""
+
+with open('brain/address_finder/LATEST_IMPLEMENTATION_PLAN.md', 'w', encoding='utf-8') as f:
+    f.write(plan_text.strip() + '\n')
+
+with open(r'C:\Users\Marcel\.gemini\antigravity\brain\5c4a2f49-593d-45c6-935f-4c04d23e5787\implementation_plan.md', 'w', encoding='utf-8') as f:
+    f.write(plan_text.strip() + '\n')
+
+print("Plan updated successfully with all house-number reliability safeguards!")
