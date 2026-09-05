@@ -667,6 +667,12 @@
           <span>🚀 Buscar e Criar Job</span>
         </button>
       </form>
+      <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem; align-items: center; font-size: 0.82rem; color: var(--text-muted); flex-wrap: wrap;">
+        <span>Job Homologado:</span>
+        <button type="button" onclick="loadJob('bbddf3ba-f7c6-44f5-a81a-2ac09dae611b')" style="background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #93C5FD; border-radius: 6px; padding: 0.3rem 0.7rem; cursor: pointer; font-size: 0.8rem; font-family: inherit; display: inline-flex; align-items: center; gap: 0.35rem;">
+          ⭐ Ver Vídeos Produzidos (Ref: #1639 — 3 Vídeos + Shadow 3C)
+        </button>
+      </div>
     </section>
 
     <!-- Banners Globais -->
@@ -994,6 +1000,44 @@
     let currentJobId = null;
     let pollInterval = null;
 
+    async function loadJob(jobId) {
+      if (!jobId) return;
+      stopPolling();
+      const errorBanner = document.getElementById('errorBanner');
+      const degradedBanner = document.getElementById('degradedBanner');
+      const resultSection = document.getElementById('resultSection');
+      const input = document.getElementById('propertyRefInput');
+      errorBanner.classList.remove('visible');
+      degradedBanner.classList.remove('visible');
+
+      try {
+        const response = await fetch(`/api/v2/panel/video-jobs/${jobId}`);
+        const data = await response.json().catch(() => null);
+
+        if (response.status === 200 && data && data.success) {
+          currentJobId = data.job_id;
+          if (input && (data.property_ref || data.property?.ref)) {
+            input.value = data.property_ref || data.property?.ref || '';
+          }
+          renderJobData(data, false);
+          updatePipelineState(data.status, data.error_message, data);
+          if (typeof loadShadow3CComparison === 'function') {
+            loadShadow3CComparison();
+          }
+        } else {
+          showError(data?.message || 'Job não encontrado.');
+        }
+      } catch (err) {
+        showError('Falha ao carregar Job.');
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const jobId = params.get('job_id') || 'bbddf3ba-f7c6-44f5-a81a-2ac09dae611b';
+      loadJob(jobId);
+    });
+
     // Gerenciador de Submissão de Criação de Job
     async function handleCreateJob(event) {
       if (event) event.preventDefault();
@@ -1008,6 +1052,10 @@
       if (!ref) {
         showError('Por favor, informe uma referência válida.');
         return;
+      }
+
+      if (/^[0-9a-fA-F-]{36}$/.test(ref)) {
+        return loadJob(ref);
       }
 
       stopPolling();
