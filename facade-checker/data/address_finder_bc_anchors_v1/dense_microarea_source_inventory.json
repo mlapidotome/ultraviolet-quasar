@@ -1,0 +1,66 @@
+{
+  "metadata": {
+    "phase": "2.3X0",
+    "description": "Comprehensive inventory of historical cadastral data sources"
+  },
+  "sources": [
+    {
+      "source_file": "historical_real_bc_index.json",
+      "file_path": "c:\\Users\\Marcel\\.gemini\\antigravity\\playground\\ultraviolet-quasar\\facade-checker\\data\\address_finder_bc_anchors_v1\\historical_real_bc_index.json",
+      "sha256": "ddac10be609f5cb0009b069d1a4e10fbe915a987b5a91a4ba7916e8c02175365",
+      "record_count": 634,
+      "source_category": "OFFLINE_CONSOLIDATED_BC_INDEX"
+    },
+    {
+      "source_file": "ext_anchors_dataset.json",
+      "file_path": "c:\\Users\\Marcel\\.gemini\\antigravity\\playground\\ultraviolet-quasar\\facade-checker\\data\\address_finder_bc_anchors_v1\\ext_anchors_dataset.json",
+      "sha256": "b732e63504ffc7d9086a0c75d3cb1693eea82cb86c18c94e9e7a587de4ec0bbb",
+      "record_count": 109,
+      "source_category": "PUBLIC_DIARIO_OFICIAL_ANCHORS"
+    },
+    {
+      "source_file": "street_dsq_lll_corpus.json",
+      "file_path": "c:\\Users\\Marcel\\.gemini\\antigravity\\playground\\ultraviolet-quasar\\facade-checker\\data\\address_finder_bc_anchors_v1\\street_dsq_lll_corpus.json",
+      "sha256": "e558f18a50b595a0278900802bb83f9de1adea0aaf639c7708c6b83dc066b3b8",
+      "record_count": 102,
+      "source_category": "CORPUS_STREET_DSQ_LLL"
+    },
+    {
+      "source_file": "achados_claudino.txt",
+      "file_path": "c:\\Users\\Marcel\\.gemini\\antigravity\\playground\\ultraviolet-quasar\\achados_claudino.txt",
+      "sha256": "66fbb677255af8a895195dcb3907c70e1543946ebd400f6dab29729386990916",
+      "record_count": 10,
+      "source_category": "OFFICIAL_MUNICIPAL_CERTIDAO_DUMP"
+    },
+    {
+      "source_file": "resultado_quadra_206.txt",
+      "file_path": "c:\\Users\\Marcel\\.gemini\\antigravity\\playground\\ultraviolet-quasar\\resultado_quadra_206.txt",
+      "sha256": "a531082b16b737a3e2fdde1ad773efb5fe5f2299145ebe525d4069990264cdcb",
+      "record_count": 17,
+      "source_category": "OFFICIAL_MUNICIPAL_CERTIDAO_DUMP"
+    },
+    {
+      "source_file": "unidades_monet.json",
+      "file_path": "c:\\Users\\Marcel\\.gemini\\antigravity\\playground\\ultraviolet-quasar\\unidades_monet.json",
+      "sha256": "2f2e8d0052c44cb5aa1a02051b415f3988bebfd443c28235e0920f35f9003cc6",
+      "record_count": 8,
+      "source_category": "CONDOMINIUM_UNIT_CACHE"
+    },
+    {
+      "source_file": "resultado_tangara.json",
+      "file_path": "c:\\Users\\Marcel\\.gemini\\antigravity\\playground\\ultraviolet-quasar\\resultado_tangara.json",
+      "sha256": "9d9107a779872ae1daa93391ab1014065c6bf03c125ec41fb36127cb8d63c94d",
+      "record_count": 52,
+      "source_category": "CONDOMINIUM_UNIT_CACHE"
+    },
+    {
+      "source_file": "condominium_bc_cluster_index.json",
+      "file_path": "c:\\Users\\Marcel\\.gemini\\antigravity\\playground\\ultraviolet-quasar\\facade-checker\\data\\address_finder_bc_anchors_v1\\condominium_bc_cluster_index.json",
+      "sha256": "5cc4901b63dcd1a05486231297f59b48af2135333ada48ef9de0094e8d305a83",
+      "record_count": 12159,
+      "source_category": "CONDOMINIUM_CLUSTER_INDEX"
+    }
+  ],
+  "total_sources": 8,
+  "total_raw_records_extracted": 14684
+}

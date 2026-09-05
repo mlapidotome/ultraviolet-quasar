@@ -1,34 +1,38 @@
 {
-  "phase": "2.3X1",
-  "phase_name": "DENSE_MICROAREA_SPATIAL_GROUND_TRUTH",
+  "phase": "2.3X2",
+  "phase_name": "DENSE_CADASTRAL_MICRO_AREA_COMPLETION",
   "microarea_id": "CAND-MICRO-14585",
-  "classification": "DENSE_SPATIAL_GT_PARTIAL_VALUE",
+  "classification": "DENSE_CADASTRAL_TOPOLOGY_PARTIAL_VALUE",
   "metrics": {
     "TOTAL_BCS": 29,
     "TOTAL_DISTINCT_DSQLLL": 22,
-    "EXACT_STREET_FACE_DSQLLL_COUNT": 1,
-    "EXACT_STREET_FACE_DSQLLL_RATE": 4.55,
-    "PROBABLE_STREET_FACE_DSQLLL_COUNT": 17,
-    "PROBABLE_STREET_FACE_DSQLLL_RATE": 77.27,
-    "STREET_ONLY_DSQLLL_COUNT": 4,
-    "STREET_ONLY_DSQLLL_RATE": 18.18,
-    "PHYSICAL_BLOCKS_COUNT": 4,
-    "STREET_FACES_COUNT": 16,
-    "OBSERVED_QQQ_COUNT": 5,
-    "OPPOSING_STREET_SIDES_MATCH": false,
-    "BLOCK_MULTI_CADASTRALITY_OBSERVED": true
+    "EXACT_STREET_FACE_COUNT": 1,
+    "PROBABLE_STREET_FACE_COUNT": 17,
+    "STREET_ONLY_COUNT": 4,
+    "USABLE_FACE_COVERAGE_RATE": 81.82,
+    "H_QQQ_GIVEN_PHYSICAL_BLOCK_BITS": 0.6713,
+    "H_QQQ_GIVEN_STREET_FACE_BITS": 0.0,
+    "DELTA_ENTROPY_BITS": -0.6713,
+    "PURITY_PHYSICAL_BLOCK_PCT": 77.78,
+    "PURITY_STREET_FACE_PCT": 100.0,
+    "DELTA_PURITY_PCT": 22.22,
+    "P_SINGLE_QQQ_GIVEN_STREET_FACE_PCT": 100.0,
+    "HOLDOUT_TOP1_ACCURACY": 0.0,
+    "HOLDOUT_TOP3_ACCURACY": 1.0,
+    "HOLDOUT_TOP5_ACCURACY": 1.0
   },
-  "analysis_summary": {
-    "q1_blocks_with_multiple_qqqs": [
-      "PRB-0735 (3 QQQs)",
-      "PRB-0736 (2 QQQs)"
+  "holdout": {
+    "holdout_face_id": "PRB-0736_FACE_W",
+    "holdout_street": "Rua Antônio Delgado da Veiga",
+    "true_qqqs": [
+      "207"
     ],
-    "q2_qqqs_spanning_multiple_blocks": [
-      "206 (PRB-0735, PRB-0736)",
-      "207 (PRB-0735, PRB-0736)"
-    ],
-    "q3_street_bipartition_result": "DIFFERENT_QQQ_ACROSS_STREET (Rua Antônio Delgado da Veiga West=206, East=207)",
-    "q4_lll_spatial_monotonicity": "LLL_SPATIAL_MONOTONICITY_NOT_EVALUABLE"
+    "predicted_top_qqqs": [
+      "206",
+      "207",
+      "208",
+      "209"
+    ]
   },
-  "timestamp": "2026-09-04T22:10:00-03:00"
+  "timestamp": "2026-09-05T01:10:40.045761+00:00"
 }

@@ -1,0 +1,29 @@
+{
+  "metadata": {
+    "phase": "2.3X2",
+    "description": "Information-Theoretic and Coverage Metrics for CAND-MICRO-14585"
+  },
+  "entropy_and_purity": {
+    "h_qqq_given_physical_block_bits": 0.6713,
+    "h_qqq_given_street_face_bits": 0.0,
+    "delta_entropy_bits": -0.6713,
+    "entropy_reduction_interpretation": "STREET_FACE_ELIMINATES_AMBIGUITY",
+    "purity_physical_block_pct": 77.78,
+    "purity_street_face_pct": 100.0,
+    "delta_purity_pct": 22.22,
+    "p_single_qqq_given_street_face_pct": 100.0,
+    "single_qqq_faces_count": 6,
+    "total_faces_with_parcels": 6
+  },
+  "coverage_metrics": {
+    "total_distinct_dsqlll": 22,
+    "exact_parcel_count": 0,
+    "exact_street_face_count": 1,
+    "probable_street_face_count": 17,
+    "street_only_count": 4,
+    "unresolved_count": 0,
+    "usable_face_coverage_count": 18,
+    "usable_face_coverage_pct": 81.82,
+    "exact_or_better_coverage_pct": 4.55
+  }
+}

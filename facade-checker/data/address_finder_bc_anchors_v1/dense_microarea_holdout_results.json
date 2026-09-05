@@ -1,0 +1,49 @@
+{
+  "metadata": {
+    "phase": "2.3X2",
+    "description": "Deterministic Blinded Holdout Face Experiment"
+  },
+  "selection_protocol": {
+    "selection_rule": "SHA-256(microarea_id + PHASE_2.3X2_FROZEN_HOLDOUT_SEED) % len(eligible_faces)",
+    "seed": "CAND-MICRO-14585_PHASE_2.3X2_FROZEN_HOLDOUT_SEED",
+    "seed_hash": "bb7e49887aaecadafadaf580f4deb933a304114f04f5cd33dc5cb4552dc2510b",
+    "eligible_faces_count": 6,
+    "eligible_faces": [
+      "PRB-0733_FACE_W",
+      "PRB-0735_FACE_E",
+      "PRB-0735_FACE_S",
+      "PRB-0735_FACE_W",
+      "PRB-0736_FACE_S",
+      "PRB-0736_FACE_W"
+    ],
+    "selected_holdout_face_id": "PRB-0736_FACE_W",
+    "holdout_street": "Rua Antônio Delgado da Veiga",
+    "holdout_physical_block": "PRB-0736"
+  },
+  "hashes": {
+    "training_corpus_hash": "99ff095bd5424ec1fd02455be06e73b3b78e5c6a1b76af14ac507c741638a491",
+    "prediction_hash": "8292b71279b93aa367237d610d0910af7fec8a963ec36283c61fb43cb7655956",
+    "unblind_timestamp_utc": "2026-09-05T01:10:38.145981+00:00"
+  },
+  "experiment_data": {
+    "training_parcels_count": 17,
+    "holdout_parcels_count": 1,
+    "holdout_parcels_list": [
+      "4.4.207.006"
+    ],
+    "blind_ranked_predictions": [
+      "206",
+      "207",
+      "208",
+      "209"
+    ],
+    "true_holdout_qqqs": [
+      "207"
+    ],
+    "evaluation": {
+      "top1_accuracy": 0.0,
+      "top3_accuracy": 1.0,
+      "top5_accuracy": 1.0
+    }
+  }
+}

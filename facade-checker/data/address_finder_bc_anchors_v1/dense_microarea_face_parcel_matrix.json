@@ -1,0 +1,490 @@
+{
+  "metadata": {
+    "phase": "2.3X2",
+    "description": "Face-Parcel Matrix and Cadastral Topology Cross-Tabulations",
+    "total_distinct_dsqlll": 22
+  },
+  "parcels": [
+    {
+      "dsqlll": "4.4.203.030",
+      "qqq": "203",
+      "lll": "030",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.203.030.014"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": null,
+      "physical_block_id": "PRB-0734",
+      "primary_street_face_id": null,
+      "secondary_street_face_id": null,
+      "spatial_confidence": "STREET_ONLY",
+      "evidence_source": "HISTORICAL_TAX_RECORD"
+    },
+    {
+      "dsqlll": "4.4.206.001",
+      "qqq": "206",
+      "lll": "001",
+      "bc_count": 8,
+      "bcs": [
+        "4.4.206.001.002",
+        "4.4.206.001.003",
+        "4.4.206.001.004",
+        "4.4.206.001.005",
+        "4.4.206.001.006",
+        "4.4.206.001.007",
+        "4.4.206.001.008",
+        "4.4.206.001.009"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "160",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_E",
+      "secondary_street_face_id": "PRB-0735_FACE_S",
+      "spatial_confidence": "EXACT_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO (CORNER_DESCRIPTION)"
+    },
+    {
+      "dsqlll": "4.4.206.002",
+      "qqq": "206",
+      "lll": "002",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.206.002.001"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "20",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_E",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO (LOT_CONTIGUITY_AND_PARITY)"
+    },
+    {
+      "dsqlll": "4.4.206.003",
+      "qqq": "206",
+      "lll": "003",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.206.003.001"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "30",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_E",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO (LOT_CONTIGUITY_AND_PARITY)"
+    },
+    {
+      "dsqlll": "4.4.206.004",
+      "qqq": "206",
+      "lll": "004",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.206.004.001"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "40",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_E",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO (LOT_CONTIGUITY_AND_PARITY)"
+    },
+    {
+      "dsqlll": "4.4.206.005",
+      "qqq": "206",
+      "lll": "005",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.206.005.001"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "60",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_E",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO (LOT_CONTIGUITY_AND_PARITY)"
+    },
+    {
+      "dsqlll": "4.4.206.006",
+      "qqq": "206",
+      "lll": "006",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.206.006.001"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "0",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_E",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO (LOT_CONTIGUITY_AND_PARITY)"
+    },
+    {
+      "dsqlll": "4.4.206.007",
+      "qqq": "206",
+      "lll": "007",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.206.007.001"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "80",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_E",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO (LOT_CONTIGUITY_AND_PARITY)"
+    },
+    {
+      "dsqlll": "4.4.206.008",
+      "qqq": "206",
+      "lll": "008",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.206.008.001"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "90",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_E",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO (LOT_CONTIGUITY_AND_PARITY)"
+    },
+    {
+      "dsqlll": "4.4.206.009",
+      "qqq": "206",
+      "lll": "009",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.206.009.001"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "100",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_E",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO (LOT_CONTIGUITY_AND_PARITY)"
+    },
+    {
+      "dsqlll": "4.4.206.010",
+      "qqq": "206",
+      "lll": "010",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.206.010.001"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "110",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_E",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO (LOT_CONTIGUITY_AND_PARITY)"
+    },
+    {
+      "dsqlll": "4.4.206.012",
+      "qqq": "206",
+      "lll": "012",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.206.012.001"
+      ],
+      "street": "Rua Claudino Velloso Borges",
+      "house_number": null,
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": null,
+      "secondary_street_face_id": null,
+      "spatial_confidence": "STREET_ONLY",
+      "evidence_source": "HISTORICAL_TAX_RECORD"
+    },
+    {
+      "dsqlll": "4.4.206.013",
+      "qqq": "206",
+      "lll": "013",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.206.013.001"
+      ],
+      "street": "Rua Claudino Velloso Borges",
+      "house_number": null,
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": null,
+      "secondary_street_face_id": null,
+      "spatial_confidence": "STREET_ONLY",
+      "evidence_source": "HISTORICAL_TAX_RECORD"
+    },
+    {
+      "dsqlll": "4.4.207.001",
+      "qqq": "207",
+      "lll": "001",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.207.001.001"
+      ],
+      "street": "Rua Claudino Velloso Borges",
+      "house_number": "200",
+      "physical_block_id": "PRB-0736",
+      "primary_street_face_id": "PRB-0736_FACE_S",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO"
+    },
+    {
+      "dsqlll": "4.4.207.002",
+      "qqq": "207",
+      "lll": "002",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.207.002.001"
+      ],
+      "street": "Rua Claudino Velloso Borges",
+      "house_number": "0",
+      "physical_block_id": "PRB-0736",
+      "primary_street_face_id": "PRB-0736_FACE_S",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO"
+    },
+    {
+      "dsqlll": "4.4.207.006",
+      "qqq": "207",
+      "lll": "006",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.207.006.001"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "67",
+      "physical_block_id": "PRB-0736",
+      "primary_street_face_id": "PRB-0736_FACE_W",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO"
+    },
+    {
+      "dsqlll": "4.4.207.014",
+      "qqq": "207",
+      "lll": "014",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.207.014.002"
+      ],
+      "street": "Rua Expedicionário Capitão Benedicto Nunes de Assis",
+      "house_number": "81",
+      "physical_block_id": "PRB-0736",
+      "primary_street_face_id": null,
+      "secondary_street_face_id": null,
+      "spatial_confidence": "STREET_ONLY",
+      "evidence_source": "HISTORICAL_TAX_RECORD"
+    },
+    {
+      "dsqlll": "4.4.208.001",
+      "qqq": "208",
+      "lll": "001",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.208.001.001"
+      ],
+      "street": "Rua Claudino Velloso Borges",
+      "house_number": "0",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_S",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO"
+    },
+    {
+      "dsqlll": "4.4.208.002",
+      "qqq": "208",
+      "lll": "002",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.208.002.001"
+      ],
+      "street": "Rua Claudino Velloso Borges",
+      "house_number": "0",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_S",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO"
+    },
+    {
+      "dsqlll": "4.4.208.003",
+      "qqq": "208",
+      "lll": "003",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.208.003.001"
+      ],
+      "street": "Rua Claudino Velloso Borges",
+      "house_number": "0",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_S",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO"
+    },
+    {
+      "dsqlll": "4.4.208.008",
+      "qqq": "208",
+      "lll": "008",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.208.008.001"
+      ],
+      "street": "RUA MELCHIOR FELIX CORREA",
+      "house_number": "0",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_W",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO"
+    },
+    {
+      "dsqlll": "4.4.209.013",
+      "qqq": "209",
+      "lll": "013",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.209.013.001"
+      ],
+      "street": "RUA MELCHIOR FELIX CORREA",
+      "house_number": "86",
+      "physical_block_id": "PRB-0733",
+      "primary_street_face_id": "PRB-0733_FACE_W",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO"
+    }
+  ],
+  "matrices": {
+    "street_face_to_observed_qqq": {
+      "PRB-0733_FACE_W": [
+        "209"
+      ],
+      "PRB-0735_FACE_E": [
+        "206"
+      ],
+      "PRB-0735_FACE_S": [
+        "206",
+        "208"
+      ],
+      "PRB-0735_FACE_W": [
+        "208"
+      ],
+      "PRB-0736_FACE_S": [
+        "207"
+      ],
+      "PRB-0736_FACE_W": [
+        "207"
+      ]
+    },
+    "qqq_to_observed_street_faces": {
+      "206": [
+        "PRB-0735_FACE_E",
+        "PRB-0735_FACE_S"
+      ],
+      "207": [
+        "PRB-0736_FACE_S",
+        "PRB-0736_FACE_W"
+      ],
+      "208": [
+        "PRB-0735_FACE_S",
+        "PRB-0735_FACE_W"
+      ],
+      "209": [
+        "PRB-0733_FACE_W"
+      ]
+    },
+    "street_face_to_observed_lll": {
+      "PRB-0733_FACE_W": [
+        "013"
+      ],
+      "PRB-0735_FACE_E": [
+        "001",
+        "002",
+        "003",
+        "004",
+        "005",
+        "006",
+        "007",
+        "008",
+        "009",
+        "010"
+      ],
+      "PRB-0735_FACE_S": [
+        "001",
+        "001",
+        "002",
+        "003"
+      ],
+      "PRB-0735_FACE_W": [
+        "008"
+      ],
+      "PRB-0736_FACE_S": [
+        "001",
+        "002"
+      ],
+      "PRB-0736_FACE_W": [
+        "006"
+      ]
+    },
+    "qqq_to_observed_lll": {
+      "203": [
+        "030"
+      ],
+      "206": [
+        "001",
+        "002",
+        "003",
+        "004",
+        "005",
+        "006",
+        "007",
+        "008",
+        "009",
+        "010",
+        "012",
+        "013"
+      ],
+      "207": [
+        "001",
+        "002",
+        "006",
+        "014"
+      ],
+      "208": [
+        "001",
+        "002",
+        "003",
+        "008"
+      ],
+      "209": [
+        "013"
+      ]
+    },
+    "physical_block_to_observed_qqq": {
+      "PRB-0733": [
+        "209"
+      ],
+      "PRB-0734": [
+        "203"
+      ],
+      "PRB-0735": [
+        "206",
+        "208"
+      ],
+      "PRB-0736": [
+        "207"
+      ]
+    }
+  }
+}
