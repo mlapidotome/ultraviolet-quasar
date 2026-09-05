@@ -1,3 +1,4 @@
+require('dotenv').config();
 /**
  * Motor Unificado de Geração Automática de Anúncios em Vídeo (HeyGen + FFmpeg + WhatsApp)
  * Integrado ao Sistema Multi-Corretor e Copiloto Executivo da Bali Imóveis
@@ -10,33 +11,27 @@ const { execSync } = require('child_process');
 const { MessageMedia } = require('whatsapp-web.js');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 
-const HEYGEN_API_KEY = process.env.HEYGEN_API_KEY || 'sk_V2_REDACTED';
-const IMOBTOTAL_API_KEY = process.env.IMOBTOTAL_API_KEY || 'REDACTED';
-const IMOBTOTAL_BASE_URL = 'https://app.imobtotal.com.br/api/v1';
+// 1. Secrets e Credenciais Autenticadas (Obrigatórias - Fail Fast)
+const HEYGEN_API_KEY = process.env.HEYGEN_API_KEY;
+if (!HEYGEN_API_KEY) {
+  throw new Error('[CONFIG FATAL] HEYGEN_API_KEY não configurada no ambiente (.env).');
+}
 
-const OUTPUTS_DIR = path.join(__dirname, 'outputs');
-if (!fs.existsSync(OUTPUTS_DIR)) fs.mkdirSync(OUTPUTS_DIR, { recursive: true });
+const IMOBTOTAL_API_KEY = process.env.IMOBTOTAL_API_KEY;
+if (!IMOBTOTAL_API_KEY) {
+  throw new Error('[CONFIG FATAL] IMOBTOTAL_API_KEY não configurada no ambiente (.env).');
+}
 
-// 3 Looks oficiais do Marcel para alternar nos ganchos
-const MARCEL_LOOKS = [
-  { id: 'a2cfb3ad10054e6f87c5ce6ca8ab483b', nome: 'Terno Executivo Escuro', emoji: '👔' },
-  { id: 'dc74498f5f5c45619fd7cb6a9ff905a8', nome: 'Estúdio / Podcaster no Microfone', emoji: '🎙️' },
-  { id: '14f2350c0a6f4e2c8b6669b3a255782e', nome: 'Casual / Ao Ar Livre', emoji: '🌿' }
-];
+const S3_ACCESS_KEY_ID = process.env.S3_ACCESS_KEY_ID;
+const S3_SECRET_ACCESS_KEY = process.env.S3_SECRET_ACCESS_KEY;
+if (!S3_ACCESS_KEY_ID || !S3_SECRET_ACCESS_KEY) {
+  throw new Error('[CONFIG FATAL] S3_ACCESS_KEY_ID ou S3_SECRET_ACCESS_KEY não configuradas no ambiente (.env).');
+}
 
-// Look padrão para o Desenvolvimento do Imóvel
-const MARCEL_BODY_LOOK = { id: 'a2cfb3ad10054e6f87c5ce6ca8ab483b', nome: 'Terno Executivo' };
-const MARCEL_VOICE_CLONE_ID = 'dccd1a85e6b1450facf9ec953b648df2';
-
-// Configuração Cloudflare R2 / Storage
-const s3Client = new S3Client({
-  region: process.env.S3_REGION || 'auto',
-  endpoint: process.env.S3_ENDPOINT || 'https://27414adaa46eae739436f24a1f4f90b3.r2.cloudflarestorage.com',
-  credentials: {
-    accessKeyId: process.env.S3_ACCESS_KEY_ID || '9f11796c659d0af383c6d8c4582a0b42',
-    secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || 'REDACTED',
-  }
-});
+// 2. Configurações Públicas e Não-Sensíveis
+const IMOBTOTAL_BASE_URL = process.env.IMOBTOTAL_BASE_URL || 'https://app.imobtotal.com.br/api/v1';
+const S3_REGION = process.env.S3_REGION || 'auto';
+const S3_ENDPOINT = process.env.S3_ENDPOINT || 'https://27414adaa46eae739436f24a1f4f90b3.r2.cloudflarestorage.com';
 const S3_BUCKET = process.env.S3_BUCKET || 'bali-cards';
 const S3_PUBLIC_PREFIX = process.env.S3_PUBLIC_URL_PREFIX || 'https://pub-3ea8f719e24f4099b810e22aae627d8c.r2.dev';
 
