@@ -3,7 +3,7 @@
 
 **Data de Conclusão:** 05/09/2026  
 **Ambiente:** VPS Ubuntu 24.04 (`159.223.118.129`)  
-**Status:** HOMOLOGADO E APROVADO (22/22 Testes Automatizados no VPS)  
+**Status:** HOMOLOGADO E APROVADO PÓS-REVIEW (26/26 Testes Automatizados no VPS)  
 **Commit de Referência do Plano Aprovado:** `d3ef614d554ffba28408ab842318dd1372f0d08f`
 
 ---
@@ -11,6 +11,31 @@
 ## 1. Objetivo da Fase 3A
 
 Estabelecer a fundação arquitetural para o futuro **Video Composer / Editing Engine (Fase 3B)**, tratando os componentes do vídeo como **assets identificáveis, versionáveis, imutáveis e auditáveis**, e descrevendo a montagem criativa através de um **Creative Blueprint declarativo** em JSONB.
+
+---
+
+## 2. Ajustes Pós-Review Homologados (Fixes 1, 2 e 3)
+
+### 2.1 FIX 1 — Canonicalização Recursiva Determinística da `generation_key`
+* **Implementação:** Desenvolvida a função `canonicalizeValue()` que percorre recursivamente todos os níveis de objetos aninhados, ordenando chaves alfabeticamente enquanto preserva a ordem sequencial de arrays.
+* **Sensibilidade Estrita Comprovada:** Qualquer alteração em `asset_type`, `provider`, `provider_model`, `script_text` (normalizado), `look_id`, `voice_id`, `aspect_ratio`, `width`, `height`, `fps` ou qualquer propriedade simples ou aninhada dentro de `generation_params` altera deterministicamente a `generation_key`.
+* **Idempotência de Chaves:** Objetos com as mesmas propriedades fornecidos em ordens arbitrárias geram rigorosamente o mesmo SHA-256.
+
+### 2.2 FIX 2 — Imutabilidade Absoluta de Assets `ready` em `createAsset()`
+* **Implementação:** Reformulada a lógica de `createAsset()` para consultar previamente a existência do ID antes de qualquer transição.
+* **Bloqueio de Rebaixamento:** Se um asset já estiver com `status = 'ready'`, chamadas a `createAsset()` com status `processing` ou `pending` são estritamente ignoradas, impedindo qualquer mutação ou rebaixamento.
+* **Garantia Anti-Redefinição:** Tentativas de executar `createAsset()` sobre um asset `ready` passando uma `generation_key` divergente lançam explicitamente `IMMUTABILITY ERROR`.
+* **Preservação:** Os campos `status`, `file_hash`, `storage_path` e `generation_key` permanecem intocados.
+
+### 2.3 FIX 3 — Asset Resolver com Validação de Ownership Físico do Job
+* **Implementação:** Adicionada validação de contenção canônica baseada no diretório real do Job:
+  - Derivação server-side de `expectedJobDir = outputs/jobs/<asset.job_id>/`;
+  - Resolução física via `fs.realpathSync()`;
+  - Exigência estrita de `realAssetPath.startsWith(realJobDir + path.sep)`;
+* **Proteções Concretas:**
+  - Bloqueio imediato caso um asset do Job A aponte diretamente para arquivo físico regular do Job B (`SECURITY VIOLATION`);
+  - Bloqueio estrito de symlinks que apontem para pastas de outros jobs;
+  - Bloqueio estrito de symlinks apontando para arquivos externos do sistema.
 
 ---
 
