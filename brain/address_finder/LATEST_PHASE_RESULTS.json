@@ -1,28 +1,26 @@
 {
-  "phase": "2.3X3",
-  "phase_name": "CROSS_MICROAREA_STREET_FACE_REPLICATION",
-  "classification": "MICROAREA_B_FACE_GT_INSUFFICIENT",
-  "status": "COMPLETE_WITH_FEASIBILITY_STOP",
+  "phase": "2.3Y",
+  "phase_name": "PUBLIC_SPATIAL_GT_SOURCE_DISCOVERY",
+  "classification": "PUBLIC_SPATIAL_GT_SOURCE_PARTIAL_VALUE",
+  "status": "COMPLETE",
   "signal": "STOP_FOR_HUMAN_REVIEW",
-  "feasibility_gate": {
-    "minimum_threshold_required": {
-      "USABLE_FACE_DSQLLL_MIN": 8,
-      "DOCUMENTED_STREET_FACE_COUNT_MIN": 4,
-      "PHYSICAL_BLOCKS_WITH_USABLE_FACE_GT_MIN": 3,
-      "DISTINCT_STREETS_WITH_USABLE_FACE_GT_MIN": 3
-    },
-    "best_candidate_outside_barranco": {
-      "candidate_id": "CAND-MICRO-15939",
-      "neighborhood": "Taubaté Urban",
-      "usable_face_dsqlll": 1,
-      "street_only_count": 0,
-      "documented_street_face_count": 1,
-      "blocks_with_usable_face_gt": 1,
-      "usable_street_count": 1,
-      "passes_threshold": false
-    },
-    "total_evaluated_candidates": 25271,
-    "qualifying_candidate_count": 0
+  "prephase_baseline_sha256": "7e691467a99868790be942b48ffadec4ed66ed202c5a83dfcd03fb1e07e4c2cc",
+  "metrics": {
+    "public_source_families_found": 6,
+    "high_value_source_families": 2,
+    "documents_reviewed": 42,
+    "total_source_links_found": 18,
+    "new_source_links_found": 4,
+    "rediscovered_source_links": 14,
+    "total_bc_to_address_links": 16,
+    "new_bc_to_address_links": 2,
+    "total_bc_to_lot_links": 12,
+    "new_bc_to_lot_links": 2,
+    "total_bc_to_face_links": 5,
+    "new_bc_to_face_links": 5,
+    "pilot_pre_phase_usable_face_gt": 0,
+    "pilot_post_phase_usable_face_gt": 5,
+    "pilot_incremental_usable_face_gt": 5
   },
-  "timestamp": "2026-09-05T01:39:57.352508+00:00"
+  "timestamp": "2026-09-05T01:52:44.209018+00:00"
 }

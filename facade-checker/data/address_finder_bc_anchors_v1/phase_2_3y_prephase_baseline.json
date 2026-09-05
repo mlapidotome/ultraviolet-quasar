@@ -1,0 +1,512 @@
+{
+  "metadata": {
+    "phase": "2.3Y",
+    "purpose": "FREEZE_PREPHASE_BASELINE",
+    "timestamp": "2026-09-05T01:51:00Z",
+    "description": "Frozen inventory of all spatial GT, parcel attributes, and public source URLs known prior to Phase 2.3Y discovery."
+  },
+  "microarea_a_parcels": [
+    {
+      "dsqlll": "4.4.203.030",
+      "qqq": "203",
+      "lll": "030",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.203.030.014"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": null,
+      "physical_block_id": "PRB-0734",
+      "primary_street_face_id": null,
+      "secondary_street_face_id": null,
+      "spatial_confidence": "STREET_ONLY",
+      "evidence_source": "HISTORICAL_TAX_RECORD"
+    },
+    {
+      "dsqlll": "4.4.206.001",
+      "qqq": "206",
+      "lll": "001",
+      "bc_count": 8,
+      "bcs": [
+        "4.4.206.001.002",
+        "4.4.206.001.003",
+        "4.4.206.001.004",
+        "4.4.206.001.005",
+        "4.4.206.001.006",
+        "4.4.206.001.007",
+        "4.4.206.001.008",
+        "4.4.206.001.009"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "160",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_E",
+      "secondary_street_face_id": "PRB-0735_FACE_S",
+      "spatial_confidence": "EXACT_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO (CORNER_DESCRIPTION)"
+    },
+    {
+      "dsqlll": "4.4.206.002",
+      "qqq": "206",
+      "lll": "002",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.206.002.001"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "20",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_E",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO (LOT_CONTIGUITY_AND_PARITY)"
+    },
+    {
+      "dsqlll": "4.4.206.003",
+      "qqq": "206",
+      "lll": "003",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.206.003.001"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "30",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_E",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO (LOT_CONTIGUITY_AND_PARITY)"
+    },
+    {
+      "dsqlll": "4.4.206.004",
+      "qqq": "206",
+      "lll": "004",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.206.004.001"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "40",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_E",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO (LOT_CONTIGUITY_AND_PARITY)"
+    },
+    {
+      "dsqlll": "4.4.206.005",
+      "qqq": "206",
+      "lll": "005",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.206.005.001"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "60",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_E",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO (LOT_CONTIGUITY_AND_PARITY)"
+    },
+    {
+      "dsqlll": "4.4.206.006",
+      "qqq": "206",
+      "lll": "006",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.206.006.001"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "0",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_E",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO (LOT_CONTIGUITY_AND_PARITY)"
+    },
+    {
+      "dsqlll": "4.4.206.007",
+      "qqq": "206",
+      "lll": "007",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.206.007.001"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "80",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_E",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO (LOT_CONTIGUITY_AND_PARITY)"
+    },
+    {
+      "dsqlll": "4.4.206.008",
+      "qqq": "206",
+      "lll": "008",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.206.008.001"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "90",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_E",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO (LOT_CONTIGUITY_AND_PARITY)"
+    },
+    {
+      "dsqlll": "4.4.206.009",
+      "qqq": "206",
+      "lll": "009",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.206.009.001"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "100",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_E",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO (LOT_CONTIGUITY_AND_PARITY)"
+    },
+    {
+      "dsqlll": "4.4.206.010",
+      "qqq": "206",
+      "lll": "010",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.206.010.001"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "110",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_E",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO (LOT_CONTIGUITY_AND_PARITY)"
+    },
+    {
+      "dsqlll": "4.4.206.012",
+      "qqq": "206",
+      "lll": "012",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.206.012.001"
+      ],
+      "street": "Rua Claudino Velloso Borges",
+      "house_number": null,
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": null,
+      "secondary_street_face_id": null,
+      "spatial_confidence": "STREET_ONLY",
+      "evidence_source": "HISTORICAL_TAX_RECORD"
+    },
+    {
+      "dsqlll": "4.4.206.013",
+      "qqq": "206",
+      "lll": "013",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.206.013.001"
+      ],
+      "street": "Rua Claudino Velloso Borges",
+      "house_number": null,
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": null,
+      "secondary_street_face_id": null,
+      "spatial_confidence": "STREET_ONLY",
+      "evidence_source": "HISTORICAL_TAX_RECORD"
+    },
+    {
+      "dsqlll": "4.4.207.001",
+      "qqq": "207",
+      "lll": "001",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.207.001.001"
+      ],
+      "street": "Rua Claudino Velloso Borges",
+      "house_number": "200",
+      "physical_block_id": "PRB-0736",
+      "primary_street_face_id": "PRB-0736_FACE_S",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO"
+    },
+    {
+      "dsqlll": "4.4.207.002",
+      "qqq": "207",
+      "lll": "002",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.207.002.001"
+      ],
+      "street": "Rua Claudino Velloso Borges",
+      "house_number": "0",
+      "physical_block_id": "PRB-0736",
+      "primary_street_face_id": "PRB-0736_FACE_S",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO"
+    },
+    {
+      "dsqlll": "4.4.207.006",
+      "qqq": "207",
+      "lll": "006",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.207.006.001"
+      ],
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "67",
+      "physical_block_id": "PRB-0736",
+      "primary_street_face_id": "PRB-0736_FACE_W",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO"
+    },
+    {
+      "dsqlll": "4.4.207.014",
+      "qqq": "207",
+      "lll": "014",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.207.014.002"
+      ],
+      "street": "Rua Expedicionário Capitão Benedicto Nunes de Assis",
+      "house_number": "81",
+      "physical_block_id": "PRB-0736",
+      "primary_street_face_id": null,
+      "secondary_street_face_id": null,
+      "spatial_confidence": "STREET_ONLY",
+      "evidence_source": "HISTORICAL_TAX_RECORD"
+    },
+    {
+      "dsqlll": "4.4.208.001",
+      "qqq": "208",
+      "lll": "001",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.208.001.001"
+      ],
+      "street": "Rua Claudino Velloso Borges",
+      "house_number": "0",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_S",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO"
+    },
+    {
+      "dsqlll": "4.4.208.002",
+      "qqq": "208",
+      "lll": "002",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.208.002.001"
+      ],
+      "street": "Rua Claudino Velloso Borges",
+      "house_number": "0",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_S",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO"
+    },
+    {
+      "dsqlll": "4.4.208.003",
+      "qqq": "208",
+      "lll": "003",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.208.003.001"
+      ],
+      "street": "Rua Claudino Velloso Borges",
+      "house_number": "0",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_S",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO"
+    },
+    {
+      "dsqlll": "4.4.208.008",
+      "qqq": "208",
+      "lll": "008",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.208.008.001"
+      ],
+      "street": "RUA MELCHIOR FELIX CORREA",
+      "house_number": "0",
+      "physical_block_id": "PRB-0735",
+      "primary_street_face_id": "PRB-0735_FACE_W",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO"
+    },
+    {
+      "dsqlll": "4.4.209.013",
+      "qqq": "209",
+      "lll": "013",
+      "bc_count": 1,
+      "bcs": [
+        "4.4.209.013.001"
+      ],
+      "street": "RUA MELCHIOR FELIX CORREA",
+      "house_number": "86",
+      "physical_block_id": "PRB-0733",
+      "primary_street_face_id": "PRB-0733_FACE_W",
+      "secondary_street_face_id": null,
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "evidence_source": "OFFICIAL_MUNICIPAL_CERTIDAO"
+    }
+  ],
+  "pilot_targets_prephase_state": {},
+  "pre_phase_known_anchors": [
+    {
+      "anchor_id": "ANCHOR-001",
+      "bc_normalized": "7.3.083.019.001",
+      "street": "Rua Dr. Cyro Lemos de Oliveira",
+      "house_number": "80",
+      "subdivision_block": "Quadra H",
+      "lot_raw": "P/Lote 19, Área A",
+      "source_url": "https://plenussistemas.dioenet.com.br/diario/publicacoes/35835",
+      "source_type": "DIARIO_OFICIAL"
+    },
+    {
+      "anchor_id": "ANCHOR-002",
+      "bc_normalized": "7.3.078.012.001",
+      "street": "Rua Doutor Julio Forster da Costa",
+      "house_number": "000",
+      "subdivision_block": "QD: C",
+      "lot_raw": "LT: P/12 - AREA A",
+      "source_url": "https://plenussistemas.dioenet.com.br/diario/publicacoes/33470",
+      "source_type": "DIARIO_OFICIAL"
+    },
+    {
+      "anchor_id": "ANCHOR-003",
+      "bc_normalized": "7.3.079.011.001",
+      "street": "Rua Doutor Julio Forster Da Costa",
+      "house_number": null,
+      "subdivision_block": "Qdr: D",
+      "lot_raw": "Lote: 11",
+      "source_url": "https://plenussistemas.dioenet.com.br/diario/publicacoes/33470",
+      "source_type": "DIARIO_OFICIAL"
+    },
+    {
+      "anchor_id": "ANCHOR-004",
+      "bc_normalized": "7.3.076.001.001",
+      "street": "Rua Odete Veloso Mota",
+      "house_number": "87",
+      "subdivision_block": "Quadra A",
+      "lot_raw": "Lote 01",
+      "source_url": "https://plenussistemas.dioenet.com.br/diario/publicacoes/32012",
+      "source_type": "DIARIO_OFICIAL"
+    },
+    {
+      "anchor_id": "ANCHOR-005",
+      "bc_normalized": "1.6.013.105.002",
+      "street": "Rua Presidente Getulio Vargas",
+      "house_number": "441",
+      "subdivision_block": "Quadra 04",
+      "lot_raw": "P/Lote 01 e P/Lote 06",
+      "source_url": "https://plenussistemas.dioenet.com.br/diario/publicacoes/35834",
+      "source_type": "DIARIO_OFICIAL"
+    },
+    {
+      "anchor_id": "ANCHOR-006",
+      "bc_normalized": "1.6.014.010.005",
+      "street": "Jardim Eulália",
+      "house_number": null,
+      "subdivision_block": "Quadra B",
+      "lot_raw": "Lote 10",
+      "source_url": "https://leilaoimovel.com.br/imovel-leilao/taubate-sp/jardim-eulalia",
+      "source_type": "LEILAO_PUBLICO"
+    },
+    {
+      "anchor_id": "ANCHOR-007",
+      "bc_normalized": "4.6.289.033.001",
+      "street": "Avenida Alberto Winther De Araujo",
+      "house_number": null,
+      "subdivision_block": "Qdr: L",
+      "lot_raw": "Lote: 13",
+      "source_url": "https://plenussistemas.dioenet.com.br/diario/publicacoes/33470",
+      "source_type": "DIARIO_OFICIAL"
+    },
+    {
+      "anchor_id": "ANCHOR-008",
+      "bc_normalized": "4.4.085.022.001",
+      "street": "Rua Angelo Zuim",
+      "house_number": "67",
+      "subdivision_block": "Quadra A",
+      "lot_raw": "Área A, lote 14",
+      "source_url": "https://destakleiloes.com.br/lote/imovel-esplanada-independencia-taubate-sp/464/",
+      "source_type": "LEILAO_PUBLICO"
+    },
+    {
+      "anchor_id": "ANCHOR-009",
+      "bc_normalized": "2.3.043.008.001",
+      "street": "Campos Elíseos",
+      "house_number": null,
+      "subdivision_block": "Quadra 12",
+      "lot_raw": "Lote 08",
+      "source_url": "https://plenussistemas.dioenet.com.br/diario/publicacoes/33470",
+      "source_type": "DIARIO_OFICIAL"
+    },
+    {
+      "anchor_id": "ANCHOR-010",
+      "bc_normalized": "3.1.009.004.001",
+      "street": "Rua França",
+      "house_number": "261",
+      "subdivision_block": "Quadra O",
+      "lot_raw": "Lote 14",
+      "source_url": "https://plenussistemas.dioenet.com.br/diario/publicacoes/35835",
+      "source_type": "DIARIO_OFICIAL"
+    },
+    {
+      "anchor_id": "ANCHOR-011",
+      "bc_normalized": "3.1.014.001.001",
+      "street": "Rua França",
+      "house_number": null,
+      "subdivision_block": "Quadra A",
+      "lot_raw": "Lote 01",
+      "source_url": "https://franklinleiloes.com.br/lote/imovel-jardim-das-nacoes-taubate-sp/821/",
+      "source_type": "LEILAO_PUBLICO"
+    },
+    {
+      "anchor_id": "ANCHOR-012",
+      "bc_normalized": "3.3.019.006.001",
+      "street": "Rua Siria",
+      "house_number": "91",
+      "subdivision_block": "QD: X",
+      "lot_raw": "LT: 03",
+      "source_url": "https://plenussistemas.dioenet.com.br/diario/publicacoes/33470",
+      "source_type": "DIARIO_OFICIAL"
+    },
+    {
+      "anchor_id": "ANCHOR-013",
+      "bc_normalized": "7.3.052.013.001",
+      "street": "Rua Gilson de Andrade Rezende",
+      "house_number": "92",
+      "subdivision_block": "Residencial Suttanni II",
+      "lot_raw": "Casa 01",
+      "source_url": "https://spyleiloes.com.br/lote/casa-condominio-residencial-suttanni-ii-taubate-sp/464/",
+      "source_type": "LEILAO_PUBLICO"
+    },
+    {
+      "anchor_id": "ANCHOR-014",
+      "bc_normalized": "7.3.061.018.001",
+      "street": "Rua Alessandro Henrique da Silva",
+      "house_number": "390",
+      "subdivision_block": "Quadra 20",
+      "lot_raw": "Lote 18",
+      "source_url": "https://plenussistemas.dioenet.com.br/diario/publicacoes/32012",
+      "source_type": "DIARIO_OFICIAL"
+    }
+  ]
+}

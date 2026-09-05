@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "phase": "2.3Y",
+    "title": "PUBLIC SPATIAL GROUND-TRUTH METRICS & SOURCE EVALUATION",
+    "timestamp": "2026-09-05T01:52:44.138683+00:00"
+  },
+  "source_discovery_counts": {
+    "PUBLIC_SOURCE_FAMILIES_FOUND": 6,
+    "HIGH_VALUE_SOURCE_FAMILIES": 2,
+    "DOCUMENTS_REVIEWED": 42,
+    "TOTAL_SOURCE_LINKS_FOUND": 18,
+    "NEW_SOURCE_LINKS_FOUND": 4,
+    "REDISCOVERED_SOURCE_LINKS": 14
+  },
+  "cadastral_link_counts": {
+    "TOTAL_BC_TO_ADDRESS_LINKS": 16,
+    "NEW_BC_TO_ADDRESS_LINKS": 2,
+    "TOTAL_BC_TO_LOT_LINKS": 12,
+    "NEW_BC_TO_LOT_LINKS": 2,
+    "TOTAL_BC_TO_FACE_LINKS": 5,
+    "NEW_BC_TO_FACE_LINKS": 5,
+    "TOTAL_BC_TO_PARCEL_GEOMETRY_LINKS": 0,
+    "NEW_BC_TO_PARCEL_GEOMETRY_LINKS": 0
+  },
+  "pilot_recovery_summary": {
+    "TOTAL_PILOT_PARCELS": 6,
+    "PRE_PHASE_USABLE_FACE_GT": 0,
+    "POST_PHASE_USABLE_FACE_GT": 5,
+    "INCREMENTAL_USABLE_FACE_GT": 5,
+    "RECOVERED_EXACT_PARCEL": 0,
+    "RECOVERED_EXACT_FACE": 0,
+    "RECOVERED_PROBABLE_FACE": 5,
+    "REMAINING_STREET_ONLY": 1
+  },
+  "feasibility_gate_impact_for_microarea_b": {
+    "PRE_PHASE_USABLE_FACE_DSQLLL": 0,
+    "POST_PHASE_POTENTIAL_USABLE_FACE_DSQLLL": 5,
+    "PRE_REGISTERED_FEASIBILITY_THRESHOLD": 8,
+    "THRESHOLD_SATISFIED_YET": false,
+    "SCIENTIFIC_RECOMMENDATION": "Continue targeted public gazette / judicial auction extraction across Jardim das Nações to reach >= 8 parcels before launching replication."
+  },
+  "phase_classification": "PUBLIC_SPATIAL_GT_SOURCE_PARTIAL_VALUE",
+  "status": "COMPLETE",
+  "signal": "STOP_FOR_HUMAN_REVIEW",
+  "classification_justification": "Legitimate public sources (Diário Oficial and Judicial Auction Notices) demonstrate proven capability to connect municipal BCs to door numbers, lot identifiers, and subdivision blocks (Levels 2 and 3). In the pilot test, 5 of 6 parcels were incrementally upgraded from STREET_ONLY to PROBABLE_STREET_FACE. However, because coverage is documentary-driven and currently yields 5 usable parcels (short of the >= 8 threshold required for full Phase 2.3X replication), and because Level 4/5 vector parcel geometries are not openly downloadable in bulk, the source landscape is classified as PARTIAL_VALUE."
+}

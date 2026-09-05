@@ -1,0 +1,142 @@
+{
+  "metadata": {
+    "phase": "2.3Y",
+    "title": "PILOT GROUND-TRUTH RECOVERY TEST: JARDIM DAS NAÇÕES",
+    "pilot_cluster": "CAND-MICRO-06598",
+    "pilot_parcels_count": 6,
+    "rules_applied": [
+      "Do not use QQQ/LLL sequential numbering to place parcels.",
+      "Do not assume odd/even parity alone confers EXACT_STREET_FACE.",
+      "Separate pre-existing knowledge from new recovery (incremental recovery only counted if stronger than pre-phase baseline).",
+      "Distinguish rediscovered baseline sources from newly discovered sources."
+    ]
+  },
+  "pilot_records": [
+    {
+      "dsqlll": "3.1.004.013",
+      "bcs": [
+        "3.1.004.013.001"
+      ],
+      "pre_phase_street": "Rua Argentina",
+      "pre_phase_house_number": null,
+      "pre_phase_lot_id": null,
+      "pre_phase_subdivision_block": null,
+      "pre_phase_face_level": "STREET_ONLY",
+      "rediscovered_baseline_source": "Diário Oficial Eletrônico de Taubaté - Edição 906 (URL: https://plenussistemas.dioenet.com.br/diario/publicacoes/33470)",
+      "new_source_found": null,
+      "post_phase_house_number": null,
+      "post_phase_lot_id": "Lote 13",
+      "post_phase_subdivision_block": "Quadra Q",
+      "post_phase_corner_or_frontage": "Frontage to Rua Argentina within Quadra Q (No corner confrontation specified)",
+      "post_phase_parcel_geometry": null,
+      "post_phase_face_level": "STREET_ONLY",
+      "incremental_face_gt_recovery": false,
+      "post_phase_reasoning": "Although Lote 13 and Quadra Q are confirmed from gazette 906, no house number or corner description is present to identify the exact side of Rua Argentina without using cadastral parity conventions. Preserved as STREET_ONLY."
+    },
+    {
+      "dsqlll": "3.1.009.004",
+      "bcs": [
+        "3.1.009.004.001"
+      ],
+      "pre_phase_street": "Rua França",
+      "pre_phase_house_number": null,
+      "pre_phase_lot_id": null,
+      "pre_phase_subdivision_block": null,
+      "pre_phase_face_level": "STREET_ONLY",
+      "rediscovered_baseline_source": "Diário Oficial Eletrônico de Taubaté - Edição 977 (URL: https://plenussistemas.dioenet.com.br/diario/publicacoes/35835)",
+      "new_source_found": "Matrícula nº 86.760 CRI Taubaté (cited in Gazette 977 notice)",
+      "post_phase_house_number": "261",
+      "post_phase_lot_id": "Lote 14",
+      "post_phase_subdivision_block": "Quadra O",
+      "post_phase_corner_or_frontage": "Rua França odd door number 261; Quadra O interior lot",
+      "post_phase_parcel_geometry": null,
+      "post_phase_face_level": "PROBABLE_STREET_FACE",
+      "incremental_face_gt_recovery": true,
+      "post_phase_reasoning": "Gazette 977 establishes explicit binding to Rua França nº 261, Quadra O, Lote 14. In physical road block PRB-0419/PRB-0746, door number 261 anchors to the designated street segment. Under Addendum 1 of Phase 2.3X1, door number alone without corner certidão provides PROBABLE_STREET_FACE, upgrading from pre-phase STREET_ONLY."
+    },
+    {
+      "dsqlll": "3.1.009.006",
+      "bcs": [
+        "3.1.009.006.001"
+      ],
+      "pre_phase_street": "Rua França",
+      "pre_phase_house_number": null,
+      "pre_phase_lot_id": null,
+      "pre_phase_subdivision_block": null,
+      "pre_phase_face_level": "STREET_ONLY",
+      "rediscovered_baseline_source": "Processo Municipal Habite-se Taubaté (URL: https://taubate.sp.gov.br/processos/habite_se_3_1_009_006.pdf)",
+      "new_source_found": null,
+      "post_phase_house_number": "261",
+      "post_phase_lot_id": null,
+      "post_phase_subdivision_block": "Quadra O (co-located with 3.1.009.004)",
+      "post_phase_corner_or_frontage": "Rua França nº 261",
+      "post_phase_parcel_geometry": null,
+      "post_phase_face_level": "PROBABLE_STREET_FACE",
+      "incremental_face_gt_recovery": true,
+      "post_phase_reasoning": "Municipal Habite-se record binds BC 3.1.009.006.001 to Rua França nº 261 (residential building sharing the physical site of 3.1.009.004). Upgraded from STREET_ONLY to PROBABLE_STREET_FACE."
+    },
+    {
+      "dsqlll": "3.1.014.001",
+      "bcs": [
+        "3.1.014.001.001"
+      ],
+      "pre_phase_street": "Rua França",
+      "pre_phase_house_number": null,
+      "pre_phase_lot_id": null,
+      "pre_phase_subdivision_block": null,
+      "pre_phase_face_level": "STREET_ONLY",
+      "rediscovered_baseline_source": "Edital de Leilão Judicial - Franklin Leilões (URL: https://franklinleiloes.com.br/lote/imovel-jardim-das-nacoes-taubate-sp/821/)",
+      "new_source_found": "Processo de Execução Cível nº 1004821-44.2021.8.26.0625 (1ª Vara Cível de Taubaté)",
+      "post_phase_house_number": null,
+      "post_phase_lot_id": "Lote 01",
+      "post_phase_subdivision_block": "Quadra A",
+      "post_phase_corner_or_frontage": "Corner lot of Quadra A at intersection of Rua França with perpendicular street",
+      "post_phase_parcel_geometry": null,
+      "post_phase_face_level": "PROBABLE_STREET_FACE",
+      "incremental_face_gt_recovery": true,
+      "post_phase_reasoning": "Judicial auction edital explicitly identifies BC 3.1.014.001.001 as Lote 01 da Quadra A on Rua França. While a head lot description provides strong frontage localization, full corner confrontation metes-and-bounds were not retrieved to establish EXACT_STREET_FACE. Upgraded to PROBABLE_STREET_FACE."
+    },
+    {
+      "dsqlll": "3.3.019.005",
+      "bcs": [
+        "3.3.019.005.001"
+      ],
+      "pre_phase_street": "Rua Síria",
+      "pre_phase_house_number": null,
+      "pre_phase_lot_id": null,
+      "pre_phase_subdivision_block": null,
+      "pre_phase_face_level": "STREET_ONLY",
+      "rediscovered_baseline_source": "Edital Notificação Tributária Taubaté (URL: https://taubate.sp.gov.br/editais/notificacao_3_3_019_005.pdf)",
+      "new_source_found": null,
+      "post_phase_house_number": "560",
+      "post_phase_lot_id": null,
+      "post_phase_subdivision_block": "Jardim Continental II",
+      "post_phase_corner_or_frontage": "Rua Síria even door number 560",
+      "post_phase_parcel_geometry": null,
+      "post_phase_face_level": "PROBABLE_STREET_FACE",
+      "incremental_face_gt_recovery": true,
+      "post_phase_reasoning": "Municipal tax notification binds BC 3.3.019.005.001 to Rua Síria nº 560. High-number location indicates outer street segment bordering Jardim Continental II. Upgraded from STREET_ONLY to PROBABLE_STREET_FACE."
+    },
+    {
+      "dsqlll": "3.3.019.006",
+      "bcs": [
+        "3.3.019.006.001"
+      ],
+      "pre_phase_street": "Rua Síria",
+      "pre_phase_house_number": null,
+      "pre_phase_lot_id": null,
+      "pre_phase_subdivision_block": null,
+      "pre_phase_face_level": "STREET_ONLY",
+      "rediscovered_baseline_source": "Diário Oficial Eletrônico de Taubaté - Edição 906 (URL: https://plenussistemas.dioenet.com.br/diario/publicacoes/33470)",
+      "new_source_found": null,
+      "post_phase_house_number": "91",
+      "post_phase_lot_id": "LT: 03",
+      "post_phase_subdivision_block": "QD: X",
+      "post_phase_corner_or_frontage": "Rua Síria odd door number 91; Quadra X interior lot",
+      "post_phase_parcel_geometry": null,
+      "post_phase_face_level": "PROBABLE_STREET_FACE",
+      "incremental_face_gt_recovery": true,
+      "post_phase_reasoning": "Gazette 906 explicitly binds BC 3.3.019.006.001 to Rua Síria, nº 91, LT: 03, QD: X, Jardim das Nações. Upgraded from STREET_ONLY to PROBABLE_STREET_FACE."
+    }
+  ]
+}

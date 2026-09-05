@@ -1,0 +1,428 @@
+{
+  "metadata": {
+    "phase": "2.3Y",
+    "title": "MICROAREA A FACE-GT PROVENANCE AUDIT",
+    "microarea_id": "CAND-MICRO-14585",
+    "total_parcels": 22,
+    "usable_face_gt_parcels": 18,
+    "exact_street_face_count": 1,
+    "probable_street_face_count": 17,
+    "street_only_count": 4
+  },
+  "audit_summary": {
+    "primary_enabling_mechanism": "Official municipal Certidao de Valor Venal records containing explicit lot numbers (e.g. R01, S01, T01) from Loteamento 302 (Bosque Flamboyant) combined with corner descriptions and door numbers.",
+    "breakdown_by_category": {
+      "EXACT_CORNER_CONFRONTATION_CERTIDAO": 1,
+      "LOT_CONTIGUITY_AND_PARITY_CERTIDAO": 9,
+      "LOT_CONTIGUITY_AND_DOOR_NUMBER_CERTIDAO": 4,
+      "LOT_CONTIGUITY_AND_CONFRONTATION_CERTIDAO": 3,
+      "LOT_CONTIGUITY_CERTIDAO": 1,
+      "HISTORICAL_TAX_RECORD_STREET_ONLY": 4
+    }
+  },
+  "records": [
+    {
+      "dsqlll": "4.4.203.030",
+      "bcs": [
+        "4.4.203.030.014"
+      ],
+      "primary_bc": "4.4.203.030.014",
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": null,
+      "lot_identifier": null,
+      "subdivision_name": null,
+      "spatial_confidence": "STREET_ONLY",
+      "physical_block_id": "PRB-0734",
+      "street_face_id": null,
+      "evidence_category": "HISTORICAL_TAX_RECORD_STREET_ONLY",
+      "source_file": "historical_real_bc_index.json / street_dsq_lll_corpus.json",
+      "public_source": "HISTORICAL_REAL_BC_INDEX",
+      "what_exactly_enabled_face_assignment": "Historical tax record names street and municipal quadra but lacks door number, corner certidao, or confrontation; unresolvable to face."
+    },
+    {
+      "dsqlll": "4.4.206.001",
+      "bcs": [
+        "4.4.206.001.002",
+        "4.4.206.001.003",
+        "4.4.206.001.004",
+        "4.4.206.001.005",
+        "4.4.206.001.006",
+        "4.4.206.001.007",
+        "4.4.206.001.008",
+        "4.4.206.001.009"
+      ],
+      "primary_bc": "4.4.206.001.002",
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "160",
+      "lot_identifier": "R01 (Subdivided to R01-R09)",
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "spatial_confidence": "EXACT_STREET_FACE",
+      "physical_block_id": "PRB-0735",
+      "street_face_id": "PRB-0735_FACE_E",
+      "evidence_category": "EXACT_CORNER_CONFRONTATION_CERTIDAO",
+      "source_file": "resultado_quadra_206.txt / test_edificio_monet.js",
+      "public_source": "PREFEITURA MUNICIPAL DE TAUBATE - DIVISAO DE CADASTRO IMOBILIARIO (CERTIDAO DE VALOR VENAL)",
+      "what_exactly_enabled_face_assignment": "Official certidao explicitly describes Edificio Monet on corner of Rua Antonio Delgado da Veiga n 160, confronting Rua Claudino Velloso Borges (East and South faces of PRB-0735). Grounded corner anchor."
+    },
+    {
+      "dsqlll": "4.4.206.002",
+      "bcs": [
+        "4.4.206.002.001"
+      ],
+      "primary_bc": "4.4.206.002.001",
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "20",
+      "lot_identifier": "R02",
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "physical_block_id": "PRB-0735",
+      "street_face_id": "PRB-0735_FACE_E",
+      "evidence_category": "LOT_CONTIGUITY_AND_PARITY_CERTIDAO",
+      "source_file": "resultado_quadra_206.txt",
+      "public_source": "PREFEITURA MUNICIPAL DE TAUBATE - DIVISAO DE CADASTRO IMOBILIARIO (CERTIDAO DE VALOR VENAL)",
+      "what_exactly_enabled_face_assignment": "Certidao de Valor Venal confirms Lote R02 of Loteamento Bosque Flamboyant on Rua Antonio Delgado da Veiga, contiguously following corner lot R01 along East face of PRB-0735."
+    },
+    {
+      "dsqlll": "4.4.206.003",
+      "bcs": [
+        "4.4.206.003.001"
+      ],
+      "primary_bc": "4.4.206.003.001",
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "30",
+      "lot_identifier": "R03",
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "physical_block_id": "PRB-0735",
+      "street_face_id": "PRB-0735_FACE_E",
+      "evidence_category": "LOT_CONTIGUITY_AND_PARITY_CERTIDAO",
+      "source_file": "resultado_quadra_206.txt",
+      "public_source": "PREFEITURA MUNICIPAL DE TAUBATE - DIVISAO DE CADASTRO IMOBILIARIO (CERTIDAO DE VALOR VENAL)",
+      "what_exactly_enabled_face_assignment": "Certidao de Valor Venal confirms Lote R03 of Loteamento Bosque Flamboyant on Rua Antonio Delgado da Veiga, contiguously following corner lot R01 along East face of PRB-0735."
+    },
+    {
+      "dsqlll": "4.4.206.004",
+      "bcs": [
+        "4.4.206.004.001"
+      ],
+      "primary_bc": "4.4.206.004.001",
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "40",
+      "lot_identifier": "R04",
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "physical_block_id": "PRB-0735",
+      "street_face_id": "PRB-0735_FACE_E",
+      "evidence_category": "LOT_CONTIGUITY_AND_PARITY_CERTIDAO",
+      "source_file": "resultado_quadra_206.txt",
+      "public_source": "PREFEITURA MUNICIPAL DE TAUBATE - DIVISAO DE CADASTRO IMOBILIARIO (CERTIDAO DE VALOR VENAL)",
+      "what_exactly_enabled_face_assignment": "Certidao de Valor Venal confirms Lote R04 of Loteamento Bosque Flamboyant on Rua Antonio Delgado da Veiga, contiguously following corner lot R01 along East face of PRB-0735."
+    },
+    {
+      "dsqlll": "4.4.206.005",
+      "bcs": [
+        "4.4.206.005.001"
+      ],
+      "primary_bc": "4.4.206.005.001",
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "60",
+      "lot_identifier": "R05",
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "physical_block_id": "PRB-0735",
+      "street_face_id": "PRB-0735_FACE_E",
+      "evidence_category": "LOT_CONTIGUITY_AND_PARITY_CERTIDAO",
+      "source_file": "resultado_quadra_206.txt",
+      "public_source": "PREFEITURA MUNICIPAL DE TAUBATE - DIVISAO DE CADASTRO IMOBILIARIO (CERTIDAO DE VALOR VENAL)",
+      "what_exactly_enabled_face_assignment": "Certidao de Valor Venal confirms Lote R05 of Loteamento Bosque Flamboyant on Rua Antonio Delgado da Veiga, contiguously following corner lot R01 along East face of PRB-0735."
+    },
+    {
+      "dsqlll": "4.4.206.006",
+      "bcs": [
+        "4.4.206.006.001"
+      ],
+      "primary_bc": "4.4.206.006.001",
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "0",
+      "lot_identifier": "R06",
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "physical_block_id": "PRB-0735",
+      "street_face_id": "PRB-0735_FACE_E",
+      "evidence_category": "LOT_CONTIGUITY_AND_PARITY_CERTIDAO",
+      "source_file": "resultado_quadra_206.txt",
+      "public_source": "PREFEITURA MUNICIPAL DE TAUBATE - DIVISAO DE CADASTRO IMOBILIARIO (CERTIDAO DE VALOR VENAL)",
+      "what_exactly_enabled_face_assignment": "Certidao de Valor Venal confirms Lote R06 of Loteamento Bosque Flamboyant on Rua Antonio Delgado da Veiga, contiguously following corner lot R01 along East face of PRB-0735."
+    },
+    {
+      "dsqlll": "4.4.206.007",
+      "bcs": [
+        "4.4.206.007.001"
+      ],
+      "primary_bc": "4.4.206.007.001",
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "80",
+      "lot_identifier": "R07",
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "physical_block_id": "PRB-0735",
+      "street_face_id": "PRB-0735_FACE_E",
+      "evidence_category": "LOT_CONTIGUITY_AND_PARITY_CERTIDAO",
+      "source_file": "resultado_quadra_206.txt",
+      "public_source": "PREFEITURA MUNICIPAL DE TAUBATE - DIVISAO DE CADASTRO IMOBILIARIO (CERTIDAO DE VALOR VENAL)",
+      "what_exactly_enabled_face_assignment": "Certidao de Valor Venal confirms Lote R07 of Loteamento Bosque Flamboyant on Rua Antonio Delgado da Veiga, contiguously following corner lot R01 along East face of PRB-0735."
+    },
+    {
+      "dsqlll": "4.4.206.008",
+      "bcs": [
+        "4.4.206.008.001"
+      ],
+      "primary_bc": "4.4.206.008.001",
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "90",
+      "lot_identifier": "R08",
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "physical_block_id": "PRB-0735",
+      "street_face_id": "PRB-0735_FACE_E",
+      "evidence_category": "LOT_CONTIGUITY_AND_PARITY_CERTIDAO",
+      "source_file": "resultado_quadra_206.txt",
+      "public_source": "PREFEITURA MUNICIPAL DE TAUBATE - DIVISAO DE CADASTRO IMOBILIARIO (CERTIDAO DE VALOR VENAL)",
+      "what_exactly_enabled_face_assignment": "Certidao de Valor Venal confirms Lote R08 of Loteamento Bosque Flamboyant on Rua Antonio Delgado da Veiga, contiguously following corner lot R01 along East face of PRB-0735."
+    },
+    {
+      "dsqlll": "4.4.206.009",
+      "bcs": [
+        "4.4.206.009.001"
+      ],
+      "primary_bc": "4.4.206.009.001",
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "100",
+      "lot_identifier": "R09",
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "physical_block_id": "PRB-0735",
+      "street_face_id": "PRB-0735_FACE_E",
+      "evidence_category": "LOT_CONTIGUITY_AND_PARITY_CERTIDAO",
+      "source_file": "resultado_quadra_206.txt",
+      "public_source": "PREFEITURA MUNICIPAL DE TAUBATE - DIVISAO DE CADASTRO IMOBILIARIO (CERTIDAO DE VALOR VENAL)",
+      "what_exactly_enabled_face_assignment": "Certidao de Valor Venal confirms Lote R09 of Loteamento Bosque Flamboyant on Rua Antonio Delgado da Veiga, contiguously following corner lot R01 along East face of PRB-0735."
+    },
+    {
+      "dsqlll": "4.4.206.010",
+      "bcs": [
+        "4.4.206.010.001"
+      ],
+      "primary_bc": "4.4.206.010.001",
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "110",
+      "lot_identifier": "R10",
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "physical_block_id": "PRB-0735",
+      "street_face_id": "PRB-0735_FACE_E",
+      "evidence_category": "LOT_CONTIGUITY_AND_PARITY_CERTIDAO",
+      "source_file": "resultado_quadra_206.txt",
+      "public_source": "PREFEITURA MUNICIPAL DE TAUBATE - DIVISAO DE CADASTRO IMOBILIARIO (CERTIDAO DE VALOR VENAL)",
+      "what_exactly_enabled_face_assignment": "Certidao de Valor Venal confirms Lote R10 of Loteamento Bosque Flamboyant on Rua Antonio Delgado da Veiga, contiguously following corner lot R01 along East face of PRB-0735."
+    },
+    {
+      "dsqlll": "4.4.206.012",
+      "bcs": [
+        "4.4.206.012.001"
+      ],
+      "primary_bc": "4.4.206.012.001",
+      "street": "Rua Claudino Velloso Borges",
+      "house_number": null,
+      "lot_identifier": "R12",
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "spatial_confidence": "STREET_ONLY",
+      "physical_block_id": "PRB-0735",
+      "street_face_id": null,
+      "evidence_category": "LOT_CONTIGUITY_AND_PARITY_CERTIDAO",
+      "source_file": "resultado_quadra_206.txt",
+      "public_source": "PREFEITURA MUNICIPAL DE TAUBATE - DIVISAO DE CADASTRO IMOBILIARIO (CERTIDAO DE VALOR VENAL)",
+      "what_exactly_enabled_face_assignment": "Certidao de Valor Venal confirms Lote R12 of Loteamento Bosque Flamboyant on Rua Antonio Delgado da Veiga, contiguously following corner lot R01 along East face of PRB-0735."
+    },
+    {
+      "dsqlll": "4.4.206.013",
+      "bcs": [
+        "4.4.206.013.001"
+      ],
+      "primary_bc": "4.4.206.013.001",
+      "street": "Rua Claudino Velloso Borges",
+      "house_number": null,
+      "lot_identifier": "R13",
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "spatial_confidence": "STREET_ONLY",
+      "physical_block_id": "PRB-0735",
+      "street_face_id": null,
+      "evidence_category": "LOT_CONTIGUITY_AND_PARITY_CERTIDAO",
+      "source_file": "resultado_quadra_206.txt",
+      "public_source": "PREFEITURA MUNICIPAL DE TAUBATE - DIVISAO DE CADASTRO IMOBILIARIO (CERTIDAO DE VALOR VENAL)",
+      "what_exactly_enabled_face_assignment": "Certidao de Valor Venal confirms Lote R13 of Loteamento Bosque Flamboyant on Rua Antonio Delgado da Veiga, contiguously following corner lot R01 along East face of PRB-0735."
+    },
+    {
+      "dsqlll": "4.4.207.001",
+      "bcs": [
+        "4.4.207.001.001"
+      ],
+      "primary_bc": "4.4.207.001.001",
+      "street": "Rua Claudino Velloso Borges",
+      "house_number": "200",
+      "lot_identifier": "S01",
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "physical_block_id": "PRB-0736",
+      "street_face_id": "PRB-0736_FACE_S",
+      "evidence_category": "LOT_CONTIGUITY_AND_DOOR_NUMBER_CERTIDAO",
+      "source_file": "achados_claudino.txt",
+      "public_source": "PREFEITURA MUNICIPAL DE TAUBATE - DIVISAO DE CADASTRO IMOBILIARIO (CERTIDAO DE VALOR VENAL)",
+      "what_exactly_enabled_face_assignment": "Certidao de Valor Venal specifies Rua Claudino Velloso Borges n 200, Lote S01, placing it on South face of PRB-0736."
+    },
+    {
+      "dsqlll": "4.4.207.002",
+      "bcs": [
+        "4.4.207.002.001"
+      ],
+      "primary_bc": "4.4.207.002.001",
+      "street": "Rua Claudino Velloso Borges",
+      "house_number": "0",
+      "lot_identifier": "S02",
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "physical_block_id": "PRB-0736",
+      "street_face_id": "PRB-0736_FACE_S",
+      "evidence_category": "LOT_CONTIGUITY_AND_DOOR_NUMBER_CERTIDAO",
+      "source_file": "achados_claudino.txt",
+      "public_source": "PREFEITURA MUNICIPAL DE TAUBATE - DIVISAO DE CADASTRO IMOBILIARIO (CERTIDAO DE VALOR VENAL)",
+      "what_exactly_enabled_face_assignment": "Certidao de Valor Venal specifies Rua Claudino Velloso Borges, Lote S2, contiguously adjacent to Lote S01 along South face of PRB-0736."
+    },
+    {
+      "dsqlll": "4.4.207.006",
+      "bcs": [
+        "4.4.207.006.001"
+      ],
+      "primary_bc": "4.4.207.006.001",
+      "street": "Rua Antônio Delgado da Veiga",
+      "house_number": "67",
+      "lot_identifier": "S06",
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "physical_block_id": "PRB-0736",
+      "street_face_id": "PRB-0736_FACE_W",
+      "evidence_category": "LOT_CONTIGUITY_AND_DOOR_NUMBER_CERTIDAO",
+      "source_file": "achados_claudino.txt",
+      "public_source": "PREFEITURA MUNICIPAL DE TAUBATE - DIVISAO DE CADASTRO IMOBILIARIO (CERTIDAO DE VALOR VENAL)",
+      "what_exactly_enabled_face_assignment": "Certidao de Valor Venal specifies Rua Antonio Delgado da Veiga n 67, Lote S6, placing it on West face of PRB-0736."
+    },
+    {
+      "dsqlll": "4.4.207.014",
+      "bcs": [
+        "4.4.207.014.002"
+      ],
+      "primary_bc": "4.4.207.014.002",
+      "street": "Rua Expedicionário Capitão Benedicto Nunes de Assis",
+      "house_number": "81",
+      "lot_identifier": "S14",
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "spatial_confidence": "STREET_ONLY",
+      "physical_block_id": "PRB-0736",
+      "street_face_id": null,
+      "evidence_category": "LOT_CONTIGUITY_AND_DOOR_NUMBER_CERTIDAO",
+      "source_file": "achados_claudino.txt",
+      "public_source": "PREFEITURA MUNICIPAL DE TAUBATE - DIVISAO DE CADASTRO IMOBILIARIO (CERTIDAO DE VALOR VENAL)",
+      "what_exactly_enabled_face_assignment": "Certidao de Valor Venal specifies Lote S14 on Rua Expedicionario Capitao Benedicto Nunes de Assis."
+    },
+    {
+      "dsqlll": "4.4.208.001",
+      "bcs": [
+        "4.4.208.001.001"
+      ],
+      "primary_bc": "4.4.208.001.001",
+      "street": "Rua Claudino Velloso Borges",
+      "house_number": "0",
+      "lot_identifier": "T01",
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "physical_block_id": "PRB-0735",
+      "street_face_id": "PRB-0735_FACE_S",
+      "evidence_category": "LOT_CONTIGUITY_AND_CONFRONTATION_CERTIDAO",
+      "source_file": "achados_claudino.txt",
+      "public_source": "PREFEITURA MUNICIPAL DE TAUBATE - DIVISAO DE CADASTRO IMOBILIARIO (CERTIDAO DE VALOR VENAL)",
+      "what_exactly_enabled_face_assignment": "Certidao de Valor Venal specifies Lote T01 of Agropecuaria Agostinho Ardito S/A, placing parcels on South/West faces of PRB-0735 along Rua Claudino Velloso Borges / Melchior Felix Correa."
+    },
+    {
+      "dsqlll": "4.4.208.002",
+      "bcs": [
+        "4.4.208.002.001"
+      ],
+      "primary_bc": "4.4.208.002.001",
+      "street": "Rua Claudino Velloso Borges",
+      "house_number": "0",
+      "lot_identifier": "T02",
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "physical_block_id": "PRB-0735",
+      "street_face_id": "PRB-0735_FACE_S",
+      "evidence_category": "LOT_CONTIGUITY_AND_CONFRONTATION_CERTIDAO",
+      "source_file": "achados_claudino.txt",
+      "public_source": "PREFEITURA MUNICIPAL DE TAUBATE - DIVISAO DE CADASTRO IMOBILIARIO (CERTIDAO DE VALOR VENAL)",
+      "what_exactly_enabled_face_assignment": "Certidao de Valor Venal specifies Lote T02 of Agropecuaria Agostinho Ardito S/A, placing parcels on South/West faces of PRB-0735 along Rua Claudino Velloso Borges / Melchior Felix Correa."
+    },
+    {
+      "dsqlll": "4.4.208.003",
+      "bcs": [
+        "4.4.208.003.001"
+      ],
+      "primary_bc": "4.4.208.003.001",
+      "street": "Rua Claudino Velloso Borges",
+      "house_number": "0",
+      "lot_identifier": "T03",
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "physical_block_id": "PRB-0735",
+      "street_face_id": "PRB-0735_FACE_S",
+      "evidence_category": "LOT_CONTIGUITY_AND_CONFRONTATION_CERTIDAO",
+      "source_file": "achados_claudino.txt",
+      "public_source": "PREFEITURA MUNICIPAL DE TAUBATE - DIVISAO DE CADASTRO IMOBILIARIO (CERTIDAO DE VALOR VENAL)",
+      "what_exactly_enabled_face_assignment": "Certidao de Valor Venal specifies Lote T03 of Agropecuaria Agostinho Ardito S/A, placing parcels on South/West faces of PRB-0735 along Rua Claudino Velloso Borges / Melchior Felix Correa."
+    },
+    {
+      "dsqlll": "4.4.208.008",
+      "bcs": [
+        "4.4.208.008.001"
+      ],
+      "primary_bc": "4.4.208.008.001",
+      "street": "RUA MELCHIOR FELIX CORREA",
+      "house_number": "0",
+      "lot_identifier": "T08",
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "physical_block_id": "PRB-0735",
+      "street_face_id": "PRB-0735_FACE_W",
+      "evidence_category": "LOT_CONTIGUITY_AND_CONFRONTATION_CERTIDAO",
+      "source_file": "achados_claudino.txt",
+      "public_source": "PREFEITURA MUNICIPAL DE TAUBATE - DIVISAO DE CADASTRO IMOBILIARIO (CERTIDAO DE VALOR VENAL)",
+      "what_exactly_enabled_face_assignment": "Certidao de Valor Venal specifies Lote T08 of Agropecuaria Agostinho Ardito S/A, placing parcels on South/West faces of PRB-0735 along Rua Claudino Velloso Borges / Melchior Felix Correa."
+    },
+    {
+      "dsqlll": "4.4.209.013",
+      "bcs": [
+        "4.4.209.013.001"
+      ],
+      "primary_bc": "4.4.209.013.001",
+      "street": "RUA MELCHIOR FELIX CORREA",
+      "house_number": "86",
+      "lot_identifier": "UP/03",
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "spatial_confidence": "PROBABLE_STREET_FACE",
+      "physical_block_id": "PRB-0733",
+      "street_face_id": "PRB-0733_FACE_W",
+      "evidence_category": "LOT_CONTIGUITY_CERTIDAO",
+      "source_file": "achados_claudino.txt",
+      "public_source": "PREFEITURA MUNICIPAL DE TAUBATE - DIVISAO DE CADASTRO IMOBILIARIO (CERTIDAO DE VALOR VENAL)",
+      "what_exactly_enabled_face_assignment": "Certidao de Valor Venal specifies Lote UP/03 on Rua Melchior Felix Correa n 86, West face of PRB-0733."
+    }
+  ]
+}

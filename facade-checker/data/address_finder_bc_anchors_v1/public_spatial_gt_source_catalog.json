@@ -1,0 +1,219 @@
+{
+  "metadata": {
+    "phase": "2.3Y",
+    "title": "PUBLIC SPATIAL GROUND-TRUTH SOURCE CATALOG",
+    "generated_at": "2026-09-05T01:52:44.138683+00:00",
+    "taxonomic_levels": {
+      "LEVEL_0": "Street / neighborhood only (Nominatim / OSM without door numbers)",
+      "LEVEL_1": "Street + house number (Geocoded address points without lot/cadastral binding)",
+      "LEVEL_2": "Street + house number + lot identifier / subdivision block",
+      "LEVEL_3": "Street frontage / corner description / confrontation (Direct face binding)",
+      "LEVEL_4": "Parcel geometry or subdivision blueprint map position",
+      "LEVEL_5": "Direct municipal cadastral identifier <-> spatial vector parcel mapping"
+    }
+  },
+  "source_families": [
+    {
+      "family_id": "SRC-FAM-01",
+      "family_name": "Diário Oficial Eletrônico de Taubaté (DIOENET)",
+      "max_achieved_level": "LEVEL_3",
+      "typical_level": "LEVEL_2",
+      "description": "Municipal official gazette publishing notices of building inspections (fiscalização de obras), Habite-se concessions, IPTU Active Debt (Dívida Ativa), zoning approvals, and administrative notifications.",
+      "public_access": "OPEN_PUBLIC",
+      "indexable": true,
+      "machine_readable": "PARTIALLY (PDF text layer / HTML index, no CAPTCHA)",
+      "historical_coverage": "2015 - present (daily editions)",
+      "geographic_coverage": "Entire municipality of Taubaté",
+      "document_count_estimate": "Over 1,000 gazette editions containing tens of thousands of notices",
+      "requires_manual_review": true,
+      "cadastral_binding_type": "EXPLICIT (contains municipal BC alongside address, lot, and subdivision block)",
+      "sample_documents": [
+        {
+          "title": "Diário Oficial Eletrônico de Taubaté - Edição 977",
+          "date": "2026-03-01",
+          "url": "https://plenussistemas.dioenet.com.br/diario/publicacoes/35835",
+          "sample_binding": "Rua França, nº 261, Quadra O, Lote 14, Loteamento Jardim das Nações, BC: 3.1.009.004.001",
+          "level": "LEVEL_2"
+        },
+        {
+          "title": "Diário Oficial Eletrônico de Taubaté - Edição 906",
+          "date": "2025-11-27",
+          "url": "https://plenussistemas.dioenet.com.br/diario/publicacoes/33470",
+          "sample_binding": "Rua Síria, 91, LT: 03, QD: X, Jardim das Nações, BC: 33019006001",
+          "level": "LEVEL_2"
+        }
+      ],
+      "extractable_attributes": [
+        "BC",
+        "Street",
+        "House Number",
+        "Lot ID",
+        "Subdivision Block",
+        "Matrícula",
+        "Taxpayer Name"
+      ]
+    },
+    {
+      "family_id": "SRC-FAM-02",
+      "family_name": "Editais de Leilões Judiciais e Extrajudiciais (Hastas Públicas)",
+      "max_achieved_level": "LEVEL_3",
+      "typical_level": "LEVEL_3",
+      "description": "Public auction notices issued by civil and fiscal execution courts (TJSP) transcribed directly from Cartório de Registro de Imóveis (CRI) property deeds (matrículas).",
+      "public_access": "OPEN_PUBLIC",
+      "indexable": true,
+      "machine_readable": "PARTIALLY (PDF / auction portal HTML, no CAPTCHA)",
+      "historical_coverage": "Extensive historical archives across multiple auction platforms (Franklin, Mega, Zuk, SPY)",
+      "geographic_coverage": "Taubaté Comarca",
+      "document_count_estimate": "Hundreds of detailed parcel dossiers",
+      "requires_manual_review": true,
+      "cadastral_binding_type": "EXPLICIT (transcribes municipal BC, full perimeter description, lot confrontations, and corner anchors)",
+      "sample_documents": [
+        {
+          "title": "Edital de Leilão Judicial - Franklin Leilões",
+          "date": "2025-09-14",
+          "url": "https://franklinleiloes.com.br/lote/imovel-jardim-das-nacoes-taubate-sp/821/",
+          "sample_binding": "Rua França, lote 01 da quadra A, Jardim das Nações, BC nº 3.1.014.001.001 (corner head lot)",
+          "level": "LEVEL_3"
+        },
+        {
+          "title": "Edital de Leilão Judicial - Rua Angelo Zuim",
+          "date": "2025-08-20",
+          "url": "https://franklinleiloes.com.br/lote/imovel-taubate-sp/654/",
+          "sample_binding": "Rua Angelo Zuim, 67, Quadra A, Área A, Lote 14, BC 4.4.085.022.001",
+          "level": "LEVEL_3"
+        }
+      ],
+      "extractable_attributes": [
+        "BC",
+        "Street",
+        "House Number",
+        "Lot ID",
+        "Subdivision Block",
+        "Metragem",
+        "Confrontations",
+        "Corner Description",
+        "Matrícula CRI"
+      ]
+    },
+    {
+      "family_id": "SRC-FAM-03",
+      "family_name": "SEPLAN Taubaté Geodata & Interactive Planning Maps",
+      "max_achieved_level": "LEVEL_0",
+      "typical_level": "LEVEL_0",
+      "description": "Official interactive maps published by Secretaria de Planejamento de Taubaté (SEPLAN na Mão) via Google My Maps / KML layers for macrozoning, urban expansion, and environmental zones.",
+      "public_access": "OPEN_PUBLIC",
+      "indexable": true,
+      "machine_readable": "YES (Downloadable KMZ / KML with vector geometry)",
+      "historical_coverage": "Current municipal master plan (Lei Complementar nº 412/2017)",
+      "geographic_coverage": "Entire municipality of Taubaté",
+      "document_count_estimate": "10 vector thematic layers (Macrozona Urbana, Proteção DECEA, Aeródromos, etc.)",
+      "requires_manual_review": false,
+      "cadastral_binding_type": "NONE (Macrozoning polygons only, zero cadastral BCs or individual parcel vectors)",
+      "sample_documents": [
+        {
+          "title": "Mapa de Zoneamento do Município de Taubaté-SP (SEPLAN)",
+          "date": "2026",
+          "url": "https://www.google.com/maps/d/kml?mid=1V33SbWFiprTV-TU7Is5CIyOwbETyN4Mr",
+          "sample_binding": "Macrozona Urbana Polygons (Vector KML)",
+          "level": "LEVEL_0"
+        }
+      ],
+      "extractable_attributes": [
+        "Zone Category",
+        "Permitted Land Use",
+        "Urban Perimeter"
+      ]
+    },
+    {
+      "family_id": "SRC-FAM-04",
+      "family_name": "Legislação Municipal & Decretos de Aprovação de Loteamentos",
+      "max_achieved_level": "LEVEL_2",
+      "typical_level": "LEVEL_1",
+      "description": "Municipal decrees and laws approving subdivision layouts, street naming, and official acceptance of public infrastructure.",
+      "public_access": "OPEN_PUBLIC",
+      "indexable": true,
+      "machine_readable": "YES (Municipal legislative portal / LeisMunicipais.com.br)",
+      "historical_coverage": "1950 - present",
+      "geographic_coverage": "Entire municipality",
+      "document_count_estimate": "Thousands of decrees",
+      "requires_manual_review": true,
+      "cadastral_binding_type": "INDIRECT (names subdivision blocks and streets, rarely links municipal BC directly)",
+      "sample_documents": [
+        {
+          "title": "Decreto de Denominação de Vias - Jardim das Nações",
+          "date": "Historical",
+          "url": "https://leismunicipais.com.br/legislacao-taubate-sp",
+          "sample_binding": "Designação oficial da Rua França, Argentina, Síria no Loteamento Jardim das Nações",
+          "level": "LEVEL_1"
+        }
+      ],
+      "extractable_attributes": [
+        "Subdivision Name",
+        "Street Names",
+        "Historical Block Letters",
+        "Public Areas"
+      ]
+    },
+    {
+      "family_id": "SRC-FAM-05",
+      "family_name": "Diário da Justiça Eletrônico do Tribunal de Justiça de SP (DJe TJSP)",
+      "max_achieved_level": "LEVEL_2",
+      "typical_level": "LEVEL_1",
+      "description": "Judicial gazette publishing fiscal execution dockets (Execução Fiscal Municipal) filed by the Prefeitura de Taubaté against delinquent taxpayers.",
+      "public_access": "OPEN_PUBLIC",
+      "indexable": true,
+      "machine_readable": "YES (DJe query interface / Jusbrasil / Escavador)",
+      "historical_coverage": "2008 - present",
+      "geographic_coverage": "Comarca de Taubaté",
+      "document_count_estimate": "Tens of thousands of fiscal execution entries",
+      "requires_manual_review": true,
+      "cadastral_binding_type": "EXPLICIT (Certidão de Dívida Ativa explicitly cites BC, property address, and taxpayer)",
+      "sample_documents": [
+        {
+          "title": "DJe TJSP - Execução Fiscal Municipal Taubaté",
+          "date": "2024-10-15",
+          "url": "https://esaj.tjsp.jus.br/",
+          "sample_binding": "Execução Fiscal da CDA vinculada ao Cadastro Imobiliário (BC) com endereço da citação",
+          "level": "LEVEL_2"
+        }
+      ],
+      "extractable_attributes": [
+        "BC",
+        "Street",
+        "House Number",
+        "CDA Number",
+        "Taxpayer"
+      ]
+    },
+    {
+      "family_id": "SRC-FAM-06",
+      "family_name": "OpenStreetMap (OSM) Road Network & Address Points",
+      "max_achieved_level": "LEVEL_1",
+      "typical_level": "LEVEL_0",
+      "description": "Community geographic database providing road centerline topology, physical road block polygons, and building footprints.",
+      "public_access": "OPEN_PUBLIC (ODbL license)",
+      "indexable": true,
+      "machine_readable": "YES (Complete planar vector graph in road_network_taubate.json / physical_road_blocks.json)",
+      "historical_coverage": "Continuous updates",
+      "geographic_coverage": "Taubaté full road grid",
+      "document_count_estimate": "3,360 physical blocks, 3,452 streets",
+      "requires_manual_review": false,
+      "cadastral_binding_type": "NONE (No municipal BCs present in OSM; serves strictly as spatial geometry reference)",
+      "sample_documents": [
+        {
+          "title": "OSM Taubaté Planar Road Network & Physical Blocks",
+          "date": "2026",
+          "url": "https://www.openstreetmap.org/",
+          "sample_binding": "Physical blocks PRB-0326, PRB-0401, PRB-0746",
+          "level": "LEVEL_0"
+        }
+      ],
+      "extractable_attributes": [
+        "Physical Road Block Polygon",
+        "Street Centerline Geometry",
+        "Bordering Streets",
+        "Intersections"
+      ]
+    }
+  ]
+}

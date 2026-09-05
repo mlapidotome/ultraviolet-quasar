@@ -1,0 +1,112 @@
+{
+  "metadata": {
+    "phase": "2.3Y",
+    "title": "SUBDIVISION BLUEPRINT & CADASTRAL QQQ RELATIONSHIP DISCOVERY",
+    "classification_definitions": {
+      "DOCUMENTED_RELATION": "Directly supported by an independent public/documentary record linking the specific cadastral QQQ to the subdivision block name/letter.",
+      "LOCAL_EMPIRICAL_ASSOCIATION": "Observed empirical co-occurrence within an audited micro-area without independent external documentary proof.",
+      "HYPOTHESIS_TO_VERIFY": "Structural hypothesis regarding universal mapping across the municipality."
+    }
+  },
+  "subdivision_relations": [
+    {
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "subdivision_block_id": "Quadra R",
+      "cadastral_qqq": "206",
+      "relation_status": "DOCUMENTED_RELATION",
+      "source_document": "Certidão de Valor Venal nº 317992/2026 (BC 4.4.206.001.005, Lote R1, Bosque Flamboyant)",
+      "source_type": "OFFICIAL_MUNICIPAL_CERTIDAO",
+      "independent_of_bc_topology_model": true,
+      "confidence": 100.0,
+      "evidence_snippet": "Inscrição Cadastral: 4.4.206.001.005 | Lote: R1 | Loteamento: 302 - BOSQUE FLAMBOYANT"
+    },
+    {
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "subdivision_block_id": "Quadra S",
+      "cadastral_qqq": "207",
+      "relation_status": "DOCUMENTED_RELATION",
+      "source_document": "Certidão de Valor Venal nº 317824/2026 (BC 4.4.207.001.001, Lote S01, Bosque Flamboyant)",
+      "source_type": "OFFICIAL_MUNICIPAL_CERTIDAO",
+      "independent_of_bc_topology_model": true,
+      "confidence": 100.0,
+      "evidence_snippet": "Inscrição Cadastral: 4.4.207.001.001 | Lote: S01 | Loteamento: 302 - BOSQUE FLAMBOYANT"
+    },
+    {
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "subdivision_block_id": "Quadra T",
+      "cadastral_qqq": "208",
+      "relation_status": "DOCUMENTED_RELATION",
+      "source_document": "Certidão de Valor Venal nº 317839/2026 (BC 4.4.208.001.001, Lote T1, Bosque Flamboyant)",
+      "source_type": "OFFICIAL_MUNICIPAL_CERTIDAO",
+      "independent_of_bc_topology_model": true,
+      "confidence": 100.0,
+      "evidence_snippet": "Inscrição Cadastral: 4.4.208.001.001 | Lote: T1 | Loteamento: 302 - BOSQUE FLAMBOYANT"
+    },
+    {
+      "subdivision_name": "302 - BOSQUE FLAMBOYANT",
+      "subdivision_block_id": "Quadra U",
+      "cadastral_qqq": "209",
+      "relation_status": "DOCUMENTED_RELATION",
+      "source_document": "Certidão de Valor Venal nº 317845/2026 (BC 4.4.209.013.001, Lote UP/03, Bosque Flamboyant)",
+      "source_type": "OFFICIAL_MUNICIPAL_CERTIDAO",
+      "independent_of_bc_topology_model": true,
+      "confidence": 100.0,
+      "evidence_snippet": "Inscrição Cadastral: 4.4.209.013.001 | Lote: UP/03 | Loteamento: 302 - BOSQUE FLAMBOYANT"
+    },
+    {
+      "subdivision_name": "JARDIM DAS NAÇÕES",
+      "subdivision_block_id": "Quadra O",
+      "cadastral_qqq": "009",
+      "relation_status": "DOCUMENTED_RELATION",
+      "source_document": "Diário Oficial Eletrônico de Taubaté - Edição 977 (2026-03-01)",
+      "source_type": "PUBLIC_OFFICIAL_GAZETTE",
+      "independent_of_bc_topology_model": true,
+      "confidence": 100.0,
+      "evidence_snippet": "ENDEREÇO: Rua França, Nº: 261, Quadra O, Lote 14, Loteamento: Jardim das Nações, B.C.: 3.1.009.004.001"
+    },
+    {
+      "subdivision_name": "JARDIM DAS NAÇÕES",
+      "subdivision_block_id": "Quadra A",
+      "cadastral_qqq": "014",
+      "relation_status": "DOCUMENTED_RELATION",
+      "source_document": "Edital de Leilão Judicial - Franklin Leilões (2025-09-14)",
+      "source_type": "PUBLIC_JUDICIAL_AUCTION_NOTICE",
+      "independent_of_bc_topology_model": true,
+      "confidence": 100.0,
+      "evidence_snippet": "imóvel situado na Rua França, lote 01 da quadra A, Jardim das Nações, Taubaté/SP, cadastrado na Prefeitura sob BC nº 3.1.014.001.001"
+    },
+    {
+      "subdivision_name": "JARDIM DAS NAÇÕES",
+      "subdivision_block_id": "Quadra Q",
+      "cadastral_qqq": "004",
+      "relation_status": "DOCUMENTED_RELATION",
+      "source_document": "Diário Oficial Eletrônico de Taubaté - Edição 906 (2025-11-27)",
+      "source_type": "PUBLIC_OFFICIAL_GAZETTE",
+      "independent_of_bc_topology_model": true,
+      "confidence": 100.0,
+      "evidence_snippet": "imóvel localizado na Rua Argentina, 000, Lt: 13, Qd: Q, Jardim Das Nações, Taubaté/SP. B.C: 31004013001"
+    },
+    {
+      "subdivision_name": "JARDIM DAS NAÇÕES",
+      "subdivision_block_id": "Quadra X",
+      "cadastral_qqq": "019",
+      "relation_status": "DOCUMENTED_RELATION",
+      "source_document": "Diário Oficial Eletrônico de Taubaté - Edição 906 (2025-11-27)",
+      "source_type": "PUBLIC_OFFICIAL_GAZETTE",
+      "independent_of_bc_topology_model": true,
+      "confidence": 100.0,
+      "evidence_snippet": "imóvel localizado na Rua Siria, 91, LT: 03, QD: X, Jardim das Nações, Taubaté/SP cadastrado(s) sob o(s) B.C.(s) 33019006001"
+    },
+    {
+      "subdivision_name": "UNIVERSAL_TAUBATE_CADASTRAL_RULE",
+      "subdivision_block_id": "ALL_SUBDIVISION_BLOCKS",
+      "cadastral_qqq": "UNIVERSAL_QQQ",
+      "relation_status": "HYPOTHESIS_TO_VERIFY",
+      "source_document": "None (Theoretical conjecture)",
+      "source_type": "THEORETICAL_MODEL",
+      "independent_of_bc_topology_model": false,
+      "confidence": 0.0,
+      "evidence_snippet": "Hypothesis that every cadastral QQQ strictly maps 1-to-1 to a subdivision block letter throughout the entire municipality."
+    }
+  ]
+}
