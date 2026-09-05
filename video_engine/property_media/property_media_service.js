@@ -183,42 +183,85 @@ class PropertyMediaService {
   }
 
   /**
-   * Validação Estrita de Cache Hit (O(N) nos bytes)
+   * Validação Estrita de Contenção de Diretório (Path Traversal Protection)
+   */
+  isPathContained(targetPath, baseDir) {
+    if (!targetPath || !baseDir) return false;
+    const rel = path.relative(path.resolve(baseDir), path.resolve(targetPath));
+    return Boolean(rel && !rel.startsWith('..') && !path.isAbsolute(rel));
+  }
+
+  /**
+   * Validação Física Unificada de Integridade do Asset (SHA-256 + FFprobe + Contenção + Specs)
+   */
+  async validatePhysicalAssetIntegrity(asset, expectedPropertyRef = null) {
+    if (!asset || typeof asset !== 'object') {
+      return { valid: false, reason: 'ASSET_NULL_OR_INVALID' };
+    }
+    if (asset.status !== 'ready') {
+      return { valid: false, reason: `STATUS_NOT_READY: ${asset.status}` };
+    }
+    if (expectedPropertyRef && String(asset.property_ref) !== String(expectedPropertyRef)) {
+      return { valid: false, reason: `PROPERTY_REF_MISMATCH: expected ${expectedPropertyRef}, got ${asset.property_ref}` };
+    }
+    if (asset.asset_type !== 'property_video') {
+      return { valid: false, reason: `INVALID_ASSET_TYPE: ${asset.asset_type}` };
+    }
+    if (!asset.storage_path) {
+      return { valid: false, reason: 'STORAGE_PATH_MISSING' };
+    }
+    if (!asset.file_hash || typeof asset.file_hash !== 'string' || !asset.file_hash.trim()) {
+      return { valid: false, reason: 'FILE_HASH_MISSING' };
+    }
+
+    const expectedDir = path.resolve(PROPERTIES_OUTPUTS_DIR, String(asset.property_ref), 'videos');
+    const resolvedPath = path.resolve(asset.storage_path);
+    if (!this.isPathContained(resolvedPath, expectedDir)) {
+      return { valid: false, reason: `PATH_CONTAINMENT_VIOLATION: ${resolvedPath} not contained in ${expectedDir}` };
+    }
+
+    if (!fs.existsSync(resolvedPath)) {
+      return { valid: false, reason: `PHYSICAL_FILE_MISSING: ${resolvedPath}` };
+    }
+
+    // 1. Streaming SHA-256 Validation O(N)
+    let physicalHash;
+    try {
+      physicalHash = await this.computeFileHashStream(resolvedPath);
+    } catch (err) {
+      return { valid: false, reason: `HASH_COMPUTATION_ERROR: ${err.message}` };
+    }
+
+    if (physicalHash !== asset.file_hash) {
+      return { valid: false, reason: `FILE_HASH_MISMATCH: expected ${asset.file_hash}, got ${physicalHash}` };
+    }
+
+    // 2. FFprobe Physical Validation
+    let inspectedSpecs;
+    try {
+      inspectedSpecs = await this.inspectVideoFile(resolvedPath);
+    } catch (err) {
+      return { valid: false, reason: `FFPROBE_VALIDATION_ERROR: ${err.message}` };
+    }
+
+    if (!inspectedSpecs || inspectedSpecs.width <= 0 || inspectedSpecs.height <= 0 || inspectedSpecs.duration_sec <= 0) {
+      return { valid: false, reason: 'INVALID_PHYSICAL_SPECS' };
+    }
+
+    return { valid: true, specs: inspectedSpecs, physicalHash };
+  }
+
+  /**
+   * Validação Estrita de Cache Hit (O(N) nos bytes via validatePhysicalAssetIntegrity)
    */
   async validateCacheHit(asset, propertyRef, generationKey) {
     if (!asset || asset.status !== 'ready') return false;
     if (String(asset.property_ref) !== String(propertyRef)) return false;
     if (asset.generation_key !== generationKey) return false;
-    if (!asset.storage_path) return false;
 
-    // Proteção contra path traversal
-    const expectedDir = path.resolve(PROPERTIES_OUTPUTS_DIR, String(propertyRef), 'videos');
-    const resolvedPath = path.resolve(asset.storage_path);
-    if (!resolvedPath.startsWith(expectedDir)) {
-      console.warn(`[PROPERTY_MEDIA_SERVICE] Cache hit rejeitado por violação de path containment: ${resolvedPath}`);
-      return false;
-    }
-
-    if (!fs.existsSync(resolvedPath)) {
-      console.warn(`[PROPERTY_MEDIA_SERVICE] Cache hit rejeitado: arquivo físico ausente em ${resolvedPath}`);
-      return false;
-    }
-
-    // Validação física O(N) do hash
-    try {
-      const physicalHash = await this.computeFileHashStream(resolvedPath);
-      if (asset.file_hash && physicalHash !== asset.file_hash) {
-        console.warn(`[PROPERTY_MEDIA_SERVICE] Cache hit rejeitado por divergência de hash físico: esperado ${asset.file_hash}, obtido ${physicalHash}`);
-        return false;
-      }
-    } catch (err) {
-      console.warn(`[PROPERTY_MEDIA_SERVICE] Erro ao calcular hash físico do cache:`, err.message);
-      return false;
-    }
-
-    // Validação de specs mínimas
-    const specs = asset.specs || {};
-    if (!specs.width || !specs.height || !specs.duration_sec) {
+    const integrity = await this.validatePhysicalAssetIntegrity(asset, propertyRef);
+    if (!integrity.valid) {
+      console.warn(`[PROPERTY_MEDIA_SERVICE] Cache hit rejeitado (${integrity.reason}) para asset ${asset.id}`);
       return false;
     }
 
@@ -226,7 +269,7 @@ class PropertyMediaService {
   }
 
   /**
-   * Ingestão / Materialização com Mutex Atômico, Polling e Stale Recovery
+   * Ingestão / Materialização com Mutex Atômico, Lease Fencing (claim_token), Polling e Stale Recovery
    */
   async ensurePropertyVideoByUrl(propertyRef, rawUrl, options = { failOpen: true, timeoutMs: PROPERTY_VIDEO_POLL_TIMEOUT_MS }) {
     if (!rawUrl || typeof rawUrl !== 'string' || !rawUrl.trim()) {
@@ -268,7 +311,7 @@ class PropertyMediaService {
           if (isCacheValid) {
             return { status: 'READY', asset: cachedAsset };
           }
-          // Arquivo corrompido ou ausente: marcar como failed para possibilitar recuperação
+          // Arquivo corrompido, sem hash ou ausente: marcar como failed para possibilitar recuperação
           console.warn(`[PROPERTY_MEDIA_SERVICE] Marcando asset corrompido ${assetId} como failed para recuperação.`);
           await pool.query(
             "UPDATE video_assets SET status = 'failed', error_message = 'CORRUPTED_CACHE_RECOVERY', updated_at = NOW() WHERE id = $1",
@@ -280,18 +323,25 @@ class PropertyMediaService {
       console.error(`[PROPERTY_MEDIA_SERVICE DB ERROR] Falha ao consultar cache:`, dbErr.message);
     }
 
-    // 2. Tentativa de Aquisição de Claim Atômico
+    // 2. Tentativa de Aquisição de Claim Atômico com claim_token Fencing
     let claimWon = false;
     let currentAsset = null;
+    let claimToken = crypto.randomBytes(16).toString('hex');
 
     try {
+      const metadataObj = {
+        provider: adapter.getName(),
+        provider_media_id: videoId,
+        claim_token: claimToken
+      };
+
       const insertQuery = `
         INSERT INTO video_assets (
           id, property_ref, asset_type, storage_type, status, generation_key,
           provider_ref, remote_url, metadata, created_at, updated_at
         ) VALUES (
           $1, $2, 'property_video', 'local_file', 'processing', $3,
-          $4, $5, $6, NOW(), NOW()
+          $4, $5, $6::jsonb, NOW(), NOW()
         )
         ON CONFLICT (id) DO NOTHING
         RETURNING *;
@@ -303,7 +353,7 @@ class PropertyMediaService {
         generationKey,
         `${adapter.getName()}:${videoId}`,
         canonicalUrl,
-        JSON.stringify({ provider: adapter.getName(), provider_media_id: videoId })
+        JSON.stringify(metadataObj)
       ]);
 
       if (insertRes.rows.length > 0) {
@@ -327,29 +377,35 @@ class PropertyMediaService {
           }
         }
 
-        // Caso FAILED: Recuperar claim atomicamente sobre o mesmo asset_id
+        // Caso FAILED: Recuperar claim atomicamente com NOVO claim_token sobre o mesmo asset_id
         if (currentAsset.status === 'failed') {
+          claimToken = crypto.randomBytes(16).toString('hex');
           const recoverFailedRes = await pool.query(
             `UPDATE video_assets 
-             SET status = 'processing', error_message = NULL, updated_at = NOW(),
-                 metadata = jsonb_set(COALESCE(metadata, '{}'::jsonb), '{claim_recovered}', 'true'::jsonb)
+             SET status = 'processing',
+                 error_message = NULL,
+                 updated_at = NOW(),
+                 metadata = jsonb_set(COALESCE(metadata, '{}'::jsonb), '{claim_token}', to_jsonb($2::text))
              WHERE id = $1 AND status = 'failed'
              RETURNING *;`,
-            [assetId]
+            [assetId, claimToken]
           );
           if (recoverFailedRes.rows.length > 0) {
             claimWon = true;
             currentAsset = recoverFailedRes.rows[0];
           }
         } else if (currentAsset.status === 'processing') {
-          // Caso PROCESSING: Verificar se está stale
+          // Caso PROCESSING: Verificar se está stale e recuperar com NOVO claim_token
+          claimToken = crypto.randomBytes(16).toString('hex');
           const recoverStaleRes = await pool.query(
             `UPDATE video_assets 
-             SET status = 'processing', updated_at = NOW(),
-                 metadata = jsonb_set(COALESCE(metadata, '{}'::jsonb), '{stale_recovered}', 'true'::jsonb)
-             WHERE id = $1 AND status = 'processing' AND updated_at < NOW() - ($2 || ' minutes')::interval
+             SET status = 'processing',
+                 updated_at = NOW(),
+                 error_message = NULL,
+                 metadata = jsonb_set(COALESCE(metadata, '{}'::jsonb), '{claim_token}', to_jsonb($2::text))
+             WHERE id = $1 AND status = 'processing' AND updated_at < NOW() - ($3 || ' minutes')::interval
              RETURNING *;`,
-            [assetId, PROPERTY_VIDEO_STALE_TIMEOUT_MINUTES]
+            [assetId, claimToken, PROPERTY_VIDEO_STALE_TIMEOUT_MINUTES]
           );
           if (recoverStaleRes.rows.length > 0) {
             claimWon = true;
@@ -359,16 +415,25 @@ class PropertyMediaService {
       }
     }
 
-    // 3. Processo Ganhador: Executar Materialização Física no Staging
+    // 3. Processo Ganhador: Executar Materialização Física no Staging com Fenced Transitions
     if (claimWon) {
       const propertyVideosDir = path.join(PROPERTIES_OUTPUTS_DIR, String(propertyRef), 'videos');
       const stagingDir = path.join(propertyVideosDir, '.tmp');
       const stagingBaseName = `ingest_${assetId}_${crypto.randomBytes(4).toString('hex')}`;
 
-      // Heartbeat a cada 20s para manter updated_at vivo
+      let lostOwnership = false;
+
+      // Heartbeat periódico protegido por claim_token fencing
       const heartbeatInterval = setInterval(async () => {
         try {
-          await pool.query("UPDATE video_assets SET updated_at = NOW() WHERE id = $1 AND status = 'processing'", [assetId]);
+          const hbRes = await pool.query(
+            "UPDATE video_assets SET updated_at = NOW() WHERE id = $1 AND status = 'processing' AND (metadata->>'claim_token') = $2 RETURNING id",
+            [assetId, claimToken]
+          );
+          if (hbRes.rowCount === 0) {
+            lostOwnership = true;
+            console.warn(`[PROPERTY_MEDIA_SERVICE] Worker perdeu ownership do claim ${assetId} durante heartbeat.`);
+          }
         } catch (hbErr) {}
       }, 20000);
 
@@ -386,6 +451,10 @@ class PropertyMediaService {
 
         materializedStagingPath = downloadRes.localPath;
 
+        if (lostOwnership) {
+          throw new Error('CLAIM_OWNERSHIP_LOST');
+        }
+
         // Inspeção FFPROBE física
         const specs = await this.inspectVideoFile(materializedStagingPath);
 
@@ -399,7 +468,7 @@ class PropertyMediaService {
         fs.renameSync(materializedStagingPath, finalPath);
         materializedStagingPath = null; // Renomeado com sucesso
 
-        // Atualização para READY no PostgreSQL
+        // Publicação Fenced para READY no PostgreSQL
         const readyRes = await pool.query(
           `UPDATE video_assets
            SET status = 'ready',
@@ -408,10 +477,16 @@ class PropertyMediaService {
                specs = $4::jsonb,
                metadata = jsonb_set(COALESCE(metadata, '{}'::jsonb), '{materialized_at}', to_jsonb(NOW()::text)),
                updated_at = NOW()
-           WHERE id = $1
+           WHERE id = $1 AND status = 'processing' AND (metadata->>'claim_token') = $5
            RETURNING *;`,
-          [assetId, finalPath, physicalHash, JSON.stringify(specs)]
+          [assetId, finalPath, physicalHash, JSON.stringify(specs), claimToken]
         );
+
+        if (readyRes.rowCount === 0) {
+          console.warn(`[PROPERTY_MEDIA_SERVICE] Publicação READY abortada: processo perdeu ownership do claim ${assetId}`);
+          try { if (fs.existsSync(finalPath)) fs.unlinkSync(finalPath); } catch (e) {}
+          return { status: 'LOST_OWNERSHIP', error: 'Claim ownership lost to another worker', asset: null };
+        }
 
         return { status: 'READY', asset: readyRes.rows[0] };
       } catch (matErr) {
@@ -422,11 +497,17 @@ class PropertyMediaService {
           try { fs.unlinkSync(materializedStagingPath); } catch (e) {}
         }
 
-        // Marcar como FAILED no DB
-        await pool.query(
-          "UPDATE video_assets SET status = 'failed', error_message = $2, updated_at = NOW() WHERE id = $1",
-          [assetId, matErr.message.slice(0, 500)]
-        );
+        // Marcar como FAILED no DB apenas se ainda possuir o claim_token
+        if (matErr.message !== 'CLAIM_OWNERSHIP_LOST') {
+          try {
+            await pool.query(
+              `UPDATE video_assets 
+               SET status = 'failed', error_message = $2, updated_at = NOW() 
+               WHERE id = $1 AND status = 'processing' AND (metadata->>'claim_token') = $3`,
+              [assetId, matErr.message.slice(0, 500), claimToken]
+            );
+          } catch (failErr) {}
+        }
 
         return { status: 'FAILED', error: matErr.message, asset: null };
       } finally {
@@ -493,6 +574,7 @@ class PropertyMediaService {
 
   /**
    * Property Media Pool: Coleção Completa e Validada de Mídias do Imóvel
+   * Exige integridade física estrita (READY + CONTAINMENT + FILE_HASH + STREAMING SHA-256 + FFPROBE)
    */
   async getPropertyMediaPool(propertyRef) {
     if (!propertyRef) {
@@ -518,7 +600,7 @@ class PropertyMediaService {
       }
     } catch (e) {}
 
-    // 2. Buscar vídeos com status READY no banco
+    // 2. Buscar vídeos com status READY no banco com validação física rigorosa
     const videos = [];
     try {
       const vidRes = await pool.query(
@@ -527,7 +609,8 @@ class PropertyMediaService {
       );
 
       for (const row of vidRes.rows) {
-        if (row.storage_path && fs.existsSync(row.storage_path)) {
+        const integrity = await this.validatePhysicalAssetIntegrity(row, cleanRef);
+        if (integrity.valid) {
           videos.push({
             asset_id: row.id,
             asset_type: 'property_video',
@@ -538,6 +621,14 @@ class PropertyMediaService {
             file_hash: row.file_hash,
             remote_url: row.remote_url
           });
+        } else {
+          console.warn(`[PROPERTY_MEDIA_SERVICE] Asset ${row.id} ignorado no pool por falha na integridade física: ${integrity.reason}`);
+          try {
+            await pool.query(
+              "UPDATE video_assets SET status = 'failed', error_message = $2, updated_at = NOW() WHERE id = $1 AND status = 'ready'",
+              [row.id, `CORRUPTED_POOL_RECOVERY: ${integrity.reason}`]
+            );
+          } catch (e) {}
         }
       }
     } catch (dbErr) {

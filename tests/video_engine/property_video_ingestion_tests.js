@@ -668,6 +668,211 @@ async function runTests() {
     }
   });
 
+  // Cenários AA a AF: Ownership / Lease Fencing (claim_token)
+  await test('Cenários AA a AF: Fencing estrito de claim_token e proteção de transições', async () => {
+    const testRef = 'ref_fencing_test';
+    const testAssetId = 'ast_pvid_fencing_test_1234567890abcdef';
+    const tokenA = 'token_process_a_1111';
+    const tokenB = 'token_process_b_2222';
+
+    // AA. Processo A adquire claim com token A
+    await pool.query(
+      `INSERT INTO video_assets (
+        id, property_ref, asset_type, storage_type, status, generation_key,
+        remote_url, metadata, created_at, updated_at
+      ) VALUES ($1, $2, 'property_video', 'local_file', 'processing', 'gen_key_fencing',
+        'https://youtube.com/watch?v=fencing', $3::jsonb, NOW(), NOW())
+      ON CONFLICT (id) DO UPDATE SET status = 'processing', metadata = $3::jsonb, updated_at = NOW()`,
+      [testAssetId, testRef, JSON.stringify({ claim_token: tokenA })]
+    );
+
+    // AB. Claim de A torna-se stale (> 10 min no passado)
+    await pool.query("UPDATE video_assets SET updated_at = NOW() - INTERVAL '15 minutes' WHERE id = $1", [testAssetId]);
+
+    // AC. Processo B detecta stale e recupera o claim com token B
+    const recoverRes = await pool.query(
+      `UPDATE video_assets 
+       SET status = 'processing', updated_at = NOW(), error_message = NULL,
+           metadata = jsonb_set(COALESCE(metadata, '{}'::jsonb), '{claim_token}', to_jsonb($2::text))
+       WHERE id = $1 AND status = 'processing' AND updated_at < NOW() - ($3 || ' minutes')::interval
+       RETURNING *;`,
+      [testAssetId, tokenB, 10]
+    );
+    if (recoverRes.rowCount === 0) {
+      throw new Error('Processo B deveria ter recuperado o claim stale');
+    }
+
+    // AD. Heartbeat de A com token A deve retornar rowCount = 0 (perdeu posse)
+    const hbA = await pool.query(
+      "UPDATE video_assets SET updated_at = NOW() WHERE id = $1 AND status = 'processing' AND (metadata->>'claim_token') = $2 RETURNING id",
+      [testAssetId, tokenA]
+    );
+    if (hbA.rowCount !== 0) {
+      throw new Error('Heartbeat do processo A (antigo) deveria ter sido rejeitado com rowCount=0');
+    }
+
+    // AE. Processo A tenta publicar READY com token A e falha
+    const readyA = await pool.query(
+      `UPDATE video_assets SET status = 'ready', storage_path = 'dummy.mp4', file_hash = 'dummy', updated_at = NOW()
+       WHERE id = $1 AND status = 'processing' AND (metadata->>'claim_token') = $2 RETURNING *`,
+      [testAssetId, tokenA]
+    );
+    if (readyA.rowCount !== 0) {
+      throw new Error('Publicação READY do processo A deveria ter retornado rowCount=0');
+    }
+
+    // AE2. Processo A tenta marcar FAILED com token A e falha
+    const failA = await pool.query(
+      `UPDATE video_assets SET status = 'failed', error_message = 'Err', updated_at = NOW()
+       WHERE id = $1 AND status = 'processing' AND (metadata->>'claim_token') = $2 RETURNING *`,
+      [testAssetId, tokenA]
+    );
+    if (failA.rowCount !== 0) {
+      throw new Error('Publicação FAILED do processo A deveria ter retornado rowCount=0');
+    }
+
+    // AF. Apenas processo B com token B consegue finalizar o asset
+    const readyB = await pool.query(
+      `UPDATE video_assets SET status = 'ready', storage_path = 'b_valid.mp4', file_hash = 'b_hash', updated_at = NOW()
+       WHERE id = $1 AND status = 'processing' AND (metadata->>'claim_token') = $2 RETURNING *`,
+      [testAssetId, tokenB]
+    );
+    if (readyB.rowCount !== 1 || readyB.rows[0].status !== 'ready') {
+      throw new Error('Processo B deveria ter publicado status ready com sucesso');
+    }
+  });
+
+  // Cenário AG: READY sem file_hash não entra no pool
+  await test('Cenário AG: READY sem file_hash é rejeitado pelo pool', async () => {
+    const testRef = 'ref_no_hash_test';
+    const testDir = path.join(OUTPUTS_BASE_DIR, 'properties', testRef, 'videos');
+    const validFile = path.join(testDir, 'valid_vid.mp4');
+    createSyntheticTestVideo(validFile, 2);
+
+    const testAssetId = 'ast_pvid_no_hash_12345';
+    await pool.query(
+      `INSERT INTO video_assets (
+        id, property_ref, asset_type, storage_type, status, storage_path, file_hash, specs, created_at, updated_at
+      ) VALUES ($1, $2, 'property_video', 'local_file', 'ready', $3, '', $4::jsonb, NOW(), NOW())
+      ON CONFLICT (id) DO UPDATE SET status = 'ready', file_hash = '', storage_path = $3`,
+      [testAssetId, testRef, validFile, JSON.stringify({ width: 1080, height: 1920, duration_sec: 2 })]
+    );
+
+    const poolRes = await propertyMediaService.getPropertyMediaPool(testRef);
+    const inPool = poolRes.videos.find(v => v.asset_id === testAssetId);
+    if (inPool) {
+      throw new Error('Asset READY sem file_hash NÃO deve entrar no pool');
+    }
+  });
+
+  // Cenário AH: READY com hash divergente não entra no pool
+  await test('Cenário AH: READY com hash divergente é rejeitado pelo pool', async () => {
+    const testRef = 'ref_diff_hash_test';
+    const testDir = path.join(OUTPUTS_BASE_DIR, 'properties', testRef, 'videos');
+    const validFile = path.join(testDir, 'diff_vid.mp4');
+    createSyntheticTestVideo(validFile, 2);
+
+    const testAssetId = 'ast_pvid_diff_hash_12345';
+    await pool.query(
+      `INSERT INTO video_assets (
+        id, property_ref, asset_type, storage_type, status, storage_path, file_hash, specs, created_at, updated_at
+      ) VALUES ($1, $2, 'property_video', 'local_file', 'ready', $3, 'wrong_hash_00000000000000000000000000000000', $4::jsonb, NOW(), NOW())
+      ON CONFLICT (id) DO UPDATE SET status = 'ready', file_hash = 'wrong_hash_00000000000000000000000000000000', storage_path = $3`,
+      [testAssetId, testRef, validFile, JSON.stringify({ width: 1080, height: 1920, duration_sec: 2 })]
+    );
+
+    const poolRes = await propertyMediaService.getPropertyMediaPool(testRef);
+    const inPool = poolRes.videos.find(v => v.asset_id === testAssetId);
+    if (inPool) {
+      throw new Error('Asset READY com hash divergente NÃO deve entrar no pool');
+    }
+  });
+
+  // Cenário AI: READY com arquivo existente porém ffprobe inválido não entra no pool
+  await test('Cenário AI: READY com arquivo não decodificável é rejeitado pelo pool', async () => {
+    const testRef = 'ref_corrupt_probe_test';
+    const testDir = path.join(OUTPUTS_BASE_DIR, 'properties', testRef, 'videos');
+    if (!fs.existsSync(testDir)) fs.mkdirSync(testDir, { recursive: true });
+    const corruptFile = path.join(testDir, 'corrupted.mp4');
+    fs.writeFileSync(corruptFile, 'THIS_IS_NOT_A_VIDEO_FILE');
+    const corruptHash = crypto.createHash('sha256').update('THIS_IS_NOT_A_VIDEO_FILE').digest('hex');
+
+    const testAssetId = 'ast_pvid_corrupt_probe_12345';
+    await pool.query(
+      `INSERT INTO video_assets (
+        id, property_ref, asset_type, storage_type, status, storage_path, file_hash, specs, created_at, updated_at
+      ) VALUES ($1, $2, 'property_video', 'local_file', 'ready', $3, $4, $5::jsonb, NOW(), NOW())
+      ON CONFLICT (id) DO UPDATE SET status = 'ready', file_hash = $4, storage_path = $3`,
+      [testAssetId, testRef, corruptFile, corruptHash, JSON.stringify({ width: 1080, height: 1920, duration_sec: 2 })]
+    );
+
+    const poolRes = await propertyMediaService.getPropertyMediaPool(testRef);
+    const inPool = poolRes.videos.find(v => v.asset_id === testAssetId);
+    if (inPool) {
+      throw new Error('Asset READY com arquivo não-vídeo NÃO deve entrar no pool');
+    }
+  });
+
+  // Cenário AJ: READY fisicamente válido entra normalmente no pool
+  await test('Cenário AJ: READY fisicamente válido entra normalmente no pool', async () => {
+    const testRef = 'ref_valid_pool_test';
+    const testDir = path.join(OUTPUTS_BASE_DIR, 'properties', testRef, 'videos');
+    const validFile = path.join(testDir, 'good_vid.mp4');
+    createSyntheticTestVideo(validFile, 2);
+    const goodHash = await propertyMediaService.computeFileHashStream(validFile);
+    const goodSpecs = await propertyMediaService.inspectVideoFile(validFile);
+
+    const testAssetId = 'ast_pvid_good_pool_12345';
+    await pool.query(
+      `INSERT INTO video_assets (
+        id, property_ref, asset_type, storage_type, status, storage_path, file_hash, specs, created_at, updated_at
+      ) VALUES ($1, $2, 'property_video', 'local_file', 'ready', $3, $4, $5::jsonb, NOW(), NOW())
+      ON CONFLICT (id) DO UPDATE SET status = 'ready', file_hash = $4, storage_path = $3, specs = $5::jsonb`,
+      [testAssetId, testRef, validFile, goodHash, JSON.stringify(goodSpecs)]
+    );
+
+    const poolRes = await propertyMediaService.getPropertyMediaPool(testRef);
+    const inPool = poolRes.videos.find(v => v.asset_id === testAssetId);
+    if (!inPool) {
+      throw new Error('Asset READY válido DEVE entrar no pool');
+    }
+    if (inPool.file_hash !== goodHash) {
+      throw new Error('Dados do asset no pool divergentes');
+    }
+  });
+
+  // Cenário AK: Path sibling/prefix collision é rejeitado
+  await test('Cenário AK: Path sibling / prefix collision é rejeitado por path containment', async () => {
+    const testRef = '1628';
+    const baseDir = path.join(OUTPUTS_BASE_DIR, 'properties', testRef, 'videos');
+    const evilDir = path.join(OUTPUTS_BASE_DIR, 'properties', testRef, 'videos_evil');
+    if (!fs.existsSync(evilDir)) fs.mkdirSync(evilDir, { recursive: true });
+    const evilFile = path.join(evilDir, 'malicious.mp4');
+    createSyntheticTestVideo(evilFile, 2);
+
+    const isContained = propertyMediaService.isPathContained(evilFile, baseDir);
+    if (isContained) {
+      throw new Error(`Caminho sibling ${evilFile} NÃO pode ser considerado contido em ${baseDir}`);
+    }
+
+    const testAsset = {
+      id: 'ast_pvid_evil_path',
+      property_ref: testRef,
+      asset_type: 'property_video',
+      status: 'ready',
+      storage_path: evilFile,
+      file_hash: await propertyMediaService.computeFileHashStream(evilFile)
+    };
+
+    const integrity = await propertyMediaService.validatePhysicalAssetIntegrity(testAsset, testRef);
+    if (integrity.valid) {
+      throw new Error('validatePhysicalAssetIntegrity deveria ter rejeitado o asset com path sibling');
+    }
+    if (!integrity.reason.includes('PATH_CONTAINMENT_VIOLATION')) {
+      throw new Error(`Esperado PATH_CONTAINMENT_VIOLATION, obtido: ${integrity.reason}`);
+    }
+  });
+
   console.log('\n================================================================');
   console.log(`RESULTADO FINAL DA SUÍTE DE TESTES:`);
   console.log(`Total de testes: ${passedCount + failedCount}`);

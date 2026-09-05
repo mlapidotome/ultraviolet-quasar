@@ -94,7 +94,59 @@ function createInMemoryPool() {
 
       // 4. INSERT INTO video_assets
       if (/^INSERT\s+INTO\s+video_assets/i.test(trimmed)) {
-        const id = params[0];
+        // Extrair colunas e expressões de valores
+        const colsMatch = trimmed.match(/^INSERT\s+INTO\s+video_assets\s*\(([^)]+)\)\s*VALUES\s*\(([^)]+)\)/i);
+        const isPastDate = /NOW\(\)\s*-\s*INTERVAL/i.test(trimmed);
+        const initialDate = isPastDate ? new Date(Date.now() - 20 * 60 * 1000) : new Date();
+
+        let newRow = {
+          metadata: {},
+          specs: {},
+          created_at: initialDate,
+          updated_at: initialDate
+        };
+
+        if (colsMatch) {
+          const cols = colsMatch[1].split(',').map(c => c.trim().toLowerCase());
+          const valExprs = colsMatch[2].split(',').map(v => v.trim());
+
+          for (let i = 0; i < cols.length; i++) {
+            const col = cols[i];
+            const expr = valExprs[i] || '';
+            const paramMatch = expr.match(/\$(\d+)/);
+
+            if (paramMatch) {
+              const pIdx = parseInt(paramMatch[1], 10) - 1;
+              const val = params[pIdx];
+              if (col === 'metadata' || col === 'specs') {
+                newRow[col] = parseJsonSafely(val);
+              } else {
+                newRow[col] = val;
+              }
+            } else if (/^'([^']*)'/.test(expr)) {
+              newRow[col] = expr.match(/^'([^']*)'/)[1];
+            } else if (/NOW\(\)/i.test(expr)) {
+              newRow[col] = initialDate;
+            } else if (/NULL/i.test(expr)) {
+              newRow[col] = null;
+            }
+          }
+        } else {
+          newRow = {
+            id: params[0],
+            property_ref: params[1],
+            asset_type: 'property_video',
+            storage_type: 'local_file',
+            status: 'processing',
+            generation_key: params[2],
+            metadata: {},
+            specs: {},
+            created_at: initialDate,
+            updated_at: initialDate
+          };
+        }
+
+        const id = newRow.id;
         const existing = tables.video_assets.get(id);
 
         if (existing) {
@@ -103,62 +155,10 @@ function createInMemoryPool() {
           }
           if (/ON\s+CONFLICT\s*\(\s*id\s*\)\s*DO\s+UPDATE/i.test(trimmed)) {
             existing.status = 'processing';
-            existing.updated_at = new Date(Date.now() - 20 * 60 * 1000); // Para teste stale
+            if (newRow.metadata) existing.metadata = { ...(existing.metadata || {}), ...newRow.metadata };
+            existing.updated_at = new Date();
             return { rows: [{ ...existing }], rowCount: 1 };
           }
-        }
-
-        const isPastDate = /NOW\(\)\s*-\s*INTERVAL/i.test(trimmed);
-        const initialDate = isPastDate ? new Date(Date.now() - 20 * 60 * 1000) : new Date();
-
-        // Determinar campos conforme query
-        let newRow = {};
-        if (params.length === 4) {
-          newRow = {
-            id: params[0],
-            property_ref: params[1],
-            asset_type: 'property_video',
-            storage_type: 'local_file',
-            status: 'processing',
-            generation_key: params[2],
-            remote_url: params[3],
-            metadata: {},
-            specs: {},
-            created_at: initialDate,
-            updated_at: initialDate
-          };
-        } else if (params.length === 6) {
-          newRow = {
-            id: params[0],
-            property_ref: params[1],
-            asset_type: 'property_video',
-            storage_type: 'local_file',
-            status: 'processing',
-            generation_key: params[2],
-            provider_ref: params[3],
-            remote_url: params[4],
-            metadata: parseJsonSafely(params[5]),
-            specs: {},
-            created_at: initialDate,
-            updated_at: initialDate
-          };
-        } else {
-          newRow = {
-            id: params[0],
-            job_id: params[1],
-            property_ref: params[2],
-            asset_type: params[3],
-            storage_type: params[4],
-            storage_path: params[5],
-            provider_ref: params[6],
-            remote_url: params[7],
-            generation_key: params[8],
-            status: params[9] || 'pending',
-            specs: parseJsonSafely(params[10]),
-            metadata: parseJsonSafely(params[11]),
-            created_at: initialDate,
-            updated_at: initialDate
-          };
         }
 
         tables.video_assets.set(id, newRow);
@@ -170,46 +170,92 @@ function createInMemoryPool() {
         const id = params[0];
         let row = tables.video_assets.get(id);
         if (!row) {
-          // Tentar encontrar ID em outro índice de params
           const lastParam = params[params.length - 1];
           if (typeof lastParam === 'string' && tables.video_assets.has(lastParam)) {
             row = tables.video_assets.get(lastParam);
           }
         }
 
-        if (row) {
-          // Stale recovery condition check
-          if (/updated_at\s*<\s*NOW/i.test(trimmed)) {
-            const staleMinutes = parseInt(params[1], 10) || 10;
-            const diffMs = Date.now() - new Date(row.updated_at).getTime();
-            if (diffMs < staleMinutes * 60 * 1000) {
-              return { rows: [], rowCount: 0 }; // Não é stale!
-            }
-          }
-
-          if (/SET\s+status\s*=\s*'ready'/i.test(trimmed)) {
-            row.status = 'ready';
-            row.storage_path = params[1] || row.storage_path;
-            row.file_hash = params[2] || row.file_hash;
-            if (params[3]) row.specs = { ...row.specs, ...parseJsonSafely(params[3]) };
-            row.updated_at = new Date();
-          } else if (/SET\s+status\s*=\s*'failed'/i.test(trimmed)) {
-            row.status = 'failed';
-            row.error_message = params[1] || 'Failed';
-            row.updated_at = new Date();
-          } else if (/SET\s+status\s*=\s*'processing'/i.test(trimmed)) {
-            row.status = 'processing';
-            row.error_message = null;
-            row.updated_at = new Date();
-          } else if (/SET\s+status\s*=\s*\$2/i.test(trimmed)) {
-            row.status = params[1];
-            row.updated_at = new Date();
-          }
-
-          return { rows: [{ ...row }], rowCount: 1 };
+        if (!row) {
+          return { rows: [], rowCount: 0 };
         }
 
-        return { rows: [], rowCount: 0 };
+        const whereMatch = trimmed.match(/\s+WHERE\s+([\s\S]+?)(?:RETURNING|$)/i);
+        const whereClause = whereMatch ? whereMatch[1] : '';
+        const setMatch = trimmed.match(/^UPDATE\s+video_assets\s+SET\s+([\s\S]+?)\s+WHERE\s+/i);
+        const setClause = setMatch ? setMatch[1] : trimmed;
+
+        // 5.1 Validação de status no WHERE
+        if (/status\s*=\s*'processing'/i.test(whereClause) && row.status !== 'processing') {
+          return { rows: [], rowCount: 0 };
+        }
+        if (/status\s*=\s*'failed'/i.test(whereClause) && row.status !== 'failed') {
+          return { rows: [], rowCount: 0 };
+        }
+        if (/status\s*=\s*'ready'/i.test(whereClause) && row.status !== 'ready') {
+          return { rows: [], rowCount: 0 };
+        }
+
+        // 5.2 Validação de claim_token no WHERE (Fencing)
+        const claimTokenMatch = whereClause.match(/(?:metadata->>'claim_token'|\(metadata->>'claim_token'\))\s*=\s*\$(\d+)/i);
+        if (claimTokenMatch) {
+          const tokenParamIdx = parseInt(claimTokenMatch[1], 10) - 1;
+          const expectedToken = params[tokenParamIdx];
+          const currentToken = row.metadata?.claim_token;
+          if (!currentToken || currentToken !== expectedToken) {
+            return { rows: [], rowCount: 0 }; // Ownership perdida!
+          }
+        }
+
+        // 5.3 Validação de stale timeout no WHERE
+        const staleMatch = whereClause.match(/updated_at\s*<\s*NOW\(\)\s*-\s*\(\$(\d+)[\s\S]*?minutes/i);
+        if (staleMatch) {
+          const staleParamIdx = parseInt(staleMatch[1], 10) - 1;
+          const staleMinutes = parseInt(params[staleParamIdx], 10) || 10;
+          const diffMs = Date.now() - new Date(row.updated_at).getTime();
+          if (diffMs < staleMinutes * 60 * 1000) {
+            return { rows: [], rowCount: 0 }; // Não é stale!
+          }
+        }
+
+        // 5.4 Atualizações de metadata (ex: jsonb_set '{claim_token}')
+        const jsonbClaimTokenMatch = setClause.match(/jsonb_set\([\s\S]*?'\{claim_token\}'[\s\S]*?(?:to_jsonb\(\$(\d+)::text\)|\$(\d+)::jsonb)/i);
+        if (jsonbClaimTokenMatch) {
+          const tokenIdx = parseInt(jsonbClaimTokenMatch[1] || jsonbClaimTokenMatch[2], 10) - 1;
+          const newToken = params[tokenIdx];
+          row.metadata = { ...(row.metadata || {}), claim_token: newToken };
+        }
+
+        // 5.5 Atualizações de campos da linha
+        if (/status\s*=\s*'ready'/i.test(setClause)) {
+          row.status = 'ready';
+          row.storage_path = params[1] || row.storage_path;
+          row.file_hash = params[2] || row.file_hash;
+          if (params[3]) row.specs = { ...row.specs, ...parseJsonSafely(params[3]) };
+          row.updated_at = new Date();
+        } else if (/status\s*=\s*'failed'/i.test(setClause)) {
+          row.status = 'failed';
+          row.error_message = params[1] || 'Failed';
+          row.updated_at = new Date();
+        } else if (/status\s*=\s*'processing'/i.test(setClause)) {
+          row.status = 'processing';
+          row.error_message = null;
+          row.updated_at = new Date();
+        } else if (/status\s*=\s*\$2/i.test(setClause)) {
+          row.status = params[1];
+          row.updated_at = new Date();
+        } else {
+          row.updated_at = new Date();
+        }
+
+        // Suporte a SET updated_at no passado para testes de stale
+        const pastIntervalMatch = setClause.match(/updated_at\s*=\s*NOW\(\)\s*-\s*INTERVAL\s*'(\d+)\s*minutes'/i);
+        if (pastIntervalMatch) {
+          const pastMin = parseInt(pastIntervalMatch[1], 10) || 15;
+          row.updated_at = new Date(Date.now() - pastMin * 60 * 1000);
+        }
+
+        return { rows: [{ ...row }], rowCount: 1 };
       }
 
       // 6. INSERT INTO video_jobs

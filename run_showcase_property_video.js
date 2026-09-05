@@ -23,12 +23,19 @@ async function runShowcase() {
   const jobDir = path.join(OUTPUTS_BASE_DIR, 'jobs', showcaseJobId);
   fs.mkdirSync(jobDir, { recursive: true });
 
-  // 1. Ingestão e Materialização do Property Video Real do CRM
-  console.log('1. Ingerindo Property Video do CRM para REF 1628...');
-  const pvidRes = await propertyMediaService.ensurePropertyVideoByUrl(
-    propertyRef,
-    'https://youtube.com/shorts/uZOb2yYDoN0?feature=share'
-  );
+  // 1. Ingestão e Materialização do Property Video Real obtido dinamicamente do CRM
+  console.log(`1. Consultando CRM / ImobTotal snapshot para REF ${propertyRef}...`);
+  const jobService = require('./video_engine/job_service');
+  const imovelData = await jobService.fetchImovelData(propertyRef);
+  if (!imovelData || !imovelData.link_video) {
+    throw new Error(`[SHOWCASE ERROR] Imóvel REF ${propertyRef} não possui link_video no CRM/ImobTotal`);
+  }
+
+  console.log(`   🔗 link_video identificado no snapshot: ${imovelData.link_video}`);
+  console.log(`   🏢 Título do Imóvel: ${imovelData.titulo || 'N/A'}`);
+
+  console.log(`   Ingerindo Property Video via PropertyMediaService...`);
+  const pvidRes = await propertyMediaService.ensurePropertyVideo(propertyRef);
 
   if (pvidRes.status !== 'READY' || !pvidRes.asset) {
     throw new Error(`Falha na ingestão do property video: ${pvidRes.status} (${pvidRes.error})`);
