@@ -21,6 +21,7 @@
       --success: #10B981;
       --warning: #F59E0B;
       --error: #EF4444;
+      --purple: #8B5CF6;
       --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
@@ -113,13 +114,13 @@
       gap: 1.5rem;
     }
 
-    /* Input Card */
+    /* Search Card */
     .search-card {
       background-color: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: 12px;
       padding: 1.5rem;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
 
     .search-title {
@@ -193,7 +194,7 @@
       cursor: not-allowed;
     }
 
-    /* Feedback Banners */
+    /* Banners */
     .banner {
       display: none;
       border-radius: 8px;
@@ -219,12 +220,18 @@
       color: #FCD34D;
     }
 
+    .banner-info {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #93C5FD;
+    }
+
     .banner-icon {
       font-size: 1.2rem;
       line-height: 1;
     }
 
-    /* Result Sections */
+    /* Result Section */
     .result-section {
       display: none;
       flex-direction: column;
@@ -249,14 +256,120 @@
       margin-bottom: 1rem;
       padding-bottom: 0.75rem;
       border-bottom: 1px solid var(--border-color);
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
 
     .card-title {
-      font-size: 1rem;
+      font-size: 1.05rem;
       font-weight: 700;
       display: flex;
       align-items: center;
       gap: 0.5rem;
+    }
+
+    /* Badges */
+    .badge {
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .badge-ready {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-submitted {
+      background: rgba(139, 92, 246, 0.15);
+      color: var(--purple);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    .badge-rendering {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .badge-failed {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--error);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .badge-degraded {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    /* Pilot Action Box */
+    .pilot-action-card {
+      background: linear-gradient(180deg, rgba(31, 41, 55, 0.7) 0%, rgba(17, 24, 39, 0.9) 100%);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .btn-pilot {
+      background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 8px;
+      padding: 0.85rem 1.75rem;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-pilot:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-pilot:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Video Player Box */
+    .video-player-container {
+      display: none;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1rem;
+      padding: 1.25rem;
+      background-color: var(--bg-card-sub);
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .video-player-container.visible {
+      display: flex;
+    }
+
+    video {
+      width: 100%;
+      max-width: 420px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background-color: #000;
+      outline: none;
     }
 
     /* Job Metadata Box */
@@ -289,26 +402,6 @@
       align-items: center;
       gap: 0.5rem;
       word-break: break-all;
-    }
-
-    .badge-ready {
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--success);
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-
-    .badge-degraded {
-      background: rgba(245, 158, 11, 0.15);
-      color: var(--warning);
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      border: 1px solid rgba(245, 158, 11, 0.3);
     }
 
     .btn-copy {
@@ -381,7 +474,7 @@
       color: var(--text-primary);
     }
 
-    /* Hooks & Scripts */
+    /* Scripts */
     .scripts-list {
       display: flex;
       flex-direction: column;
@@ -449,12 +542,13 @@
       main { padding: 1rem; }
       .search-form { flex-direction: column; }
       .btn-submit { width: 100%; justify-content: center; }
+      .btn-pilot { width: 100%; justify-content: center; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Header Principal -->
+  <!-- Header -->
   <header>
     <div class="brand">
       <span class="brand-logo">🎬</span>
@@ -469,12 +563,11 @@
     </div>
   </header>
 
-  <!-- Corpo Principal -->
   <main>
-    <!-- Card de Busca / Criação de Job -->
+    <!-- Card de Busca / Criação -->
     <section class="search-card">
       <h2 class="search-title">🔍 Iniciar Novo Job de Vídeo</h2>
-      <p class="search-desc">Digite a referência do imóvel cadastrado no CRM para gerar automaticamente a simulação e os 3 ganchos de roteiro.</p>
+      <p class="search-desc">Digite a referência do imóvel para consultar no CRM, gerar os roteiros e produzir o Vídeo Piloto.</p>
       
       <form class="search-form" id="jobForm" onsubmit="handleCreateJob(event)">
         <input 
@@ -491,10 +584,10 @@
       </form>
     </section>
 
-    <!-- Banners de Alerta / Erro -->
+    <!-- Banners Globais -->
     <div id="errorBanner" class="banner banner-error">
       <span class="banner-icon">⚠️</span>
-      <div id="errorMessage">Ocorreu um erro ao consultar o imóvel.</div>
+      <div id="errorMessage">Ocorreu um erro ao processar o imóvel.</div>
     </div>
 
     <div id="degradedBanner" class="banner banner-warning">
@@ -505,11 +598,51 @@
     <!-- Resultados Renderizados -->
     <div id="resultSection" class="result-section">
       
+      <!-- Card de Ação do Piloto (Fase 2B) -->
+      <section class="pilot-action-card">
+        <div class="card-header" style="border: none; padding: 0; margin-bottom: 0.5rem;">
+          <h3 class="card-title">🎬 Produção do Vídeo Piloto (Gancho 1 + Corpo)</h3>
+          <span id="pilotStatusBadge" class="badge badge-ready">SCRIPT_READY</span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">
+          Produza o primeiro vídeo com o <strong>Gancho 1</strong> e o <strong>Desenvolvimento/Corpo com a foto do imóvel ao fundo</strong> na HeyGen.
+        </p>
+
+        <!-- Botão de Disparo / Retry -->
+        <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+          <button type="button" id="btnGeneratePilot" class="btn-pilot" onclick="handleGeneratePilot()">
+            <span>🎬 Gerar Vídeo Piloto</span>
+          </button>
+          <span id="pilotProcessMsg" style="font-size: 0.85rem; color: var(--text-muted); display: none;"></span>
+        </div>
+
+        <!-- Banner de Erro do Piloto -->
+        <div id="pilotErrorBox" class="banner banner-error" style="margin-top: 0.5rem;">
+          <span class="banner-icon">❌</span>
+          <div id="pilotErrorText">Falha na renderização do piloto.</div>
+        </div>
+
+        <!-- Player do Vídeo Piloto -->
+        <div id="videoPlayerContainer" class="video-player-container">
+          <div style="font-size: 0.9rem; font-weight: 700; color: var(--success); display: flex; align-items: center; gap: 0.4rem;">
+            <span>✅ Vídeo Piloto Pronto</span>
+          </div>
+          <video id="pilotVideoElement" controls playsinline preload="metadata">
+            Seu navegador não suporta reprodução direta de vídeo.
+          </video>
+          <div style="display: flex; gap: 0.75rem;">
+            <a id="downloadPilotLink" href="#" target="_blank" class="btn-copy" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; text-decoration: none;">
+              📥 Abrir / Baixar Vídeo Completo
+            </a>
+          </div>
+        </div>
+      </section>
+
       <!-- Detalhes do Job -->
       <section class="card">
         <div class="card-header">
           <h3 class="card-title">📋 Detalhes do Job</h3>
-          <span id="jobStatusBadge" class="badge-ready">SCRIPT_READY</span>
+          <span id="jobStatusBadge" class="badge badge-ready">SCRIPT_READY</span>
         </div>
         <div class="job-meta-grid">
           <div class="meta-item">
@@ -576,7 +709,7 @@
         </div>
       </section>
 
-      <!-- Roteiros de Anúncio -->
+      <!-- Roteiros -->
       <section class="card">
         <div class="card-header">
           <h3 class="card-title">🎙️ Roteiros de Anúncio (3 Ganchos + Corpo)</h3>
@@ -586,7 +719,7 @@
           <!-- Gancho 1 -->
           <div class="script-item">
             <div class="script-header">
-              <span class="script-tag">💡 GANCHO 1 — Choque / Entrada</span>
+              <span class="script-tag">💡 GANCHO 1 — Choque / Entrada (Incluído no Piloto)</span>
               <span class="script-look">Look: Terno Executivo 👔</span>
             </div>
             <div class="script-text" id="scriptHook1">--</div>
@@ -622,8 +755,8 @@
           <!-- Corpo -->
           <div class="script-item">
             <div class="script-header">
-              <span class="script-tag">📖 DESENVOLVIMENTO & BAIRRO</span>
-              <span class="script-look">Corpo Principal com CTA</span>
+              <span class="script-tag">📖 DESENVOLVIMENTO & BAIRRO (Incluído no Piloto)</span>
+              <span class="script-look">Corpo Principal com Foto ao Fundo</span>
             </div>
             <div class="script-text" id="scriptBody">--</div>
             <div>
@@ -637,20 +770,21 @@
     </div>
   </main>
 
-  <!-- Rodapé -->
   <footer>
-    Video Engine V2 • Bali Imóveis • Núcleo de Jobs Independente de Interface • 2026
+    Video Engine V2 • Bali Imóveis • Produção de Vídeos Vinculada a Job • 2026
   </footer>
 
   <script>
-    // Gerenciador de Submissão do Formulário
+    let currentJobId = null;
+    let pollInterval = null;
+
+    // Gerenciador de Submissão de Criação de Job
     async function handleCreateJob(event) {
       if (event) event.preventDefault();
 
       const input = document.getElementById('propertyRefInput');
       const submitBtn = document.getElementById('submitBtn');
       const errorBanner = document.getElementById('errorBanner');
-      const errorMessage = document.getElementById('errorMessage');
       const degradedBanner = document.getElementById('degradedBanner');
       const resultSection = document.getElementById('resultSection');
 
@@ -660,11 +794,12 @@
         return;
       }
 
-      // Ocultar estados anteriores
+      // Parar polling anterior se houver
+      stopPolling();
+
       errorBanner.classList.remove('visible');
       degradedBanner.classList.remove('visible');
 
-      // Prevenção de Concorrência & Loading State
       input.disabled = true;
       submitBtn.disabled = true;
       const originalBtnHtml = submitBtn.innerHTML;
@@ -673,21 +808,21 @@
       try {
         const response = await fetch('/api/v2/panel/video-jobs', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ property_ref: ref })
         });
 
         const data = await response.json().catch(() => null);
 
         if (response.status === 201 && data && data.success) {
-          // Sucesso Nominal
+          currentJobId = data.job_id;
           renderJobData(data, false);
+          updatePilotState(data.status, data.error_message, data.pilot_video_url);
         } else if (response.status === 503 && data) {
-          // Modo Degradado (PostgreSQL Offline)
+          currentJobId = null;
           degradedBanner.classList.add('visible');
           renderJobData(data, true);
+          updatePilotState('DEGRADED', null, null);
         } else if (response.status === 404) {
           resultSection.classList.remove('visible');
           showError('Imóvel não encontrado no CRM para a referência informada.');
@@ -699,16 +834,154 @@
           showError('Acesso não autorizado ao painel. Atualize a página e autentique-se.');
         } else {
           resultSection.classList.remove('visible');
-          showError(data?.message || 'Erro interno ao processar solicitação. Tente novamente em instantes.');
+          showError(data?.message || 'Erro interno ao processar solicitação.');
         }
       } catch (err) {
         resultSection.classList.remove('visible');
-        showError('Falha na comunicação com o servidor. Verifique sua conexão.');
+        showError('Falha na comunicação com o servidor.');
       } finally {
         input.disabled = false;
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalBtnHtml;
       }
+    }
+
+    // Gerenciador de Disparo do Piloto (Fase 2B)
+    async function handleGeneratePilot() {
+      if (!currentJobId) {
+        showError('Nenhum Job ativo para gerar o piloto.');
+        return;
+      }
+
+      const btn = document.getElementById('btnGeneratePilot');
+      const errorBox = document.getElementById('pilotErrorBox');
+      errorBox.classList.remove('visible');
+
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳ Solicitando geração...</span>';
+
+      try {
+        const res = await fetch(`/api/v2/panel/video-jobs/${currentJobId}/generate-pilot`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        const data = await res.json().catch(() => null);
+
+        if (res.status === 202) {
+          updatePilotState('PILOT_SUBMITTED');
+          startPolling();
+        } else if (res.status === 200 && data.status === 'PILOT_READY') {
+          updatePilotState('PILOT_READY', null, data.pilot_video_url);
+        } else if (res.status === 409) {
+          updatePilotState(data.status || 'PILOT_RENDERING');
+          startPolling();
+        } else {
+          showPilotError(data?.message || 'Erro ao iniciar piloto.');
+          btn.disabled = false;
+          btn.innerHTML = '<span>🔄 Tentar Novamente</span>';
+        }
+      } catch (err) {
+        showPilotError('Falha de rede ao solicitar piloto.');
+        btn.disabled = false;
+        btn.innerHTML = '<span>🔄 Tentar Novamente</span>';
+      }
+    }
+
+    // Polling Read-Only de Estado do Job
+    function startPolling() {
+      stopPolling();
+      pollInterval = setInterval(async () => {
+        if (!currentJobId) return stopPolling();
+
+        try {
+          const res = await fetch(`/api/v2/panel/video-jobs/${currentJobId}`);
+          if (res.status === 200) {
+            const data = await res.json();
+            updatePilotState(data.status, data.error_message, data.pilot_video_url);
+
+            if (data.status === 'PILOT_READY' || data.status === 'PILOT_FAILED') {
+              stopPolling();
+            }
+          }
+        } catch (e) {
+          console.warn('Erro no polling do job:', e);
+        }
+      }, 5000);
+    }
+
+    function stopPolling() {
+      if (pollInterval) {
+        clearInterval(pollInterval);
+        pollInterval = null;
+      }
+    }
+
+    function updatePilotState(status, errorMessage, pilotVideoUrl) {
+      const pilotStatusBadge = document.getElementById('pilotStatusBadge');
+      const jobStatusBadge = document.getElementById('jobStatusBadge');
+      const btn = document.getElementById('btnGeneratePilot');
+      const msg = document.getElementById('pilotProcessMsg');
+      const errorBox = document.getElementById('pilotErrorBox');
+      const errorText = document.getElementById('pilotErrorText');
+      const videoContainer = document.getElementById('videoPlayerContainer');
+      const videoElement = document.getElementById('pilotVideoElement');
+      const downloadLink = document.getElementById('downloadPilotLink');
+
+      // Atualizar badge
+      pilotStatusBadge.textContent = status;
+      jobStatusBadge.textContent = status;
+
+      pilotStatusBadge.className = 'badge';
+      if (status === 'PILOT_READY') pilotStatusBadge.classList.add('badge-ready');
+      else if (status === 'PILOT_SUBMITTED') pilotStatusBadge.classList.add('badge-submitted');
+      else if (status === 'PILOT_RENDERING') pilotStatusBadge.classList.add('badge-rendering');
+      else if (status === 'PILOT_FAILED') pilotStatusBadge.classList.add('badge-failed');
+      else pilotStatusBadge.classList.add('badge-ready');
+
+      if (status === 'SCRIPT_READY') {
+        btn.style.display = 'inline-flex';
+        btn.disabled = false;
+        btn.innerHTML = '<span>🎬 Gerar Vídeo Piloto</span>';
+        msg.style.display = 'none';
+        errorBox.classList.remove('visible');
+        videoContainer.classList.remove('visible');
+      } else if (status === 'PILOT_SUBMITTED' || status === 'PILOT_RENDERING') {
+        btn.style.display = 'inline-flex';
+        btn.disabled = true;
+        btn.innerHTML = '<span>⏳ Renderizando na HeyGen...</span>';
+        msg.textContent = 'Processando Gancho 1 e Corpo. Pode levar de 1 a 2 minutos...';
+        msg.style.display = 'inline';
+        errorBox.classList.remove('visible');
+        videoContainer.classList.remove('visible');
+      } else if (status === 'PILOT_READY') {
+        btn.style.display = 'none';
+        msg.style.display = 'none';
+        errorBox.classList.remove('visible');
+
+        const videoSrc = `/api/v2/panel/video-jobs/${currentJobId}/pilot`;
+        videoElement.src = videoSrc;
+        downloadLink.href = videoSrc;
+        videoContainer.classList.add('visible');
+      } else if (status === 'PILOT_FAILED') {
+        btn.style.display = 'inline-flex';
+        btn.disabled = false;
+        btn.innerHTML = '<span>🔄 Tentar Novamente</span>';
+        msg.style.display = 'none';
+        showPilotError(errorMessage || 'A renderização do piloto falhou. Tente novamente.');
+        videoContainer.classList.remove('visible');
+      } else if (status === 'DEGRADED') {
+        btn.style.display = 'none';
+        msg.style.display = 'none';
+        videoContainer.classList.remove('visible');
+      }
+    }
+
+    function showPilotError(msg) {
+      const errorBox = document.getElementById('pilotErrorBox');
+      const errorText = document.getElementById('pilotErrorText');
+      errorText.textContent = msg;
+      errorBox.classList.add('visible');
     }
 
     function showError(msg) {
@@ -726,14 +999,13 @@
       const jobSourceText = document.getElementById('jobSourceText');
       const jobBrokerText = document.getElementById('jobBrokerText');
 
-      // 1. Metadados do Job
       if (isDegraded || !data.job_id) {
-        jobStatusBadge.className = 'badge-degraded';
+        jobStatusBadge.className = 'badge badge-degraded';
         jobStatusBadge.textContent = 'PERSISTÊNCIA INDISPONÍVEL';
         jobIdText.textContent = '[Persistência indisponível]';
         copyJobIdBtn.style.display = 'none';
       } else {
-        jobStatusBadge.className = 'badge-ready';
+        jobStatusBadge.className = 'badge badge-ready';
         jobStatusBadge.textContent = data.status || 'SCRIPT_READY';
         jobIdText.textContent = data.job_id;
         copyJobIdBtn.style.display = 'inline-flex';
@@ -742,7 +1014,6 @@
       jobSourceText.textContent = data.source || 'web_panel';
       jobBrokerText.textContent = 'marcel';
 
-      // 2. Resumo do Imóvel
       const p = data.property || {};
       document.getElementById('propRefBadge').textContent = 'Ref: #' + (p.ref || p.codigo || document.getElementById('propertyRefInput').value.trim());
       document.getElementById('propTitle').textContent = p.titulo || p.tipo || 'Imóvel sem título';
@@ -751,7 +1022,6 @@
       document.getElementById('propQuartos').textContent = '🛏️ Quartos: ' + (p.quartos || '0');
       document.getElementById('propPreco').textContent = '🏷️ Valor: ' + (p.preco_venda_formatado || p.preco_venda || 'R$ --');
 
-      // 3. Simulação Financeira
       const fin = p.financiamento || {};
       document.getElementById('finPreco').textContent = fin.preco_formatado || p.preco_venda_formatado || '--';
       document.getElementById('finEntrada').textContent = fin.entrada_formatada || '--';
@@ -759,7 +1029,6 @@
       document.getElementById('finParcela').textContent = fin.parcela_formatada || '--';
       document.getElementById('finRenda').textContent = fin.renda_formatada || '--';
 
-      // 4. Roteiros de Anúncio
       const s = data.scripts || {};
       document.getElementById('scriptHook1').textContent = s.gancho1 || s.hook1 || 'Roteiro não disponível';
       document.getElementById('scriptHook2').textContent = s.gancho2 || s.hook2 || 'Roteiro não disponível';
