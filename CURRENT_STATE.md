@@ -1,10 +1,10 @@
 # Estado Atual da Video Engine — Bali Imóveis (V2)
 
 **Última Atualização:** 05/09/2026  
-**Fase Atual:** Fase 3C.1 — Editing Styles & Overlays Dinâmicos (MVP) (Implementada e Homologada Localmente — Aguardando Revisão Externa)  
+**Fase Atual:** Fase 3C.1 — Final Hardening implementado e homologado localmente — aguardando revisão externa.  
 **Próxima Fase:** Fase 3C.2 — B-roll & Picture-in-Picture (PIP)  
 **Ambiente:** VPS Ubuntu 24.04 (`159.223.118.129`)  
-**Status do PM2:** `bali-gestor` online (PID 86258)  
+**Status do PM2:** `bali-gestor` online  
 **Status do Banco:** PostgreSQL 16 `active` (DB: `bali_gestor`)  
 
 ---
@@ -68,18 +68,20 @@ video_anuncios_engine.js   POST /api/v2/video-jobs        GET /video-painel
 ```
 
 * **Módulo de Editing Styles Versionáveis (`video_engine/styles/presets.js`):**
-  - Catálogo de presets declarativos versionados em código (`performance_reels_v1`, `clean_modern_v1`).
+  - Catálogo canônico de presets declarativos versionados em código (`performance_reels_v1`, `clean_modern_v1`).
+  - Whitelist estrita de compatibilidade entre tipos de overlay e presets (`supported_types`).
   - `FONT_REGISTRY` imutável apontando para fontes físicas no servidor (`DejaVuSans-Bold.ttf`, `LiberationSans-Bold.ttf`, etc.) com validação no boot.
   - Resolução estrita com fail-fast e cálculo de `style_hash = SHA-256(canonicalizeDeep(resolvedStyle))`.
 
 * **Overlay Engine (`video_engine/overlay_service.js`):**
   - Tipos suportados: `headline`, `price_badge`, `location_tag`, `cta_banner`, `captions`.
   - Defesa em profundidade contra filter injection sanitizando 11 caracteres (`:`, `\`, `'`, `%`, `[`, `]`, `,`, `;`, `=`, `\n`, `\r`).
+  - Métricas de fontes proporcionais reais para cálculo exato de largura em pixels.
   - Safe Rectangles com text wrapping automático e fail-fast por layout overflow.
   - Animações determinísticas de fade in/out e punch zoom.
 
 * **Video Composer Engine (`video_engine/composer_service.js`):**
-  - Suporte completo a Blueprint `1.0` (`composer_v1`) e `1.1` (`composer_v2`).
+  - Suporte completo a Blueprint `1.0` (`composer_v1`) com regressão congelada da Fase 3B e Blueprint `1.1` (`composer_v2`).
   - Identidade de renderização determinística via `render_key` profunda.
   - Concorrência protegida por claim atômico PostgreSQL com lease e recuperação de estado stale/corrompido.
   - Pipeline canônico de re-encode FFmpeg H.264/AAC com atomicidade de saída.
@@ -99,7 +101,7 @@ video_anuncios_engine.js   POST /api/v2/video-jobs        GET /video-painel
    - Assets `READY` existentes com hash válido retornam imediatamente (< 50ms) sem re-renderização.
    - Qualquer mutação em clipes, trims, estilo, tipografia, cores ou overlays altera a `render_key` determinística.
 4. **WhatsApp V1 Intacto:**
-   - `video_anuncios_engine.js` permanece inalterado e operacional.
+   - `video_anuncios_engine.js` permanece inalterado e operacional no servidor.
 5. **Zero Downtime & Zero Migrations:**
    - Nenhuma alteração estrutural no banco de dados.
 
@@ -112,4 +114,4 @@ video_anuncios_engine.js   POST /api/v2/video-jobs        GET /video-painel
 | **Fase 2C** | `bbddf3ba...` | Homologada | 100% Pass |
 | **Fase 3A** | `8e2bf030...` | Homologada | 100% Pass |
 | **Fase 3B** | `a215799d...` | Homologada | 100% Pass (40/40) |
-| **Fase 3C.1** | `7635bde6...` | Implementada / Aprovada Localmente | 100% Pass (50/50) |
+| **Fase 3C.1** | `7635bde6...` | Final Hardening implementado e homologado localmente — aguardando revisão externa | 100% Pass (61/61) |
