@@ -107,15 +107,15 @@ video_anuncios_engine.js   POST /api/v2/video-jobs        GET /video-painel
   Fundação PostgreSQL, Shadow Jobs, Job Core, Job API, Painel Web V2, Geração de Piloto (2B) e Aprovação/Restantes 2 e 3 (2C).  
   Commit Final Fase 2C: `6837749827104faf6ae198da0b77d055e0ec6e5f`
 
-* **Fase 3A (Asset Model & Creative Blueprint Foundation):**  
-  UUIDs de Homologação Fase 3A: `0be71ed8-0725-45ea-9640-c1ddcae46190`, `661d9a9e-84ef-4d52-a7a2-803342d2d9d8`, `83b8f446-9914-4da7-b676-53a616c5fd50`.  
-  Validação de 22 cenários automatizados no VPS:
-  - Estabilidade e sensibilidade determinística de `generation_key` (texto, look, voz);
+* **Fase 3A (Asset Model & Creative Blueprint Foundation — Pós-Review Homologada):**  
+  UUIDs de Homologação Fase 3A: `0be71ed8-0725-45ea-9640-c1ddcae46190`, `661d9a9e-84ef-4d52-a7a2-803342d2d9d8`, `83b8f446-9914-4da7-b676-53a616c5fd50`, `2c8f338e-19bb-41df-ae7a-c2a965f566be`, `f67631c3-3d15-4977-9c9f-a386c026fd97`, `6e567d94-43ec-45ed-b96d-f0e5b71c170d`, `de123c25-7525-4715-a67e-d6bee95e1384`.  
+  Validação de 26 cenários automatizados no VPS:
+  - **FIX 1:** Canonicalização recursiva determinística de `generation_key` (ordem arbitrária de chaves em todos os níveis, arrays preservados, sensibilidade estrita a width, height, fps, generation_params e propriedades aninhadas);
+  - **FIX 2:** Imutabilidade estrita de assets `ready` em `createAsset()` (bloqueio de rebaixamento para processing/pending, rejeição com `IMMUTABILITY ERROR` em caso de generation_key divergente, idempotência limpa e preservação de storage_path/file_hash);
+  - **FIX 3:** Asset Resolver com validação de ownership físico do Job (`outputs/jobs/<job_id>/`), rejeitando arquivos pertencentes a outro Job, symlinks para outro Job e symlinks externos;
   - Asset pendente criado com `storage_path = NULL` e `provider_ref`;
   - Transição para READY com cálculo exato de `file_hash` SHA-256;
-  - Bloqueio estrito de sobrescrita por imutabilidade de assets `ready`;
   - Idempotência ao revalidar asset idêntico;
-  - Asset Resolver validando integridade física e anti-tampering;
   - Persistência e estrutura dos 3 Creative Blueprints em `creative_blueprints JSONB`;
   - Tolerância e retrocompatibilidade com Jobs legados (`creative_blueprints = []`);
   - Preservação do Job showcase da Fase 2C (`bbddf3ba-...`) com streaming 200 para os 3 vídeos;
