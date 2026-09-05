@@ -1,58 +1,88 @@
-# Proposta Arquitetural & Plano de Implementação — Fase 2B
+# Proposta Arquitetural & Plano de Implementação — Fase 2B (Revisado)
 ## Geração de Vídeo Piloto pelo Painel Web V2 (Vinculada ao Job)
 
 **Projeto:** Video Engine V2 — Bali Imóveis  
 **Fase:** 2B (Primeira Produção de Vídeo Iniciada pelo Painel Visual)  
 **Status do Documento:** AGUARDANDO REVISÃO E APROVAÇÃO  
-**Objetivo Estratégico:** Permitir que, após criar um Job no painel web e inspecionar os roteiros gerados, Marcel possa acionar **“Gerar Piloto”**, disparando a produção do primeiro vídeo (Gancho 1 + Desenvolvimento/Corpo) **estritamente vinculado ao `job_id` no PostgreSQL, sem qualquer dependência de `activeVideoSessions`, sem adivinhar arquivos em disco e sem interferir no fluxo WhatsApp V1**.
+**Objetivo Estratégico:** Permitir que, após criar um Job no painel web e inspecionar os roteiros gerados, Marcel possa acionar **“Gerar Piloto”**, disparando a produção do primeiro vídeo (Gancho 1 + Desenvolvimento/Corpo) **estritamente vinculado ao `job_id` no PostgreSQL, com proteção atômica contra concorrência, recuperação segura no boot (Smart Resume), entrega de vídeo protegida por autenticação (sem arquivos estáticos expostos) e zero dependência do fluxo WhatsApp V1**.
 
 ---
 
-## 1. Diagnóstico da Arquitetura do Fluxo Atual (`CLONE` no WhatsApp)
+## 1. Diagnóstico dos Acoplamentos no Fluxo Legado (`CLONE` no WhatsApp)
 
-A inspeção detalhada em `/var/www/bali-gestor/video_anuncios_engine.js` identificou os seguintes pontos críticos e acoplamentos no fluxo legado:
+A inspeção em `/var/www/bali-gestor/video_anuncios_engine.js` confirmou os seguintes gargalos e riscos arquiteturais da versão legada:
 
 1. **Acoplamento com Memória Volátil (`activeVideoSessions`):**
-   - O comando `CLONE` depende de um objeto em memória indexado pelo número do remetente do WhatsApp (`activeVideoSessions[sessionKey]`).
-   - Se a sessão não existir na memória (ou se o PM2 reiniciar), o sistema invoca `getOrInitSession("1639")`, que recorre a um **fallback hardcoded para o imóvel `1639`**.
+   - O comando `CLONE` depende de um dicionário em memória RAM (`activeVideoSessions[sessionKey]`).
+   - Se a sessão não existir na memória (ou se o PM2 reiniciar), o sistema recorre a um **fallback arbitrário para o imóvel `1639`** (`getOrInitSession("1639")`).
 
-2. **Reutilização de Vídeo de Corpo Baseada em Varredura de Disco:**
-   - O motor busca o corpo executando:
+2. **Reutilização de Vídeo de Corpo Baseada em Varredura de Diretório:**
+   - O motor busca o corpo executando:  
      `fs.readdirSync(OUTPUTS_DIR).filter(f => f.startsWith("body_" + session.imovelRef) && f.endsWith(".mp4")).sort().reverse()[0]`
-   - O sistema simplesmente seleciona o arquivo mais recente que case com o padrão de nome.
-   - **Risco Crítico no V1:** Se os roteiros foram alterados, se outro corretor gerou o mesmo imóvel ou se houve falha parcial anterior, o sistema reutiliza um vídeo de corpo defasado ou arbitrário sem validar versão de script ou identificador único de trabalho.
+   - O sistema simplesmente escolhe o último arquivo por ordem alfabética de nome.
+   - **Risco:** Se os roteiros foram alterados ou se outro corretor gerou o mesmo imóvel, o sistema reutiliza um arquivo defasado ou arbitrário sem validar versão nem Job ID.
 
-3. **Nomenclatura com Sobrescrita de Arquivos:**
-   - O vídeo final gerado é salvo como `Anuncio_Completo_1_Imovel_<ref>.mp4`.
-   - Qualquer nova execução sobrescreve diretamente o arquivo anterior no diretório `outputs/`.
+3. **Sobrescrita Indiscriminada de Arquivos:**
+   - O vídeo final é gravado com nome fixo `Anuncio_Completo_1_Imovel_<ref>.mp4`, sobrescrevendo execuções anteriores no disco.
 
-4. **Perda Total de Contexto em Restart do PM2:**
-   - Como os IDs dos vídeos da HeyGen (`video_id`) e o estado intermediário ficam apenas na RAM da sessão, qualquer reinicialização do PM2 interrompe o polling e descarta o contexto, impossibilitando a recuperação ou o download do vídeo já pago na HeyGen.
-
----
-
-## 2. Regra Arquitetural Absoluta para a Fase 2B
-
-> **Regra Primária de Confiabilidade V2:**  
-> A execução da Fase 2B é **100% vinculada ao `job_id` (UUID)** registrado no PostgreSQL.  
-> Se o sistema não conseguir identificar exatamente qual Job está sendo continuado, **ele deve parar imediatamente**.  
-> É terminantemente proibido:
-> * Adivinhar imóvel;
-> * Adivinhar sessão;
-> * Reutilizar vídeos por busca de arquivos em diretório (`readdirSync`);
-> * Recorrer a fallbacks arbitrários (como `1639`);
-> * Depender de `activeVideoSessions`.
+4. **Perda de Rastreabilidade em Reinício do PM2:**
+   - Os IDs de vídeo da HeyGen ficam exclusivamente em memória volátil. Reiniciar o PM2 interrompe o polling e perde o rastreio dos vídeos pagos.
 
 ---
 
-## 3. Arquitetura Proposta: `pilot_service.js` Isolado e Orientado a `job_id`
+## 2. Regras Arquiteturais Absolutas da Fase 2B
+
+1. **Vínculo Unívoco ao `job_id`:**  
+   Toda e qualquer operação de geração ou consulta é atrelada estritamente ao UUID do Job no PostgreSQL.  
+   **Se o sistema não conseguir identificar exatamente qual Job está sendo continuado, ele para imediatamente.**  
+   *Zero adivinhação de imóvel, zero adivinhação de sessão, zero fallback para `1639` e zero varredura de arquivos por `readdirSync`.*
+
+2. **Transição Atômica de Concorrência no PostgreSQL:**  
+   Não confiar em "ler status, verificar `SCRIPT_READY` e depois atualizar".  
+   O bloqueio para início da renderização deve ser **atômico diretamente na instrução SQL**:
+   ```sql
+   UPDATE video_jobs
+   SET status = 'PILOT_SUBMITTED', updated_at = NOW()
+   WHERE id = $1
+     AND status IN ('SCRIPT_READY', 'PILOT_FAILED')
+   RETURNING *;
+   ```
+   - **Somente a requisição que obtiver linha no `RETURNING`** recebe permissão para disparar as chamadas à HeyGen.
+   - Se nenhuma linha for atualizada:
+     - Se o status atual for `PILOT_SUBMITTED` ou `PILOT_RENDERING`: retorna `HTTP 409 Conflict` (*"Geração de piloto já está em andamento para este Job."*);
+     - Se o status for `PILOT_READY`: retorna `HTTP 200 OK` com os dados do piloto já existente (sem renderizar novamente);
+     - Qualquer outro status: rejeita com `HTTP 400 Bad Request` indicando transição inválida.
+   - **Garantia:** Duas requisições simultâneas nunca gerarão dois pilotos nem duplicarão consumo de créditos na HeyGen.
+
+3. **Entrega de Vídeo 100% Protegida por Autenticação (Sem Diretório Estático Público):**  
+   - O diretório `/outputs/jobs/` é explicitamente **bloqueado contra acesso estático público** (`HTTP 403 Forbidden`). Ninguém pode baixar o vídeo apenas por conhecer o UUID.
+   - O vídeo do piloto é servido exclusivamente por rota autenticada com HTTP Basic Auth:
+     `GET /api/v2/panel/video-jobs/:id/pilot`
+   - O backend valida a existência do Job, checa que o path físico pertence estritamente ao `<job_id>`, bloqueia qualquer tentativa de *path traversal* e entrega o arquivo via `res.sendFile()` (com suporte nativo a range requests para o player HTML5).
+
+4. **Identificador Durável: `heygen_video_id`:**  
+   O identificador permanente da HeyGen é o **`heygen_video_id`** (string). URLs de download retornadas pela HeyGen são transitórias e não constituem fonte de verdade para recuperação futura.
+
+5. **Mecanismo Explícito de Smart Resume no Startup (Sem Efeitos Colaterais no GET):**  
+   - A rota `GET /api/v2/panel/video-jobs/:id` é **estritamente somente-leitura** e nunca dispara retomada ou renderização como efeito colateral.
+   - O Smart Resume roda exclusivamente na **inicialização do servidor (startup hook)**:
+     - Busca no banco Jobs em `PILOT_SUBMITTED` ou `PILOT_RENDERING`;
+     - Executa `resumePilot(jobId)`;
+     - Se os `heygen_video_id` já estiverem gravados, consulta a HeyGen usando esses IDs (nunca reenvia clips);
+     - Se os clips estiverem prontos, procede com download e FFmpeg;
+     - Se estiverem renderizando, reassume o polling;
+     - Se o Job estiver travado há mais de 30 minutos ou a HeyGen tiver descartado os dados, marca `PILOT_FAILED` com mensagem descritiva para permitir nova tentativa limpa.
+
+---
+
+## 3. Diagrama do Fluxo Arquitetural Revisado
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                            PAINEL WEB (video-painel.html)                   │
 │                                                                             │
-│  Marcel visualiza o Job (ex: SCRIPT_READY)                                  │
-│  Clica em: "🎬 Gerar Vídeo Piloto"                                          │
+│  Marcel visualiza Job SCRIPT_READY                                          │
+│  Clica em "🎬 Gerar Vídeo Piloto"                                           │
 │  Dispara: POST /api/v2/panel/video-jobs/:id/generate-pilot                  │
 │  (Autenticado via HTTP Basic Auth)                                          │
 └──────────────────────────────────────┬──────────────────────────────────────┘
@@ -61,63 +91,71 @@ A inspeção detalhada em `/var/www/bali-gestor/video_anuncios_engine.js` identi
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                     BACKEND EXPRESS (video_engine/api_v2.js)                │
 │                                                                             │
-│  1. Valida existência do Job pelo :id                                       │
-│  2. Valida status (deve ser SCRIPT_READY ou PILOT_FAILED)                   │
-│  3. Se já em processamento (PILOT_SUBMITTED / RENDERING): 409 Conflict      │
-│  4. Atualiza status no PostgreSQL para PILOT_SUBMITTED                      │
-│  5. Dispara execução assíncrona em video_engine/pilot_service.js            │
-│  6. Retorna 202 Accepted { success: true, status: 'PILOT_SUBMITTED' }       │
+│  TRANSIÇÃO ATÔMICA NO BANCO:                                                │
+│  UPDATE video_jobs SET status = 'PILOT_SUBMITTED' ...                       │
+│  WHERE id = $1 AND status IN ('SCRIPT_READY', 'PILOT_FAILED') RETURNING *   │
+│                                                                             │
+│  ├─ Se 0 linhas atualizadas:                                                │
+│  │   ├─ Status atual PILOT_SUBMITTED / RENDERING ──> 409 Conflict           │
+│  │   ├─ Status atual PILOT_READY ──> 200 OK (retorna piloto existente)     │
+│  │   └─ Outro estado ──> 400 Bad Request                                    │
+│  │                                                                          │
+│  └─ Se 1 linha atualizada (Lock Atômico Conquistado):                       │
+│      Dispara assincronamente: pilotService.generatePilot(jobId)             │
+│      Retorna imediatamente: 202 Accepted { status: 'PILOT_SUBMITTED' }      │
 └──────────────────────────────────────┬──────────────────────────────────────┘
                                        │
                                        ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                 ORQUESTRADOR DO PILOTO (video_engine/pilot_service.js)       │
 │                                                                             │
-│  1. Carrega Job completo do PostgreSQL pelo UUID:                           │
-│     • property_snapshot (dados e fotos do imóvel)                           │
-│     • scripts_snapshot (Gancho 1 + Corpo com respectivos Looks)             │
+│  1. Lê scripts_snapshot e property_snapshot diretamente do Job no PostgreSQL │
 │  2. Submete clips na HeyGen (Voz clonada Marcel):                           │
-│     • Gancho 1: Look Terno, avatar normal                                   │
-│     • Corpo: Look Terno, avatar círculo, foto do imóvel ao fundo            │
-│  3. Registra heygen_video_id de cada clip em video_jobs.metadata.pilot      │
-│  4. Atualiza status para PILOT_RENDERING                                    │
-│  5. Realiza Polling na API HeyGen até conclusão                             │
-│  6. Faz download dos MP4 para diretório isolado:                            │
+│     • Gancho 1 (Look Terno, avatar normal)                                  │
+│     • Corpo (Look Terno, avatar círculo, foto do imóvel)                    │
+│  3. GRAVAÇÃO IMEDIATA NO BANCO:                                             │
+│     Salva heygen_video_id de cada clip em video_jobs.metadata.pilot         │
+│     Atualiza status para 'PILOT_RENDERING'                                  │
+│  4. Polling na API HeyGen até conclusão                                     │
+│  5. Download dos vídeos para diretório isolado:                             │
 │     outputs/jobs/<job_id>/hook_1.mp4                                        │
 │     outputs/jobs/<job_id>/body.mp4                                          │
-│  7. Concatena com FFmpeg em outputs/jobs/<job_id>/pilot.mp4                 │
-│  8. Valida integridade do arquivo gerado (tamanho > 0, duração válida)       │
-│  9. Atualiza PostgreSQL:                                                    │
-│     • status = 'PILOT_READY'                                                │
-│     • pilot_video_url = '/outputs/jobs/<job_id>/pilot.mp4'                  │
-│     • metadata.pilot.completed_at = now()                                   │
+│  6. Concatenação via FFmpeg:                                                │
+│     outputs/jobs/<job_id>/pilot.mp4                                         │
+│  7. Validação de integridade do arquivo (> 0 bytes)                         │
+│  8. Atualiza PostgreSQL:                                                    │
+│     status = 'PILOT_READY', pilot_video_url = '/api/v2/panel/video-jobs/... │
 │                                                                             │
-│  ⚠️ Em caso de qualquer erro:                                               │
-│     • status = 'PILOT_FAILED'                                               │
-│     • error_message = <detalhes do erro>                                    │
+│  ⚠️ Em caso de falha:                                                       │
+│     status = 'PILOT_FAILED', error_message = <erro_detalhado>               │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                       │
+                                       ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                 EXIBIÇÃO SEGURA DO VÍDEO NO NAVEGADOR                       │
+│                                                                             │
+│  Painel faz polling read-only: GET /api/v2/panel/video-jobs/:id             │
+│  Quando status == PILOT_READY:                                              │
+│  Player carrega rota autenticada:                                           │
+│  <video controls src="/api/v2/panel/video-jobs/:id/pilot"></video>          │
+│  🔒 Rota pública direta /outputs/jobs/... bloqueada com HTTP 403            │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 4. Persistência Mínima Necessária no PostgreSQL
+## 4. Persistência Mínima no PostgreSQL
 
-### 4.1. Migração Estrutural da Tabela `video_jobs`
-Será criada uma migração mínima `002_add_pilot_fields_to_video_jobs.sql`:
-
+### 4.1. Migração Estrutural: `migrations/002_add_pilot_fields_to_video_jobs.sql`
 ```sql
--- Adicionar colunas diretas para acesso rápido e indexação
 ALTER TABLE video_jobs 
   ADD COLUMN IF NOT EXISTS pilot_video_url TEXT,
   ADD COLUMN IF NOT EXISTS error_message TEXT;
 
--- Índice para consultas de auditoria de status
 CREATE INDEX IF NOT EXISTS idx_video_jobs_pilot_status ON video_jobs (status, created_at DESC);
 ```
 
-### 4.2. Estrutura dos Metadados do Piloto em `metadata.pilot` (JSONB)
-Todos os detalhes técnicos da renderização ficam registrados dentro do campo `metadata` já existente:
-
+### 4.2. Estrutura de `metadata.pilot` (JSONB)
 ```json
 {
   "pilot": {
@@ -125,17 +163,18 @@ Todos os detalhes técnicos da renderização ficam registrados dentro do campo 
       "heygen_video_id": "v78a1bc90d",
       "heygen_video_url": "https://resource.heygen.ai/...",
       "local_path": "/var/www/bali-gestor/outputs/jobs/f8099b3d.../hook_1.mp4",
-      "rendered_at": "2026-09-05T03:00:00.000Z"
+      "submitted_at": "2026-09-05T03:00:00.000Z",
+      "completed_at": "2026-09-05T03:01:00.000Z"
     },
     "body": {
       "heygen_video_id": "v89b2cd01e",
       "heygen_video_url": "https://resource.heygen.ai/...",
       "local_path": "/var/www/bali-gestor/outputs/jobs/f8099b3d.../body.mp4",
-      "rendered_at": "2026-09-05T03:01:00.000Z"
+      "submitted_at": "2026-09-05T03:00:05.000Z",
+      "completed_at": "2026-09-05T03:01:10.000Z"
     },
     "final": {
       "local_path": "/var/www/bali-gestor/outputs/jobs/f8099b3d.../pilot.mp4",
-      "public_url": "/outputs/jobs/f8099b3d.../pilot.mp4",
       "concatenated_at": "2026-09-05T03:01:30.000Z"
     },
     "attempts": 1,
@@ -145,148 +184,136 @@ Todos os detalhes técnicos da renderização ficam registrados dentro do campo 
 }
 ```
 
----
-
-## 5. Máquina de Estados Mínima do Job na Fase 2B
-
-| Estado | Significado | Ações Permitidas |
-|---|---|---|
-| `SCRIPT_READY` | Imóvel e roteiros gerados no banco. Piloto não iniciado. | Marcel pode clicar em **"Gerar Piloto"**. |
-| `PILOT_SUBMITTED` | Pedido de piloto recebido; clips submetidos à HeyGen. | Painel exibe spinner e desabilita botões. |
-| `PILOT_RENDERING` | HeyGen processando áudio, sincronia labial e vídeo. | Painel realiza polling periódico (`GET /api/v2/panel/video-jobs/:id`). |
-| `PILOT_READY` | Clips baixados, concatenados com FFmpeg e validados. | Painel exibe player de vídeo, link de download e status verde. |
-| `PILOT_FAILED` | Falha na HeyGen, timeout, download corrompido ou erro FFmpeg. | Painel exibe erro amigável e botão **"Tentar Novamente"**. |
-
-#### Prevenção de Concorrência e Conflito de Estados:
-* Se uma requisição para gerar piloto chegar para um Job com status `PILOT_SUBMITTED` ou `PILOT_RENDERING`, a API rejeita imediatamente com `HTTP 409 Conflict`:
-  ```json
-  {
-    "success": false,
-    "error": "PILOT_ALREADY_IN_PROGRESS",
-    "message": "A geração do piloto já está em andamento para este Job."
-  }
-  ```
-* Se o status já for `PILOT_READY`, a API retorna `HTTP 200 OK` informando que o piloto já está pronto, devolvendo a URL existente sem gastar novos créditos de renderização.
+> **Nota sobre `heygen_video_url`:** O campo `heygen_video_url` é armazenado em metadata estritamente para auditoria técnica imediata. Ele é temporário e expira. A recuperação futura e validação apoia-se unicamente no `heygen_video_id`.
 
 ---
 
-## 6. Isolamento e Estrutura de Arquivos em Disco
+## 5. Máquina de Estados e Matriz de Transições
 
-Para erradicar qualquer conflito entre execuções e garantir rastreabilidade física:
+| Estado Atual | Ação Solicitada | Próximo Estado | Resposta HTTP |
+|---|---|---|---|
+| `SCRIPT_READY` | `generate-pilot` | `PILOT_SUBMITTED` | `HTTP 202 Accepted` |
+| `PILOT_FAILED` | `generate-pilot` (Retry) | `PILOT_SUBMITTED` | `HTTP 202 Accepted` |
+| `PILOT_SUBMITTED` | `generate-pilot` (Concorrente) | *(Sem alteração)* | `HTTP 409 Conflict` |
+| `PILOT_RENDERING` | `generate-pilot` (Concorrente) | *(Sem alteração)* | `HTTP 409 Conflict` |
+| `PILOT_READY` | `generate-pilot` | *(Sem alteração)* | `HTTP 200 OK` (retorna dados existentes) |
+| Qualquer | Falha de API/FFmpeg | `PILOT_FAILED` | `error_message` registrado |
 
-```text
-/var/www/bali-gestor/outputs/
-└── jobs/
-    └── <job_id>/
-        ├── hook_1.mp4
-        ├── body.mp4
-        ├── concat_list.txt (temporário, removido após FFmpeg)
-        └── pilot.mp4
+---
+
+## 6. Mecanismo de Smart Resume no Startup do Servidor
+
+No arquivo principal (`gestor_server.js`), após a conexão do banco e subida dos módulos:
+
+```javascript
+// Recuperação limpa de jobs pendentes no boot (Smart Resume Fase 2B)
+pilotService.initStartupRecovery().catch(err => {
+  console.error('[PILOT RECOVERY ERROR] Erro na rotina de inicialização:', err.message);
+});
 ```
 
-* Cada Job possui seu próprio subdiretório baseado no UUID (`outputs/jobs/<job_id>/`).
-* O vídeo piloto fica acessível publicamente no navegador via rota estática já existente:
-  `http://<host>/outputs/jobs/<job_id>/pilot.mp4`.
+### Comportamento da Função `initStartupRecovery()`:
+1. Executa consulta direcionada:
+   ```sql
+   SELECT id, status, metadata, updated_at 
+   FROM video_jobs 
+   WHERE status IN ('PILOT_SUBMITTED', 'PILOT_RENDERING')
+   ORDER BY created_at ASC;
+   ```
+2. Para cada Job localizado:
+   - Se `updated_at` for anterior a **30 minutos**:
+     Marca `status = 'PILOT_FAILED'`, `error_message = 'Renderização interrompida por reinício do servidor excedeu o tempo limite. Por favor, tente novamente.'`.
+   - Se estiver dentro da janela de tempo:
+     - Extrai `heygen_video_id` do Gancho 1 e do Corpo de `metadata.pilot`;
+     - Se ambos os IDs existirem: consulta a HeyGen pelo status de cada um (**sem reenviar novo clip**);
+     - Se ambos estiverem prontos: baixa os vídeos e dispara a concatenação FFmpeg para finalizar o Job (`PILOT_READY`);
+     - Se ainda estiverem renderizando: retoma o loop assíncrono de polling;
+     - Se algum clip falhou na HeyGen: marca `PILOT_FAILED` com o erro retornado pela HeyGen.
 
 ---
 
-## 7. Estratégia de Recuperação e Resiliência em Caso de Restart do PM2
+## 7. Rota Autenticada de Entrega do Vídeo Piloto
 
-O que acontece se o servidor ou o PM2 reiniciar durante o processo da HeyGen?
+### Endpoint: `GET /api/v2/panel/video-jobs/:id/pilot`
+* **Proteção:** `panelAuthMiddleware` (HTTP Basic Auth).
+* **Regras de Negócio e Segurança:**
+  1. Valida o formato UUID do parâmetro `:id`.
+  2. Consulta o Job no banco. Se não existir: `HTTP 404 Not Found`.
+  3. Se `status !== 'PILOT_READY'`: `HTTP 409 Conflict` (*"O vídeo piloto deste Job ainda não está pronto"*).
+  4. Localiza o path físico do arquivo: `/var/www/bali-gestor/outputs/jobs/<job_id>/pilot.mp4`.
+  5. Valida contra *path traversal* garantindo que o arquivo reside rigorosamente sob `outputs/jobs/<job_id>/`.
+  6. Se o arquivo não existir fisicamente: `HTTP 404 Not Found`.
+  7. Entrega o arquivo utilizando `res.sendFile()`, que automaticamente gerencia *Range requests* (HTTP 206) essenciais para busca e reprodução fluida no `<video>` HTML5.
 
-1. **Gravação Imediata dos Identificadores HeyGen:**
-   - Assim que a HeyGen responde com o `video_id` de cada clip, eles são **imediatamente persistidos no PostgreSQL** (`metadata.pilot.hook1.heygen_video_id` e `metadata.pilot.body.heygen_video_id`), antes de iniciar o loop de espera.
-2. **Ao reiniciar ou ao consultar o Job:**
-   - Se o servidor reiniciar e o Job estiver em `PILOT_SUBMITTED` ou `PILOT_RENDERING`:
-     - O serviço inspeciona o `updated_at` e os `video_id` salvos.
-     - **Retomada Segura (Smart Resume):** Como os IDs existem no banco, o sistema pode consultar o status na HeyGen sem reenviar e sem gastar novos créditos. Se já estiverem prontos, realiza o download e monta o vídeo.
-     - **Falha Explícita (Timeout Fallback):** Se a solicitação tiver mais de 20 minutos ou a HeyGen tiver descartado os dados, o status é alterado de forma transparente para `PILOT_FAILED` com a mensagem: *"Processamento interrompido por reinicialização do servidor. Clique em Tentar Novamente."*
-3. **Nenhum contexto é esquecido ou deduzido.**
-
----
-
-## 8. Alterações na Interface Web (`video-painel.html`)
-
-A interface continuará leve e em Vanilla JS, ganhando as seguintes capacidades visuais:
-
-1. **Seção de Ação do Piloto (no Card do Job):**
-   - Quando `status === 'SCRIPT_READY'`:
-     Exibe botão: `🎬 Gerar Vídeo Piloto (Gancho 1 + Corpo)`.
-   - Quando `status === 'PILOT_SUBMITTED'` ou `PILOT_RENDERING'`:
-     Botão desabilitado com spinner ativo: `⏳ Renderizando Piloto na HeyGen (pode levar 1 a 2 min)...`.
-     Inicia polling automático a cada 5 segundos para `GET /api/v2/panel/video-jobs/:id`.
-   - Quando `status === 'PILOT_READY'`:
-     Badge verde `PILOT_READY`.
-     Card de Vídeo com player HTML5 `<video controls src="/outputs/jobs/<job_id>/pilot.mp4">`.
-     Botão para abrir em nova aba / fazer download.
-   - Quando `status === 'PILOT_FAILED'`:
-     Badge vermelho `PILOT_FAILED`.
-     Alerta de erro com a mensagem descritiva.
-     Botão reabilitado: `🔄 Tentar Novamente`.
+### Bloqueio de Acesso Estático Direto:
+Em `gestor_server.js`, antes de `app.use('/outputs', ...)`:
+```javascript
+// Bloquear acesso estático não autorizado a jobs da Video Engine
+app.use('/outputs/jobs', (req, res) => res.status(403).send('Forbidden: Acesso direto bloqueado.'));
+```
 
 ---
 
-## 9. Arquivos a Criar e Modificar
+## 8. Arquivos a Criar e Modificar
 
 1. **`migrations/002_add_pilot_fields_to_video_jobs.sql` [NOVO]:**
-   - Adiciona `pilot_video_url` e `error_message` à tabela `video_jobs`.
+   - Criação das colunas `pilot_video_url` e `error_message`.
 
 2. **`video_engine/pilot_service.js` [NOVO]:**
-   - Módulo isolado contendo as funções:
-     - `generatePilot(jobId)`
-     - `checkPilotStatus(jobId)`
-     - Chamadas à HeyGen (avatar, voz clonada, fundo dinâmico), downloads de stream para disco e concatenação FFmpeg.
+   - Funções:
+     - `lockAndSubmitPilot(jobId)`: executa o `UPDATE ... RETURNING` atômico;
+     - `generatePilot(jobId)`: orquestra HeyGen, download, FFmpeg e persistência;
+     - `resumePilot(jobId)`: lógica de Smart Resume usando IDs persistidos;
+     - `initStartupRecovery()`: varredura e recuperação no boot do servidor.
 
 3. **`video_engine/api_v2.js` [MODIFICAR]:**
-   - Adicionar rotas BFF do painel (protegidas por Basic Auth):
-     - `POST /api/v2/panel/video-jobs/:id/generate-pilot`
-     - `GET /api/v2/panel/video-jobs/:id`
-   - Adicionar rotas externas equivalentes (protegidas por Bearer Token):
-     - `POST /api/v2/video-jobs/:id/generate-pilot`
-     - `GET /api/v2/video-jobs/:id`
+   - `POST /api/v2/panel/video-jobs/:id/generate-pilot`: aciona a transição atômica e disparo do piloto.
+   - `GET /api/v2/panel/video-jobs/:id`: rota read-only pura de consulta do estado do Job.
+   - `GET /api/v2/panel/video-jobs/:id/pilot`: rota autenticada para streaming do vídeo piloto.
 
-4. **`video-painel.html` [MODIFICAR]:**
-   - Inclusão do botão "Gerar Piloto", polling de status e player de vídeo para exibição do resultado.
+4. **`gestor_server.js` [MODIFICAR]:**
+   - Bloquear acesso estático a `/outputs/jobs`;
+   - Iniciar `pilotService.initStartupRecovery()`.
 
----
-
-## 10. Limites Explícitos da Fase 2B
-
-* ❌ **Sem geração dos vídeos restantes**: Apenas o Piloto (Gancho 1 + Corpo) é produzido nesta fase. Ganchos 2 e 3 não são renderizados.
-* ❌ **Sem editor de vídeo ou customização manual de timeline**.
-* ❌ **Sem integração ou envio para Meta Ads / Facebook**.
-* ❌ **Sem gerenciador de biblioteca ou galeria histórica**.
-* ❌ **Fluxo WhatsApp V1 100% Intacto**: O comando `CLONE` e `activeVideoSessions` continuam operando paralelamente sem qualquer interferência.
+5. **`video-painel.html` [MODIFICAR]:**
+   - Inclusão do botão "Gerar Piloto";
+   - Polling de status a cada 5s via `GET /api/v2/panel/video-jobs/:id`;
+   - Player `<video controls src="/api/v2/panel/video-jobs/:id/pilot">` e botão de download quando `PILOT_READY`.
 
 ---
 
-## 11. Bateria de Testes e Homologação da Fase 2B
+## 9. O Que Permanece Rigorosamente Intocado
 
-1. **Job Inexistente:**  
-   Submeter `POST /api/v2/panel/video-jobs/00000000-0000-0000-0000-000000000000/generate-pilot`.  
-   Deve retornar `HTTP 404 Not Found` e recusar a operação sem tentar adivinhar imóvel.
-2. **Job Válido em `SCRIPT_READY`:**  
-   Submeter comando para Job existente.  
-   Deve retornar `HTTP 202 Accepted` e transitar status para `PILOT_SUBMITTED`.
-3. **Prevenção de Duplicidade:**  
-   Submeter nova chamada enquanto o piloto estiver renderizando.  
-   Deve retornar `HTTP 409 Conflict` impedindo gasto duplo de créditos.
-4. **Resiliência a Falhas de API (HeyGen com Erro):**  
-   Simular ou testar payload inválido; deve transitar para `PILOT_FAILED` e gravar `error_message`.
-5. **Resiliência a Falhas de Concatenação (FFmpeg):**  
-   Garantir captura de erro e transição segura para `PILOT_FAILED` sem travar o processo Express.
-6. **Ciclo Completo de Produção do Piloto:**  
-   Executar geração real para o imóvel `#1639`.  
-   Acompanhar transição: `PILOT_SUBMITTED` → `PILOT_RENDERING` → `PILOT_READY`.
-7. **Validação do Arquivo Gerado:**  
-   Verificar existência física de `outputs/jobs/<job_id>/pilot.mp4`, integridade do arquivo (> 0 bytes) e reprodução via `/outputs/jobs/<job_id>/pilot.mp4`.
-8. **Conferência no PostgreSQL:**  
-   Verificar preenchimento de `status = 'PILOT_READY'`, `pilot_video_url` e metadados com timestamps e IDs da HeyGen.
-9. **Zero Dependência de `activeVideoSessions`:**  
-   Comprovar que `activeVideoSessions` permanece inalterado e não é lido nem escrito pelo fluxo do painel.
-10. **Zero Advinhação de Body:**  
-    Comprovar que o vídeo foi gerado estritamente para o `job_id` sem reutilizar arquivos soltos de diretório.
-11. **Não-Regressão Total:**  
-    WhatsApp V1 (`#REF`, `CLONE`) e rotas criadas na Fase 1D/2A operando com 100% de normalidade.
-12. **Saúde de Produção:**  
+* ❌ Sem geração dos Ganchos 2 e 3 nesta fase.
+* ❌ WhatsApp V1 (`activeVideoSessions`, áudios 1-4, `CLONE`, `OK`) permanece 100% inalterado.
+* ❌ Sem BullMQ, Redis ou filas distribuídas.
+* ❌ Sem integração com Meta Ads ou ferramentas de edição.
+
+---
+
+## 10. Bateria de Testes e Homologação da Fase 2B
+
+A homologação cobrirá os seguintes cenários estritos:
+
+1. **Concorrência Atômica:**  
+   Disparar duas requisições simultâneas de `generate-pilot` para o mesmo Job em `SCRIPT_READY`. Comprovar que apenas UMA recebe `HTTP 202 Accepted` e inicia a HeyGen; a segunda recebe `HTTP 409 Conflict`.
+2. **Não Duplicação de Clips:**  
+   Comprovar que a segunda requisição rejeitada não gerou novos `video_id` na HeyGen.
+3. **Bloqueio de Acesso Estático Direto:**  
+   Requisição direta a `http://localhost:3005/outputs/jobs/<job_id>/pilot.mp4` deve retornar `HTTP 403 Forbidden`.
+4. **Entrega de Vídeo Autenticada:**  
+   Requisição a `GET /api/v2/panel/video-jobs/:id/pilot` com Basic Auth deve retornar `HTTP 200 OK` (ou `HTTP 206 Partial Content`) e transmitir o vídeo correto.
+5. **Smart Resume em Reinício do PM2:**  
+   Simular interrupção durante `PILOT_RENDERING` com IDs persistidos no banco. Ao reiniciar o PM2, comprovar que `initStartupRecovery()` consulta os IDs existentes na HeyGen e NÃO reenvia os clips.
+6. **Idempotência Estrita da Rota de Consulta:**  
+   Múltiplas chamadas a `GET /api/v2/panel/video-jobs/:id` não alteram status nem disparam efeitos colaterais.
+7. **Job Inexistente:**  
+   Tentativa de gerar piloto para UUID aleatório retorna `HTTP 404 Not Found`.
+8. **Resiliência a Erros de Renderização:**  
+   Falha na HeyGen ou FFmpeg transita status de forma segura para `PILOT_FAILED` gravando `error_message`.
+9. **Ciclo Completo com Sucesso:**  
+   Geração nominal para imóvel `#1639` transita para `PILOT_READY` com vídeo montado e disponível no painel.
+10. **Não-Regressão Total:**  
+    WhatsApp V1 (`#REF`, `CLONE`) e rotas da Fase 1D/2A operando com 100% de normalidade.
+11. **Saúde de Produção:**  
     PM2 `bali-gestor` online e PostgreSQL `active`.
