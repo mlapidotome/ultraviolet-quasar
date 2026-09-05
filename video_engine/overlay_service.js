@@ -242,6 +242,7 @@ function sanitizeDrawtextString(rawText) {
     .replace(/[\r\n]+/g, ' ')
     .replace(/[\x00-\x1F\x7F]/g, '')
     .replace(/'/g, '’')
+    .replace(/:/g, '\\:')
     .replace(/%/g, '\\%')
     .trim();
 }
@@ -554,7 +555,8 @@ function compileOverlayFiltergraph({
 
   for (const ov of sortedOverlays) {
     const preset = style.overlay_presets[ov.preset];
-    const fontPath = FONT_REGISTRY[preset.font_id];
+    const rawFontPath = FONT_REGISTRY[preset.font_id];
+    const fontPath = rawFontPath ? rawFontPath.replace(/\\/g, '/').replace(/:/g, '\\:') : '';
     const safeRect = style.safe_rectangles[ov.position];
     const safeWidth = (safeRect.x_max - safeRect.x_min) - (preset.box_padding * 2);
     const maxCharsPerLine = getEffectiveMaxCharsPerLine(preset, safeRect);
@@ -621,7 +623,8 @@ function compileOverlayFiltergraph({
     box_color: '#000000B3',
     text_color: '#FFFFFF'
   };
-  const captionFontPath = FONT_REGISTRY[captionPreset.font_id] || FONT_REGISTRY['dejavu_medium'];
+  const rawCaptionFontPath = FONT_REGISTRY[captionPreset.font_id] || FONT_REGISTRY['dejavu_medium'];
+  const captionFontPath = rawCaptionFontPath ? rawCaptionFontPath.replace(/\\/g, '/').replace(/:/g, '\\:') : '';
   const captionSafeRect = style.safe_rectangles?.captions || { x_min: 80, x_max: 1000, y_min: 1350, y_max: 1550 };
   const safeCaptionWidth = (captionSafeRect.x_max - captionSafeRect.x_min) - (captionPreset.box_padding * 2);
 

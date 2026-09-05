@@ -337,7 +337,7 @@ async function resolveAndValidateAsset(assetId, { checkFile = true, checkHash = 
       throw new Error(`[ASSET_RESOLVER] Inconsistência de symlink ou caminho físico para asset ${assetId}`);
     }
 
-    // FIX 3: Validação estrita de Ownership físico do Job
+    // FIX 3: Validação estrita de Ownership físico do Job ou Property
     if (asset.storage_type === 'local_file' && asset.job_id) {
       const expectedJobDir = path.resolve(JOBS_OUTPUTS_DIR, String(asset.job_id));
       if (!fs.existsSync(expectedJobDir)) {
@@ -346,6 +346,14 @@ async function resolveAndValidateAsset(assetId, { checkFile = true, checkHash = 
       const realJobDir = fs.realpathSync(expectedJobDir);
       if (!realPhysicalPath.startsWith(realJobDir + path.sep)) {
         throw new Error(`[ASSET_RESOLVER SECURITY VIOLATION] Arquivo do asset ${assetId} não pertence ao diretório canônico do Job ${asset.job_id} (${realPhysicalPath})`);
+      }
+    } else if (asset.storage_type === 'local_file' && !asset.job_id && asset.property_ref && asset.asset_type === 'property_video') {
+      const expectedPropDir = path.resolve(OUTPUTS_BASE_DIR, 'properties', String(asset.property_ref), 'videos');
+      if (fs.existsSync(expectedPropDir)) {
+        const realPropDir = fs.realpathSync(expectedPropDir);
+        if (!realPhysicalPath.startsWith(realPropDir + path.sep) && realPhysicalPath !== realPropDir) {
+          throw new Error(`[ASSET_RESOLVER SECURITY VIOLATION] Arquivo do property video ${assetId} não pertence ao diretório canônico da REF ${asset.property_ref} (${realPhysicalPath})`);
+        }
       }
     }
 

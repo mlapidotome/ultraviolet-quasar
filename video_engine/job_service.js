@@ -80,7 +80,8 @@ async function fetchImovelData(ref) {
           dormitorios: found.dormitorios || found.quartos || null,
           suites: found.suites || null,
           area_construida: found.area_construida || found.area_util || null,
-          fotos: found.foto_capa ? [{ url: found.foto_capa }] : []
+          fotos: found.foto_capa ? [{ url: found.foto_capa }] : [],
+          link_video: found.link_video || found.video || found.video_url || null
         };
       }
     }
@@ -249,6 +250,23 @@ async function initializeVideoJob({ property_ref, broker_id, source = 'system', 
       job.creative_blueprints = blueprints;
     } catch (bpErr) {
       console.warn(`[JOB_CORE ASSET_SERVICE WARNING] Falha não-bloqueante ao persistir blueprints para job ${job.id}:`, bpErr.message);
+    }
+
+    // Property Video Ingestion (CRM link_video) — Execução determinística Fail-Open
+    try {
+      const propertyMediaService = require('./property_media/property_media_service');
+      const videoResult = await propertyMediaService.ensurePropertyVideoByUrl(
+        property_ref,
+        imovel.link_video,
+        { failOpen: true }
+      );
+      if (videoResult.status === 'READY') {
+        console.log(`[JOB_CORE] Property Video pronto para REF ${property_ref}: ${videoResult.asset?.id}`);
+      } else {
+        console.log(`[JOB_CORE] Property Video status para REF ${property_ref}: ${videoResult.status}`);
+      }
+    } catch (pvErr) {
+      console.warn(`[JOB_CORE PROPERTY_VIDEO WARNING] Falha não-bloqueante na ingestão de vídeo para ref ${property_ref}:`, pvErr.message);
     }
   } catch (dbErr) {
     console.error(`[JOB_CORE ERROR] Falha ao persistir VideoJob no PostgreSQL para ref ${property_ref}:`, dbErr.message);

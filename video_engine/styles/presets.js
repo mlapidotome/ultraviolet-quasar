@@ -14,11 +14,19 @@ const fs = require('fs');
 const crypto = require('crypto');
 const assetService = require('../asset_service');
 
+const isWin = process.platform === 'win32';
+
+function resolveFontPath(linuxPath, winPath) {
+  if (fs.existsSync(linuxPath)) return linuxPath;
+  if (isWin && fs.existsSync(winPath)) return winPath;
+  return linuxPath;
+}
+
 const FONT_REGISTRY = Object.freeze({
-  'dejavu_bold': '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
-  'dejavu_medium': '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
-  'liberation_bold': '/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf',
-  'liberation_medium': '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf'
+  'dejavu_bold': resolveFontPath('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', 'C:/Windows/Fonts/arialbd.ttf'),
+  'dejavu_medium': resolveFontPath('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 'C:/Windows/Fonts/arial.ttf'),
+  'liberation_bold': resolveFontPath('/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf', 'C:/Windows/Fonts/arialbd.ttf'),
+  'liberation_medium': resolveFontPath('/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf', 'C:/Windows/Fonts/arial.ttf')
 });
 
 /**
