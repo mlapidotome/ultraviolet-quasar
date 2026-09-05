@@ -108,32 +108,43 @@ async function validateStrongBody(bodyLocalPath, jobId) {
   }
 
   const realJobDir = fs.realpathSync(jobDir);
-  const resolvedPath = path.resolve(bodyLocalPath);
+  const expectedBodyPath = path.join(jobDir, 'body.mp4');
+  const resolvedGivenPath = path.resolve(bodyLocalPath);
 
-  if (!fs.existsSync(resolvedPath)) {
-    throw new Error(`Arquivo físico do body não encontrado: ${resolvedPath}`);
+  // 1. Exigir correspondência exata com o asset canônico esperado do Job (rejeita subpasta/body.mp4 ou outro nome)
+  if (resolvedGivenPath !== path.resolve(expectedBodyPath)) {
+    throw new Error(`Divergência de asset de body: esperado exatamente ${expectedBodyPath}, obtido ${bodyLocalPath}`);
   }
 
-  // Validação estrita de contenção física real e anti-symlink
-  const realBodyPath = fs.realpathSync(resolvedPath);
-
-  if (!realBodyPath.startsWith(realJobDir + path.sep)) {
-    throw new Error(`Violação de segurança: body aponta para fora do diretório do Job (${realBodyPath})`);
+  if (!fs.existsSync(resolvedGivenPath)) {
+    throw new Error(`Arquivo físico do body não encontrado: ${resolvedGivenPath}`);
   }
 
-  if (path.basename(realBodyPath) !== 'body.mp4' || path.basename(resolvedPath) !== 'body.mp4') {
-    throw new Error(`Basename inválido para o arquivo de body: esperado body.mp4, obtido ${path.basename(realBodyPath)}`);
+  // 2. Validação estrita de contenção física real e anti-symlink
+  const realGivenBodyPath = fs.realpathSync(resolvedGivenPath);
+  const realExpectedBodyPath = fs.realpathSync(expectedBodyPath);
+
+  if (realGivenBodyPath !== realExpectedBodyPath) {
+    throw new Error(`Divergência canônica: caminho físico real não coincide com o esperado do Job`);
   }
 
-  const stats = fs.statSync(realBodyPath);
+  if (!realGivenBodyPath.startsWith(realJobDir + path.sep)) {
+    throw new Error(`Violação de segurança: body aponta para fora do diretório do Job (${realGivenBodyPath})`);
+  }
+
+  if (path.basename(realGivenBodyPath) !== 'body.mp4' || path.basename(resolvedGivenPath) !== 'body.mp4') {
+    throw new Error(`Basename inválido para o arquivo de body: esperado body.mp4, obtido ${path.basename(realGivenBodyPath)}`);
+  }
+
+  const stats = fs.statSync(realGivenBodyPath);
   if (stats.size === 0) {
     throw new Error('Arquivo body.mp4 com tamanho zero bytes');
   }
 
-  // Validação de streams e duração via ffprobe
-  await validateMediaStreamsAndDuration(realBodyPath);
+  // 3. Validação de streams e duração via ffprobe
+  await validateMediaStreamsAndDuration(realGivenBodyPath);
 
-  return realBodyPath;
+  return realGivenBodyPath;
 }
 
 /* =========================================================================
