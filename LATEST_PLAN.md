@@ -1,153 +1,190 @@
-# Plano de Implementação — Fase 1B: Persistência Shadow de Jobs no PostgreSQL
+# Proposta Arquitetural — Fase 1C: Job Core Independente de Interface
 
 **Projeto:** Video Engine V2 — Bali Imóveis  
-**Fase Atual:** 1B (Shadow Jobs)  
-**Status do Plano:** AGUARDANDO REVISÃO E APROVAÇÃO  
-**Objetivo:** Criar um registro persistente (`video_job`) no PostgreSQL sempre que um imóvel real for carregado pelo fluxo de atendimento do WhatsApp, operando em modo shadow/paralelo, sem substituir a memória de sessão (`activeVideoSessions`) e com garantia absoluta de não interrupção da produção V1.
+**Fase:** 1C (Desacoplamento do Núcleo de Jobs)  
+**Status do Documento:** AGUARDANDO REVISÃO E APROVAÇÃO  
+**Objetivo Estratégico:** Transformar a criação de jobs de vídeo em uma operação independente de canal/interface, criando um serviço de domínio reutilizável (`job_service`), permitindo que WhatsApp, Painel Web e Testes Internos invoquem o mesmo núcleo de negócio sem duplicação de regras.
 
 ---
 
-## 1. Princípios e Regras Fundamentais da Fase 1B
+## 1. Diagnóstico da Arquitetura Atual & Acoplamentos Encontrados
 
-1. **V1 Intacta e Operacional:**
-   - `activeVideoSessions` continua sendo a **única fonte da verdade operacional** para todas as interações do usuário.
-   - Nenhuma decisão operacional da V1 fará leitura do banco de dados nesta fase.
-
-2. **Garantia Crítica de Degradação Graciosa (Resiliência):**
-   - A chamada para salvar no banco é estritamente assíncrona e envolvida em bloco `try/catch`.
-   - Se o PostgreSQL estiver offline, reiniciar, recusar conexão ou apresentar timeout:
-     - O erro será registrado de forma explícita no log (`console.error`).
-     - O fluxo V1 **NÃO será interrompido**: a sessão em memória será criada normalmente, o roteiro será enviado ao WhatsApp e os comandos subsequentes (`CLONE`, áudios) continuarão funcionando 100%.
-
-3. **Remoção de Fallbacks Silenciosos e Sem Fallback de Imóvel:**
-   - O fallback `broker_id || 'marcel_teste'` será removido de `video_engine/db.js`. O `broker_id` deverá ser fornecido obrigatoriamente ou lançar erro claro.
-   - O imóvel consultado e persistido no Job será estritamente a referência real enviada na mensagem do WhatsApp (sem fallback para 1639).
-
-4. **Escopo Deliberadamente Restrito (O que NÃO será feito nesta fase):**
-   - ❌ NÃO criar workers em segundo plano.
-   - ❌ NÃO criar filas (BullMQ, Redis, etc.).
-   - ❌ NÃO criar state machine complexa além de `SCRIPT_READY`.
-   - ❌ NÃO recuperar sessões a partir do banco de dados.
-   - ❌ NÃO alterar a lógica de geração de roteiros, busca no CRM, HeyGen, FFmpeg, Cloudflare R2 ou comandos `CLONE` / `OK` / áudios.
-
----
-
-## 2. Mudanças Arquiteturais Propostas
+Atualmente, o arquivo `video_anuncios_engine.js` acumula seis responsabilidades distintas em um único fluxo de execução no manipulador `handleIncomingMessage`:
 
 ```
-Mensagem WhatsApp (#REF)
-       │
-       ▼
-Validação & Busca CRM (ImobTotal)
-       │
-       ▼
-Geração de Roteiros (3 Ganchos + Corpo)
-       │
-       ├──────────────────────────────────────────────┐
-       ▼                                              ▼
-[Caminho Operacional V1]                    [Caminho Shadow V2]
-activeVideoSessions[sessionKey]             createVideoJob({
-  ├── imovelRef                               ├── property_ref: ref
-  ├── imovelData                              ├── broker_id: brokerId
-  ├── scripts                                 ├── status: 'SCRIPT_READY'
-  ├── waitingAudios: true                     ├── source: 'whatsapp'
-  ├── audiosReceived: []                      ├── script_version: 1
-  └── videoJobId: job.id <─── (vínculo) ──────┤   property_snapshot: imovel
-                                              ├── scripts_snapshot: scripts
-       │                                      └── metadata: { from, to, ... }
-       ▼                                    })  [try/catch - degradação graciosa]
-Envio de Roteiro no WhatsApp
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                       video_anuncios_engine.js                              │
+│                                                                             │
+│  [1. Parser WhatsApp]        Detecta #REF, dígitos ou URL da mensagem      │
+│          │                                                                  │
+│  [2. Socket WhatsApp]        Dispara "🔍 Consultando imóvel..."            │
+│          │                                                                  │
+│  [3. Integração CRM]         fetchImovelData(ref)                           │
+│          │                                                                  │
+│  [4. Inteligência Roteiro]   generateCompleteScripts(imovel)                │
+│          │                                                                  │
+│  [5. Memória de Sessão V1]   activeVideoSessions[sessionKey] = {...}        │
+│          │                                                                  │
+│  [6. Persistência Shadow]    createVideoJob(...) no PostgreSQL             │
+│          │                                                                  │
+│  [7. Renderizador de Texto]  Gera template com emojis, ganchos e regras     │
+│          │                                                                  │
+│  [8. Envio WhatsApp]         client.sendMessage(...) com o roteiro          │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Problemas do Acoplamento Atual:
+1. **Dependência do Protocolo WhatsApp:** A lógica de consultar CRM, calcular parâmetros financeiros (MCMV, parcelas, entrada), gerar ganchos e registrar o Job no PostgreSQL só pode ser disparada através de um evento de mensagem do `whatsapp-web.js`.
+2. **Inviabilidade de Reúso no Painel Web:** Se uma interface web tentar criar um job de vídeo hoje, precisaria ou duplicar o código de busca/roteiro/banco ou forjar um objeto falso de mensagem do WhatsApp (`msg.from`, `msg.body`).
+3. **Mistura de Camadas:** A camada de transporte (WhatsApp), a camada de domínio (imóvel + roteirização) e a camada de persistência (PostgreSQL + memória) residem na mesma função.
+
+---
+
+## 2. A Menor Extração Possível (Design da Fase 1C)
+
+A menor extração segura, que não quebra a V1 e não introduz complexidade prematura, consiste em extrair um **Job Core Service** em um módulo dedicado:
+
+📁 **`video_engine/job_service.js`**
+
+Este serviço encapsula exclusivamente a lógica de domínio:
+* Recebe: `{ property_ref, broker_id, source, metadata }`
+* Executa:
+  1. Busca dados do imóvel no CRM (`fetchImovelData`);
+  2. Gera roteiros inteligentes (`generateCompleteScripts`);
+  3. Cria registro persistente no PostgreSQL (`createVideoJob`) em modo resiliente (não-bloqueante);
+* Retorna: objeto de domínio unificado `{ success, job, imovel, scripts, error }`.
+
+### O que o Job Core NÃO sabe:
+* NÃO sabe o que é WhatsApp, socket ou `client.sendMessage`;
+* NÃO sabe como formatar texto de chat nem quais emojis usar;
+* NÃO gerencia `activeVideoSessions` (que permanece no adaptador WhatsApp da V1).
+
+---
+
+## 3. Visão da Arquitetura Proposta (Antes vs Depois)
+
+### Fluxo Antes (Fase 1B):
+```
+WhatsApp Event (#REF) ──> video_anuncios_engine.js
+                              ├── fetch CRM
+                              ├── generate scripts
+                              ├── activeVideoSessions = {...}
+                              ├── createVideoJob (PostgreSQL)
+                              └── client.sendMessage (WhatsApp)
+```
+
+### Fluxo Depois (Fase 1C):
+```
+[Canal WhatsApp]                   [Futuro: Painel Web]          [Futuro: Testes / CLI]
+video_anuncios_engine.js              POST /api/jobs                    node test.js
+       │                                    │                                │
+       └──────────────────────────┬─────────┴────────────────────────────────┘
+                                  ▼
+                    ┌───────────────────────────┐
+                    │ video_engine/job_service  │
+                    │                           │
+                    │ • fetchImovelData         │
+                    │ • generateCompleteScripts │
+                    │ • createVideoJob (DB)     │
+                    └─────────────┬─────────────┘
+                                  ▼
+                        Retorno de Domínio:
+                    { success, job, imovel, scripts }
+                                  │
+       ┌──────────────────────────┴──────────────────────────┐
+       ▼                                                     ▼
+[Adaptador WhatsApp V1]                             [Adaptador Web V2]
+├── activeVideoSessions = {...}                     └── Retorna JSON HTTP
+├── Monta template de texto (emojis)
+└── client.sendMessage
 ```
 
 ---
 
-## 3. Especificação dos Componentes e Arquivos
+## 4. Avaliação de Escopo: Módulo Interno vs HTTP API
 
-### A. Módulo de Banco (`video_engine/db.js`)
-- **Ajuste na validação de `createVideoJob(data)`**:
-  - Validar obrigatoriedade estrita de `data.broker_id`.
-  - Lançar erro: `if (!data.broker_id) throw new Error('[DB] broker_id é obrigatório para criar um video_job');`
-  - Remover a expressão `data.broker_id || 'marcel_teste'` na lista de parâmetros da query SQL.
-
-### B. Motor de Vídeo (`video_anuncios_engine.js`)
-- Importar `createVideoJob` do módulo `./video_engine/db`.
-- No manipulador de detecção de código de imóvel (após buscar dados no CRM e gerar roteiros):
-  1. Instanciar `activeVideoSessions[sessionKey]` com o payload padrão da V1.
-  2. Executar bloco de persistência paralela:
-     ```javascript
-     try {
-       const job = await createVideoJob({
-         property_ref: ref,
-         broker_id: brokerId,
-         status: 'SCRIPT_READY',
-         source: 'whatsapp',
-         script_version: 1,
-         property_snapshot: imovel,
-         scripts_snapshot: scripts,
-         metadata: {
-           session_key: sessionKey,
-           from: msg.from,
-           to: msg.to,
-           channel: 'whatsapp_self_chat'
-         }
-       });
-       session.videoJobId = job.id;
-       console.log('[VIDEO_ENGINE] Shadow Job persistido:', job.id);
-     } catch (err) {
-       console.error('[VIDEO_ENGINE ERROR] Falha ao persistir shadow job no PostgreSQL:', err.message);
-       // Não relança o erro: o fluxo V1 segue intacto
-     }
-     ```
-  3. Enviar mensagem de resposta com os roteiros no WhatsApp normalmente.
+> [!TIP]
+> **Recomendação de Engenharia:** Na Fase 1C, devemos criar **somente o módulo interno de serviço (`video_engine/job_service.js`)** e conectar o fluxo atual do WhatsApp nele.
+>
+> A criação de endpoints HTTP (`POST /api/v2/jobs`) e interfaces visuais (painel) deve ser postergada para fases seguintes (ex: Fase 1D ou Fase 2).  
+> **Motivo:** Isso mantém a Fase 1C focada exclusivamente na pureza do domínio e no desacoplamento, com risco zero de regressão em produção.
 
 ---
 
-## 4. Plano de Verificação e Homologação
+## 5. Arquivos a Criar e Modificar
 
-A execução deste plano seguirá 4 testes rigorosos e controlados:
+### 1. [NOVO] `video_engine/job_service.js`
+* Exporta a função principal:
+  ```javascript
+  async function initializeVideoJob({ property_ref, broker_id, source = 'system', metadata = {} })
+  ```
+* Contém (ou importa) `fetchImovelData` e `generateCompleteScripts`.
+* Invoca `createVideoJob` de `video_engine/db.js` com captura graciosa de erros.
+* Retorna o resultado puro da operação.
 
-### Teste 1: Validação Unitária de `broker_id` em `db.js`
-- Executar chamada a `createVideoJob` omitindo `broker_id`.
-- Comprovar que a função rejeita a operação com erro claro e não aplica nenhum valor padrão.
-
-### Teste 2: Fluxo Real Controlado (Cenário Nominal)
-- Simular o recebimento de mensagem com referência real (`#1639`) e `brokerId = 'marcel_teste'`.
-- Validar:
-  1. Imóvel consultado na API ImobTotal.
-  2. Roteiro gerado e retornado ao WhatsApp.
-  3. Sessão em memória (`activeVideoSessions['marcel']`) criada.
-  4. Registro inserido na tabela `video_jobs` com:
-     - `property_ref = '1639'`
-     - `broker_id = 'marcel_teste'`
-     - `status = 'SCRIPT_READY'`
-     - `source = 'whatsapp'`
-     - `property_snapshot` idêntico aos dados do imóvel.
-     - `scripts_snapshot` idêntico aos roteiros gerados.
-  5. `session.videoJobId` preenchido exatamente com o UUID retornado pelo PostgreSQL.
-  6. Consulta SQL direta pelo UUID validando integridade de todos os campos.
-
-### Teste 3: Teste de Degradação Graciosa (Falha Simulada do PostgreSQL)
-- Parar temporariamente o serviço PostgreSQL (`systemctl stop postgresql`) em ambiente controlado.
-- Disparar o comando com referência de imóvel.
-- Validar:
-  1. A tentativa de criação do Job gera log explícito de erro (`[VIDEO_ENGINE ERROR]`).
-  2. A sessão `activeVideoSessions` é criada normalmente (com `videoJobId = undefined`).
-  3. A mensagem com os roteiros é enviada ao WhatsApp sem qualquer falha ou travamento.
-- Restaurar imediatamente o banco de dados (`systemctl start postgresql`).
-- Confirmar que o serviço PostgreSQL voltou ao estado `active`.
-
-### Teste 4: Verificação do Processo PM2
-- Verificar saúde do processo `bali-gestor` no PM2 (`pm2 status`, `pm2 logs`).
-- Confirmar que o socket do WhatsApp permaneceu online durante todo o processo.
+### 2. [MODIFICAR] `video_anuncios_engine.js`
+* Deixa de conter a lógica duplicada de criação de job e busca direta no manipulador `#REF`.
+* Importa `initializeVideoJob` de `./video_engine/job_service`.
+* No recebimento de `#REF`:
+  1. Chama `const result = await initializeVideoJob({ property_ref: ref, broker_id: canonicalBrokerId, source: 'whatsapp', metadata: { from, to, session_key: sessionKey } })`;
+  2. Se `!result.success`: envia mensagem de erro ao WhatsApp ("Imóvel não encontrado").
+  3. Se `result.success`:
+     - Armazena na memória operacional:
+       ```javascript
+       activeVideoSessions[sessionKey] = {
+         imovelRef: ref,
+         imovelData: result.imovel,
+         scripts: result.scripts,
+         waitingAudios: true,
+         audiosReceived: [],
+         videoJobId: result.job ? result.job.id : null
+       };
+       ```
+     - Formata a mensagem com os roteiros e envia via `client.sendMessage`.
 
 ---
 
-## 5. Entregáveis e Documentação da Fase 1B
+## 6. O Que Permanece Rigorosamente Intocado
 
-Ao finalizar a execução (após aprovação prévia):
-1. Criação do changelog detalhado em:  
-   `docs/video_engine/changelog/PHASE_1B_SHADOW_JOBS.md`
-2. Atualização do documento de arquitetura e status em:  
-   `CURRENT_STATE.md`
-3. Commit e push para o branch `main` no GitHub.
-4. Exibição do relatório final com UUIDs dos testes, diff de alterações e resumo pronto para compartilhamento com o ChatGPT.
+Nesta fase, continuam **100% inalterados**:
+* Fluxo de áudios reais (1, 2, 3 e 4);
+* Comando `CLONE` e modo piloto;
+* Integração com HeyGen (geração de vídeo e polling);
+* Renderização e concatenação com FFmpeg;
+* Upload para Cloudflare R2;
+* Entrega de vídeos finais no WhatsApp;
+* `activeVideoSessions` como fonte operacional da V1.
+
+---
+
+## 7. Riscos e Medidas de Mitigação
+
+| Risco Identificado | Impacto | Mitigação Arquitetural |
+| :--- | :--- | :--- |
+| **Regressão na formatação de roteiro do WhatsApp** | Médio | Manter a função de formatação de mensagens inteiramente dentro do adaptador WhatsApp, sem alterar uma única linha do template de texto. |
+| **Falha de rede com ImobTotal** | Baixo | Preservar intacto o fallback existente para a base local em cache (`banco_imoveis_carteira.json`). |
+| **Falha no PostgreSQL interromper fluxo** | Alto | O `job_service` absorve o erro do banco no `try/catch` e retorna `{ success: true, job: null, imovel, scripts }`, garantindo que a V1 continue operando normalmente. |
+
+---
+
+## 8. Plano de Testes da Fase 1C (Quando Aprovada)
+
+1. **Teste Unitário Isolado do Core (`job_service`):**
+   - Invocar `initializeVideoJob` diretamente via script Node.js sem passar por cliente WhatsApp.
+   - Validar retorno `{ success: true, job, imovel, scripts }` com dados consistentes e persistência no PostgreSQL.
+2. **Teste Integrado via WhatsApp:**
+   - Enviar `#1639` pelo fluxo de homologação.
+   - Validar que o adaptador WhatsApp consome o `job_service`, preenche `activeVideoSessions` com `videoJobId` e entrega o roteiro no chat sem nenhuma divergência visual ou funcional.
+3. **Teste de Degradação do Core:**
+   - Validar que `job_service` com banco offline retorna `job: null` com `imovel` e `scripts` íntegros, permitindo entrega normal no WhatsApp.
+
+---
+
+## 9. Limites Explícitos da Fase 1C
+
+* ❌ NÃO criar endpoints Express/HTTP ainda.
+* ❌ NÃO criar tela de frontend / painel web ainda.
+* ❌ NÃO criar workers de renderização em background.
+* ❌ NÃO criar filas nem mensageria assíncrona.
+* ❌ NÃO migrar a máquina de estados de `CLONE` / áudios para o banco.
+* ❌ NÃO alterar a V1 de produção.
