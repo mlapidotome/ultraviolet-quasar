@@ -61,7 +61,7 @@ Stress-test of Model G (`LOW_NUMBER_WEIGHT`) across 8 corruption regimes (Develo
 | **`NUMBER_PARITY_FLIPPED`** | 72.78% | 81.68% | +29.25% | 61.98% | 69.80% | +20.95% | **0** |
 | **`NUMBER_MISSING`** | 43.53% | 69.22% | 0.00% | 41.03% | 66.00% | 0.00% | **0** |
 
-*Result: Under every corruption mode, Model G never underperforms Model F and never discards the true target parcel.*
+*Result: Model G generally degrades toward the Model F baseline under severe number corruption. A small negative Top5 degradation was observed for the 51–100 offset regime (39.86% vs 41.03%), while TRUE_TARGET_DISCARDED_BY_NUMBER_RULE remained zero.*
 
 ---
 
