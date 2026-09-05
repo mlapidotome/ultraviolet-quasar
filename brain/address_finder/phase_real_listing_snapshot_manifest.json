@@ -1,0 +1,336 @@
+{
+  "generated_at": "2026-09-05T19:59:32Z",
+  "schema_version": "1.0",
+  "snapshots": [
+    {
+      "captured_at": "2026-09-05T19:59:14Z",
+      "files": [
+        {
+          "byte_size": 357078,
+          "file": "listing.html",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/26230879/listing.html",
+          "sha256": "da9bb37b632e524dd5c979134f97f90958281af8ff18443635e0756f73ac8fb2"
+        },
+        {
+          "byte_size": 2444,
+          "file": "public_clues.json",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/26230879/public_clues.json",
+          "sha256": "139317bdc4dffe6c4bb8b464246e9d8b023817ae1b459bea3a8fa8fea3121a92"
+        },
+        {
+          "byte_size": 313,
+          "file": "snapshot_metadata.json",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/26230879/snapshot_metadata.json",
+          "sha256": "db7cf73e1dc9d539f7dd75a115977341a0d7b9f27ff8ae3f0ad21585d97c8235"
+        },
+        {
+          "byte_size": 113,
+          "file": "source_url.txt",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/26230879/source_url.txt",
+          "sha256": "7a84d8dbd5367110e7e6f81c90b03c89f99a06a2034e923c3eed5ccf2ae68a8c"
+        }
+      ],
+      "listing_id": "26230879",
+      "property_type": "sobrado",
+      "snapshot_ok": true,
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-2-quartos-sp-taubate-jardim-gurilandia-RS649000/id-26230879/"
+    },
+    {
+      "captured_at": "2026-09-05T19:59:17Z",
+      "files": [
+        {
+          "byte_size": 506005,
+          "file": "listing.html",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/30744879/listing.html",
+          "sha256": "825e7c6904b6b47f2c1be9f9a70d7074c5bee8966db445da5b1276e5c8b63f6a"
+        },
+        {
+          "byte_size": 3133,
+          "file": "public_clues.json",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/30744879/public_clues.json",
+          "sha256": "88abee487900c471b06242a6babf67697db51567c1c63108d4c101d9d30de9d5"
+        },
+        {
+          "byte_size": 336,
+          "file": "snapshot_metadata.json",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/30744879/snapshot_metadata.json",
+          "sha256": "f8e80c91bec3dc664b948eb8ea827ad33f2a8479c855e443d87a28f5b1341f99"
+        },
+        {
+          "byte_size": 136,
+          "file": "source_url.txt",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/30744879/source_url.txt",
+          "sha256": "9f9276b676a91991e101842c8673a8c6ad4a7cf004f1dede4a2afc8fae3995e4"
+        }
+      ],
+      "listing_id": "30744879",
+      "property_type": "sobrado",
+      "snapshot_ok": true,
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-2-quartos-com-garagem-sp-taubate-jardim-continental-iii-125m2-RS320000/id-30744879/"
+    },
+    {
+      "captured_at": "2026-09-05T19:59:18Z",
+      "files": [
+        {
+          "byte_size": 402752,
+          "file": "listing.html",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/32738189/listing.html",
+          "sha256": "cda750b97571f3f87c1a4c5d7c0a1437be84b14d1975421e3d4d2f3abca7a81a"
+        },
+        {
+          "byte_size": 2652,
+          "file": "public_clues.json",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/32738189/public_clues.json",
+          "sha256": "762adbb80a1242b650834ec7ca6e3237ad19ad1f76c4ef71b22c90703e2b7d6a"
+        },
+        {
+          "byte_size": 334,
+          "file": "snapshot_metadata.json",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/32738189/snapshot_metadata.json",
+          "sha256": "3d1819c34221c7884ebab9a4d9dc7c3b1cf6cfd74b191aff376d45bb3fd8afcd"
+        },
+        {
+          "byte_size": 134,
+          "file": "source_url.txt",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/32738189/source_url.txt",
+          "sha256": "71f7e437902f5ea1322126f9880344c0d2044ff04ff48c888f5ddbd4e05ee492"
+        }
+      ],
+      "listing_id": "32738189",
+      "property_type": "sobrado",
+      "snapshot_ok": true,
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-4-quartos-com-garagem-sp-taubate-jardim-santa-tereza-300m2-RS1500000/id-32738189/"
+    },
+    {
+      "captured_at": "2026-09-05T19:59:20Z",
+      "files": [
+        {
+          "byte_size": 386306,
+          "file": "listing.html",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/37154734/listing.html",
+          "sha256": "0cd17e6d65dca2b4101e873bf0644c367277ae745bc709bf4488c2c3cd9e87e2"
+        },
+        {
+          "byte_size": 3043,
+          "file": "public_clues.json",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/37154734/public_clues.json",
+          "sha256": "1a0458a365347fea43cfeac2ea4ff0a1667fd304ec87db1d911114fe2fb80ca3"
+        },
+        {
+          "byte_size": 328,
+          "file": "snapshot_metadata.json",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/37154734/snapshot_metadata.json",
+          "sha256": "9726cfc30c6862102aa6e0766943eae3ada867f73d1eb20cc2fdadf424ebadcd"
+        },
+        {
+          "byte_size": 128,
+          "file": "source_url.txt",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/37154734/source_url.txt",
+          "sha256": "be29266eb148b6319a24f7166eaf7f1ee9c5969e39cf58e043f86c974c5ca8c3"
+        }
+      ],
+      "listing_id": "37154734",
+      "property_type": "sobrado",
+      "snapshot_ok": true,
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-2-quartos-com-garagem-sp-taubate-jardim-eulalia-360m2-RS380000/id-37154734/"
+    },
+    {
+      "captured_at": "2026-09-05T19:59:22Z",
+      "files": [
+        {
+          "byte_size": 361605,
+          "file": "listing.html",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/38732282/listing.html",
+          "sha256": "d071d56bbd63a19552a8c32df3eaf003e54678063d33273ad4f42f101c9ceed0"
+        },
+        {
+          "byte_size": 2993,
+          "file": "public_clues.json",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/38732282/public_clues.json",
+          "sha256": "211810aa4913ad2384386e412c125611655be49470e175120d203b98ace4a9d9"
+        },
+        {
+          "byte_size": 329,
+          "file": "snapshot_metadata.json",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/38732282/snapshot_metadata.json",
+          "sha256": "8387663e6ddf1f33e426ab3c977c88dbf62bb7123813140715bda438c098aa1f"
+        },
+        {
+          "byte_size": 129,
+          "file": "source_url.txt",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/38732282/source_url.txt",
+          "sha256": "f5704c878722b3239569aead7ee30c41515ec4a33ddef466b56ee66922615ed7"
+        }
+      ],
+      "listing_id": "38732282",
+      "property_type": "sobrado",
+      "snapshot_ok": true,
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-3-quartos-com-garagem-sp-taubate-jardim-mourisco-248m2-RS520000/id-38732282/"
+    },
+    {
+      "captured_at": "2026-09-05T19:59:24Z",
+      "files": [
+        {
+          "byte_size": 368363,
+          "file": "listing.html",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/38813993/listing.html",
+          "sha256": "1ae38084bdb74cc258c9a0160b2f94d8d1d485452c36829aef28d417a1a22ed3"
+        },
+        {
+          "byte_size": 3042,
+          "file": "public_clues.json",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/38813993/public_clues.json",
+          "sha256": "eaa8426df247e0a711b764b7710d96d2075fc971c3125530f2c7f2915ea1363c"
+        },
+        {
+          "byte_size": 328,
+          "file": "snapshot_metadata.json",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/38813993/snapshot_metadata.json",
+          "sha256": "6f14165a42a7ad509a1954abe57fe588c6f9706df5dc9ca388dcd61af847d5ee"
+        },
+        {
+          "byte_size": 128,
+          "file": "source_url.txt",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/38813993/source_url.txt",
+          "sha256": "d2089f2d9543c188787319530cfa2b3d94e1d4518ca650e6616dc59542ccf670"
+        }
+      ],
+      "listing_id": "38813993",
+      "property_type": "sobrado",
+      "snapshot_ok": true,
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-4-quartos-com-garagem-sp-taubate-campos-eliseos-417m2-RS890000/id-38813993/"
+    },
+    {
+      "captured_at": "2026-09-05T19:59:26Z",
+      "files": [
+        {
+          "byte_size": 518866,
+          "file": "listing.html",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/40591449/listing.html",
+          "sha256": "4ec758b7fc1dbe29bce2db2fffed390792416cc4cc8affb1aa550e938229879d"
+        },
+        {
+          "byte_size": 3350,
+          "file": "public_clues.json",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/40591449/public_clues.json",
+          "sha256": "449da8c3946b8241f3c269695d8b55f0f6708c4e594ac76ee316740703cdb909"
+        },
+        {
+          "byte_size": 320,
+          "file": "snapshot_metadata.json",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/40591449/snapshot_metadata.json",
+          "sha256": "d1ee8aec8e3c1f9950b4d5d29626d19fe86f6761c7f9c3503d305f0c5677449c"
+        },
+        {
+          "byte_size": 120,
+          "file": "source_url.txt",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/40591449/source_url.txt",
+          "sha256": "2e5e1d0ded96b92ca24172b75f042a9c339ed2555304c82b4c3e8518e0624160"
+        }
+      ],
+      "listing_id": "40591449",
+      "property_type": "sobrado",
+      "snapshot_ok": true,
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-3-quartos-com-garagem-sp-taubate-jardim-oasis-RS990000/id-40591449/"
+    },
+    {
+      "captured_at": "2026-09-05T19:59:28Z",
+      "files": [
+        {
+          "byte_size": 371650,
+          "file": "listing.html",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/40712114/listing.html",
+          "sha256": "b14e26385e281b610bec8af86266bdb6f9062e07ab51c73caa18d84d9b6714c0"
+        },
+        {
+          "byte_size": 2900,
+          "file": "public_clues.json",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/40712114/public_clues.json",
+          "sha256": "94a1ef1457bdd8d2121e8ecd37d380db6bda5f0527d19db13f00404c8524ccb0"
+        },
+        {
+          "byte_size": 331,
+          "file": "snapshot_metadata.json",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/40712114/snapshot_metadata.json",
+          "sha256": "4981868710749ff3eb760e0fdcedd822dfc4e9bca19b952d07b32b678b632274"
+        },
+        {
+          "byte_size": 131,
+          "file": "source_url.txt",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/40712114/source_url.txt",
+          "sha256": "82cc40f0759d57e8193295d6ce271d49ddde3745b4236f8f73b901d4489cf287"
+        }
+      ],
+      "listing_id": "40712114",
+      "property_type": "sobrado",
+      "snapshot_ok": true,
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-4-quartos-com-garagem-sp-taubate-vila-santa-isabel-283m2-RS690000/id-40712114/"
+    },
+    {
+      "captured_at": "2026-09-05T19:59:30Z",
+      "files": [
+        {
+          "byte_size": 511297,
+          "file": "listing.html",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/42910754/listing.html",
+          "sha256": "f20b147abcb4436e16e97b5e560b2a188b44ecac3e7d16d999296e7a7387c97f"
+        },
+        {
+          "byte_size": 3120,
+          "file": "public_clues.json",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/42910754/public_clues.json",
+          "sha256": "6bcc14aa53bd1779f8186114484adcbcf2996b9af1c465b22f06926c3eb6a840"
+        },
+        {
+          "byte_size": 326,
+          "file": "snapshot_metadata.json",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/42910754/snapshot_metadata.json",
+          "sha256": "382b3e8b34f3e29105c8f82ce638ef34e06267366febc37ca1da858aa4dcc5f6"
+        },
+        {
+          "byte_size": 126,
+          "file": "source_url.txt",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/42910754/source_url.txt",
+          "sha256": "4674fb202dd6fd83145ea5780e5602eade977df089c460825523c737ae22e79e"
+        }
+      ],
+      "listing_id": "42910754",
+      "property_type": "sobrado",
+      "snapshot_ok": true,
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-2-quartos-com-garagem-sp-taubate-jardim-oasis-150m2-RS360000/id-42910754/"
+    },
+    {
+      "captured_at": "2026-09-05T19:59:32Z",
+      "files": [
+        {
+          "byte_size": 365068,
+          "file": "listing.html",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/44628622/listing.html",
+          "sha256": "fb48f2c44d03d913d8c4de648b767f70ab5f02daf24ebb4c22c7ee6d84c37452"
+        },
+        {
+          "byte_size": 3245,
+          "file": "public_clues.json",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/44628622/public_clues.json",
+          "sha256": "fadecf936884149b64c864d2193d7dc21c2cb45076a5fc5b45d3539c09615f25"
+        },
+        {
+          "byte_size": 336,
+          "file": "snapshot_metadata.json",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/44628622/snapshot_metadata.json",
+          "sha256": "4c0bad034741df1ecd29f64f2c05037a08300222e80b707848449cf84b1bf114"
+        },
+        {
+          "byte_size": 136,
+          "file": "source_url.txt",
+          "relative_path": "data/address_finder_real_listing_pilot/snapshots/44628622/source_url.txt",
+          "sha256": "3ec5f194c66af29451ed45f08e14aa2625f18229218dd5dfc7160d8e0d990104"
+        }
+      ],
+      "listing_id": "44628622",
+      "property_type": "sobrado",
+      "snapshot_ok": true,
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-2-quartos-com-garagem-sp-taubate-jardim-continental-iii-125m2-RS340000/id-44628622/"
+    }
+  ]
+}
