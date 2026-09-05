@@ -14,6 +14,7 @@ const jobService = require('./job_service');
 const pilotService = require('./pilot_service');
 const { panelAuthMiddleware } = require('./panel_auth');
 const { getPool } = require('./db');
+const composerService = require('./composer_service');
 
 const UUID_REGEX = /^[0-9a-fA-F-]{36}$/;
 
@@ -683,4 +684,206 @@ router.get('/video-jobs/:id', requireBearerAuth, async (req, res) => {
   }
 });
 
+
+/**
+ * POST /api/v2/panel/video-jobs/:id/compose-shadow/:index
+ * Rota Autenticada para Execução do Shadow Composer (Fase 3B)
+ */
+router.post('/panel/video-jobs/:id/compose-shadow/:index', panelAuthMiddleware, async (req, res) => {
+  const { id, index } = req.params;
+  const numIndex = parseInt(index, 10);
+  if (![1, 2, 3].includes(numIndex)) {
+    return res.status(400).json({
+      success: false,
+      error: 'INVALID_INDEX',
+      message: 'Índice deve ser 1, 2 ou 3'
+    });
+  }
+
+  try {
+    const pool = getPool();
+    const result = await pool.query('SELECT * FROM video_jobs WHERE id = $1', [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'JOB_NOT_FOUND',
+        message: 'Job não encontrado'
+      });
+    }
+
+    const job = result.rows[0];
+    const blueprints = job.creative_blueprints || [];
+    const blueprint = blueprints.find(bp => bp.creative_id === `crv_${id.slice(0, 8)}_var${numIndex}`) || blueprints[numIndex - 1];
+
+    if (!blueprint) {
+      return res.status(404).json({
+        success: false,
+        error: 'BLUEPRINT_NOT_FOUND',
+        message: `Blueprint da variante ${numIndex} não encontrado`
+      });
+    }
+
+    const composeResult = await composerService.composeCreative({
+      jobId: id,
+      blueprint,
+      isShadow: true
+    });
+
+    return res.status(200).json({
+      success: true,
+      result: composeResult
+    });
+  } catch (err) {
+    console.error('[API_V2 ERROR] Erro no compose-shadow:', err.message);
+    const statusCode = err.statusCode || (err.message.includes('VALIDATION') ? 400 : 500);
+    return res.status(statusCode).json({
+      success: false,
+      error: 'COMPOSER_ERROR',
+      message: err.message
+    });
+  }
+});
+
+/**
+ * GET /api/v2/panel/video-jobs/:id/compare-shadow/:index
+ * Comparação Semântica entre vídeo legado e vídeo do Shadow Composer (Fase 3B)
+ */
+router.get('/panel/video-jobs/:id/compare-shadow/:index', panelAuthMiddleware, async (req, res) => {
+  const { id, index } = req.params;
+  const numIndex = parseInt(index, 10);
+  if (![1, 2, 3].includes(numIndex)) {
+    return res.status(400).json({
+      success: false,
+      error: 'INVALID_INDEX',
+      message: 'Índice deve ser 1, 2 ou 3'
+    });
+  }
+
+  try {
+    const legacyFilename = numIndex === 1 ? 'pilot.mp4' : `video_${numIndex}.mp4`;
+    const legacyPath = path.resolve(__dirname, '..', 'outputs', 'jobs', id, legacyFilename);
+
+    const pool = getPool();
+    const shadowRes = await pool.query(
+      `SELECT * FROM video_assets 
+       WHERE job_id = $1 AND asset_type = 'shadow_creative' AND status = 'ready'
+       AND metadata->>'creative_id' LIKE $2
+       ORDER BY updated_at DESC LIMIT 1`,
+      [id, `%var${numIndex}%`]
+    );
+
+    if (shadowRes.rows.length === 0 || !shadowRes.rows[0].storage_path) {
+      return res.status(404).json({
+        success: false,
+        error: 'SHADOW_NOT_FOUND',
+        message: 'Asset shadow não encontrado ou não está pronto'
+      });
+    }
+
+    const shadowPath = shadowRes.rows[0].storage_path;
+    const comparison = await composerService.compareLegacyVsComposer(legacyPath, shadowPath);
+
+    return res.json({
+      success: true,
+      comparison,
+      shadow_asset: shadowRes.rows[0]
+    });
+  } catch (err) {
+    console.error('[API_V2 ERROR] Erro ao comparar shadow:', err.message);
+    return res.status(500).json({
+      success: false,
+      error: 'COMPARE_ERROR',
+      message: err.message
+    });
+  }
+});
+
+/**
+ * GET /api/v2/panel/video-jobs/:id/shadow-video/:index
+ * Streaming autenticado do vídeo gerado pelo Shadow Composer (Fase 3B)
+ */
+router.get('/panel/video-jobs/:id/shadow-video/:index', panelAuthMiddleware, async (req, res) => {
+  const { id, index } = req.params;
+  const numIndex = parseInt(index, 10);
+  if (![1, 2, 3].includes(numIndex)) {
+    return res.status(400).json({
+      success: false,
+      error: 'INVALID_INDEX',
+      message: 'Índice deve ser 1, 2 ou 3'
+    });
+  }
+
+  try {
+    const pool = getPool();
+    const shadowRes = await pool.query(
+      `SELECT * FROM video_assets 
+       WHERE job_id = $1 AND asset_type = 'shadow_creative' AND status = 'ready'
+       AND metadata->>'creative_id' LIKE $2
+       ORDER BY updated_at DESC LIMIT 1`,
+      [id, `%var${numIndex}%`]
+    );
+
+    if (shadowRes.rows.length === 0 || !shadowRes.rows[0].storage_path) {
+      return res.status(404).json({
+        success: false,
+        error: 'SHADOW_NOT_FOUND',
+        message: 'Vídeo shadow não encontrado ou não está pronto'
+      });
+    }
+
+    const filePath = shadowRes.rows[0].storage_path;
+    const expectedJobDir = path.resolve(__dirname, '..', 'outputs', 'jobs', id);
+    if (!filePath.startsWith(expectedJobDir)) {
+      return res.status(403).json({
+        success: false,
+        error: 'FORBIDDEN',
+        message: 'Acesso não autorizado'
+      });
+    }
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({
+        success: false,
+        error: 'FILE_NOT_FOUND',
+        message: 'Arquivo físico do shadow não encontrado'
+      });
+    }
+
+    const stat = fs.statSync(filePath);
+    const fileSize = stat.size;
+    const range = req.headers.range;
+
+    if (range) {
+      const parts = range.replace(/bytes=/, '').split('-');
+      const start = parseInt(parts[0], 10);
+      const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+      const chunksize = end - start + 1;
+      const file = fs.createReadStream(filePath, { start, end });
+      const head = {
+        'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+        'Accept-Ranges': 'bytes',
+        'Content-Length': chunksize,
+        'Content-Type': 'video/mp4',
+      };
+      res.writeHead(206, head);
+      file.pipe(res);
+    } else {
+      const head = {
+        'Content-Length': fileSize,
+        'Content-Type': 'video/mp4',
+      };
+      res.writeHead(200, head);
+      fs.createReadStream(filePath).pipe(res);
+    }
+  } catch (err) {
+    console.error('[API_V2 ERROR] Erro ao servir shadow video:', err.message);
+    return res.status(500).json({
+      success: false,
+      error: 'STREAMING_ERROR',
+      message: 'Erro ao servir vídeo shadow'
+    });
+  }
+});
+
 module.exports = router;
+
