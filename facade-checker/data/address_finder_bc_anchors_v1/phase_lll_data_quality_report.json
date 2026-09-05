@@ -1,0 +1,17 @@
+{
+  "raw_source_file": "phase_lll_raw_frozen_cohort_719.xlsx",
+  "raw_source_sha256": "079e948dfdffc8c2f84f3a911fa6c31b44f11efae4ac7ccedb9323fb29a04169",
+  "total_raw_records": 719,
+  "valid_bc_count": 719,
+  "unique_bcs": 719,
+  "unique_dsqlll_spatial_parcels": 712,
+  "condo_sublot_collapsed_count": 7,
+  "unique_dsq_count": 37,
+  "unique_normalized_streets": 182,
+  "numbered_parcels_count": 652,
+  "unnumbered_parcels_count": 60,
+  "property_type_distribution": {
+    "Casa / Sobrado": 640,
+    "Terreno Vazio": 72
+  }
+}

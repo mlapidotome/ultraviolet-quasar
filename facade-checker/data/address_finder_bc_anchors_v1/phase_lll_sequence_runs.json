@@ -1,0 +1,1655 @@
+{
+  "4.4.120": {
+    "parcel_count": 40,
+    "sequence": [
+      {
+        "lll": 1,
+        "street": "LOTE EP 1 50956 REQUERENTE",
+        "house_number": 1,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 2,
+        "street": "LOTE EP 2 50957 REQUERENTE",
+        "house_number": 2,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 3,
+        "street": "LOTE EP 3 50958 REQUERENTE",
+        "house_number": 3,
+        "property_type": "Terreno Vazio"
+      },
+      {
+        "lll": 4,
+        "street": "LOTE E4A 50959 REQUERENTE",
+        "house_number": 50959,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 5,
+        "street": "LOTE E5 50960 REQUERENTE",
+        "house_number": 50960,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 6,
+        "street": "LOTE E6 50961 REQUERENTE",
+        "house_number": 50961,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 7,
+        "street": "LOTE E7 50962 REQUERENTE",
+        "house_number": 50962,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 8,
+        "street": "LOTE EP 8 50963 REQUERENTE",
+        "house_number": 8,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 9,
+        "street": "LIRIO",
+        "house_number": 32,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 10,
+        "street": "LIRIO",
+        "house_number": 46,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 11,
+        "street": "TULIPA",
+        "house_number": null,
+        "property_type": "Terreno Vazio"
+      },
+      {
+        "lll": 12,
+        "street": "TULIPA",
+        "house_number": null,
+        "property_type": "Terreno Vazio"
+      },
+      {
+        "lll": 13,
+        "street": "TULIPA",
+        "house_number": null,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 14,
+        "street": "TULIPA",
+        "house_number": 600,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 15,
+        "street": "TULIPA",
+        "house_number": 544,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 16,
+        "street": "TULIPA",
+        "house_number": 512,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 17,
+        "street": "TULIPA",
+        "house_number": 502,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 18,
+        "street": "TULIPA",
+        "house_number": 494,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 19,
+        "street": "TULIPA",
+        "house_number": 480,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 20,
+        "street": "TULIPA",
+        "house_number": 450,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 21,
+        "street": "TULIPA",
+        "house_number": 440,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 22,
+        "street": "TULIPA",
+        "house_number": 430,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 23,
+        "street": "TULIPA",
+        "house_number": 420,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 24,
+        "street": "LIRIO",
+        "house_number": 60,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 25,
+        "street": "LIRIO",
+        "house_number": 74,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 26,
+        "street": "LIRIO",
+        "house_number": 90,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 27,
+        "street": "LOTE E4C 50982 REQUERENTE",
+        "house_number": 50982,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 28,
+        "street": "LOTE E4B 50983 REQUERENTE",
+        "house_number": 50983,
+        "property_type": "Terreno Vazio"
+      },
+      {
+        "lll": 29,
+        "street": "LOTE EP 8 50984 REQUERENTE",
+        "house_number": 8,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 30,
+        "street": "TULIPA",
+        "house_number": null,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 31,
+        "street": "LOTE EP 1 50986 REQUERENTE",
+        "house_number": 1,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 32,
+        "street": "LOTE EP 1 50987 REQUERENTE",
+        "house_number": 1,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 33,
+        "street": "LOTE EP 1 50988 REQUERENTE",
+        "house_number": 1,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 34,
+        "street": "LOTE EP 1 50989 REQUERENTE",
+        "house_number": 1,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 35,
+        "street": "LOTE EP 1 50990 REQUERENTE",
+        "house_number": 1,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 36,
+        "street": "TULIPA",
+        "house_number": 592,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 37,
+        "street": "TULIPA",
+        "house_number": null,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 38,
+        "street": "TULIPA",
+        "house_number": 580,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 39,
+        "street": "TULIPA",
+        "house_number": 574,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 40,
+        "street": "TULIPA",
+        "house_number": 568,
+        "property_type": "Casa / Sobrado"
+      }
+    ],
+    "street_transitions_count": 20,
+    "street_transitions": [
+      {
+        "from_lll": 1,
+        "to_lll": 2,
+        "from_street": "LOTE EP 1 50956 REQUERENTE",
+        "to_street": "LOTE EP 2 50957 REQUERENTE"
+      },
+      {
+        "from_lll": 2,
+        "to_lll": 3,
+        "from_street": "LOTE EP 2 50957 REQUERENTE",
+        "to_street": "LOTE EP 3 50958 REQUERENTE"
+      },
+      {
+        "from_lll": 3,
+        "to_lll": 4,
+        "from_street": "LOTE EP 3 50958 REQUERENTE",
+        "to_street": "LOTE E4A 50959 REQUERENTE"
+      },
+      {
+        "from_lll": 4,
+        "to_lll": 5,
+        "from_street": "LOTE E4A 50959 REQUERENTE",
+        "to_street": "LOTE E5 50960 REQUERENTE"
+      },
+      {
+        "from_lll": 5,
+        "to_lll": 6,
+        "from_street": "LOTE E5 50960 REQUERENTE",
+        "to_street": "LOTE E6 50961 REQUERENTE"
+      },
+      {
+        "from_lll": 6,
+        "to_lll": 7,
+        "from_street": "LOTE E6 50961 REQUERENTE",
+        "to_street": "LOTE E7 50962 REQUERENTE"
+      },
+      {
+        "from_lll": 7,
+        "to_lll": 8,
+        "from_street": "LOTE E7 50962 REQUERENTE",
+        "to_street": "LOTE EP 8 50963 REQUERENTE"
+      },
+      {
+        "from_lll": 8,
+        "to_lll": 9,
+        "from_street": "LOTE EP 8 50963 REQUERENTE",
+        "to_street": "LIRIO"
+      },
+      {
+        "from_lll": 10,
+        "to_lll": 11,
+        "from_street": "LIRIO",
+        "to_street": "TULIPA"
+      },
+      {
+        "from_lll": 23,
+        "to_lll": 24,
+        "from_street": "TULIPA",
+        "to_street": "LIRIO"
+      },
+      {
+        "from_lll": 26,
+        "to_lll": 27,
+        "from_street": "LIRIO",
+        "to_street": "LOTE E4C 50982 REQUERENTE"
+      },
+      {
+        "from_lll": 27,
+        "to_lll": 28,
+        "from_street": "LOTE E4C 50982 REQUERENTE",
+        "to_street": "LOTE E4B 50983 REQUERENTE"
+      },
+      {
+        "from_lll": 28,
+        "to_lll": 29,
+        "from_street": "LOTE E4B 50983 REQUERENTE",
+        "to_street": "LOTE EP 8 50984 REQUERENTE"
+      },
+      {
+        "from_lll": 29,
+        "to_lll": 30,
+        "from_street": "LOTE EP 8 50984 REQUERENTE",
+        "to_street": "TULIPA"
+      },
+      {
+        "from_lll": 30,
+        "to_lll": 31,
+        "from_street": "TULIPA",
+        "to_street": "LOTE EP 1 50986 REQUERENTE"
+      },
+      {
+        "from_lll": 31,
+        "to_lll": 32,
+        "from_street": "LOTE EP 1 50986 REQUERENTE",
+        "to_street": "LOTE EP 1 50987 REQUERENTE"
+      },
+      {
+        "from_lll": 32,
+        "to_lll": 33,
+        "from_street": "LOTE EP 1 50987 REQUERENTE",
+        "to_street": "LOTE EP 1 50988 REQUERENTE"
+      },
+      {
+        "from_lll": 33,
+        "to_lll": 34,
+        "from_street": "LOTE EP 1 50988 REQUERENTE",
+        "to_street": "LOTE EP 1 50989 REQUERENTE"
+      },
+      {
+        "from_lll": 34,
+        "to_lll": 35,
+        "from_street": "LOTE EP 1 50989 REQUERENTE",
+        "to_street": "LOTE EP 1 50990 REQUERENTE"
+      },
+      {
+        "from_lll": 35,
+        "to_lll": 36,
+        "from_street": "LOTE EP 1 50990 REQUERENTE",
+        "to_street": "TULIPA"
+      }
+    ],
+    "cadastral_gaps_count": 0,
+    "cadastral_gaps": []
+  },
+  "4.4.213": {
+    "parcel_count": 39,
+    "sequence": [
+      {
+        "lll": 1,
+        "street": "LOTE A01 53411 REQUERENTE",
+        "house_number": 53411,
+        "property_type": "Terreno Vazio"
+      },
+      {
+        "lll": 2,
+        "street": "LOTE A02 53412 REQUERENTE",
+        "house_number": 53412,
+        "property_type": "Terreno Vazio"
+      },
+      {
+        "lll": 3,
+        "street": "LOTE A03 53413 REQUERENTE",
+        "house_number": 53413,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 4,
+        "street": "LOTE A04 53414 REQUERENTE",
+        "house_number": 53414,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 5,
+        "street": "LOTE A05 53415 REQUERENTE",
+        "house_number": 53415,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 6,
+        "street": "LOTE A06 53416 REQUERENTE",
+        "house_number": 53416,
+        "property_type": "Terreno Vazio"
+      },
+      {
+        "lll": 7,
+        "street": "LOTE A07 53417 REQUERENTE",
+        "house_number": 53417,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 8,
+        "street": "LOTE A08 53418 REQUERENTE",
+        "house_number": 53418,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 9,
+        "street": "LOTE A09 53419 REQUERENTE",
+        "house_number": 53419,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 10,
+        "street": "LOTE A10 53420 REQUERENTE",
+        "house_number": 53420,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 11,
+        "street": "LOTE A11 E P 12 53421 REQUERENTE",
+        "house_number": 12,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 13,
+        "street": "LOTE A13 E P 12 53422 REQUERENTE",
+        "house_number": 12,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 14,
+        "street": "LOTE A14 53423 REQUERENTE",
+        "house_number": 53423,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 15,
+        "street": "LOTE A15 53424 REQUERENTE",
+        "house_number": 53424,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 16,
+        "street": "LOTE A16 53425 REQUERENTE",
+        "house_number": 53425,
+        "property_type": "Terreno Vazio"
+      },
+      {
+        "lll": 17,
+        "street": "LOTE A17 53426 REQUERENTE",
+        "house_number": 53426,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 18,
+        "street": "LOTE A18 53427 REQUERENTE",
+        "house_number": 53427,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 19,
+        "street": "LOTE A19 53428 REQUERENTE",
+        "house_number": 53428,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 20,
+        "street": "LOTE A20 53429 REQUERENTE",
+        "house_number": 53429,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 21,
+        "street": "LOTE A21 53430 REQUERENTE",
+        "house_number": 53430,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 22,
+        "street": "LOTE A22 53431 REQUERENTE",
+        "house_number": 53431,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 23,
+        "street": "LOTE A23 53432 REQUERENTE",
+        "house_number": 53432,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 24,
+        "street": "LOTE A24 53433 REQUERENTE",
+        "house_number": 53433,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 25,
+        "street": "LOTE A25 53434 REQUERENTE",
+        "house_number": 53434,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 26,
+        "street": "LOTE A26 53435 REQUERENTE",
+        "house_number": 53435,
+        "property_type": "Terreno Vazio"
+      },
+      {
+        "lll": 27,
+        "street": "LOTE A27 53436 REQUERENTE",
+        "house_number": 53436,
+        "property_type": "Terreno Vazio"
+      },
+      {
+        "lll": 28,
+        "street": "LOTE A28 53437 REQUERENTE",
+        "house_number": 53437,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 29,
+        "street": "LOTE A29 53438 REQUERENTE",
+        "house_number": 53438,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 30,
+        "street": "LOTE A30 53439 REQUERENTE",
+        "house_number": 53439,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 31,
+        "street": "LOTE A31 53440 REQUERENTE",
+        "house_number": 53440,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 32,
+        "street": "LOTE A32 53441 REQUERENTE",
+        "house_number": 53441,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 33,
+        "street": "LOTE A33 53442 REQUERENTE",
+        "house_number": 53442,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 34,
+        "street": "LOTE A34 53443 REQUERENTE",
+        "house_number": 53443,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 35,
+        "street": "LOTE A35 53444 REQUERENTE",
+        "house_number": 53444,
+        "property_type": "Terreno Vazio"
+      },
+      {
+        "lll": 36,
+        "street": "LOTE B36 53445 REQUERENTE",
+        "house_number": 53445,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 37,
+        "street": "LOTE B35 53446 REQUERENTE",
+        "house_number": 53446,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 38,
+        "street": "LOTE B34 53447 REQUERENTE",
+        "house_number": 53447,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 39,
+        "street": "LOTE B33 53448 REQUERENTE",
+        "house_number": 53448,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 40,
+        "street": "LOTE B32 53449 REQUERENTE",
+        "house_number": 53449,
+        "property_type": "Casa / Sobrado"
+      }
+    ],
+    "street_transitions_count": 38,
+    "street_transitions": [
+      {
+        "from_lll": 1,
+        "to_lll": 2,
+        "from_street": "LOTE A01 53411 REQUERENTE",
+        "to_street": "LOTE A02 53412 REQUERENTE"
+      },
+      {
+        "from_lll": 2,
+        "to_lll": 3,
+        "from_street": "LOTE A02 53412 REQUERENTE",
+        "to_street": "LOTE A03 53413 REQUERENTE"
+      },
+      {
+        "from_lll": 3,
+        "to_lll": 4,
+        "from_street": "LOTE A03 53413 REQUERENTE",
+        "to_street": "LOTE A04 53414 REQUERENTE"
+      },
+      {
+        "from_lll": 4,
+        "to_lll": 5,
+        "from_street": "LOTE A04 53414 REQUERENTE",
+        "to_street": "LOTE A05 53415 REQUERENTE"
+      },
+      {
+        "from_lll": 5,
+        "to_lll": 6,
+        "from_street": "LOTE A05 53415 REQUERENTE",
+        "to_street": "LOTE A06 53416 REQUERENTE"
+      },
+      {
+        "from_lll": 6,
+        "to_lll": 7,
+        "from_street": "LOTE A06 53416 REQUERENTE",
+        "to_street": "LOTE A07 53417 REQUERENTE"
+      },
+      {
+        "from_lll": 7,
+        "to_lll": 8,
+        "from_street": "LOTE A07 53417 REQUERENTE",
+        "to_street": "LOTE A08 53418 REQUERENTE"
+      },
+      {
+        "from_lll": 8,
+        "to_lll": 9,
+        "from_street": "LOTE A08 53418 REQUERENTE",
+        "to_street": "LOTE A09 53419 REQUERENTE"
+      },
+      {
+        "from_lll": 9,
+        "to_lll": 10,
+        "from_street": "LOTE A09 53419 REQUERENTE",
+        "to_street": "LOTE A10 53420 REQUERENTE"
+      },
+      {
+        "from_lll": 10,
+        "to_lll": 11,
+        "from_street": "LOTE A10 53420 REQUERENTE",
+        "to_street": "LOTE A11 E P 12 53421 REQUERENTE"
+      },
+      {
+        "from_lll": 11,
+        "to_lll": 13,
+        "from_street": "LOTE A11 E P 12 53421 REQUERENTE",
+        "to_street": "LOTE A13 E P 12 53422 REQUERENTE"
+      },
+      {
+        "from_lll": 13,
+        "to_lll": 14,
+        "from_street": "LOTE A13 E P 12 53422 REQUERENTE",
+        "to_street": "LOTE A14 53423 REQUERENTE"
+      },
+      {
+        "from_lll": 14,
+        "to_lll": 15,
+        "from_street": "LOTE A14 53423 REQUERENTE",
+        "to_street": "LOTE A15 53424 REQUERENTE"
+      },
+      {
+        "from_lll": 15,
+        "to_lll": 16,
+        "from_street": "LOTE A15 53424 REQUERENTE",
+        "to_street": "LOTE A16 53425 REQUERENTE"
+      },
+      {
+        "from_lll": 16,
+        "to_lll": 17,
+        "from_street": "LOTE A16 53425 REQUERENTE",
+        "to_street": "LOTE A17 53426 REQUERENTE"
+      },
+      {
+        "from_lll": 17,
+        "to_lll": 18,
+        "from_street": "LOTE A17 53426 REQUERENTE",
+        "to_street": "LOTE A18 53427 REQUERENTE"
+      },
+      {
+        "from_lll": 18,
+        "to_lll": 19,
+        "from_street": "LOTE A18 53427 REQUERENTE",
+        "to_street": "LOTE A19 53428 REQUERENTE"
+      },
+      {
+        "from_lll": 19,
+        "to_lll": 20,
+        "from_street": "LOTE A19 53428 REQUERENTE",
+        "to_street": "LOTE A20 53429 REQUERENTE"
+      },
+      {
+        "from_lll": 20,
+        "to_lll": 21,
+        "from_street": "LOTE A20 53429 REQUERENTE",
+        "to_street": "LOTE A21 53430 REQUERENTE"
+      },
+      {
+        "from_lll": 21,
+        "to_lll": 22,
+        "from_street": "LOTE A21 53430 REQUERENTE",
+        "to_street": "LOTE A22 53431 REQUERENTE"
+      },
+      {
+        "from_lll": 22,
+        "to_lll": 23,
+        "from_street": "LOTE A22 53431 REQUERENTE",
+        "to_street": "LOTE A23 53432 REQUERENTE"
+      },
+      {
+        "from_lll": 23,
+        "to_lll": 24,
+        "from_street": "LOTE A23 53432 REQUERENTE",
+        "to_street": "LOTE A24 53433 REQUERENTE"
+      },
+      {
+        "from_lll": 24,
+        "to_lll": 25,
+        "from_street": "LOTE A24 53433 REQUERENTE",
+        "to_street": "LOTE A25 53434 REQUERENTE"
+      },
+      {
+        "from_lll": 25,
+        "to_lll": 26,
+        "from_street": "LOTE A25 53434 REQUERENTE",
+        "to_street": "LOTE A26 53435 REQUERENTE"
+      },
+      {
+        "from_lll": 26,
+        "to_lll": 27,
+        "from_street": "LOTE A26 53435 REQUERENTE",
+        "to_street": "LOTE A27 53436 REQUERENTE"
+      },
+      {
+        "from_lll": 27,
+        "to_lll": 28,
+        "from_street": "LOTE A27 53436 REQUERENTE",
+        "to_street": "LOTE A28 53437 REQUERENTE"
+      },
+      {
+        "from_lll": 28,
+        "to_lll": 29,
+        "from_street": "LOTE A28 53437 REQUERENTE",
+        "to_street": "LOTE A29 53438 REQUERENTE"
+      },
+      {
+        "from_lll": 29,
+        "to_lll": 30,
+        "from_street": "LOTE A29 53438 REQUERENTE",
+        "to_street": "LOTE A30 53439 REQUERENTE"
+      },
+      {
+        "from_lll": 30,
+        "to_lll": 31,
+        "from_street": "LOTE A30 53439 REQUERENTE",
+        "to_street": "LOTE A31 53440 REQUERENTE"
+      },
+      {
+        "from_lll": 31,
+        "to_lll": 32,
+        "from_street": "LOTE A31 53440 REQUERENTE",
+        "to_street": "LOTE A32 53441 REQUERENTE"
+      },
+      {
+        "from_lll": 32,
+        "to_lll": 33,
+        "from_street": "LOTE A32 53441 REQUERENTE",
+        "to_street": "LOTE A33 53442 REQUERENTE"
+      },
+      {
+        "from_lll": 33,
+        "to_lll": 34,
+        "from_street": "LOTE A33 53442 REQUERENTE",
+        "to_street": "LOTE A34 53443 REQUERENTE"
+      },
+      {
+        "from_lll": 34,
+        "to_lll": 35,
+        "from_street": "LOTE A34 53443 REQUERENTE",
+        "to_street": "LOTE A35 53444 REQUERENTE"
+      },
+      {
+        "from_lll": 35,
+        "to_lll": 36,
+        "from_street": "LOTE A35 53444 REQUERENTE",
+        "to_street": "LOTE B36 53445 REQUERENTE"
+      },
+      {
+        "from_lll": 36,
+        "to_lll": 37,
+        "from_street": "LOTE B36 53445 REQUERENTE",
+        "to_street": "LOTE B35 53446 REQUERENTE"
+      },
+      {
+        "from_lll": 37,
+        "to_lll": 38,
+        "from_street": "LOTE B35 53446 REQUERENTE",
+        "to_street": "LOTE B34 53447 REQUERENTE"
+      },
+      {
+        "from_lll": 38,
+        "to_lll": 39,
+        "from_street": "LOTE B34 53447 REQUERENTE",
+        "to_street": "LOTE B33 53448 REQUERENTE"
+      },
+      {
+        "from_lll": 39,
+        "to_lll": 40,
+        "from_street": "LOTE B33 53448 REQUERENTE",
+        "to_street": "LOTE B32 53449 REQUERENTE"
+      }
+    ],
+    "cadastral_gaps_count": 1,
+    "cadastral_gaps": [
+      {
+        "after_lll": 11,
+        "next_lll": 13,
+        "missing": 1
+      }
+    ]
+  },
+  "4.4.102": {
+    "parcel_count": 38,
+    "sequence": [
+      {
+        "lll": 1,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": null,
+        "property_type": "Terreno Vazio"
+      },
+      {
+        "lll": 2,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 11,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 3,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 26,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 5,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 34,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 6,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 31,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 7,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 42,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 8,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 35,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 9,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": null,
+        "property_type": "Terreno Vazio"
+      },
+      {
+        "lll": 10,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 51,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 11,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 64,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 12,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 55,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 13,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 74,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 14,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 67,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 15,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 84,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 16,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 75,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 17,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 94,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 18,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 87,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 19,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 106,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 20,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 95,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 21,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 116,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 22,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 107,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 24,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 117,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 25,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": null,
+        "property_type": "Terreno Vazio"
+      },
+      {
+        "lll": 26,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 21,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 27,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 122,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 28,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 128,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 29,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 121,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 30,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 30,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 31,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 110,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 32,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 45,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 33,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 38,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 34,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 81,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 35,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 70,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 36,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 91,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 37,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 71,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 38,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 20,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 39,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 41,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 40,
+        "street": "MIRIAN AUXILIADORA FERRAZ",
+        "house_number": 90,
+        "property_type": "Casa / Sobrado"
+      }
+    ],
+    "street_transitions_count": 0,
+    "street_transitions": [],
+    "cadastral_gaps_count": 2,
+    "cadastral_gaps": [
+      {
+        "after_lll": 3,
+        "next_lll": 5,
+        "missing": 1
+      },
+      {
+        "after_lll": 22,
+        "next_lll": 24,
+        "missing": 1
+      }
+    ]
+  },
+  "4.4.130": {
+    "parcel_count": 38,
+    "sequence": [
+      {
+        "lll": 2,
+        "street": "LUIZ CARLOS PAVANITTO",
+        "house_number": 414,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 3,
+        "street": "LUIZ CARLOS PAVANITTO",
+        "house_number": 424,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 4,
+        "street": "LUIZ CARLOS PAVANITTO",
+        "house_number": null,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 5,
+        "street": "LUIZ CARLOS PAVANITTO",
+        "house_number": null,
+        "property_type": "Terreno Vazio"
+      },
+      {
+        "lll": 6,
+        "street": "LUIZ CARLOS PAVANITTO",
+        "house_number": null,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 7,
+        "street": "LUIZ CARLOS PAVANITTO",
+        "house_number": 464,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 8,
+        "street": "LUIZ CARLOS PAVANITTO",
+        "house_number": 474,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 9,
+        "street": "LUIZ CARLOS PAVANITTO",
+        "house_number": 484,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 10,
+        "street": "LUIZ CARLOS PAVANITTO",
+        "house_number": 494,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 11,
+        "street": "LUIZ CARLOS PAVANITTO",
+        "house_number": 504,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 12,
+        "street": "LUIZ CARLOS PAVANITTO",
+        "house_number": 514,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 13,
+        "street": "LUIZ CARLOS PAVANITTO",
+        "house_number": 524,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 14,
+        "street": "LUIZ CARLOS PAVANITTO",
+        "house_number": 534,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 15,
+        "street": "LUIZ CARLOS PAVANITTO",
+        "house_number": 544,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 16,
+        "street": "LUIZ CARLOS PAVANITTO",
+        "house_number": 554,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 17,
+        "street": "LUIZ CARLOS PAVANITTO",
+        "house_number": null,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 18,
+        "street": "LUIZ CARLOS PAVANITTO",
+        "house_number": null,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 19,
+        "street": "PEDRO MARCON",
+        "house_number": 577,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 20,
+        "street": "PEDRO MARCON",
+        "house_number": 567,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 21,
+        "street": "PEDRO MARCON",
+        "house_number": null,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 22,
+        "street": "PEDRO MARCON",
+        "house_number": 547,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 23,
+        "street": "PEDRO MARCON",
+        "house_number": null,
+        "property_type": "Terreno Vazio"
+      },
+      {
+        "lll": 24,
+        "street": "PEDRO MARCON",
+        "house_number": 527,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 25,
+        "street": "PEDRO MARCON",
+        "house_number": 511,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 26,
+        "street": "PEDRO MARCON",
+        "house_number": 507,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 27,
+        "street": "PEDRO MARCON",
+        "house_number": 491,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 29,
+        "street": "PEDRO MARCON",
+        "house_number": 475,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 30,
+        "street": "PEDRO MARCON",
+        "house_number": 467,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 31,
+        "street": "PEDRO MARCON",
+        "house_number": 457,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 32,
+        "street": "PEDRO MARCON",
+        "house_number": 443,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 33,
+        "street": "PEDRO MARCON",
+        "house_number": 437,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 34,
+        "street": "PEDRO MARCON",
+        "house_number": 427,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 35,
+        "street": "PEDRO MARCON",
+        "house_number": 417,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 36,
+        "street": "PEDRO MARCON",
+        "house_number": 407,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 37,
+        "street": "PEDRO MARCON",
+        "house_number": 485,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 38,
+        "street": "PEDRO MARCON",
+        "house_number": 489,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 39,
+        "street": "PEDRO MARCON",
+        "house_number": 479,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 40,
+        "street": "LUIZ CARLOS PAVANITTO",
+        "house_number": null,
+        "property_type": "Casa / Sobrado"
+      }
+    ],
+    "street_transitions_count": 2,
+    "street_transitions": [
+      {
+        "from_lll": 18,
+        "to_lll": 19,
+        "from_street": "LUIZ CARLOS PAVANITTO",
+        "to_street": "PEDRO MARCON"
+      },
+      {
+        "from_lll": 39,
+        "to_lll": 40,
+        "from_street": "PEDRO MARCON",
+        "to_street": "LUIZ CARLOS PAVANITTO"
+      }
+    ],
+    "cadastral_gaps_count": 1,
+    "cadastral_gaps": [
+      {
+        "after_lll": 27,
+        "next_lll": 29,
+        "missing": 1
+      }
+    ]
+  },
+  "4.4.115": {
+    "parcel_count": 35,
+    "sequence": [
+      {
+        "lll": 1,
+        "street": "CLAUDINO VELLOSO BORGES",
+        "house_number": null,
+        "property_type": "Terreno Vazio"
+      },
+      {
+        "lll": 2,
+        "street": "CLAUDINO VELLOSO BORGES",
+        "house_number": 36,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 4,
+        "street": "ANTONIO CELIDONIO MONTEIRO",
+        "house_number": 193,
+        "property_type": "Terreno Vazio"
+      },
+      {
+        "lll": 5,
+        "street": "ANTONIO CELIDONIO MONTEIRO",
+        "house_number": 183,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 6,
+        "street": "ANTONIO CELIDONIO MONTEIRO",
+        "house_number": 175,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 7,
+        "street": "ANTONIO CELIDONIO MONTEIRO",
+        "house_number": 165,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 8,
+        "street": "ANTONIO CELIDONIO MONTEIRO",
+        "house_number": 121,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 9,
+        "street": "ANTONIO CELIDONIO MONTEIRO",
+        "house_number": 111,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 10,
+        "street": "ANTONIO CELIDONIO MONTEIRO",
+        "house_number": 95,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 11,
+        "street": "ANTONIO CELIDONIO MONTEIRO",
+        "house_number": 85,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 12,
+        "street": "ANTONIO CELIDONIO MONTEIRO",
+        "house_number": 81,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 13,
+        "street": "ANTONIO CELIDONIO MONTEIRO",
+        "house_number": 71,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 14,
+        "street": "ANTONIO CELIDONIO MONTEIRO",
+        "house_number": null,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 15,
+        "street": "ANTONIO CELIDONIO MONTEIRO",
+        "house_number": 51,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 18,
+        "street": "RAMIRO ADOLPHO SOUZA GUIMARAES",
+        "house_number": 360,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 19,
+        "street": "RAMIRO ADOLPHO SOUZA GUIMARAES",
+        "house_number": 344,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 20,
+        "street": "RAMIRO ADOLPHO SOUZA GUIMARAES",
+        "house_number": null,
+        "property_type": "Terreno Vazio"
+      },
+      {
+        "lll": 21,
+        "street": "RAMIRO ADOLPHO SOUZA GUIMARAES",
+        "house_number": 312,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 22,
+        "street": "RAMIRO ADOLPHO SOUZA GUIMARAES",
+        "house_number": 294,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 24,
+        "street": "RAMIRO ADOLPHO SOUZA GUIMARAES",
+        "house_number": 260,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 25,
+        "street": "RAMIRO ADOLPHO SOUZA GUIMARAES",
+        "house_number": 240,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 26,
+        "street": "RAMIRO ADOLPHO SOUZA GUIMARAES",
+        "house_number": 80,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 27,
+        "street": "RAMIRO ADOLPHO SOUZA GUIMARAES",
+        "house_number": 64,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 28,
+        "street": "RAMIRO ADOLPHO SOUZA GUIMARAES",
+        "house_number": 50,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 29,
+        "street": "RAMIRO ADOLPHO SOUZA GUIMARAES",
+        "house_number": 40,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 30,
+        "street": "RAMIRO ADOLPHO SOUZA GUIMARAES",
+        "house_number": null,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 32,
+        "street": "LOTE E332 50723 REQUERENTE",
+        "house_number": 50723,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 33,
+        "street": "LOTE E333 50724 REQUERENTE",
+        "house_number": 50724,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 34,
+        "street": "RAMIRO ADOLPHO SOUZA GUIMARAES",
+        "house_number": 28,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 35,
+        "street": "ANTONIO CELIDONIO MONTEIRO",
+        "house_number": 87,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 36,
+        "street": "RAMIRO ADOLPHO SOUZA GUIMARAES",
+        "house_number": null,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 37,
+        "street": "RAMIRO ADOLPHO SOUZA GUIMARAES",
+        "house_number": 328,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 38,
+        "street": "ANTONIO CELIDONIO MONTEIRO",
+        "house_number": null,
+        "property_type": "Terreno Vazio"
+      },
+      {
+        "lll": 39,
+        "street": "RAMIRO ADOLPHO SOUZA GUIMARAES",
+        "house_number": 46,
+        "property_type": "Casa / Sobrado"
+      },
+      {
+        "lll": 40,
+        "street": "ANTONIO CELIDONIO MONTEIRO",
+        "house_number": 17,
+        "property_type": "Casa / Sobrado"
+      }
+    ],
+    "street_transitions_count": 10,
+    "street_transitions": [
+      {
+        "from_lll": 2,
+        "to_lll": 4,
+        "from_street": "CLAUDINO VELLOSO BORGES",
+        "to_street": "ANTONIO CELIDONIO MONTEIRO"
+      },
+      {
+        "from_lll": 15,
+        "to_lll": 18,
+        "from_street": "ANTONIO CELIDONIO MONTEIRO",
+        "to_street": "RAMIRO ADOLPHO SOUZA GUIMARAES"
+      },
+      {
+        "from_lll": 30,
+        "to_lll": 32,
+        "from_street": "RAMIRO ADOLPHO SOUZA GUIMARAES",
+        "to_street": "LOTE E332 50723 REQUERENTE"
+      },
+      {
+        "from_lll": 32,
+        "to_lll": 33,
+        "from_street": "LOTE E332 50723 REQUERENTE",
+        "to_street": "LOTE E333 50724 REQUERENTE"
+      },
+      {
+        "from_lll": 33,
+        "to_lll": 34,
+        "from_street": "LOTE E333 50724 REQUERENTE",
+        "to_street": "RAMIRO ADOLPHO SOUZA GUIMARAES"
+      },
+      {
+        "from_lll": 34,
+        "to_lll": 35,
+        "from_street": "RAMIRO ADOLPHO SOUZA GUIMARAES",
+        "to_street": "ANTONIO CELIDONIO MONTEIRO"
+      },
+      {
+        "from_lll": 35,
+        "to_lll": 36,
+        "from_street": "ANTONIO CELIDONIO MONTEIRO",
+        "to_street": "RAMIRO ADOLPHO SOUZA GUIMARAES"
+      },
+      {
+        "from_lll": 37,
+        "to_lll": 38,
+        "from_street": "RAMIRO ADOLPHO SOUZA GUIMARAES",
+        "to_street": "ANTONIO CELIDONIO MONTEIRO"
+      },
+      {
+        "from_lll": 38,
+        "to_lll": 39,
+        "from_street": "ANTONIO CELIDONIO MONTEIRO",
+        "to_street": "RAMIRO ADOLPHO SOUZA GUIMARAES"
+      },
+      {
+        "from_lll": 39,
+        "to_lll": 40,
+        "from_street": "RAMIRO ADOLPHO SOUZA GUIMARAES",
+        "to_street": "ANTONIO CELIDONIO MONTEIRO"
+      }
+    ],
+    "cadastral_gaps_count": 4,
+    "cadastral_gaps": [
+      {
+        "after_lll": 2,
+        "next_lll": 4,
+        "missing": 1
+      },
+      {
+        "after_lll": 15,
+        "next_lll": 18,
+        "missing": 2
+      },
+      {
+        "after_lll": 22,
+        "next_lll": 24,
+        "missing": 1
+      },
+      {
+        "after_lll": 30,
+        "next_lll": 32,
+        "missing": 1
+      }
+    ]
+  }
+}

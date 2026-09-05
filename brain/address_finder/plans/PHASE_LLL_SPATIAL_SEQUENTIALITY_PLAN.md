@@ -8,7 +8,7 @@ $$\text{BC} = \text{D} . \text{S} . \text{QQQ} . \text{LLL} . \text{SSS}$$
 where:
 - $\text{D.S}$ denotes District and Sub-district,
 - $\text{QQQ}$ denotes the cadastral sector/block,
-- $\text{LLL}$ denotes the sequential parcel lot identifier within the cadastral block,
+- $\text{LLL}$ denotes the cadastral lot identifier within the cadastral block. Whether its numeric ordering carries local spatial/ordinal information is the hypothesis under test,
 - $\text{SSS}$ denotes the sub-lot/condominium unit.
 
 The primary engineering question for **Address Finder** is:
@@ -67,7 +67,7 @@ graph TD
         B3 --> C4[Consecutive LLL Analysis: Delta 1 vs Higher Deltas]
         B3 --> C5[Sequence & Face Transition Analysis: Monotonic Runs]
         B3 --> C6[Anchor-Neighbor & Local-Target Simulations: Windows +/-1..+/-20]
-        B3 --> C7[Controls A, B, C: Permutations & Bounded 001..080]
+        B3 --> C7[Controls A, B, C: Permutations, RANDOM_WINDOW_SAME_DSQ & Bounded 001..080]
         B3 --> C8[Special Case Studies: 4.4.206 and 4.4.208]
     end
 
@@ -178,13 +178,13 @@ Detailed analysis of observed immediate neighbors $\text{LLL}_n$ and $\text{LLL}
     3. **Observed Real DSQLLL Count**: actual number of occupied lots captured.
 - **Local-Target Subsets (Realistic Operational Scenarios)**:
   - **Subset A**: Target is on the **same street** as anchor.
-  - **Subset B**: Target is within **50 house numbers** ($|\Delta\text{Num}| \le 50$).
-  - **Subset C**: Target is within **100 house numbers** ($|\Delta\text{Num}| \le 100$).
+  - **Subset B**: **HOUSE_NUMBER_PROXIMITY_PROXY_50** ($|\Delta\text{Num}| \le 50$, ordinal proxy only, not physical meters).
+  - **Subset C**: **HOUSE_NUMBER_PROXIMITY_PROXY_100** ($|\Delta\text{Num}| \le 100$, ordinal proxy only, not physical meters).
   - Determine minimum window $W$ achieving $\ge 80\%$, $\ge 90\%$, and $\ge 95\%$ recall.
 
 ### 4.9 Baseline & Control Comparisons
 - **Control A (Random LLL Permutation)**: Randomly shuffle the `LLL` assignments within each DSQ across 100 iterations. Compute the expected locality and recall curves under null ordinal alignment.
-- **Control B (Random Anchor Selection)**: Select an anchor randomly from a different block or random point in the DSQ.
+- **Control B (RANDOM_WINDOW_SAME_DSQ)**: For each evaluated anchor/target setting, compare the real anchor-centered LLL window against a randomly positioned window of identical candidate width inside the same DSQ/numeric LLL domain.
 - **Control C (Naive Bounded Generation)**: Traditional Address Finder baseline generating all $001\dots 080$ lots (burden = 80 candidates).
 - Calculate **Candidate Reduction Ratio** and **Information Lift** ($P(\text{hit} \mid \text{LLL window}) / P(\text{hit} \mid \text{Random window})$).
 

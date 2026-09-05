@@ -1,0 +1,60 @@
+{
+  "split_method": "stratified_seeded_complete_dsq_isolation",
+  "random_seed": 42,
+  "case_studies_reserved_to_dev": [
+    "4.4.206",
+    "4.4.208"
+  ],
+  "tier_definitions": {
+    "low": "< 10 parcels",
+    "medium": "10-24 parcels",
+    "high": ">= 25 parcels"
+  },
+  "holdout_dsq_count": 9,
+  "development_dsq_count": 28,
+  "holdout_dsq_list": [
+    "3.3.002",
+    "3.3.005",
+    "3.3.007",
+    "3.3.008",
+    "3.3.012",
+    "3.3.014",
+    "3.3.017",
+    "3.3.018",
+    "4.4.207"
+  ],
+  "development_dsq_list": [
+    "3.3.001",
+    "3.3.003",
+    "3.3.004",
+    "3.3.006",
+    "3.3.009",
+    "3.3.010",
+    "3.3.011",
+    "3.3.013",
+    "3.3.015",
+    "3.3.016",
+    "3.3.019",
+    "3.3.020",
+    "4.4.101",
+    "4.4.102",
+    "4.4.103",
+    "4.4.105",
+    "4.4.110",
+    "4.4.115",
+    "4.4.120",
+    "4.4.130",
+    "4.4.206",
+    "4.4.208",
+    "4.4.209",
+    "4.4.210",
+    "4.4.211",
+    "4.4.212",
+    "4.4.213",
+    "4.4.214"
+  ],
+  "holdout_parcel_count": 175,
+  "development_parcel_count": 537,
+  "holdout_parcel_percentage": 24.58,
+  "development_parcel_percentage": 75.42
+}

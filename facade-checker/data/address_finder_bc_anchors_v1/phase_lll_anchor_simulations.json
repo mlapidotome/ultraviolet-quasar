@@ -1,0 +1,414 @@
+{
+  "GLOBAL": {
+    "total_pairs_evaluated": 13900,
+    "recall_curve": {
+      "W_1": {
+        "window": 1,
+        "hits": 930,
+        "total_pairs": 13900,
+        "recall": 0.0669,
+        "structural_candidates": 3
+      },
+      "W_2": {
+        "window": 2,
+        "hits": 1800,
+        "total_pairs": 13900,
+        "recall": 0.1295,
+        "structural_candidates": 5
+      },
+      "W_3": {
+        "window": 3,
+        "hits": 2620,
+        "total_pairs": 13900,
+        "recall": 0.1885,
+        "structural_candidates": 7
+      },
+      "W_4": {
+        "window": 4,
+        "hits": 3408,
+        "total_pairs": 13900,
+        "recall": 0.2452,
+        "structural_candidates": 9
+      },
+      "W_5": {
+        "window": 5,
+        "hits": 4162,
+        "total_pairs": 13900,
+        "recall": 0.2994,
+        "structural_candidates": 11
+      },
+      "W_7": {
+        "window": 7,
+        "hits": 5566,
+        "total_pairs": 13900,
+        "recall": 0.4004,
+        "structural_candidates": 15
+      },
+      "W_10": {
+        "window": 10,
+        "hits": 7422,
+        "total_pairs": 13900,
+        "recall": 0.534,
+        "structural_candidates": 21
+      },
+      "W_15": {
+        "window": 15,
+        "hits": 9828,
+        "total_pairs": 13900,
+        "recall": 0.7071,
+        "structural_candidates": 31
+      },
+      "W_16": {
+        "window": 16,
+        "hits": 10216,
+        "total_pairs": 13900,
+        "recall": 0.735,
+        "structural_candidates": 33
+      },
+      "W_20": {
+        "window": 20,
+        "hits": 11482,
+        "total_pairs": 13900,
+        "recall": 0.826,
+        "structural_candidates": 41
+      },
+      "W_23": {
+        "window": 23,
+        "hits": 12200,
+        "total_pairs": 13900,
+        "recall": 0.8777,
+        "structural_candidates": 47
+      },
+      "W_25": {
+        "window": 25,
+        "hits": 12608,
+        "total_pairs": 13900,
+        "recall": 0.9071,
+        "structural_candidates": 51
+      },
+      "W_28": {
+        "window": 28,
+        "hits": 13116,
+        "total_pairs": 13900,
+        "recall": 0.9436,
+        "structural_candidates": 57
+      },
+      "W_30": {
+        "window": 30,
+        "hits": 13376,
+        "total_pairs": 13900,
+        "recall": 0.9623,
+        "structural_candidates": 61
+      }
+    }
+  },
+  "SUBSET_A_SAME_STREET": {
+    "total_pairs_evaluated": 5062,
+    "recall_curve": {
+      "W_1": {
+        "window": 1,
+        "hits": 610,
+        "total_pairs": 5062,
+        "recall": 0.1205,
+        "structural_candidates": 3
+      },
+      "W_2": {
+        "window": 2,
+        "hits": 1136,
+        "total_pairs": 5062,
+        "recall": 0.2244,
+        "structural_candidates": 5
+      },
+      "W_3": {
+        "window": 3,
+        "hits": 1586,
+        "total_pairs": 5062,
+        "recall": 0.3133,
+        "structural_candidates": 7
+      },
+      "W_4": {
+        "window": 4,
+        "hits": 1974,
+        "total_pairs": 5062,
+        "recall": 0.39,
+        "structural_candidates": 9
+      },
+      "W_5": {
+        "window": 5,
+        "hits": 2310,
+        "total_pairs": 5062,
+        "recall": 0.4563,
+        "structural_candidates": 11
+      },
+      "W_7": {
+        "window": 7,
+        "hits": 2852,
+        "total_pairs": 5062,
+        "recall": 0.5634,
+        "structural_candidates": 15
+      },
+      "W_10": {
+        "window": 10,
+        "hits": 3428,
+        "total_pairs": 5062,
+        "recall": 0.6772,
+        "structural_candidates": 21
+      },
+      "W_15": {
+        "window": 15,
+        "hits": 4012,
+        "total_pairs": 5062,
+        "recall": 0.7926,
+        "structural_candidates": 31
+      },
+      "W_16": {
+        "window": 16,
+        "hits": 4106,
+        "total_pairs": 5062,
+        "recall": 0.8111,
+        "structural_candidates": 33
+      },
+      "W_20": {
+        "window": 20,
+        "hits": 4396,
+        "total_pairs": 5062,
+        "recall": 0.8684,
+        "structural_candidates": 41
+      },
+      "W_23": {
+        "window": 23,
+        "hits": 4562,
+        "total_pairs": 5062,
+        "recall": 0.9012,
+        "structural_candidates": 47
+      },
+      "W_25": {
+        "window": 25,
+        "hits": 4674,
+        "total_pairs": 5062,
+        "recall": 0.9234,
+        "structural_candidates": 51
+      },
+      "W_28": {
+        "window": 28,
+        "hits": 4824,
+        "total_pairs": 5062,
+        "recall": 0.953,
+        "structural_candidates": 57
+      },
+      "W_30": {
+        "window": 30,
+        "hits": 4902,
+        "total_pairs": 5062,
+        "recall": 0.9684,
+        "structural_candidates": 61
+      }
+    }
+  },
+  "HOUSE_NUMBER_PROXIMITY_PROXY_50": {
+    "total_pairs_evaluated": 2584,
+    "recall_curve": {
+      "W_1": {
+        "window": 1,
+        "hits": 482,
+        "total_pairs": 2584,
+        "recall": 0.1865,
+        "structural_candidates": 3
+      },
+      "W_2": {
+        "window": 2,
+        "hits": 878,
+        "total_pairs": 2584,
+        "recall": 0.3398,
+        "structural_candidates": 5
+      },
+      "W_3": {
+        "window": 3,
+        "hits": 1192,
+        "total_pairs": 2584,
+        "recall": 0.4613,
+        "structural_candidates": 7
+      },
+      "W_4": {
+        "window": 4,
+        "hits": 1430,
+        "total_pairs": 2584,
+        "recall": 0.5534,
+        "structural_candidates": 9
+      },
+      "W_5": {
+        "window": 5,
+        "hits": 1606,
+        "total_pairs": 2584,
+        "recall": 0.6215,
+        "structural_candidates": 11
+      },
+      "W_7": {
+        "window": 7,
+        "hits": 1746,
+        "total_pairs": 2584,
+        "recall": 0.6757,
+        "structural_candidates": 15
+      },
+      "W_10": {
+        "window": 10,
+        "hits": 1920,
+        "total_pairs": 2584,
+        "recall": 0.743,
+        "structural_candidates": 21
+      },
+      "W_15": {
+        "window": 15,
+        "hits": 2122,
+        "total_pairs": 2584,
+        "recall": 0.8212,
+        "structural_candidates": 31
+      },
+      "W_16": {
+        "window": 16,
+        "hits": 2162,
+        "total_pairs": 2584,
+        "recall": 0.8367,
+        "structural_candidates": 33
+      },
+      "W_20": {
+        "window": 20,
+        "hits": 2268,
+        "total_pairs": 2584,
+        "recall": 0.8777,
+        "structural_candidates": 41
+      },
+      "W_23": {
+        "window": 23,
+        "hits": 2340,
+        "total_pairs": 2584,
+        "recall": 0.9056,
+        "structural_candidates": 47
+      },
+      "W_25": {
+        "window": 25,
+        "hits": 2400,
+        "total_pairs": 2584,
+        "recall": 0.9288,
+        "structural_candidates": 51
+      },
+      "W_28": {
+        "window": 28,
+        "hits": 2472,
+        "total_pairs": 2584,
+        "recall": 0.9567,
+        "structural_candidates": 57
+      },
+      "W_30": {
+        "window": 30,
+        "hits": 2514,
+        "total_pairs": 2584,
+        "recall": 0.9729,
+        "structural_candidates": 61
+      }
+    }
+  },
+  "HOUSE_NUMBER_PROXIMITY_PROXY_100": {
+    "total_pairs_evaluated": 3666,
+    "recall_curve": {
+      "W_1": {
+        "window": 1,
+        "hits": 500,
+        "total_pairs": 3666,
+        "recall": 0.1364,
+        "structural_candidates": 3
+      },
+      "W_2": {
+        "window": 2,
+        "hits": 926,
+        "total_pairs": 3666,
+        "recall": 0.2526,
+        "structural_candidates": 5
+      },
+      "W_3": {
+        "window": 3,
+        "hits": 1284,
+        "total_pairs": 3666,
+        "recall": 0.3502,
+        "structural_candidates": 7
+      },
+      "W_4": {
+        "window": 4,
+        "hits": 1582,
+        "total_pairs": 3666,
+        "recall": 0.4315,
+        "structural_candidates": 9
+      },
+      "W_5": {
+        "window": 5,
+        "hits": 1840,
+        "total_pairs": 3666,
+        "recall": 0.5019,
+        "structural_candidates": 11
+      },
+      "W_7": {
+        "window": 7,
+        "hits": 2230,
+        "total_pairs": 3666,
+        "recall": 0.6083,
+        "structural_candidates": 15
+      },
+      "W_10": {
+        "window": 10,
+        "hits": 2586,
+        "total_pairs": 3666,
+        "recall": 0.7054,
+        "structural_candidates": 21
+      },
+      "W_15": {
+        "window": 15,
+        "hits": 2924,
+        "total_pairs": 3666,
+        "recall": 0.7976,
+        "structural_candidates": 31
+      },
+      "W_16": {
+        "window": 16,
+        "hits": 2988,
+        "total_pairs": 3666,
+        "recall": 0.8151,
+        "structural_candidates": 33
+      },
+      "W_20": {
+        "window": 20,
+        "hits": 3194,
+        "total_pairs": 3666,
+        "recall": 0.8712,
+        "structural_candidates": 41
+      },
+      "W_23": {
+        "window": 23,
+        "hits": 3320,
+        "total_pairs": 3666,
+        "recall": 0.9056,
+        "structural_candidates": 47
+      },
+      "W_25": {
+        "window": 25,
+        "hits": 3402,
+        "total_pairs": 3666,
+        "recall": 0.928,
+        "structural_candidates": 51
+      },
+      "W_28": {
+        "window": 28,
+        "hits": 3506,
+        "total_pairs": 3666,
+        "recall": 0.9564,
+        "structural_candidates": 57
+      },
+      "W_30": {
+        "window": 30,
+        "hits": 3564,
+        "total_pairs": 3666,
+        "recall": 0.9722,
+        "structural_candidates": 61
+      }
+    }
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "total_consecutive_delta_1_pairs": 465,
+  "same_street_rate": 0.6559,
+  "street_transition_rate": 0.3441,
+  "property_type_continuity_rate": 0.8559,
+  "house_number_difference_percentiles": {
+    "p25": 7,
+    "median_p50": 10,
+    "p75": 20,
+    "mean": 3129.42
+  },
+  "delta_gradient_comparison": {
+    "delta_1": {
+      "pair_count": 465,
+      "same_street_rate": 0.6559,
+      "same_property_type_rate": 0.8559,
+      "house_number_diff_median": 10,
+      "house_number_diff_mean": 3129.42
+    },
+    "delta_2": {
+      "pair_count": 435,
+      "same_street_rate": 0.6046,
+      "house_number_diff_median": 20,
+      "house_number_diff_mean": 3832.33
+    },
+    "delta_3": {
+      "pair_count": 410,
+      "same_street_rate": 0.5488,
+      "house_number_diff_median": 30,
+      "house_number_diff_mean": 4933.91
+    },
+    "delta_4": {
+      "pair_count": 394,
+      "same_street_rate": 0.4924,
+      "house_number_diff_median": 42,
+      "house_number_diff_mean": 6170.89
+    },
+    "delta_5": {
+      "pair_count": 377,
+      "same_street_rate": 0.4456,
+      "house_number_diff_median": 52,
+      "house_number_diff_mean": 5303.23
+    },
+    "delta_6_10": {
+      "pair_count": 1630,
+      "same_street_rate": 0.3429,
+      "house_number_diff_median": 85,
+      "house_number_diff_mean": 5605.77
+    },
+    "delta_11_20": {
+      "pair_count": 2030,
+      "same_street_rate": 0.2384,
+      "house_number_diff_median": 104,
+      "house_number_diff_mean": 7514.55
+    },
+    "delta_gt_20": {
+      "pair_count": 1209,
+      "same_street_rate": 0.2754,
+      "house_number_diff_median": 48,
+      "house_number_diff_mean": 8385.6
+    }
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "delta_1": {
+    "bin_label": "delta_1",
+    "min_delta": 1,
+    "max_delta": 1,
+    "total_pairs": 465,
+    "same_street_pairs": 305,
+    "same_street_rate": 0.6559,
+    "same_neighborhood_rate": 0.6796,
+    "numbered_pairs_count": 398,
+    "house_number_mean_diff": 3129.42,
+    "house_number_median_diff": 10
+  },
+  "delta_2": {
+    "bin_label": "delta_2",
+    "min_delta": 2,
+    "max_delta": 2,
+    "total_pairs": 435,
+    "same_street_pairs": 263,
+    "same_street_rate": 0.6046,
+    "same_neighborhood_rate": 0.6828,
+    "numbered_pairs_count": 370,
+    "house_number_mean_diff": 3832.33,
+    "house_number_median_diff": 20
+  },
+  "delta_3": {
+    "bin_label": "delta_3",
+    "min_delta": 3,
+    "max_delta": 3,
+    "total_pairs": 410,
+    "same_street_pairs": 225,
+    "same_street_rate": 0.5488,
+    "same_neighborhood_rate": 0.678,
+    "numbered_pairs_count": 347,
+    "house_number_mean_diff": 4933.91,
+    "house_number_median_diff": 30
+  },
+  "delta_4": {
+    "bin_label": "delta_4",
+    "min_delta": 4,
+    "max_delta": 4,
+    "total_pairs": 394,
+    "same_street_pairs": 194,
+    "same_street_rate": 0.4924,
+    "same_neighborhood_rate": 0.6751,
+    "numbered_pairs_count": 329,
+    "house_number_mean_diff": 6170.89,
+    "house_number_median_diff": 42
+  },
+  "delta_5": {
+    "bin_label": "delta_5",
+    "min_delta": 5,
+    "max_delta": 5,
+    "total_pairs": 377,
+    "same_street_pairs": 168,
+    "same_street_rate": 0.4456,
+    "same_neighborhood_rate": 0.6737,
+    "numbered_pairs_count": 316,
+    "house_number_mean_diff": 5303.23,
+    "house_number_median_diff": 52
+  },
+  "delta_6_10": {
+    "bin_label": "delta_6_10",
+    "min_delta": 6,
+    "max_delta": 10,
+    "total_pairs": 1630,
+    "same_street_pairs": 559,
+    "same_street_rate": 0.3429,
+    "same_neighborhood_rate": 0.6601,
+    "numbered_pairs_count": 1365,
+    "house_number_mean_diff": 5605.77,
+    "house_number_median_diff": 85
+  },
+  "delta_11_20": {
+    "bin_label": "delta_11_20",
+    "min_delta": 11,
+    "max_delta": 20,
+    "total_pairs": 2030,
+    "same_street_pairs": 484,
+    "same_street_rate": 0.2384,
+    "same_neighborhood_rate": 0.6059,
+    "numbered_pairs_count": 1697,
+    "house_number_mean_diff": 7514.55,
+    "house_number_median_diff": 104
+  },
+  "delta_gt_20": {
+    "bin_label": "delta_gt_20",
+    "min_delta": 21,
+    "max_delta": 99999,
+    "total_pairs": 1209,
+    "same_street_pairs": 333,
+    "same_street_rate": 0.2754,
+    "same_neighborhood_rate": 0.4872,
+    "numbered_pairs_count": 1005,
+    "house_number_mean_diff": 8385.6,
+    "house_number_median_diff": 48
+  }
+}

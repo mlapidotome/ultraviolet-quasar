@@ -1,0 +1,207 @@
+{
+  "case_study_1_4_4_206": {
+    "dsq": "4.4.206",
+    "street_identified": "ANTONIO DELGADO DA VEIGA",
+    "total_parcels_observed": 19,
+    "numbered_parcels_count": 17,
+    "lote_range": [
+      2,
+      21
+    ],
+    "segment_1_monotonic_run": {
+      "lotes": [
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14
+      ],
+      "house_numbers": [
+        20,
+        30,
+        40,
+        60,
+        80,
+        90,
+        100,
+        110,
+        120,
+        130,
+        150
+      ],
+      "step_pattern": "Strictly even numbers ending in 0 (20, 30, 40, 60, 80, 90, 100, 110, 120, 130, 150)",
+      "spearman_rho": 1.0,
+      "kendall_tau": 1.0
+    },
+    "segment_2_loop_run": {
+      "lotes": [
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "house_numbers": [
+        116,
+        106,
+        76,
+        46,
+        96,
+        86
+      ],
+      "pattern_description": "Even numbers ending in 6 (116, 106, 76, 46, 96, 86) on opposite side / loop"
+    },
+    "overall_correlation": {
+      "spearman_rho": 0.424,
+      "kendall_tau": 0.3529
+    },
+    "all_lots": [
+      {
+        "lll": 2,
+        "number": 20,
+        "type": "Casa / Sobrado"
+      },
+      {
+        "lll": 3,
+        "number": 30,
+        "type": "Casa / Sobrado"
+      },
+      {
+        "lll": 4,
+        "number": 40,
+        "type": "Casa / Sobrado"
+      },
+      {
+        "lll": 5,
+        "number": 60,
+        "type": "Casa / Sobrado"
+      },
+      {
+        "lll": 6,
+        "number": null,
+        "type": "Terreno Vazio"
+      },
+      {
+        "lll": 7,
+        "number": 80,
+        "type": "Casa / Sobrado"
+      },
+      {
+        "lll": 8,
+        "number": 90,
+        "type": "Casa / Sobrado"
+      },
+      {
+        "lll": 9,
+        "number": 100,
+        "type": "Casa / Sobrado"
+      },
+      {
+        "lll": 10,
+        "number": 110,
+        "type": "Casa / Sobrado"
+      },
+      {
+        "lll": 11,
+        "number": 120,
+        "type": "Casa / Sobrado"
+      },
+      {
+        "lll": 12,
+        "number": 130,
+        "type": "Casa / Sobrado"
+      },
+      {
+        "lll": 13,
+        "number": null,
+        "type": "Terreno Vazio"
+      },
+      {
+        "lll": 14,
+        "number": 150,
+        "type": "Casa / Sobrado"
+      },
+      {
+        "lll": 16,
+        "number": 116,
+        "type": "Casa / Sobrado"
+      },
+      {
+        "lll": 17,
+        "number": 106,
+        "type": "Casa / Sobrado"
+      },
+      {
+        "lll": 18,
+        "number": 76,
+        "type": "Casa / Sobrado"
+      },
+      {
+        "lll": 19,
+        "number": 46,
+        "type": "Casa / Sobrado"
+      },
+      {
+        "lll": 20,
+        "number": 96,
+        "type": "Casa / Sobrado"
+      },
+      {
+        "lll": 21,
+        "number": 86,
+        "type": "Casa / Sobrado"
+      }
+    ]
+  },
+  "case_study_2_4_4_208": {
+    "dsq": "4.4.208",
+    "total_parcels_in_cohort": 6,
+    "lots_observed": [
+      {
+        "lll": 1,
+        "street": "CLAUDINO VELLOSO BORGES",
+        "type": "Casa / Sobrado"
+      },
+      {
+        "lll": 2,
+        "street": "CLAUDINO VELLOSO BORGES",
+        "type": "Casa / Sobrado"
+      },
+      {
+        "lll": 3,
+        "street": "CLAUDINO VELLOSO BORGES",
+        "type": "Terreno Vazio"
+      },
+      {
+        "lll": 5,
+        "street": "",
+        "type": "Terreno Vazio"
+      },
+      {
+        "lll": 7,
+        "street": "",
+        "type": "Terreno Vazio"
+      },
+      {
+        "lll": 8,
+        "street": "LOTE T8 53337 REQUERENTE",
+        "type": "Terreno Vazio"
+      }
+    ],
+    "external_anchor_context": {
+      "condominium_name": "Varandas da Mantiqueira",
+      "cadastral_bc": "4.4.208.004.002",
+      "physical_address": "R. Melchior Félix Corrêa, 210, Lavadouro de Areia",
+      "spatial_relation_to_cohort": "Occupies Lote 004, situated immediately between cohort lot 003 (Claudino Velloso Borges) and lot 005 (vacant lot)",
+      "decoupled_from_global_classification": true,
+      "cadastral_sequentiality_note": "Confirms physical spatial continuity: lot 004 sits physically between lots 003 and 005."
+    }
+  }
+}

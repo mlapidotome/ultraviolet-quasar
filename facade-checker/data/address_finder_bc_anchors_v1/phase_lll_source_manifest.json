@@ -1,0 +1,8 @@
+{
+  "source_name": "Acervo Casas Taubate Cohort",
+  "raw_excel_filename": "phase_lll_raw_frozen_cohort_719.xlsx",
+  "raw_excel_sha256": "079e948dfdffc8c2f84f3a911fa6c31b44f11efae4ac7ccedb9323fb29a04169",
+  "record_count": 719,
+  "unique_dsqlll_count": 712,
+  "ingestion_timestamp_iso": "2026-09-05T10:00:00-03:00"
+}

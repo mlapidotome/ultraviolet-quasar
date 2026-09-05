@@ -1,0 +1,253 @@
+{
+  "holdout_dsq_count": 9,
+  "holdout_parcel_count": 175,
+  "street_order_correlations": {
+    "qualifying_groups": 20,
+    "median_abs_spearman_rho": 1.0,
+    "median_abs_kendall_tau": 1.0,
+    "groups_details": [
+      {
+        "dsq": "3.3.002",
+        "street": "FINLANDIA",
+        "parcel_count": 6,
+        "abs_spearman_rho": 1.0,
+        "abs_kendall_tau": 1.0
+      },
+      {
+        "dsq": "3.3.005",
+        "street": "COLOMBIA",
+        "parcel_count": 7,
+        "abs_spearman_rho": 1.0,
+        "abs_kendall_tau": 1.0
+      },
+      {
+        "dsq": "3.3.007",
+        "street": "COLOMBIA",
+        "parcel_count": 3,
+        "abs_spearman_rho": 1.0,
+        "abs_kendall_tau": 1.0
+      },
+      {
+        "dsq": "3.3.007",
+        "street": "NICARAGUA",
+        "parcel_count": 9,
+        "abs_spearman_rho": 1.0,
+        "abs_kendall_tau": 1.0
+      },
+      {
+        "dsq": "3.3.008",
+        "street": "NICARAGUA",
+        "parcel_count": 8,
+        "abs_spearman_rho": 1.0,
+        "abs_kendall_tau": 1.0
+      },
+      {
+        "dsq": "3.3.008",
+        "street": "JOHN FITZGERALD KENNEDY",
+        "parcel_count": 7,
+        "abs_spearman_rho": 1.0,
+        "abs_kendall_tau": 1.0
+      },
+      {
+        "dsq": "3.3.012",
+        "street": "SIRIA",
+        "parcel_count": 7,
+        "abs_spearman_rho": 1.0,
+        "abs_kendall_tau": 1.0
+      },
+      {
+        "dsq": "3.3.012",
+        "street": "CANADA",
+        "parcel_count": 5,
+        "abs_spearman_rho": 1.0,
+        "abs_kendall_tau": 1.0
+      },
+      {
+        "dsq": "3.3.012",
+        "street": "ESPANHA",
+        "parcel_count": 8,
+        "abs_spearman_rho": 0.3333,
+        "abs_kendall_tau": 0.5
+      },
+      {
+        "dsq": "3.3.012",
+        "street": "ESTADOS UNIDOS",
+        "parcel_count": 5,
+        "abs_spearman_rho": 0.9,
+        "abs_kendall_tau": 0.8
+      },
+      {
+        "dsq": "3.3.014",
+        "street": "ESPANHA",
+        "parcel_count": 7,
+        "abs_spearman_rho": 1.0,
+        "abs_kendall_tau": 1.0
+      },
+      {
+        "dsq": "3.3.014",
+        "street": "BELGICA",
+        "parcel_count": 3,
+        "abs_spearman_rho": 1.0,
+        "abs_kendall_tau": 1.0
+      },
+      {
+        "dsq": "3.3.014",
+        "street": "CANADA",
+        "parcel_count": 5,
+        "abs_spearman_rho": 1.0,
+        "abs_kendall_tau": 1.0
+      },
+      {
+        "dsq": "3.3.014",
+        "street": "SUICA",
+        "parcel_count": 7,
+        "abs_spearman_rho": 1.0,
+        "abs_kendall_tau": 1.0
+      },
+      {
+        "dsq": "3.3.014",
+        "street": "ESTADOS UNIDOS",
+        "parcel_count": 7,
+        "abs_spearman_rho": 0.25,
+        "abs_kendall_tau": 0.4286
+      },
+      {
+        "dsq": "3.3.017",
+        "street": "ESPANHA",
+        "parcel_count": 9,
+        "abs_spearman_rho": 1.0,
+        "abs_kendall_tau": 1.0
+      },
+      {
+        "dsq": "3.3.017",
+        "street": "SIRIA",
+        "parcel_count": 7,
+        "abs_spearman_rho": 1.0,
+        "abs_kendall_tau": 1.0
+      },
+      {
+        "dsq": "3.3.018",
+        "street": "SIRIA",
+        "parcel_count": 10,
+        "abs_spearman_rho": 0.5879,
+        "abs_kendall_tau": 0.5556
+      },
+      {
+        "dsq": "3.3.018",
+        "street": "JOHN FITZGERALD KENNEDY",
+        "parcel_count": 5,
+        "abs_spearman_rho": 1.0,
+        "abs_kendall_tau": 1.0
+      },
+      {
+        "dsq": "4.4.207",
+        "street": "ANTONIO DELGADO DA VEIGA",
+        "parcel_count": 16,
+        "abs_spearman_rho": 0.3441,
+        "abs_kendall_tau": 0.35
+      }
+    ]
+  },
+  "frozen_rule_evaluation_on_holdout": {
+    "GLOBAL": {
+      "W_16": {
+        "window": 16,
+        "hits": 3176,
+        "total_pairs": 4014,
+        "recall": 0.7912
+      },
+      "W_23": {
+        "window": 23,
+        "hits": 3680,
+        "total_pairs": 4014,
+        "recall": 0.9168
+      },
+      "W_28": {
+        "window": 28,
+        "hits": 3874,
+        "total_pairs": 4014,
+        "recall": 0.9651
+      }
+    },
+    "SUBSET_A_SAME_STREET": {
+      "W_16": {
+        "window": 16,
+        "hits": 1034,
+        "total_pairs": 1168,
+        "recall": 0.8853
+      },
+      "W_23": {
+        "window": 23,
+        "hits": 1078,
+        "total_pairs": 1168,
+        "recall": 0.9229
+      },
+      "W_28": {
+        "window": 28,
+        "hits": 1136,
+        "total_pairs": 1168,
+        "recall": 0.9726
+      }
+    },
+    "HOUSE_NUMBER_PROXIMITY_PROXY_50": {
+      "W_16": {
+        "window": 16,
+        "hits": 682,
+        "total_pairs": 784,
+        "recall": 0.8699
+      },
+      "W_23": {
+        "window": 23,
+        "hits": 722,
+        "total_pairs": 784,
+        "recall": 0.9209
+      },
+      "W_28": {
+        "window": 28,
+        "hits": 756,
+        "total_pairs": 784,
+        "recall": 0.9643
+      }
+    },
+    "HOUSE_NUMBER_PROXIMITY_PROXY_100": {
+      "W_16": {
+        "window": 16,
+        "hits": 850,
+        "total_pairs": 980,
+        "recall": 0.8673
+      },
+      "W_23": {
+        "window": 23,
+        "hits": 894,
+        "total_pairs": 980,
+        "recall": 0.9122
+      },
+      "W_28": {
+        "window": 28,
+        "hits": 948,
+        "total_pairs": 980,
+        "recall": 0.9673
+      }
+    }
+  },
+  "dev_vs_holdout_stability": {
+    "W_80": {
+      "window": 16,
+      "dev_recall_proxy_100": 0.8151,
+      "holdout_recall_proxy_100": 0.8673,
+      "delta_recall": 0.0522
+    },
+    "W_90": {
+      "window": 23,
+      "dev_recall_proxy_100": 0.9056,
+      "holdout_recall_proxy_100": 0.9122,
+      "delta_recall": 0.0066
+    },
+    "W_95": {
+      "window": 28,
+      "dev_recall_proxy_100": 0.9564,
+      "holdout_recall_proxy_100": 0.9673,
+      "delta_recall": 0.0109
+    }
+  }
+}

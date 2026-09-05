@@ -1,0 +1,37 @@
+{
+  "rule_version": "v1.0_phase_lll_frozen",
+  "source_evaluation": "Development cohort only (537 parcels across 28 DSQs)",
+  "freeze_timestamp_iso": "2026-09-05T10:30:00-03:00",
+  "primary_proxy_subset": "HOUSE_NUMBER_PROXIMITY_PROXY_100",
+  "recommended_windows": {
+    "W_80": {
+      "target_recall": 0.8,
+      "window": 16,
+      "structural_candidate_count": 33,
+      "dev_recall_proxy_100": 0.8151,
+      "dev_recall_same_street": 0.8111,
+      "candidate_reduction_ratio": 2.42
+    },
+    "W_90": {
+      "target_recall": 0.9,
+      "window": 23,
+      "structural_candidate_count": 47,
+      "dev_recall_proxy_100": 0.9056,
+      "dev_recall_same_street": 0.9012,
+      "candidate_reduction_ratio": 1.7
+    },
+    "W_95": {
+      "target_recall": 0.95,
+      "window": 28,
+      "structural_candidate_count": 57,
+      "dev_recall_proxy_100": 0.9564,
+      "dev_recall_same_street": 0.953,
+      "candidate_reduction_ratio": 1.4
+    }
+  },
+  "operational_guidelines": {
+    "default_search_window": 23,
+    "aggressive_compression_window": 16,
+    "maximum_recall_window": 28
+  }
+}
