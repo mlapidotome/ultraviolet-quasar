@@ -1,85 +1,64 @@
-# Inspeção Técnica Pré-Implementação: V2 Video Engine & Persistência PostgreSQL
+# Changelog: Fase 1A — Fundação de Persistência PostgreSQL & Tabela video_jobs
 
-**Data da Inspeção:** 04/09/2026  
-**Servidor:** VPS DigitalOcean (Ubuntu 24.04 LTS Noble Numbat)  
-**Projeto:** Bali Imóveis / Video Engine  
-
----
-
-## 1. Diagnóstico do Ambiente Encontrado
-
-### A. PostgreSQL no Sistema Operacional (VPS)
-* **Binário `psql`:** Não instalado (`which psql` -> *not found*).
-* **Serviço PostgreSQL:** Inexistente/Inativo (`systemctl is-active postgresql` -> *inactive*).
-* **Pacotes dpkg:** Nenhum pacote PostgreSQL instalado no sistema.
-* **Recursos de Hardware do Host:**
-  * **RAM Total:** 2.0 GB (com ~908 MB disponíveis em repouso).
-  * **Swap:** 6.0 GB configurado.
-  * **Disco:** 24 GB no volume principal, com 9.0 GB livres (62% de uso).
-  * *Conclusão de Capacidade:* O servidor possui folga de memória e disco perfeitamente dimensionada para rodar uma instância local do PostgreSQL (consumo de ~25 a 35 MB de RAM em idle).
-
-### B. Dependências de Banco no `package.json`
-* O driver nativo `pg` (node-postgres) **não está instalado**.
-* Dependências existentes relacionadas a dados:
-  * `@supabase/supabase-js: ^2.101.1` (sem credenciais de acesso ativas no ambiente).
-  * `sqlite3: ^6.0.1` (presente no `package.json`, porém sem utilização ativa no código).
-
-### C. Persistência Atual do `bali-gestor`
-* O sistema opera atualmente sobre **arquivos JSON planos** no diretório `/var/www/bali-gestor/data/`:
-  * `banco_imoveis_carteira.json` (1.2 MB)
-  * `banco_leads_atendimentos.json` (3.8 MB)
-  * `banco_compradores_perfil.json`
-  * `campanhas_reativacao.json`
-* Na engine de vídeo (`video_anuncios_engine.js`), o controle de estado é **100% volátil em memória RAM** (`const activeVideoSessions = {};`).
+**Data de Conclusão:** 04/09/2026  
+**Status:** CONCLUÍDO COM SUCESSO  
+**Job de Teste (UUID):** `ea084896-a1b1-4d6f-8391-557a1e2fdb81`  
 
 ---
 
-## 2. Decisão de Infraestrutura e Banco de Dados
+## 1. O Que Foi Realizado
 
-Como não existe PostgreSQL pré-configurado, a abordagem mais sólida, isolada e com menor latência para a V2 é:
-1. Instalar os pacotes oficiais `postgresql` e `postgresql-contrib` diretamente no Ubuntu via `apt-get`.
-2. Inicializar um cluster local seguro ouvindo em `localhost:5432`.
-3. Criar o banco de dados dedicado `bali_gestor`.
-4. Criar um usuário de aplicação (`bali_user`) com permissões restritas e senha forte gerada aleatoriamente.
-5. Injetar as credenciais exclusivamente no arquivo `/var/www/bali-gestor/.env` (permissões 600, fora do controle de versão).
+1. **Instalação e Configuração do PostgreSQL 16**:
+   - Pacotes oficiais `postgresql` e `postgresql-contrib` instalados no VPS Ubuntu 24.04.
+   - Serviço ativo e habilitado no systemd (`systemctl is-active postgresql` -> active).
+   - Cluster local configurado com banco de dados `bali_gestor` e usuário de aplicação dedicado `bali_user`.
+   - Credenciais injetadas exclusivamente no `.env` com permissão 600 (sem commit).
+
+2. **Criação da Migration Versionada**:
+   - Arquivo: `migrations/001_create_video_jobs.sql`
+   - Habilitação da extensão `pgcrypto` para UUIDs determinísticos/v4 (`gen_random_uuid()`).
+   - Tabela `video_jobs` criada com campos obrigatórios (`id`, `property_ref`, `broker_id`, `status`, `source`, `script_version`, `created_at`, `updated_at`) e campos JSONB flexíveis (`property_snapshot`, `scripts_snapshot`, `metadata`).
+   - Índices criados em `property_ref`, `status`, `broker_id` e `created_at DESC`.
+
+3. **Módulo Isolado de Persistência**:
+   - Arquivo: `video_engine/db.js`
+   - Encapsulamento de conexão via `pg.Pool`.
+   - Implementadas as funções puras:
+     - `createVideoJob(data)`
+     - `getVideoJobById(id)`
+     - `updateVideoJob(id, patch)` com allowlist estrita e atualização automática de `updated_at = NOW()`.
+     - `runMigrations()` executável somente de forma explícita (sem disparo em import).
+
+4. **Isolamento e Risco Zero em Produção**:
+   - `activeVideoSessions` permanece como fonte operacional atual da V1.
+   - Nenhuma alteração feita em `video_anuncios_engine.js`, WhatsApp Web, HeyGen, ImobTotal ou FFmpeg.
+   - Processo PM2 `bali-gestor` reiniciado e validado como `online`.
+
+5. **Teste de Persistência em Duas Etapas**:
+   - **Etapa 1:** Criação do job mock (`id: ea084896-a1b1-4d6f-8391-557a1e2fdb81`), leitura inicial e atualização de status para `PILOT_READY` com validação de `updated_at > created_at`.
+   - **Etapa 2 (Pós-Restart):** Reinício manual do PM2 e execução de script independente de leitura. O registro persistiu 100% íntegro com todos os campos JSONB e timestamps intactos.
+
+
+# Estado Atual do Sistema (Current State)
+
+**Última Atualização:** 04/09/2026  
+**Fase Concluída:** Fase 1A — Fundação de Persistência PostgreSQL  
 
 ---
 
-## 3. Plano de Arquivos (Modificações e Criações)
+## Componentes Ativos
 
-### A. Arquivos a Criar:
-1. **`migrations/001_create_video_jobs.sql`**:
-   * Extensão para geração de UUID (`gen_random_uuid()`).
-   * Schema da tabela `video_jobs`:
-     * `id` (UUID, PK, default gen_random_uuid())
-     * `property_ref` (VARCHAR(50), NOT NULL)
-     * `broker_id` (VARCHAR(100), NOT NULL)
-     * `status` (VARCHAR(50), NOT NULL, ex: 'PENDING', 'PILOT_RENDERING', 'PILOT_READY', 'COMPLETED', 'FAILED')
-     * `source` (VARCHAR(50), default 'whatsapp')
-     * `script_version` (INTEGER, default 1)
-     * `property_snapshot` (JSONB)
-     * `scripts_snapshot` (JSONB)
-     * `metadata` (JSONB)
-     * `created_at` (TIMESTAMP WITH TIME ZONE, default NOW())
-     * `updated_at` (TIMESTAMP WITH TIME ZONE, default NOW())
-2. **`video_engine/db.js`**:
-   * Módulo isolado de acesso ao PostgreSQL utilizando `pg.Pool`.
-   * Leitura de credenciais estritamente via `process.env` (`PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, `PGPASSWORD`).
-   * Funções exportadas:
-     * `createVideoJob(data)`
-     * `getVideoJobById(id)`
-     * `updateVideoJob(id, patch)`
-     * `runMigrations()`
-3. **`scripts/test_video_jobs_persistence.js`**:
-   * Script de teste que executa: Conexão -> CREATE job -> READ por ID -> UPDATE status -> READ validando persistência -> RESTART de processo -> READ pós-restart.
-   * Não executa nenhuma chamada a HeyGen, WhatsApp, FFmpeg ou ImobTotal.
+1. **V1 em Produção (Operacional)**:
+   - Motor: `video_anuncios_engine.js` (Gerenciamento via WhatsApp, Looks Marcel, Voz Clonada HeyGen, FFmpeg, Piloto Primeiro).
+   - Sessões em Memória: `activeVideoSessions = {}` (Inalterado).
+   - Processo PM2: `bali-gestor` (Porta 3005, Online).
 
-### B. Arquivos a Modificar:
-1. **`package.json`**: Adição da dependência oficial `pg` (`npm install pg`).
-2. **`.env`**: Inclusão das variáveis de ambiente de conexão ao PostgreSQL (sem versionamento).
-3. **`.env.example`**: Inclusão das variáveis documentais do PostgreSQL com valores fictícios.
+2. **V2 Fundação de Persistência (Instalada e Testada)**:
+   - Banco de Dados: PostgreSQL 16 (Localhost VPS, Banco: `bali_gestor`).
+   - Tabela Mestre: `video_jobs` com suporte a UUID e JSONB.
+   - Módulo de Acesso: `video_engine/db.js` com pool seguro e queries parametrizadas.
+   - Migrations: Versionadas em `/migrations/`.
+   - UUID de Homologação: `ea084896-a1b1-4d6f-8391-557a1e2fdb81` (Status: `PILOT_READY`).
 
-### C. O Que NÃO Será Modificado (Garantia de Risco Zero):
-* `video_anuncios_engine.js`: **Zero alterações funcionais.**
-* `activeVideoSessions`: Permanece como a fonte da verdade operacional da V1.
-* Fluxo do WhatsApp, comandos `CLONE`, `OK`, ganchos e renderização HeyGen continuam idênticos ao estado atual.
+3. **Próximo Passo Planejado**:
+   - Fase 1B: Criação do worker de Jobs e transição não-destrutiva do estado em memória para o PostgreSQL.
