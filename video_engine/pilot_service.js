@@ -10,6 +10,12 @@ const path = require('path');
 const axios = require('axios');
 const { execFile } = require('child_process');
 const { getPool } = require('./db');
+let assetService = null;
+try {
+  assetService = require('./asset_service');
+} catch (e) {
+  console.warn('[PILOT_SERVICE] asset_service indisponível:', e.message);
+}
 
 const HEYGEN_API_KEY = process.env.HEYGEN_API_KEY;
 const MARCEL_VOICE_CLONE_ID = process.env.MARCEL_VOICE_CLONE_ID || 'dccd1a85e6b1450facf9ec953b648df2';
@@ -460,6 +466,28 @@ async function generatePilot(jobId) {
         'UPDATE video_jobs SET metadata = $1, updated_at = NOW() WHERE id = $2',
         [metadata, jobId]
       );
+
+      // Fase 3A: Catalogar Hook 1 como processing (fail-open)
+      if (assetService) {
+        await assetService.safeCatalogOperation('catalog_hook1_submitted', async () => {
+          const genKey = assetService.computeGenerationKey({
+            asset_type: 'hook_clip',
+            text: hook1.text,
+            look_id: hook1.look?.id,
+            voice_id: MARCEL_VOICE_CLONE_ID
+          });
+          await assetService.createAsset({
+            id: `ast_hk_${jobId.slice(0, 8)}_01`,
+            job_id: jobId,
+            property_ref: job.property_ref,
+            asset_type: 'hook_clip',
+            provider_ref: hook1VideoId,
+            generation_key: genKey,
+            status: 'processing',
+            metadata: { hook_index: 1, hook_type: hook1.tipo }
+          });
+        });
+      }
     }
 
     // ETAPA 2: Desenvolvimento / Corpo
@@ -484,6 +512,28 @@ async function generatePilot(jobId) {
         'UPDATE video_jobs SET metadata = $1, updated_at = NOW() WHERE id = $2',
         [metadata, jobId]
       );
+
+      // Fase 3A: Catalogar Body como processing (fail-open)
+      if (assetService) {
+        await assetService.safeCatalogOperation('catalog_body_submitted', async () => {
+          const genKey = assetService.computeGenerationKey({
+            asset_type: 'body_clip',
+            text: bodyScript.text,
+            look_id: bodyScript.look?.id,
+            voice_id: MARCEL_VOICE_CLONE_ID
+          });
+          await assetService.createAsset({
+            id: `ast_bd_${jobId.slice(0, 8)}_01`,
+            job_id: jobId,
+            property_ref: job.property_ref,
+            asset_type: 'body_clip',
+            provider_ref: bodyVideoId,
+            generation_key: genKey,
+            status: 'processing',
+            metadata: { look_name: bodyScript.look?.nome }
+          });
+        });
+      }
     }
 
     // ETAPA 3: Polling
@@ -515,6 +565,26 @@ async function generatePilot(jobId) {
     await downloadToFile(bodyVideoUrl, bodyPath);
     metadata.pilot.body.local_path = bodyPath;
 
+    // Fase 3A: Marcar Hook 1 e Body como READY no catálogo (fail-open)
+    if (assetService) {
+      await assetService.safeCatalogOperation('catalog_hook1_ready', async () => {
+        const specs = await validateMediaStreamsAndDuration(hook1Path).catch(() => ({}));
+        await assetService.markAssetReady(`ast_hk_${jobId.slice(0, 8)}_01`, {
+          localPath: hook1Path,
+          specs,
+          metadata: { heygen_video_url: hook1VideoUrl }
+        });
+      });
+      await assetService.safeCatalogOperation('catalog_body_ready', async () => {
+        const specs = await validateMediaStreamsAndDuration(bodyPath).catch(() => ({}));
+        await assetService.markAssetReady(`ast_bd_${jobId.slice(0, 8)}_01`, {
+          localPath: bodyPath,
+          specs,
+          metadata: { heygen_video_url: bodyVideoUrl }
+        });
+      });
+    }
+
     // ETAPA 5: Montagem FFmpeg
     console.log(`[PILOT_SERVICE] Concatenando Piloto com FFmpeg para ${finalPilotPath}...`);
     await concatenateVideos(hook1Path, bodyPath, finalPilotPath, jobDir);
@@ -528,6 +598,38 @@ async function generatePilot(jobId) {
       size_bytes: pilotStats.size,
       authenticated_url: authenticatedPilotUrl
     };
+
+    // Fase 3A: Catalogar Piloto como rendered_creative e atualizar blueprints (fail-open)
+    if (assetService) {
+      await assetService.safeCatalogOperation('catalog_pilot_ready', async () => {
+        const pilotGenKey = assetService.computeGenerationKey({
+          asset_type: 'rendered_creative',
+          params: { variant_index: 1, name: 'pilot' }
+        });
+        const pilotAssetId = `ast_out_pilot_${jobId.slice(0, 8)}`;
+        await assetService.createAsset({
+          id: pilotAssetId,
+          job_id: jobId,
+          property_ref: job.property_ref,
+          asset_type: 'rendered_creative',
+          generation_key: pilotGenKey,
+          status: 'processing'
+        });
+        const specs = await validateMediaStreamsAndDuration(finalPilotPath).catch(() => ({}));
+        await assetService.markAssetReady(pilotAssetId, {
+          localPath: finalPilotPath,
+          specs,
+          metadata: { filename: 'pilot.mp4', authenticated_url: authenticatedPilotUrl }
+        });
+
+        const blueprints = assetService.buildCreativeBlueprints(job, {
+          hook1_asset_id: `ast_hk_${jobId.slice(0, 8)}_01`,
+          body_asset_id: `ast_bd_${jobId.slice(0, 8)}_01`,
+          pilot_asset_id: pilotAssetId
+        });
+        await assetService.saveBlueprintsToJob(jobId, blueprints);
+      });
+    }
 
     // ETAPA 6: Persistência de Sucesso Total
     await pool.query(
@@ -780,6 +882,28 @@ async function generateRemainderVideos(jobId) {
         'UPDATE video_jobs SET metadata = $1, updated_at = NOW() WHERE id = $2',
         [metadata, jobId]
       );
+
+      // Fase 3A: Catalogar Hook 2 como processing (fail-open)
+      if (assetService) {
+        await assetService.safeCatalogOperation('catalog_hook2_submitted', async () => {
+          const genKey = assetService.computeGenerationKey({
+            asset_type: 'hook_clip',
+            text: hook2.text,
+            look_id: hook2.look?.id,
+            voice_id: MARCEL_VOICE_CLONE_ID
+          });
+          await assetService.createAsset({
+            id: `ast_hk_${jobId.slice(0, 8)}_02`,
+            job_id: jobId,
+            property_ref: job.property_ref,
+            asset_type: 'hook_clip',
+            provider_ref: hook2VideoId,
+            generation_key: genKey,
+            status: 'processing',
+            metadata: { hook_index: 2, hook_type: hook2.tipo }
+          });
+        });
+      }
     } else {
       console.log(`[REMAINDER_SERVICE] Smart Retry: reutilizando Hook 2 existente ${hook2VideoId} para Job ${jobId}`);
     }
@@ -815,6 +939,28 @@ async function generateRemainderVideos(jobId) {
         'UPDATE video_jobs SET metadata = $1, updated_at = NOW() WHERE id = $2',
         [metadata, jobId]
       );
+
+      // Fase 3A: Catalogar Hook 3 como processing (fail-open)
+      if (assetService) {
+        await assetService.safeCatalogOperation('catalog_hook3_submitted', async () => {
+          const genKey = assetService.computeGenerationKey({
+            asset_type: 'hook_clip',
+            text: hook3.text,
+            look_id: hook3.look?.id,
+            voice_id: MARCEL_VOICE_CLONE_ID
+          });
+          await assetService.createAsset({
+            id: `ast_hk_${jobId.slice(0, 8)}_03`,
+            job_id: jobId,
+            property_ref: job.property_ref,
+            asset_type: 'hook_clip',
+            provider_ref: hook3VideoId,
+            generation_key: genKey,
+            status: 'processing',
+            metadata: { hook_index: 3, hook_type: hook3.tipo }
+          });
+        });
+      }
     } else {
       console.log(`[REMAINDER_SERVICE] Smart Retry: reutilizando Hook 3 existente ${hook3VideoId} para Job ${jobId}`);
     }
@@ -840,6 +986,17 @@ async function generateRemainderVideos(jobId) {
       metadata.remainder.hook2.local_path = hook2Local;
     }
 
+    // Fase 3A: Marcar Hook 2 como ready no catálogo (fail-open)
+    if (assetService) {
+      await assetService.safeCatalogOperation('catalog_hook2_ready', async () => {
+        const specs = await validateMediaStreamsAndDuration(hook2Local).catch(() => ({}));
+        await assetService.markAssetReady(`ast_hk_${jobId.slice(0, 8)}_02`, {
+          localPath: hook2Local,
+          specs
+        });
+      });
+    }
+
     const hook3Local = path.join(jobDir, 'hook_3.mp4');
     if (!fs.existsSync(hook3Local) || fs.statSync(hook3Local).size === 0) {
       console.log(`[REMAINDER_SERVICE] Aguardando renderização do Gancho 3 (${hook3VideoId})...`);
@@ -858,6 +1015,17 @@ async function generateRemainderVideos(jobId) {
     } else {
       console.log(`[REMAINDER_SERVICE] Smart Retry: Gancho 3 local já existente e com tamanho válido.`);
       metadata.remainder.hook3.local_path = hook3Local;
+    }
+
+    // Fase 3A: Marcar Hook 3 como ready no catálogo (fail-open)
+    if (assetService) {
+      await assetService.safeCatalogOperation('catalog_hook3_ready', async () => {
+        const specs = await validateMediaStreamsAndDuration(hook3Local).catch(() => ({}));
+        await assetService.markAssetReady(`ast_hk_${jobId.slice(0, 8)}_03`, {
+          localPath: hook3Local,
+          specs
+        });
+      });
     }
 
     // 6. CONCATENAÇÃO FFMPEG GRANULAR (VÍDEO 2)
@@ -887,6 +1055,31 @@ async function generateRemainderVideos(jobId) {
       console.log(`[REMAINDER_SERVICE] Smart Retry: Vídeo 2 já existente e validado no disco.`);
     }
 
+    // Fase 3A: Catalogar Vídeo 2 como rendered_creative (fail-open)
+    if (assetService) {
+      await assetService.safeCatalogOperation('catalog_video2_ready', async () => {
+        const v2GenKey = assetService.computeGenerationKey({
+          asset_type: 'rendered_creative',
+          params: { variant_index: 2, name: 'video_2' }
+        });
+        const v2AssetId = `ast_out_vid2_${jobId.slice(0, 8)}`;
+        await assetService.createAsset({
+          id: v2AssetId,
+          job_id: jobId,
+          property_ref: job.property_ref,
+          asset_type: 'rendered_creative',
+          generation_key: v2GenKey,
+          status: 'processing'
+        });
+        const specs = await validateMediaStreamsAndDuration(video2Local).catch(() => ({}));
+        await assetService.markAssetReady(v2AssetId, {
+          localPath: video2Local,
+          specs,
+          metadata: { filename: 'video_2.mp4', authenticated_url: v2AuthUrl }
+        });
+      });
+    }
+
     // 7. CONCATENAÇÃO FFMPEG GRANULAR (VÍDEO 3)
     const video3Local = path.join(jobDir, 'video_3.mp4');
     const isVideo3Valid = await isMediaFileFullyValid(video3Local);
@@ -914,6 +1107,31 @@ async function generateRemainderVideos(jobId) {
       console.log(`[REMAINDER_SERVICE] Smart Retry: Vídeo 3 já existente e validado no disco.`);
     }
 
+    // Fase 3A: Catalogar Vídeo 3 como rendered_creative (fail-open)
+    if (assetService) {
+      await assetService.safeCatalogOperation('catalog_video3_ready', async () => {
+        const v3GenKey = assetService.computeGenerationKey({
+          asset_type: 'rendered_creative',
+          params: { variant_index: 3, name: 'video_3' }
+        });
+        const v3AssetId = `ast_out_vid3_${jobId.slice(0, 8)}`;
+        await assetService.createAsset({
+          id: v3AssetId,
+          job_id: jobId,
+          property_ref: job.property_ref,
+          asset_type: 'rendered_creative',
+          generation_key: v3GenKey,
+          status: 'processing'
+        });
+        const specs = await validateMediaStreamsAndDuration(video3Local).catch(() => ({}));
+        await assetService.markAssetReady(v3AssetId, {
+          localPath: video3Local,
+          specs,
+          metadata: { filename: 'video_3.mp4', authenticated_url: v3AuthUrl }
+        });
+      });
+    }
+
     // 8. FINALIZAÇÃO TOTAL: CREATIVE_SET_READY
     const v2Url = `/api/v2/panel/video-jobs/${jobId}/video/2`;
     const v3Url = `/api/v2/panel/video-jobs/${jobId}/video/3`;
@@ -930,6 +1148,22 @@ async function generateRemainderVideos(jobId) {
        WHERE id = $4`,
       [v2Url, v3Url, metadata, jobId]
     );
+
+    // Fase 3A: Atualizar os 3 Blueprints com todos os assets finais (fail-open)
+    if (assetService) {
+      await assetService.safeCatalogOperation('catalog_final_collection_blueprints', async () => {
+        const blueprints = assetService.buildCreativeBlueprints(job, {
+          hook1_asset_id: `ast_hk_${jobId.slice(0, 8)}_01`,
+          hook2_asset_id: `ast_hk_${jobId.slice(0, 8)}_02`,
+          hook3_asset_id: `ast_hk_${jobId.slice(0, 8)}_03`,
+          body_asset_id: `ast_bd_${jobId.slice(0, 8)}_01`,
+          pilot_asset_id: `ast_out_pilot_${jobId.slice(0, 8)}`,
+          video2_asset_id: `ast_out_vid2_${jobId.slice(0, 8)}`,
+          video3_asset_id: `ast_out_vid3_${jobId.slice(0, 8)}`
+        });
+        await assetService.saveBlueprintsToJob(jobId, blueprints);
+      });
+    }
 
     console.log(`[REMAINDER_SERVICE] Coleção criativa concluída com sucesso para Job ${jobId}`);
     return {
