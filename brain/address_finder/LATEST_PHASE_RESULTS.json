@@ -1,38 +1,28 @@
 {
-  "phase": "2.3X2",
-  "phase_name": "DENSE_CADASTRAL_MICRO_AREA_COMPLETION",
-  "microarea_id": "CAND-MICRO-14585",
-  "classification": "DENSE_CADASTRAL_TOPOLOGY_PARTIAL_VALUE",
-  "metrics": {
-    "TOTAL_BCS": 29,
-    "TOTAL_DISTINCT_DSQLLL": 22,
-    "EXACT_STREET_FACE_COUNT": 1,
-    "PROBABLE_STREET_FACE_COUNT": 17,
-    "STREET_ONLY_COUNT": 4,
-    "USABLE_FACE_COVERAGE_RATE": 81.82,
-    "H_QQQ_GIVEN_PHYSICAL_BLOCK_BITS": 0.6713,
-    "H_QQQ_GIVEN_STREET_FACE_BITS": 0.0,
-    "DELTA_ENTROPY_BITS": -0.6713,
-    "PURITY_PHYSICAL_BLOCK_PCT": 77.78,
-    "PURITY_STREET_FACE_PCT": 100.0,
-    "DELTA_PURITY_PCT": 22.22,
-    "P_SINGLE_QQQ_GIVEN_STREET_FACE_PCT": 100.0,
-    "HOLDOUT_TOP1_ACCURACY": 0.0,
-    "HOLDOUT_TOP3_ACCURACY": 1.0,
-    "HOLDOUT_TOP5_ACCURACY": 1.0
+  "phase": "2.3X3",
+  "phase_name": "CROSS_MICROAREA_STREET_FACE_REPLICATION",
+  "classification": "MICROAREA_B_FACE_GT_INSUFFICIENT",
+  "status": "COMPLETE_WITH_FEASIBILITY_STOP",
+  "signal": "STOP_FOR_HUMAN_REVIEW",
+  "feasibility_gate": {
+    "minimum_threshold_required": {
+      "USABLE_FACE_DSQLLL_MIN": 8,
+      "DOCUMENTED_STREET_FACE_COUNT_MIN": 4,
+      "PHYSICAL_BLOCKS_WITH_USABLE_FACE_GT_MIN": 3,
+      "DISTINCT_STREETS_WITH_USABLE_FACE_GT_MIN": 3
+    },
+    "best_candidate_outside_barranco": {
+      "candidate_id": "CAND-MICRO-15939",
+      "neighborhood": "Taubaté Urban",
+      "usable_face_dsqlll": 1,
+      "street_only_count": 0,
+      "documented_street_face_count": 1,
+      "blocks_with_usable_face_gt": 1,
+      "usable_street_count": 1,
+      "passes_threshold": false
+    },
+    "total_evaluated_candidates": 25271,
+    "qualifying_candidate_count": 0
   },
-  "holdout": {
-    "holdout_face_id": "PRB-0736_FACE_W",
-    "holdout_street": "Rua Antônio Delgado da Veiga",
-    "true_qqqs": [
-      "207"
-    ],
-    "predicted_top_qqqs": [
-      "206",
-      "207",
-      "208",
-      "209"
-    ]
-  },
-  "timestamp": "2026-09-05T01:10:40.045761+00:00"
+  "timestamp": "2026-09-05T01:39:57.352508+00:00"
 }

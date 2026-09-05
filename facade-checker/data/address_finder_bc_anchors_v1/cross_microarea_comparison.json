@@ -1,0 +1,51 @@
+{
+  "metadata": {
+    "phase": "2.3X3",
+    "description": "Cross-Microarea Comparison: Microarea A vs Microarea B Candidates"
+  },
+  "microarea_a_baseline": {
+    "microarea_id": "CAND-MICRO-14585",
+    "neighborhood": "Barranco / Bosque Flamboyant",
+    "physical_blocks": 4,
+    "real_bc_count": 29,
+    "distinct_dsqlll": 22,
+    "exact_street_face_count": 1,
+    "probable_street_face_count": 17,
+    "street_only_count": 4,
+    "usable_face_dsqlll": 18,
+    "documented_street_faces": 6,
+    "physical_blocks_with_gt": 4,
+    "distinct_streets_with_gt": 4,
+    "h_qqq_given_block_bits": 0.6713,
+    "h_qqq_given_face_bits": 0.0,
+    "delta_entropy_bits": -0.6713,
+    "purity_block_pct": 77.78,
+    "purity_face_pct": 100.0,
+    "delta_purity_pct": 22.22,
+    "single_qqq_face_rate_pct": 100.0,
+    "status": "PASS (Baseline Reference)"
+  },
+  "microarea_b_top_candidate": {
+    "microarea_id": "CAND-MICRO-15939",
+    "neighborhood": "Taubaté Urban",
+    "physical_blocks": 7,
+    "distinct_dsqlll": 1,
+    "usable_face_dsqlll": 1,
+    "street_only_count": 0,
+    "documented_street_faces": 1,
+    "physical_blocks_with_gt": 1,
+    "distinct_streets_with_gt": 1,
+    "h_qqq_given_block_bits": "NOT_EVALUATED_INSUFFICIENT_GT",
+    "h_qqq_given_face_bits": "NOT_EVALUATED_INSUFFICIENT_GT",
+    "delta_entropy_bits": "NOT_EVALUATED_INSUFFICIENT_GT",
+    "purity_block_pct": "NOT_EVALUATED_INSUFFICIENT_GT",
+    "purity_face_pct": "NOT_EVALUATED_INSUFFICIENT_GT",
+    "delta_purity_pct": "NOT_EVALUATED_INSUFFICIENT_GT",
+    "single_qqq_face_rate_pct": "NOT_EVALUATED_INSUFFICIENT_GT",
+    "status": "FAIL_UNDERPOWERED"
+  },
+  "comparison_summary": {
+    "feasibility_reconciliation": "Microarea A possessed 18 usable face parcels (1 exact corner certidão, 17 probable certidão lots with door numbers). Microarea B candidates outside Barranco possess 0 to 1 usable face parcels (all street-only), failing the minimum pre-registered statistical power threshold of 8 usable face parcels.",
+    "scientific_conclusion": "Stopping prior to topology replication is required to preserve non-circularity and prevent ungrounded spatial imputation."
+  }
+}

@@ -1,0 +1,740 @@
+{
+  "metadata": {
+    "phase": "2.3X3",
+    "description": "Face-GT Feasibility Matrix by Candidate Microarea"
+  },
+  "candidates": [
+    {
+      "candidate_id": "CAND-MICRO-15939",
+      "neighborhood": "Taubaté Urban",
+      "physical_block_count": 7,
+      "physical_block_ids": [
+        "PRB-0153",
+        "PRB-0155",
+        "PRB-0158",
+        "PRB-0159",
+        "PRB-0174",
+        "PRB-0177",
+        "PRB-0796"
+      ],
+      "distinct_dsqlll": 1,
+      "exact_parcel_count": 0,
+      "exact_street_face_count": 0,
+      "probable_street_face_count": 1,
+      "street_only_count": 0,
+      "unresolved_count": 0,
+      "usable_face_dsqlll": 1,
+      "documented_street_face_count": 1,
+      "blocks_with_usable_face_gt": 1,
+      "usable_street_count": 1,
+      "total_street_count": 26,
+      "max_condo_fraction": 1.0,
+      "feasibility_score": 92.43,
+      "passes_threshold": false,
+      "matched_dsqllls": [
+        "5.2.003.009"
+      ],
+      "matched_streets": [
+        "francisco alves monteiro"
+      ],
+      "usable_streets": [
+        "francisco alves monteiro"
+      ]
+    },
+    {
+      "candidate_id": "CAND-MICRO-15944",
+      "neighborhood": "Taubaté Urban",
+      "physical_block_count": 7,
+      "physical_block_ids": [
+        "PRB-0153",
+        "PRB-0155",
+        "PRB-0158",
+        "PRB-0159",
+        "PRB-0175",
+        "PRB-0177",
+        "PRB-0796"
+      ],
+      "distinct_dsqlll": 1,
+      "exact_parcel_count": 0,
+      "exact_street_face_count": 0,
+      "probable_street_face_count": 1,
+      "street_only_count": 0,
+      "unresolved_count": 0,
+      "usable_face_dsqlll": 1,
+      "documented_street_face_count": 1,
+      "blocks_with_usable_face_gt": 1,
+      "usable_street_count": 1,
+      "total_street_count": 26,
+      "max_condo_fraction": 1.0,
+      "feasibility_score": 92.43,
+      "passes_threshold": false,
+      "matched_dsqllls": [
+        "5.2.003.009"
+      ],
+      "matched_streets": [
+        "francisco alves monteiro"
+      ],
+      "usable_streets": [
+        "francisco alves monteiro"
+      ]
+    },
+    {
+      "candidate_id": "CAND-MICRO-16361",
+      "neighborhood": "Taubaté Urban",
+      "physical_block_count": 7,
+      "physical_block_ids": [
+        "PRB-0153",
+        "PRB-0155",
+        "PRB-0158",
+        "PRB-0159",
+        "PRB-0173",
+        "PRB-0174",
+        "PRB-0796"
+      ],
+      "distinct_dsqlll": 1,
+      "exact_parcel_count": 0,
+      "exact_street_face_count": 0,
+      "probable_street_face_count": 1,
+      "street_only_count": 0,
+      "unresolved_count": 0,
+      "usable_face_dsqlll": 1,
+      "documented_street_face_count": 1,
+      "blocks_with_usable_face_gt": 1,
+      "usable_street_count": 1,
+      "total_street_count": 26,
+      "max_condo_fraction": 1.0,
+      "feasibility_score": 92.43,
+      "passes_threshold": false,
+      "matched_dsqllls": [
+        "5.2.003.009"
+      ],
+      "matched_streets": [
+        "francisco alves monteiro"
+      ],
+      "usable_streets": [
+        "francisco alves monteiro"
+      ]
+    },
+    {
+      "candidate_id": "CAND-MICRO-15781",
+      "neighborhood": "Taubaté Urban",
+      "physical_block_count": 6,
+      "physical_block_ids": [
+        "PRB-0153",
+        "PRB-0155",
+        "PRB-0158",
+        "PRB-0159",
+        "PRB-0172",
+        "PRB-0796"
+      ],
+      "distinct_dsqlll": 1,
+      "exact_parcel_count": 0,
+      "exact_street_face_count": 0,
+      "probable_street_face_count": 1,
+      "street_only_count": 0,
+      "unresolved_count": 0,
+      "usable_face_dsqlll": 1,
+      "documented_street_face_count": 1,
+      "blocks_with_usable_face_gt": 1,
+      "usable_street_count": 1,
+      "total_street_count": 25,
+      "max_condo_fraction": 1.0,
+      "feasibility_score": 91.67,
+      "passes_threshold": false,
+      "matched_dsqllls": [
+        "5.2.003.009"
+      ],
+      "matched_streets": [
+        "francisco alves monteiro"
+      ],
+      "usable_streets": [
+        "francisco alves monteiro"
+      ]
+    },
+    {
+      "candidate_id": "CAND-MICRO-15945",
+      "neighborhood": "Taubaté Urban",
+      "physical_block_count": 7,
+      "physical_block_ids": [
+        "PRB-0153",
+        "PRB-0155",
+        "PRB-0158",
+        "PRB-0159",
+        "PRB-0177",
+        "PRB-0178",
+        "PRB-0796"
+      ],
+      "distinct_dsqlll": 1,
+      "exact_parcel_count": 0,
+      "exact_street_face_count": 0,
+      "probable_street_face_count": 1,
+      "street_only_count": 0,
+      "unresolved_count": 0,
+      "usable_face_dsqlll": 1,
+      "documented_street_face_count": 1,
+      "blocks_with_usable_face_gt": 1,
+      "usable_street_count": 1,
+      "total_street_count": 25,
+      "max_condo_fraction": 1.0,
+      "feasibility_score": 91.43,
+      "passes_threshold": false,
+      "matched_dsqllls": [
+        "5.2.003.009"
+      ],
+      "matched_streets": [
+        "francisco alves monteiro"
+      ],
+      "usable_streets": [
+        "francisco alves monteiro"
+      ]
+    },
+    {
+      "candidate_id": "CAND-MICRO-15953",
+      "neighborhood": "Taubaté Urban",
+      "physical_block_count": 7,
+      "physical_block_ids": [
+        "PRB-0153",
+        "PRB-0155",
+        "PRB-0158",
+        "PRB-0159",
+        "PRB-0172",
+        "PRB-0177",
+        "PRB-0796"
+      ],
+      "distinct_dsqlll": 1,
+      "exact_parcel_count": 0,
+      "exact_street_face_count": 0,
+      "probable_street_face_count": 1,
+      "street_only_count": 0,
+      "unresolved_count": 0,
+      "usable_face_dsqlll": 1,
+      "documented_street_face_count": 1,
+      "blocks_with_usable_face_gt": 1,
+      "usable_street_count": 1,
+      "total_street_count": 25,
+      "max_condo_fraction": 1.0,
+      "feasibility_score": 91.43,
+      "passes_threshold": false,
+      "matched_dsqllls": [
+        "5.2.003.009"
+      ],
+      "matched_streets": [
+        "francisco alves monteiro"
+      ],
+      "usable_streets": [
+        "francisco alves monteiro"
+      ]
+    },
+    {
+      "candidate_id": "CAND-MICRO-15948",
+      "neighborhood": "Taubaté Urban",
+      "physical_block_count": 7,
+      "physical_block_ids": [
+        "PRB-0153",
+        "PRB-0155",
+        "PRB-0158",
+        "PRB-0159",
+        "PRB-0172",
+        "PRB-0186",
+        "PRB-0796"
+      ],
+      "distinct_dsqlll": 1,
+      "exact_parcel_count": 0,
+      "exact_street_face_count": 0,
+      "probable_street_face_count": 1,
+      "street_only_count": 0,
+      "unresolved_count": 0,
+      "usable_face_dsqlll": 1,
+      "documented_street_face_count": 1,
+      "blocks_with_usable_face_gt": 1,
+      "usable_street_count": 1,
+      "total_street_count": 25,
+      "max_condo_fraction": 1.0,
+      "feasibility_score": 91.43,
+      "passes_threshold": false,
+      "matched_dsqllls": [
+        "5.2.003.009"
+      ],
+      "matched_streets": [
+        "francisco alves monteiro"
+      ],
+      "usable_streets": [
+        "francisco alves monteiro"
+      ]
+    },
+    {
+      "candidate_id": "CAND-MICRO-15951",
+      "neighborhood": "Taubaté Urban",
+      "physical_block_count": 7,
+      "physical_block_ids": [
+        "PRB-0153",
+        "PRB-0154",
+        "PRB-0155",
+        "PRB-0158",
+        "PRB-0159",
+        "PRB-0172",
+        "PRB-0796"
+      ],
+      "distinct_dsqlll": 1,
+      "exact_parcel_count": 0,
+      "exact_street_face_count": 0,
+      "probable_street_face_count": 1,
+      "street_only_count": 0,
+      "unresolved_count": 0,
+      "usable_face_dsqlll": 1,
+      "documented_street_face_count": 1,
+      "blocks_with_usable_face_gt": 1,
+      "usable_street_count": 1,
+      "total_street_count": 25,
+      "max_condo_fraction": 1.0,
+      "feasibility_score": 91.43,
+      "passes_threshold": false,
+      "matched_dsqllls": [
+        "5.2.003.009"
+      ],
+      "matched_streets": [
+        "francisco alves monteiro"
+      ],
+      "usable_streets": [
+        "francisco alves monteiro"
+      ]
+    },
+    {
+      "candidate_id": "CAND-MICRO-16040",
+      "neighborhood": "Taubaté Urban",
+      "physical_block_count": 7,
+      "physical_block_ids": [
+        "PRB-0153",
+        "PRB-0155",
+        "PRB-0156",
+        "PRB-0158",
+        "PRB-0159",
+        "PRB-0174",
+        "PRB-0177"
+      ],
+      "distinct_dsqlll": 1,
+      "exact_parcel_count": 0,
+      "exact_street_face_count": 0,
+      "probable_street_face_count": 1,
+      "street_only_count": 0,
+      "unresolved_count": 0,
+      "usable_face_dsqlll": 1,
+      "documented_street_face_count": 1,
+      "blocks_with_usable_face_gt": 1,
+      "usable_street_count": 1,
+      "total_street_count": 24,
+      "max_condo_fraction": 1.0,
+      "feasibility_score": 90.43,
+      "passes_threshold": false,
+      "matched_dsqllls": [
+        "5.2.003.009"
+      ],
+      "matched_streets": [
+        "francisco alves monteiro"
+      ],
+      "usable_streets": [
+        "francisco alves monteiro"
+      ]
+    },
+    {
+      "candidate_id": "CAND-MICRO-16046",
+      "neighborhood": "Taubaté Urban",
+      "physical_block_count": 7,
+      "physical_block_ids": [
+        "PRB-0153",
+        "PRB-0155",
+        "PRB-0156",
+        "PRB-0158",
+        "PRB-0159",
+        "PRB-0175",
+        "PRB-0177"
+      ],
+      "distinct_dsqlll": 1,
+      "exact_parcel_count": 0,
+      "exact_street_face_count": 0,
+      "probable_street_face_count": 1,
+      "street_only_count": 0,
+      "unresolved_count": 0,
+      "usable_face_dsqlll": 1,
+      "documented_street_face_count": 1,
+      "blocks_with_usable_face_gt": 1,
+      "usable_street_count": 1,
+      "total_street_count": 24,
+      "max_condo_fraction": 1.0,
+      "feasibility_score": 90.43,
+      "passes_threshold": false,
+      "matched_dsqllls": [
+        "5.2.003.009"
+      ],
+      "matched_streets": [
+        "francisco alves monteiro"
+      ],
+      "usable_streets": [
+        "francisco alves monteiro"
+      ]
+    },
+    {
+      "candidate_id": "CAND-MICRO-16123",
+      "neighborhood": "Taubaté Urban",
+      "physical_block_count": 7,
+      "physical_block_ids": [
+        "PRB-0153",
+        "PRB-0154",
+        "PRB-0156",
+        "PRB-0158",
+        "PRB-0159",
+        "PRB-0174",
+        "PRB-0177"
+      ],
+      "distinct_dsqlll": 1,
+      "exact_parcel_count": 0,
+      "exact_street_face_count": 0,
+      "probable_street_face_count": 1,
+      "street_only_count": 0,
+      "unresolved_count": 0,
+      "usable_face_dsqlll": 1,
+      "documented_street_face_count": 1,
+      "blocks_with_usable_face_gt": 1,
+      "usable_street_count": 1,
+      "total_street_count": 24,
+      "max_condo_fraction": 1.0,
+      "feasibility_score": 90.43,
+      "passes_threshold": false,
+      "matched_dsqllls": [
+        "5.2.003.009"
+      ],
+      "matched_streets": [
+        "francisco alves monteiro"
+      ],
+      "usable_streets": [
+        "francisco alves monteiro"
+      ]
+    },
+    {
+      "candidate_id": "CAND-MICRO-16126",
+      "neighborhood": "Taubaté Urban",
+      "physical_block_count": 7,
+      "physical_block_ids": [
+        "PRB-0153",
+        "PRB-0154",
+        "PRB-0156",
+        "PRB-0158",
+        "PRB-0159",
+        "PRB-0175",
+        "PRB-0177"
+      ],
+      "distinct_dsqlll": 1,
+      "exact_parcel_count": 0,
+      "exact_street_face_count": 0,
+      "probable_street_face_count": 1,
+      "street_only_count": 0,
+      "unresolved_count": 0,
+      "usable_face_dsqlll": 1,
+      "documented_street_face_count": 1,
+      "blocks_with_usable_face_gt": 1,
+      "usable_street_count": 1,
+      "total_street_count": 24,
+      "max_condo_fraction": 1.0,
+      "feasibility_score": 90.43,
+      "passes_threshold": false,
+      "matched_dsqllls": [
+        "5.2.003.009"
+      ],
+      "matched_streets": [
+        "francisco alves monteiro"
+      ],
+      "usable_streets": [
+        "francisco alves monteiro"
+      ]
+    },
+    {
+      "candidate_id": "CAND-MICRO-16015",
+      "neighborhood": "Taubaté Urban",
+      "physical_block_count": 7,
+      "physical_block_ids": [
+        "PRB-0153",
+        "PRB-0154",
+        "PRB-0155",
+        "PRB-0156",
+        "PRB-0158",
+        "PRB-0159",
+        "PRB-0172"
+      ],
+      "distinct_dsqlll": 1,
+      "exact_parcel_count": 0,
+      "exact_street_face_count": 0,
+      "probable_street_face_count": 1,
+      "street_only_count": 0,
+      "unresolved_count": 0,
+      "usable_face_dsqlll": 1,
+      "documented_street_face_count": 1,
+      "blocks_with_usable_face_gt": 1,
+      "usable_street_count": 1,
+      "total_street_count": 24,
+      "max_condo_fraction": 1.0,
+      "feasibility_score": 90.43,
+      "passes_threshold": false,
+      "matched_dsqllls": [
+        "5.2.003.009"
+      ],
+      "matched_streets": [
+        "francisco alves monteiro"
+      ],
+      "usable_streets": [
+        "francisco alves monteiro"
+      ]
+    },
+    {
+      "candidate_id": "CAND-MICRO-15692",
+      "neighborhood": "Taubaté Urban",
+      "physical_block_count": 5,
+      "physical_block_ids": [
+        "PRB-0153",
+        "PRB-0155",
+        "PRB-0158",
+        "PRB-0159",
+        "PRB-0796"
+      ],
+      "distinct_dsqlll": 1,
+      "exact_parcel_count": 0,
+      "exact_street_face_count": 0,
+      "probable_street_face_count": 1,
+      "street_only_count": 0,
+      "unresolved_count": 0,
+      "usable_face_dsqlll": 1,
+      "documented_street_face_count": 1,
+      "blocks_with_usable_face_gt": 1,
+      "usable_street_count": 1,
+      "total_street_count": 23,
+      "max_condo_fraction": 1.0,
+      "feasibility_score": 90.0,
+      "passes_threshold": false,
+      "matched_dsqllls": [
+        "5.2.003.009"
+      ],
+      "matched_streets": [
+        "francisco alves monteiro"
+      ],
+      "usable_streets": [
+        "francisco alves monteiro"
+      ]
+    },
+    {
+      "candidate_id": "CAND-MICRO-15778",
+      "neighborhood": "Taubaté Urban",
+      "physical_block_count": 6,
+      "physical_block_ids": [
+        "PRB-0153",
+        "PRB-0155",
+        "PRB-0158",
+        "PRB-0159",
+        "PRB-0177",
+        "PRB-0796"
+      ],
+      "distinct_dsqlll": 1,
+      "exact_parcel_count": 0,
+      "exact_street_face_count": 0,
+      "probable_street_face_count": 1,
+      "street_only_count": 0,
+      "unresolved_count": 0,
+      "usable_face_dsqlll": 1,
+      "documented_street_face_count": 1,
+      "blocks_with_usable_face_gt": 1,
+      "usable_street_count": 1,
+      "total_street_count": 23,
+      "max_condo_fraction": 1.0,
+      "feasibility_score": 89.67,
+      "passes_threshold": false,
+      "matched_dsqllls": [
+        "5.2.003.009"
+      ],
+      "matched_streets": [
+        "francisco alves monteiro"
+      ],
+      "usable_streets": [
+        "francisco alves monteiro"
+      ]
+    },
+    {
+      "candidate_id": "CAND-MICRO-15779",
+      "neighborhood": "Taubaté Urban",
+      "physical_block_count": 6,
+      "physical_block_ids": [
+        "PRB-0153",
+        "PRB-0155",
+        "PRB-0158",
+        "PRB-0159",
+        "PRB-0186",
+        "PRB-0796"
+      ],
+      "distinct_dsqlll": 1,
+      "exact_parcel_count": 0,
+      "exact_street_face_count": 0,
+      "probable_street_face_count": 1,
+      "street_only_count": 0,
+      "unresolved_count": 0,
+      "usable_face_dsqlll": 1,
+      "documented_street_face_count": 1,
+      "blocks_with_usable_face_gt": 1,
+      "usable_street_count": 1,
+      "total_street_count": 23,
+      "max_condo_fraction": 1.0,
+      "feasibility_score": 89.67,
+      "passes_threshold": false,
+      "matched_dsqllls": [
+        "5.2.003.009"
+      ],
+      "matched_streets": [
+        "francisco alves monteiro"
+      ],
+      "usable_streets": [
+        "francisco alves monteiro"
+      ]
+    },
+    {
+      "candidate_id": "CAND-MICRO-15780",
+      "neighborhood": "Taubaté Urban",
+      "physical_block_count": 6,
+      "physical_block_ids": [
+        "PRB-0153",
+        "PRB-0154",
+        "PRB-0155",
+        "PRB-0158",
+        "PRB-0159",
+        "PRB-0796"
+      ],
+      "distinct_dsqlll": 1,
+      "exact_parcel_count": 0,
+      "exact_street_face_count": 0,
+      "probable_street_face_count": 1,
+      "street_only_count": 0,
+      "unresolved_count": 0,
+      "usable_face_dsqlll": 1,
+      "documented_street_face_count": 1,
+      "blocks_with_usable_face_gt": 1,
+      "usable_street_count": 1,
+      "total_street_count": 23,
+      "max_condo_fraction": 1.0,
+      "feasibility_score": 89.67,
+      "passes_threshold": false,
+      "matched_dsqllls": [
+        "5.2.003.009"
+      ],
+      "matched_streets": [
+        "francisco alves monteiro"
+      ],
+      "usable_streets": [
+        "francisco alves monteiro"
+      ]
+    },
+    {
+      "candidate_id": "CAND-MICRO-15829",
+      "neighborhood": "Taubaté Urban",
+      "physical_block_count": 6,
+      "physical_block_ids": [
+        "PRB-0153",
+        "PRB-0155",
+        "PRB-0156",
+        "PRB-0158",
+        "PRB-0159",
+        "PRB-0796"
+      ],
+      "distinct_dsqlll": 1,
+      "exact_parcel_count": 0,
+      "exact_street_face_count": 0,
+      "probable_street_face_count": 1,
+      "street_only_count": 0,
+      "unresolved_count": 0,
+      "usable_face_dsqlll": 1,
+      "documented_street_face_count": 1,
+      "blocks_with_usable_face_gt": 1,
+      "usable_street_count": 1,
+      "total_street_count": 23,
+      "max_condo_fraction": 1.0,
+      "feasibility_score": 89.67,
+      "passes_threshold": false,
+      "matched_dsqllls": [
+        "5.2.003.009"
+      ],
+      "matched_streets": [
+        "francisco alves monteiro"
+      ],
+      "usable_streets": [
+        "francisco alves monteiro"
+      ]
+    },
+    {
+      "candidate_id": "CAND-MICRO-15866",
+      "neighborhood": "Taubaté Urban",
+      "physical_block_count": 6,
+      "physical_block_ids": [
+        "PRB-0153",
+        "PRB-0154",
+        "PRB-0156",
+        "PRB-0158",
+        "PRB-0159",
+        "PRB-0172"
+      ],
+      "distinct_dsqlll": 1,
+      "exact_parcel_count": 0,
+      "exact_street_face_count": 0,
+      "probable_street_face_count": 1,
+      "street_only_count": 0,
+      "unresolved_count": 0,
+      "usable_face_dsqlll": 1,
+      "documented_street_face_count": 1,
+      "blocks_with_usable_face_gt": 1,
+      "usable_street_count": 1,
+      "total_street_count": 23,
+      "max_condo_fraction": 1.0,
+      "feasibility_score": 89.67,
+      "passes_threshold": false,
+      "matched_dsqllls": [
+        "5.2.003.009"
+      ],
+      "matched_streets": [
+        "francisco alves monteiro"
+      ],
+      "usable_streets": [
+        "francisco alves monteiro"
+      ]
+    },
+    {
+      "candidate_id": "CAND-MICRO-15946",
+      "neighborhood": "Taubaté Urban",
+      "physical_block_count": 7,
+      "physical_block_ids": [
+        "PRB-0153",
+        "PRB-0155",
+        "PRB-0158",
+        "PRB-0159",
+        "PRB-0177",
+        "PRB-0186",
+        "PRB-0796"
+      ],
+      "distinct_dsqlll": 1,
+      "exact_parcel_count": 0,
+      "exact_street_face_count": 0,
+      "probable_street_face_count": 1,
+      "street_only_count": 0,
+      "unresolved_count": 0,
+      "usable_face_dsqlll": 1,
+      "documented_street_face_count": 1,
+      "blocks_with_usable_face_gt": 1,
+      "usable_street_count": 1,
+      "total_street_count": 23,
+      "max_condo_fraction": 1.0,
+      "feasibility_score": 89.43,
+      "passes_threshold": false,
+      "matched_dsqllls": [
+        "5.2.003.009"
+      ],
+      "matched_streets": [
+        "francisco alves monteiro"
+      ],
+      "usable_streets": [
+        "francisco alves monteiro"
+      ]
+    }
+  ]
+}
