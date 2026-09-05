@@ -1,32 +1,35 @@
 # Estado Atual da Video Engine — Bali Imóveis (V2)
 
 **Última Atualização:** 05/09/2026  
-**Fase Atual Concluída:** Fase 2A — Painel Web Mínimo de Criação e Visualização de Job  
-**Próxima Fase:** A definir (ex: Fase 2B - Seleção de Look / Disparo de Renderização pelo Painel)  
+**Fase Atual Concluída:** Fase 2B — Geração de Piloto pelo Painel Web V2 (Vinculada ao Job)  
+**Próxima Fase:** A definir (ex: Fase 2C - Aprovação do Piloto e Renderização dos Ganchos Restantes 2 e 3)  
 **Ambiente:** VPS Ubuntu 24.04 (`159.223.118.129`)  
-**Status do PM2:** `bali-gestor` online (pid 60633)  
+**Status do PM2:** `bali-gestor` online (pid 61975)  
 **Status do Banco:** PostgreSQL 16 `active` (DB: `bali_gestor`)  
 
 ---
 
 ## 1. Arquitetura Atual Homologada
 
-A Video Engine possui agora **três adaptadores de entrada** conectados ao mesmo **Job Core**:
+A Video Engine possui agora capacidade de **criação de Jobs e produção visual de Vídeos Piloto** totalmente desatrelada do WhatsApp:
 
 ```
 [Canal WhatsApp (V1)]      [API Externa HTTP (V2)]        [Painel Web Visual (V2)]
 video_anuncios_engine.js   POST /api/v2/video-jobs        GET /video-painel
                            (Bearer Auth)                  POST /api/v2/panel/video-jobs
+         │                         │                      POST /api/v2/panel/video-jobs/:id/generate-pilot
+         │                         │                      GET /api/v2/panel/video-jobs/:id/pilot
          │                         │                      (HTTP Basic Auth server-side)
          │                         │                                  │
          └─────────────────────────┼──────────────────────────────────┘
                                    ▼
                      ┌───────────────────────────┐
-                     │ video_engine/job_service  │
-                     │                           │
-                     │ • fetchImovelData         │
-                     │ • generateCompleteScripts │
-                     │ • createVideoJob (DB)     │
+                     │ video_engine/job_service  │ ── CRM Imóveis & Copy
+                     └─────────────┬─────────────┘
+                                   │
+                                   ▼
+                     ┌───────────────────────────┐
+                     │ video_engine/pilot_service│ ── HeyGen, FFmpeg, Smart Resume
                      └─────────────┬─────────────┘
                                    │
                                    ▼
@@ -34,44 +37,53 @@ video_anuncios_engine.js   POST /api/v2/video-jobs        GET /video-painel
 ```
 
 * **Núcleo de Domínio (`video_engine/job_service.js`):**  
-  Responsável exclusivo por buscar dados de imóveis, calcular métricas financeiras, gerar os ganchos de retenção e persistir jobs no PostgreSQL de forma resiliente. Zero dependência de interfaces ou protocolos.
+  Busca dados no CRM, calcula simulação financeira e gera scripts de copy (3 ganchos + corpo).
+
+* **Orquestrador de Piloto (`video_engine/pilot_service.js`):**  
+  Gerencia o ciclo de vida do vídeo piloto por `job_id`: lock atômico SQL, submissão de clips na HeyGen (voz clonada Marcel, avatar em círculo e foto do imóvel no corpo), persistência imediata de `heygen_video_id`, download para `outputs/jobs/<job_id>/`, concatenação FFmpeg, validação de integridade e rotina de Smart Resume no boot.
 
 * **Painel Web Visual (`video-painel.html` + `video_engine/panel_auth.js`):**  
-  Interface leve e responsiva com Dark Mode padronizado, consumindo o endpoint BFF `POST /api/v2/panel/video-jobs`. Protegida por HTTP Basic Auth com parser seguro para senhas com `:` e variáveis estritamente obrigatórias no `.env` (`PANEL_USER` e `PANEL_PASSWORD`). Zero credenciais no cliente.
+  Interface com Dark Mode, busca de imóveis, criação de Jobs, botão "Gerar Vídeo Piloto", polling de status read-only a cada 5s e player HTML5 com streaming autenticado do vídeo final.
 
-* **Adaptador HTTP V2 Externo (`video_engine/api_v2.js`):**  
-  Roteador Express protegido por Bearer Token (`Authorization: Bearer <VIDEO_ENGINE_API_KEY>`). Aceita requisições JSON `{ "property_ref": "1639" }`, fixa internamente `broker_id = 'marcel'` e `source = 'web'`, e mapeia respostas HTTP (201, 400, 401, 404, 503).
+* **Isolamento de Segurança:**  
+  Protegido com HTTP Basic Auth server-side no painel, Bearer Token na API externa, bloqueio estático de `/outputs/jobs` (403) e proteção anti-path-traversal.
 
 * **Adaptador WhatsApp V1 (`video_anuncios_engine.js`):**  
-  Continua gerenciando a interação em tempo real via chat (`#REF`), memória de sessão (`activeVideoSessions`), comandos `CLONE`, áudios 1-4, HeyGen, FFmpeg e Cloudflare R2 de forma 100% inalterada.
+  Permanece 100% íntegro, gerenciando o fluxo legado via chat (`#REF`, `CLONE`, áudios 1-4).
 
 ---
 
 ## 2. Componentes e Estrutura de Arquivos
 
 * `/var/www/bali-gestor/video-painel.html`:  
-  Interface Web responsiva para busca de imóvel, criação de Job e exibição dos 3 ganchos + corpo e simulação financeira.
+  Interface Web responsiva para busca de imóvel, criação de Job, disparo de piloto e visualização com player de vídeo.
+
+* `/var/www/bali-gestor/video_engine/pilot_service.js`:  
+  Módulo orquestrador do piloto, concorrência atômica, chamadas à HeyGen, download, FFmpeg e Smart Resume.
 
 * `/var/www/bali-gestor/video_engine/panel_auth.js`:  
-  Middleware de autenticação HTTP Basic Auth server-side com suporte a caracteres especiais/colons e exigência de variáveis.
+  Middleware de autenticação HTTP Basic Auth com parser seguro para senhas com `:` e verificação estrita de variáveis.
 
 * `/var/www/bali-gestor/video_engine/api_v2.js`:  
-  Adaptador HTTP montando a rota externa `POST /api/v2/video-jobs` (Bearer) e o BFF `POST /api/v2/panel/video-jobs` (Basic Auth).
+  Adaptador HTTP montando endpoints do painel e da API externa.
 
 * `/var/www/bali-gestor/video_engine/job_service.js`:  
-  Núcleo de domínio e orquestrador de inicialização de jobs.
+  Núcleo de domínio de imóveis e geração de roteiros.
 
 * `/var/www/bali-gestor/video_engine/db.js`:  
   Módulo de persistência PostgreSQL via `pg.Pool`.
 
 * `/var/www/bali-gestor/video_anuncios_engine.js`:  
-  Adaptador do WhatsApp e motor de renderização.
+  Adaptador do WhatsApp e motor de renderização legado.
 
 * `/var/www/bali-gestor/gestor_server.js`:  
-  Servidor Express principal montando `/api/v2`, servindo `/video-painel` sob autenticação e bloqueando acesso estático a arquivos internos.
+  Servidor Express principal montando `/api/v2`, inicializando Smart Resume no boot e bloqueando acesso estático a `/outputs/jobs`.
 
 * `/var/www/bali-gestor/migrations/001_create_video_jobs.sql`:  
   Tabela estrutural `video_jobs`.
+
+* `/var/www/bali-gestor/migrations/002_add_pilot_fields_to_video_jobs.sql`:  
+  Colunas `pilot_video_url` e `error_message`.
 
 ---
 
@@ -90,5 +102,9 @@ video_anuncios_engine.js   POST /api/v2/video-jobs        GET /video-painel
   UUID de Homologação HTTP: `20e570ee-dadc-438a-9d7f-491807ffa1cb`
 
 * **Fase 2A (Painel Web Mínimo de Criação e Visualização de Job):**  
-  UUID de Homologação Painel: `f8099b3d-d331-45ad-9983-145352d05604`  
-  Interface `video-painel.html` autenticada via HTTP Basic Auth nativo server-side, com suporte a senhas com `:`, credenciais 100% fora do navegador, endpoint BFF `POST /api/v2/panel/video-jobs`, proteção estática contra vazamento de código, tratamento 201/400/401/404/503 (linguagem "persistência indisponível"), prevenção de duplo clique e não-regressão total de WhatsApp V1 e API externa.
+  UUID de Homologação Painel: `f8099b3d-d331-45ad-9983-145352d05604`
+
+* **Fase 2B (Geração de Piloto pelo Painel Web V2):**  
+  UUID de Homologação Piloto Nominal: `2a293dbb-4753-4327-9a3c-6c3958fb9167`  
+  UUID de Homologação Concorrência Atômica: `7c1ff0fe-68c5-4a67-a505-0ebc909c0e2a`  
+  Validação de lock atômico SQL (202 vs 409), Smart Resume parcial e completo no boot, bloqueio estático de `/outputs/jobs` (403), streaming autenticado de vídeo (`:id/pilot`), resiliência com gravação de `PILOT_FAILED`, e não-regressão total de WhatsApp V1 e API externa.
