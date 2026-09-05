@@ -1,0 +1,821 @@
+{
+  "metadata": {
+    "cohort": "DEVELOPMENT"
+  },
+  "baseline_street_series": {
+    "count": 68,
+    "median_abs_rho": 1.0,
+    "series": [
+      {
+        "dsq": "1.6.001",
+        "street": "emilio winther",
+        "n": 6,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "1.6.001",
+        "street": "nossa senhora piedade",
+        "n": 12,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "1.6.002",
+        "street": "nossa senhora piedade",
+        "n": 12,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "1.6.003",
+        "street": "colegio nossa senhora bom conselho",
+        "n": 20,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "1.6.003",
+        "street": "emilio winther",
+        "n": 5,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "1.6.003",
+        "street": "ubatuba",
+        "n": 9,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "1.6.006",
+        "street": "emilio winther",
+        "n": 13,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "1.6.007",
+        "street": "jose gomes tinoco",
+        "n": 10,
+        "spearman_rho": 0.6
+      },
+      {
+        "dsq": "3.3.001",
+        "street": "abissinia",
+        "n": 8,
+        "spearman_rho": -0.9761904761904763
+      },
+      {
+        "dsq": "3.3.001",
+        "street": "independencia",
+        "n": 8,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.001",
+        "street": "italia",
+        "n": 4,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.001",
+        "street": "egito",
+        "n": 6,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.003",
+        "street": "canada",
+        "n": 8,
+        "spearman_rho": 0.33333333333333337
+      },
+      {
+        "dsq": "3.3.003",
+        "street": "independencia",
+        "n": 4,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.004",
+        "street": "independencia",
+        "n": 4,
+        "spearman_rho": -0.19999999999999996
+      },
+      {
+        "dsq": "3.3.004",
+        "street": "john fitzgerald kennedy",
+        "n": 7,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.005",
+        "street": "colombia",
+        "n": 7,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.006",
+        "street": "espanha",
+        "n": 5,
+        "spearman_rho": -0.8999999999999999
+      },
+      {
+        "dsq": "3.3.006",
+        "street": "siria",
+        "n": 10,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.007",
+        "street": "nicaragua",
+        "n": 9,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.009",
+        "street": "nicaragua",
+        "n": 10,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.009",
+        "street": "john fitzgerald kennedy",
+        "n": 6,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.010",
+        "street": "siria",
+        "n": 9,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.010",
+        "street": "john fitzgerald kennedy",
+        "n": 8,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.010",
+        "street": "estados unidos",
+        "n": 4,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.012",
+        "street": "siria",
+        "n": 7,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.012",
+        "street": "canada",
+        "n": 5,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.012",
+        "street": "espanha",
+        "n": 8,
+        "spearman_rho": -0.33333333333333326
+      },
+      {
+        "dsq": "3.3.012",
+        "street": "estados unidos",
+        "n": 7,
+        "spearman_rho": 0.7857142857142857
+      },
+      {
+        "dsq": "3.3.014",
+        "street": "espanha",
+        "n": 7,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.014",
+        "street": "canada",
+        "n": 5,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.014",
+        "street": "suica",
+        "n": 7,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.014",
+        "street": "estados unidos",
+        "n": 7,
+        "spearman_rho": 0.25
+      },
+      {
+        "dsq": "3.3.016",
+        "street": "suica",
+        "n": 9,
+        "spearman_rho": 0.4
+      },
+      {
+        "dsq": "3.3.016",
+        "street": "espanha",
+        "n": 8,
+        "spearman_rho": 0.6428571428571428
+      },
+      {
+        "dsq": "3.3.016",
+        "street": "estados unidos",
+        "n": 12,
+        "spearman_rho": 0.22377622377622375
+      },
+      {
+        "dsq": "3.3.018",
+        "street": "siria",
+        "n": 10,
+        "spearman_rho": -0.5878787878787879
+      },
+      {
+        "dsq": "3.3.018",
+        "street": "john fitzgerald kennedy",
+        "n": 5,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.019",
+        "street": "john fitzgerald kennedy",
+        "n": 4,
+        "spearman_rho": -0.19999999999999996
+      },
+      {
+        "dsq": "3.3.019",
+        "street": "siria",
+        "n": 4,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.020",
+        "street": "italia",
+        "n": 8,
+        "spearman_rho": -0.3571428571428572
+      },
+      {
+        "dsq": "3.3.020",
+        "street": "noruega",
+        "n": 4,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.020",
+        "street": "polonia",
+        "n": 8,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.021",
+        "street": "suecia",
+        "n": 12,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.021",
+        "street": "polonia",
+        "n": 9,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.021",
+        "street": "noruega",
+        "n": 5,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.021",
+        "street": "italia",
+        "n": 4,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.022",
+        "street": "marrocos",
+        "n": 5,
+        "spearman_rho": 0.0
+      },
+      {
+        "dsq": "3.3.022",
+        "street": "dinamarca",
+        "n": 13,
+        "spearman_rho": -0.5714285714285714
+      },
+      {
+        "dsq": "3.3.022",
+        "street": "polonia",
+        "n": 8,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.022",
+        "street": "suecia",
+        "n": 14,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.023",
+        "street": "dinamarca",
+        "n": 10,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.023",
+        "street": "marrocos",
+        "n": 6,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.023",
+        "street": "polonia",
+        "n": 11,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.028",
+        "street": "franca",
+        "n": 5,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.030",
+        "street": "suica",
+        "n": 13,
+        "spearman_rho": -0.7527472527472527
+      },
+      {
+        "dsq": "3.3.030",
+        "street": "polonia",
+        "n": 8,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "4.4.101",
+        "street": "cleber paixao pereira pinto",
+        "n": 11,
+        "spearman_rho": 0.5545454545454546
+      },
+      {
+        "dsq": "4.4.102",
+        "street": "mirian auxiliadora ferraz",
+        "n": 35,
+        "spearman_rho": 0.28403361344537814
+      },
+      {
+        "dsq": "4.4.115",
+        "street": "antonio celidonio monteiro",
+        "n": 13,
+        "spearman_rho": -0.945054945054945
+      },
+      {
+        "dsq": "4.4.115",
+        "street": "ramiro adolpho souza guimaraes",
+        "n": 13,
+        "spearman_rho": -0.7252747252747254
+      },
+      {
+        "dsq": "4.4.120",
+        "street": "lirio",
+        "n": 5,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "4.4.120",
+        "street": "tulipa",
+        "n": 14,
+        "spearman_rho": 0.02857142857142858
+      },
+      {
+        "dsq": "4.4.130",
+        "street": "luiz carlos pavanitto",
+        "n": 12,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "4.4.130",
+        "street": "pedro marcon",
+        "n": 18,
+        "spearman_rho": -0.7254901960784315
+      },
+      {
+        "dsq": "4.4.206",
+        "street": "antonio delgado veiga",
+        "n": 17,
+        "spearman_rho": 0.4240196078431373
+      },
+      {
+        "dsq": "4.4.207",
+        "street": "antonio delgado veiga",
+        "n": 16,
+        "spearman_rho": 0.34411764705882353
+      },
+      {
+        "dsq": "4.4.210",
+        "street": "antonio delgado veiga",
+        "n": 18,
+        "spearman_rho": 0.21568627450980393
+      }
+    ]
+  },
+  "map_aware_runs_series": {
+    "count": 66,
+    "median_abs_rho": 1.0,
+    "series": [
+      {
+        "dsq": "1.6.001",
+        "street": "emilio winther",
+        "n": 6,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "1.6.001",
+        "street": "nossa senhora piedade",
+        "n": 12,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "1.6.002",
+        "street": "nossa senhora piedade",
+        "n": 12,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "1.6.003",
+        "street": "colegio nossa senhora bom conselho",
+        "n": 20,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "1.6.003",
+        "street": "emilio winther",
+        "n": 5,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "1.6.003",
+        "street": "ubatuba",
+        "n": 9,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "1.6.006",
+        "street": "emilio winther",
+        "n": 13,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "1.6.007",
+        "street": "jose gomes tinoco",
+        "n": 10,
+        "spearman_rho": 0.6
+      },
+      {
+        "dsq": "3.3.001",
+        "street": "abissinia",
+        "n": 7,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.001",
+        "street": "independencia",
+        "n": 8,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.001",
+        "street": "italia",
+        "n": 4,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.001",
+        "street": "egito",
+        "n": 6,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.003",
+        "street": "canada",
+        "n": 7,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.003",
+        "street": "independencia",
+        "n": 4,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.004",
+        "street": "john fitzgerald kennedy",
+        "n": 7,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.005",
+        "street": "colombia",
+        "n": 7,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.006",
+        "street": "siria",
+        "n": 10,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.006",
+        "street": "espanha",
+        "n": 4,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.007",
+        "street": "nicaragua",
+        "n": 9,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.009",
+        "street": "nicaragua",
+        "n": 10,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.009",
+        "street": "john fitzgerald kennedy",
+        "n": 6,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.010",
+        "street": "siria",
+        "n": 9,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.010",
+        "street": "john fitzgerald kennedy",
+        "n": 8,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.010",
+        "street": "estados unidos",
+        "n": 4,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.012",
+        "street": "siria",
+        "n": 7,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.012",
+        "street": "canada",
+        "n": 5,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.012",
+        "street": "espanha",
+        "n": 8,
+        "spearman_rho": -0.33333333333333326
+      },
+      {
+        "dsq": "3.3.012",
+        "street": "estados unidos",
+        "n": 7,
+        "spearman_rho": 0.7857142857142857
+      },
+      {
+        "dsq": "3.3.014",
+        "street": "espanha",
+        "n": 7,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.014",
+        "street": "canada",
+        "n": 5,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.014",
+        "street": "suica",
+        "n": 7,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.014",
+        "street": "estados unidos",
+        "n": 7,
+        "spearman_rho": 0.25
+      },
+      {
+        "dsq": "3.3.016",
+        "street": "suica",
+        "n": 8,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.016",
+        "street": "espanha",
+        "n": 4,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.016",
+        "street": "estados unidos",
+        "n": 8,
+        "spearman_rho": 0.33333333333333337
+      },
+      {
+        "dsq": "3.3.018",
+        "street": "siria",
+        "n": 8,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.018",
+        "street": "john fitzgerald kennedy",
+        "n": 5,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.019",
+        "street": "siria",
+        "n": 4,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.020",
+        "street": "italia",
+        "n": 5,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.020",
+        "street": "noruega",
+        "n": 4,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.020",
+        "street": "polonia",
+        "n": 8,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.021",
+        "street": "suecia",
+        "n": 12,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.021",
+        "street": "polonia",
+        "n": 9,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.021",
+        "street": "noruega",
+        "n": 5,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.021",
+        "street": "italia",
+        "n": 4,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.022",
+        "street": "dinamarca",
+        "n": 12,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.022",
+        "street": "polonia",
+        "n": 8,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.022",
+        "street": "suecia",
+        "n": 14,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.022",
+        "street": "marrocos",
+        "n": 4,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.023",
+        "street": "dinamarca",
+        "n": 10,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.023",
+        "street": "marrocos",
+        "n": 6,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.023",
+        "street": "polonia",
+        "n": 11,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.028",
+        "street": "franca",
+        "n": 5,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "3.3.030",
+        "street": "suica",
+        "n": 12,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "3.3.030",
+        "street": "polonia",
+        "n": 8,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "4.4.101",
+        "street": "cleber paixao pereira pinto",
+        "n": 11,
+        "spearman_rho": 0.5545454545454546
+      },
+      {
+        "dsq": "4.4.102",
+        "street": "mirian auxiliadora ferraz",
+        "n": 35,
+        "spearman_rho": 0.28403361344537814
+      },
+      {
+        "dsq": "4.4.115",
+        "street": "antonio celidonio monteiro",
+        "n": 11,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "4.4.115",
+        "street": "ramiro adolpho souza guimaraes",
+        "n": 11,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "4.4.120",
+        "street": "tulipa",
+        "n": 10,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "4.4.120",
+        "street": "tulipa",
+        "n": 4,
+        "spearman_rho": -1.0
+      },
+      {
+        "dsq": "4.4.130",
+        "street": "luiz carlos pavanitto",
+        "n": 12,
+        "spearman_rho": 1.0
+      },
+      {
+        "dsq": "4.4.130",
+        "street": "pedro marcon",
+        "n": 18,
+        "spearman_rho": -0.7254901960784315
+      },
+      {
+        "dsq": "4.4.206",
+        "street": "antonio delgado veiga",
+        "n": 17,
+        "spearman_rho": 0.4240196078431373
+      },
+      {
+        "dsq": "4.4.207",
+        "street": "antonio delgado veiga",
+        "n": 16,
+        "spearman_rho": 0.34411764705882353
+      },
+      {
+        "dsq": "4.4.210",
+        "street": "antonio delgado veiga",
+        "n": 18,
+        "spearman_rho": 0.21568627450980393
+      }
+    ]
+  }
+}

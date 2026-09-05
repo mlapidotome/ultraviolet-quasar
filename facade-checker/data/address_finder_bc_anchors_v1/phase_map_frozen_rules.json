@@ -1,0 +1,25 @@
+{
+  "protocol": "PRE_REGISTERED_FROZEN_RANKING_RULES",
+  "seed": 42,
+  "scoring_weights": {
+    "NO_TARGET_STREET": {
+      "w_delta_lll": 1.0
+    },
+    "LISTING_STREET_AVAILABLE": {
+      "w_delta_lll": 1.0,
+      "w_target_street_match": 2.5,
+      "w_anchor_street_match": 0.5,
+      "w_graph_intersection": 0.8
+    },
+    "ORACLE_TARGET_STREET": {
+      "w_delta_lll": 1.0,
+      "w_target_street_match": 3.0,
+      "w_same_road_block": 1.0
+    }
+  },
+  "evaluation_thresholds": {
+    "min_consecutive_graph_intersect_rate": 0.6,
+    "min_local_corner_confirmation_rate": 0.5,
+    "min_top10_recall_listing": 0.85
+  }
+}

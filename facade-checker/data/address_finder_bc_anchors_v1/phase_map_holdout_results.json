@@ -1,0 +1,84 @@
+{
+  "metadata": {
+    "cohort": "HOLDOUT",
+    "total_dsqs": 15,
+    "total_parcels": 321,
+    "frozen_rules_sha256": "95d25c38f42ce63d6d6bade2b37bfee1de36b9e55f0b8d5e758d50b0c6e8ce29"
+  },
+  "delta_1_transitions": {
+    "total_pairs": 284,
+    "level1_counts": {
+      "MAP_UNRESOLVED": 101,
+      "SAME_STREET": 162,
+      "DIFFERENT_STREET_GRAPH_INTERSECTING": 15,
+      "DIFFERENT_STREET_GRAPH_NON_INTERSECTING": 6
+    },
+    "level2_counts": {
+      "LOCAL_BLOCK_UNRESOLVED": 112,
+      "SAME_STREET": 162,
+      "LOCAL_CORNER_CONFIRMED": 8,
+      "LOCAL_CORNER_NOT_CONFIRMED": 2
+    },
+    "same_street_rate": 0.5704225352112676,
+    "graph_intersect_rate_on_resolved_changes": 0.7142857142857143,
+    "local_corner_rate_on_resolved_block_changes": 0.8
+  },
+  "perimeter_sequences": {
+    "LOCAL_BLOCK_UNRESOLVED": 11,
+    "PERIMETER_CONSISTENT": 4
+  },
+  "ordinal_alignment": {
+    "baseline_median_abs_rho": 1.0,
+    "map_aware_median_abs_rho": 1.0
+  },
+  "ranking_regimes": {
+    "NO_TARGET_STREET": {
+      "total_queries": 8538,
+      "top1_recall": 0.03736237994846568,
+      "top3_recall": 0.11208713984539705,
+      "top5_recall": 0.18681189974232842,
+      "top10_recall": 0.363551182946826,
+      "top20_recall": 0.6985242445537596
+    },
+    "LISTING_STREET_AVAILABLE": {
+      "total_queries": 8538,
+      "top1_recall": 0.08889669711876318,
+      "top3_recall": 0.25942843757320216,
+      "top5_recall": 0.4101663152963223,
+      "top10_recall": 0.6598735066760365,
+      "top20_recall": 0.811079878191614
+    },
+    "ORACLE_TARGET_STREET": {
+      "total_queries": 8538,
+      "top1_recall": 0.0891309440149918,
+      "top3_recall": 0.26036542515811667,
+      "top5_recall": 0.41215741391426564,
+      "top10_recall": 0.6659639259779808,
+      "top20_recall": 0.8140079643944718
+    },
+    "BASELINE_A_DELTA_LLL": {
+      "total_queries": 8538,
+      "top1_recall": 0.03736237994846568,
+      "top3_recall": 0.11208713984539705,
+      "top5_recall": 0.18681189974232842,
+      "top10_recall": 0.363551182946826,
+      "top20_recall": 0.6985242445537596
+    },
+    "BASELINE_B_SAME_STREET_FILTER": {
+      "total_queries": 8538,
+      "top1_recall": 0.03736237994846568,
+      "top3_recall": 0.11208713984539705,
+      "top5_recall": 0.18681189974232842,
+      "top10_recall": 0.363551182946826,
+      "top20_recall": 0.6985242445537596
+    },
+    "BASELINE_C_RANDOM_WINDOW": {
+      "total_queries": 8538,
+      "top1_recall": 0.034551417193722185,
+      "top3_recall": 0.11138439915671117,
+      "top5_recall": 0.19102834387444367,
+      "top10_recall": 0.3713984539704849,
+      "top20_recall": 0.6982899976575311
+    }
+  }
+}

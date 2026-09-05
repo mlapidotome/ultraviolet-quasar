@@ -1,0 +1,40 @@
+{
+  "raw_sources": {
+    "acervo_casas_taubate.json": {
+      "sha256": "10525031ca4bf082104cfa999ec281693045609864788c7875678ec87093a93f",
+      "records": 1325
+    },
+    "Acervo_Casas_Taubate_1000_Lotes.xlsx": {
+      "sha256": "ebdee2eea593d235cc16027692f7d18889d37cdb165e6b2074e679ba0c4dc128",
+      "records": 1325
+    }
+  },
+  "normalized_cohort": {
+    "file": "phase_map_normalized_cohort.json",
+    "sha256": "cf1c6a69dafcab076841eade01f7674d9f3dd8ed9983eec1e847300f39061c32",
+    "unique_dsqlll": 1306,
+    "unique_dsq": 63
+  },
+  "reconciliation_table": {
+    "street_with_house_number": {
+      "parcels": 856,
+      "records": 866
+    },
+    "street_without_house_number": {
+      "parcels": 93,
+      "records": 95
+    },
+    "documentary_text_vacant_lot": {
+      "parcels": 346,
+      "records": 352
+    },
+    "empty_address": {
+      "parcels": 11,
+      "records": 12
+    },
+    "total_cohort": {
+      "parcels": 1306,
+      "records": 1325
+    }
+  }
+}

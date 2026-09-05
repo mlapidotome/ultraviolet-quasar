@@ -1,0 +1,56 @@
+{
+  "metadata": {
+    "cohort": "DEVELOPMENT",
+    "total_dsqs": 48
+  },
+  "ranking_regimes": {
+    "NO_TARGET_STREET": {
+      "total_queries": 26362,
+      "top1_recall": 0.037098854411653136,
+      "top3_recall": 0.11129656323495941,
+      "top5_recall": 0.18439420377816554,
+      "top10_recall": 0.36241559820954405,
+      "top20_recall": 0.67870419543282
+    },
+    "LISTING_STREET_AVAILABLE": {
+      "total_queries": 26362,
+      "top1_recall": 0.09832334420757151,
+      "top3_recall": 0.2794552765344056,
+      "top5_recall": 0.4350959714740915,
+      "top10_recall": 0.6920567483498976,
+      "top20_recall": 0.8946589788331689
+    },
+    "ORACLE_TARGET_STREET": {
+      "total_queries": 26362,
+      "top1_recall": 0.09904407859798195,
+      "top3_recall": 0.28180714665048173,
+      "top5_recall": 0.4393065776496472,
+      "top10_recall": 0.7019573628707989,
+      "top20_recall": 0.91009786814354
+    },
+    "BASELINE_A_DELTA_LLL": {
+      "total_queries": 26362,
+      "top1_recall": 0.037098854411653136,
+      "top3_recall": 0.11129656323495941,
+      "top5_recall": 0.18439420377816554,
+      "top10_recall": 0.36241559820954405,
+      "top20_recall": 0.67870419543282
+    },
+    "BASELINE_B_SAME_STREET_FILTER": {
+      "total_queries": 26362,
+      "top1_recall": 0.037098854411653136,
+      "top3_recall": 0.11129656323495941,
+      "top5_recall": 0.18439420377816554,
+      "top10_recall": 0.36241559820954405,
+      "top20_recall": 0.67870419543282
+    },
+    "BASELINE_C_RANDOM_WINDOW": {
+      "total_queries": 26362,
+      "top1_recall": 0.037667855246187695,
+      "top3_recall": 0.11099309612320765,
+      "top5_recall": 0.18245960094074803,
+      "top10_recall": 0.36074652909490934,
+      "top20_recall": 0.6766937258174646
+    }
+  }
+}

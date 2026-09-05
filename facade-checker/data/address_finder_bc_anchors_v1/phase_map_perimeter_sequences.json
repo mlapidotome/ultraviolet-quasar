@@ -1,0 +1,293 @@
+{
+  "metadata": {
+    "cohort": "DEVELOPMENT",
+    "status_breakdown": {
+      "LOCAL_BLOCK_UNRESOLVED": 42,
+      "PERIMETER_CONSISTENT": 6
+    }
+  },
+  "dsq_evaluations": {
+    "1.6.001": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "1.6.002": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "1.6.003": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "1.6.004": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "1.6.005": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "1.6.006": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "1.6.007": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "1.6.009": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "1.6.010": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "1.6.011": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "1.6.012": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "1.6.014": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "1.6.015": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "1.6.016": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "3.3.001": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "3.3.003": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "3.3.004": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "3.3.005": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "3.3.006": {
+      "status": "PERIMETER_CONSISTENT",
+      "bordering_streets": [
+        "austria",
+        "espanha",
+        "mexico",
+        "siria"
+      ],
+      "observed_progression": [
+        "espanha",
+        "austria",
+        "siria",
+        "mexico",
+        "espanha",
+        "mexico"
+      ],
+      "traversal_direction": "FORWARD/CLOCKWISE"
+    },
+    "3.3.007": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "3.3.009": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "3.3.010": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "3.3.012": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "3.3.014": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "3.3.016": {
+      "status": "PERIMETER_CONSISTENT",
+      "bordering_streets": [
+        "espanha",
+        "estados unidos",
+        "mexico",
+        "suica",
+        "vaticano"
+      ],
+      "observed_progression": [
+        "suica",
+        "mexico",
+        "espanha",
+        "estados unidos",
+        "espanha",
+        "suica",
+        "espanha",
+        "estados unidos",
+        "espanha",
+        "estados unidos",
+        "suica",
+        "estados unidos"
+      ],
+      "traversal_direction": "FORWARD/CLOCKWISE"
+    },
+    "3.3.018": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "3.3.019": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "3.3.020": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "3.3.021": {
+      "status": "PERIMETER_CONSISTENT",
+      "bordering_streets": [
+        "italia",
+        "marrocos",
+        "noruega",
+        "polonia",
+        "suecia",
+        "vaticano"
+      ],
+      "observed_progression": [
+        "suecia",
+        "polonia",
+        "noruega",
+        "italia"
+      ],
+      "traversal_direction": "FORWARD/CLOCKWISE"
+    },
+    "3.3.022": {
+      "status": "PERIMETER_CONSISTENT",
+      "bordering_streets": [
+        "dinamarca",
+        "marrocos",
+        "polonia",
+        "suecia",
+        "vaticano"
+      ],
+      "observed_progression": [
+        "marrocos",
+        "dinamarca",
+        "polonia",
+        "suecia",
+        "marrocos",
+        "dinamarca"
+      ],
+      "traversal_direction": "FORWARD/CLOCKWISE"
+    },
+    "3.3.023": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "3.3.026": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "3.3.028": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "3.3.030": {
+      "status": "PERIMETER_CONSISTENT",
+      "bordering_streets": [
+        "marrocos",
+        "polonia",
+        "romenia",
+        "suica"
+      ],
+      "observed_progression": [
+        "suica",
+        "polonia",
+        "marrocos",
+        "suica"
+      ],
+      "traversal_direction": "FORWARD/CLOCKWISE"
+    },
+    "3.3.031": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "3.3.032": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "4.4.101": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "4.4.102": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "4.4.103": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "4.4.110": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "4.4.115": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "4.4.120": {
+      "status": "PERIMETER_CONSISTENT",
+      "bordering_streets": [
+        "acacia",
+        "flamboyant",
+        "ibisco",
+        "lirio",
+        "margarida",
+        "tulipa"
+      ],
+      "observed_progression": [
+        "lirio",
+        "tulipa",
+        "lirio",
+        "tulipa"
+      ],
+      "traversal_direction": "FORWARD/CLOCKWISE"
+    },
+    "4.4.130": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "4.4.206": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "4.4.207": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "4.4.209": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "4.4.210": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    },
+    "4.4.214": {
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "reason": "No independent block geometry"
+    }
+  }
+}

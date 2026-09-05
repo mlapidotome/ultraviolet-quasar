@@ -1,0 +1,1011 @@
+{
+  "metadata": {
+    "total_cohort_streets": 46,
+    "binding_breakdown": {
+      "UNMATCHED": 1,
+      "EXACT": 29,
+      "AMBIGUOUS": 12,
+      "HIGH_CONFIDENCE_UNIQUE": 4
+    },
+    "measured_coverage_rate": 0.717391304347826
+  },
+  "bindings": {
+    "abissinia": {
+      "status": "UNMATCHED",
+      "matched_osm_key": null,
+      "score": 0.0,
+      "direct_cross_streets": [],
+      "centroid": null,
+      "bbox": null
+    },
+    "alemanha": {
+      "status": "EXACT",
+      "matched_osm_key": "alemanha",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "espanha",
+        "grecia",
+        "marrocos"
+      ],
+      "centroid": {
+        "lat": -23.030409,
+        "lon": -45.57531
+      },
+      "bbox": {
+        "min_lat": -23.0315572,
+        "max_lat": -23.0296953,
+        "min_lon": -45.5757776,
+        "max_lon": -45.5745613
+      }
+    },
+    "antonio celidonio monteiro": {
+      "status": "EXACT",
+      "matched_osm_key": "antonio celidonio monteiro",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "claudino veloso borges",
+        "doutor jorge ferreira da motta",
+        "jorge salim mutran"
+      ],
+      "centroid": {
+        "lat": -23.026987,
+        "lon": -45.573957
+      },
+      "bbox": {
+        "min_lat": -23.0284894,
+        "max_lat": -23.0262819,
+        "min_lon": -45.5758556,
+        "max_lon": -45.5730052
+      }
+    },
+    "antonio delgado veiga": {
+      "status": "AMBIGUOUS",
+      "matched_osm_key": null,
+      "candidate_keys": [
+        "antonio delgado da veiga",
+        "a",
+        "d",
+        "g"
+      ],
+      "score": 1.0,
+      "direct_cross_streets": [],
+      "centroid": null,
+      "bbox": null
+    },
+    "austria": {
+      "status": "EXACT",
+      "matched_osm_key": "austria",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "espanha",
+        "john fitzgerald kennedy",
+        "siria"
+      ],
+      "centroid": {
+        "lat": -23.032851,
+        "lon": -45.574015
+      },
+      "bbox": {
+        "min_lat": -23.0332166,
+        "max_lat": -23.0322785,
+        "min_lon": -45.5750064,
+        "max_lon": -45.5733731
+      }
+    },
+    "belgica": {
+      "status": "HIGH_CONFIDENCE_UNIQUE",
+      "matched_osm_key": "praca belgica",
+      "score": 1.0,
+      "match_reason": "canonical_exact",
+      "direct_cross_streets": [
+        "indepedencia",
+        "independencia",
+        "major acacio",
+        "praca holanda"
+      ],
+      "centroid": {
+        "lat": -23.036845,
+        "lon": -45.575652
+      },
+      "bbox": {
+        "min_lat": -23.036898,
+        "max_lat": -23.03679,
+        "min_lon": -45.575883,
+        "max_lon": -45.5754202
+      }
+    },
+    "bento vieira moura": {
+      "status": "AMBIGUOUS",
+      "matched_osm_key": null,
+      "candidate_keys": [
+        "a",
+        "b",
+        "m",
+        "i"
+      ],
+      "score": 0.8,
+      "direct_cross_streets": [],
+      "centroid": null,
+      "bbox": null
+    },
+    "canada": {
+      "status": "EXACT",
+      "matched_osm_key": "canada",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "carmen miranda",
+        "estados unidos",
+        "inglaterra",
+        "polonia",
+        "portugal",
+        "praca holanda",
+        "praca turquia",
+        "siria",
+        "suica"
+      ],
+      "centroid": {
+        "lat": -23.009214,
+        "lon": -45.538515
+      },
+      "bbox": {
+        "min_lat": -23.0365468,
+        "max_lat": -22.9551172,
+        "min_lon": -45.5788483,
+        "max_lon": -45.461003
+      }
+    },
+    "claudino velloso borges": {
+      "status": "AMBIGUOUS",
+      "matched_osm_key": null,
+      "candidate_keys": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "score": 0.8,
+      "direct_cross_streets": [],
+      "centroid": null,
+      "bbox": null
+    },
+    "cleber paixao pereira pinto": {
+      "status": "EXACT",
+      "matched_osm_key": "cleber paixao pereira pinto",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "haroldo de mattos"
+      ],
+      "centroid": {
+        "lat": -23.032686,
+        "lon": -45.593526
+      },
+      "bbox": {
+        "min_lat": -23.0328412,
+        "max_lat": -23.0325303,
+        "min_lon": -45.5939231,
+        "max_lon": -45.5931297
+      }
+    },
+    "colegio nossa senhora bom conselho": {
+      "status": "AMBIGUOUS",
+      "matched_osm_key": null,
+      "candidate_keys": [
+        "colegio nossa senhora do bom conselho",
+        "a",
+        "b",
+        "c"
+      ],
+      "score": 1.0,
+      "direct_cross_streets": [],
+      "centroid": null,
+      "bbox": null
+    },
+    "colombia": {
+      "status": "EXACT",
+      "matched_osm_key": "colombia",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "coronel arthur da graca martins",
+        "cuba",
+        "equador",
+        "indepedencia",
+        "mexico"
+      ],
+      "centroid": {
+        "lat": -23.035443,
+        "lon": -45.572585
+      },
+      "bbox": {
+        "min_lat": -23.0362503,
+        "max_lat": -23.0342885,
+        "min_lon": -45.5731089,
+        "max_lon": -45.571832
+      }
+    },
+    "dinamarca": {
+      "status": "EXACT",
+      "matched_osm_key": "dinamarca",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "marrocos",
+        "polonia"
+      ],
+      "centroid": {
+        "lat": -23.031955,
+        "lon": -45.578163
+      },
+      "bbox": {
+        "min_lat": -23.0324346,
+        "max_lat": -23.0315348,
+        "min_lon": -45.5789396,
+        "max_lon": -45.5772843
+      }
+    },
+    "egito": {
+      "status": "EXACT",
+      "matched_osm_key": "egito",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "abssinia",
+        "italia",
+        "professor cesidio ambrosi",
+        "suica"
+      ],
+      "centroid": {
+        "lat": -23.035994,
+        "lon": -45.578372
+      },
+      "bbox": {
+        "min_lat": -23.0361724,
+        "max_lat": -23.035792,
+        "min_lon": -45.5792284,
+        "max_lon": -45.5774079
+      }
+    },
+    "emilio winther": {
+      "status": "AMBIGUOUS",
+      "matched_osm_key": null,
+      "candidate_keys": [
+        "doutor emilio winther",
+        "m",
+        "l",
+        "i"
+      ],
+      "score": 0.8,
+      "direct_cross_streets": [],
+      "centroid": null,
+      "bbox": null
+    },
+    "espanha": {
+      "status": "EXACT",
+      "matched_osm_key": "espanha",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "alemanha",
+        "austria",
+        "estados unidos",
+        "franca",
+        "mexico"
+      ],
+      "centroid": {
+        "lat": -23.032808,
+        "lon": -45.575353
+      },
+      "bbox": {
+        "min_lat": -23.035596,
+        "max_lat": -23.0308389,
+        "min_lon": -45.5771378,
+        "max_lon": -45.5740994
+      }
+    },
+    "estados unidos": {
+      "status": "EXACT",
+      "matched_osm_key": "estados unidos",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "abelardo pinto piolim",
+        "canada",
+        "capitao virgilio varella homem de mello",
+        "espanha",
+        "franca",
+        "guilherme de souza e silva",
+        "inglaterra",
+        "john fitzgerald kennedy",
+        "nicaragua",
+        "orlando silva",
+        "praca general julio marcondes salgado",
+        "praca vaticano",
+        "professor felix adib miguel",
+        "siria"
+      ],
+      "centroid": {
+        "lat": -23.004948,
+        "lon": -45.530316
+      },
+      "bbox": {
+        "min_lat": -23.0358516,
+        "max_lat": -22.9561241,
+        "min_lon": -45.5772788,
+        "max_lon": -45.4568429
+      }
+    },
+    "finlandia": {
+      "status": "EXACT",
+      "matched_osm_key": "finlandia",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "independencia"
+      ],
+      "centroid": {
+        "lat": -23.036518,
+        "lon": -45.577046
+      },
+      "bbox": {
+        "min_lat": -23.0371224,
+        "max_lat": -23.035913,
+        "min_lon": -45.5772059,
+        "max_lon": -45.576887
+      }
+    },
+    "franca": {
+      "status": "EXACT",
+      "matched_osm_key": "franca",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "dalva de oliveira",
+        "espanha",
+        "estados unidos",
+        "grecia",
+        "inglaterra",
+        "japao",
+        "john fitzgerald kennedy",
+        "marrocos",
+        "portugal",
+        "siria"
+      ],
+      "centroid": {
+        "lat": -23.005849,
+        "lon": -45.536252
+      },
+      "bbox": {
+        "min_lat": -23.0325012,
+        "max_lat": -22.9554899,
+        "min_lon": -45.5751117,
+        "max_lon": -45.4602872
+      }
+    },
+    "francisco alves monteiro": {
+      "status": "EXACT",
+      "matched_osm_key": "francisco alves monteiro",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "amaralina",
+        "antonio naldi",
+        "ariela lidice de borba lopes",
+        "canavieiras",
+        "costa cabral",
+        "da servidao",
+        "decio de barros",
+        "dely tabchoury",
+        "doutor mario banhara",
+        "evandro milanton",
+        "francisco goncalves",
+        "itapagipe",
+        "itaparica",
+        "joao mulato",
+        "joao ramalho",
+        "jose dos santos",
+        "marogogipe",
+        "municipal francisco alves monteiro",
+        "nicanor ramos nogueira",
+        "santa terezinha",
+        "santo antonio",
+        "subtenente garcilio costa ferreira filho",
+        "tres",
+        "vandalo zanin primo"
+      ],
+      "centroid": {
+        "lat": -23.012604,
+        "lon": -45.574536
+      },
+      "bbox": {
+        "min_lat": -23.0399355,
+        "max_lat": -22.9562445,
+        "min_lon": -45.6195554,
+        "max_lon": -45.5001833
+      }
+    },
+    "haroldo mattos": {
+      "status": "AMBIGUOUS",
+      "matched_osm_key": null,
+      "candidate_keys": [
+        "haroldo de mattos",
+        "a",
+        "d",
+        "m"
+      ],
+      "score": 1.0,
+      "direct_cross_streets": [],
+      "centroid": null,
+      "bbox": null
+    },
+    "holanda": {
+      "status": "HIGH_CONFIDENCE_UNIQUE",
+      "matched_osm_key": "praca holanda",
+      "score": 1.0,
+      "match_reason": "canonical_exact",
+      "direct_cross_streets": [
+        "canada",
+        "indepedencia",
+        "independencia",
+        "john fitzgerald kennedy",
+        "praca belgica"
+      ],
+      "centroid": {
+        "lat": -23.036665,
+        "lon": -45.575674
+      },
+      "bbox": {
+        "min_lat": -23.036898,
+        "max_lat": -23.0365339,
+        "min_lon": -45.5758924,
+        "max_lon": -45.5754202
+      }
+    },
+    "independencia": {
+      "status": "EXACT",
+      "matched_osm_key": "independencia",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "abssinia",
+        "amaro negrini",
+        "angelo baldini marson",
+        "antonio camilher filho",
+        "antonio de queiroz filho",
+        "assis chateaubriand",
+        "dos bandeirantes",
+        "edy santana de freitas",
+        "finlandia",
+        "gino biondi",
+        "herminio galhanone",
+        "irma luiza basilia",
+        "irma madre rita de moura",
+        "italia",
+        "joao afonso salgueiro",
+        "madre eulalia perrotim",
+        "municipal francisco alves monteiro",
+        "plascidia dos santos costa",
+        "praca belgica",
+        "praca fernando gomes nogueira filho",
+        "praca holanda",
+        "professor aquilino cyriaco graca",
+        "professor jose jeronymo de souza filho",
+        "professor roque de castro reis",
+        "santa bottan migotto",
+        "sargento joao peixoto dos santos",
+        "umberto passareli",
+        "vandalo zanin primo"
+      ],
+      "centroid": {
+        "lat": -23.040928,
+        "lon": -45.587672
+      },
+      "bbox": {
+        "min_lat": -23.048706,
+        "max_lat": -23.036898,
+        "min_lon": -45.5985591,
+        "max_lon": -45.575883
+      }
+    },
+    "italia": {
+      "status": "EXACT",
+      "matched_osm_key": "italia",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "antonio campanelli",
+        "antonio goncalves vianna",
+        "argentina",
+        "benedito freire pinto",
+        "bolivia",
+        "chile",
+        "egito",
+        "independencia",
+        "jurandir martins filho",
+        "luiza marcondes de oliveira",
+        "noruega",
+        "peru",
+        "praca turquia",
+        "professor cesidio ambrosi",
+        "professor ernesto de oliveira filho",
+        "sao francisco das chagas"
+      ],
+      "centroid": {
+        "lat": -23.02569,
+        "lon": -45.571802
+      },
+      "bbox": {
+        "min_lat": -23.0375869,
+        "max_lat": -22.949977,
+        "min_lon": -45.5799269,
+        "max_lon": -45.462321
+      }
+    },
+    "john fitzgerald kennedy": {
+      "status": "EXACT",
+      "matched_osm_key": "john fitzgerald kennedy",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "argentina",
+        "austria",
+        "bolivia",
+        "chile",
+        "cuba",
+        "equador",
+        "estados unidos",
+        "franca",
+        "inglaterra",
+        "mexico",
+        "panama",
+        "peru",
+        "praca holanda",
+        "professor walter thaumaturgo",
+        "tiradentes",
+        "uruguai",
+        "venezuela"
+      ],
+      "centroid": {
+        "lat": -23.03041,
+        "lon": -45.571069
+      },
+      "bbox": {
+        "min_lat": -23.0365925,
+        "max_lat": -23.0275084,
+        "min_lon": -45.5756133,
+        "max_lon": -45.5672993
+      }
+    },
+    "jose gomes tinoco": {
+      "status": "EXACT",
+      "matched_osm_key": "jose gomes tinoco",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "expedicionario jose antonio moreira",
+        "marechal arthur da costa e silva",
+        "nossa senhora da piedade"
+      ],
+      "centroid": {
+        "lat": -23.034754,
+        "lon": -45.565811
+      },
+      "bbox": {
+        "min_lat": -23.035093,
+        "max_lat": -23.0345779,
+        "min_lon": -45.566559,
+        "max_lon": -45.5651922
+      }
+    },
+    "juscelino kubitschek oliveira": {
+      "status": "AMBIGUOUS",
+      "matched_osm_key": null,
+      "candidate_keys": [
+        "juscelino kubitschek de oliveira",
+        "a",
+        "b",
+        "j"
+      ],
+      "score": 1.0,
+      "direct_cross_streets": [],
+      "centroid": null,
+      "bbox": null
+    },
+    "lirio": {
+      "status": "EXACT",
+      "matched_osm_key": "lirio",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "margarida",
+        "tulipa"
+      ],
+      "centroid": {
+        "lat": -23.043769,
+        "lon": -45.610551
+      },
+      "bbox": {
+        "min_lat": -23.0442139,
+        "max_lat": -23.0433242,
+        "min_lon": -45.6105967,
+        "max_lon": -45.6105056
+      }
+    },
+    "luiz carlos pavanitto": {
+      "status": "AMBIGUOUS",
+      "matched_osm_key": null,
+      "candidate_keys": [
+        "a",
+        "c",
+        "l",
+        "i"
+      ],
+      "score": 0.8,
+      "direct_cross_streets": [],
+      "centroid": null,
+      "bbox": null
+    },
+    "marrocos": {
+      "status": "EXACT",
+      "matched_osm_key": "marrocos",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "alemanha",
+        "amadeu orestes matera",
+        "amaro negrini",
+        "antonio camilher filho",
+        "comendador antonio rodrigues miranda",
+        "coronel benedito elpidio hidalgo",
+        "dinamarca",
+        "doutor jose gregorio moreira",
+        "edy santana de freitas",
+        "eugenio frediane",
+        "franca",
+        "francisco de matos",
+        "francisco marques pinto",
+        "japao",
+        "joao mulato",
+        "joaquim de moraes filho",
+        "plascidia dos santos costa",
+        "polonia",
+        "professor aquilino cyriaco graca",
+        "professor cesidio ambrosi",
+        "professor jose jeronymo de souza filho",
+        "professor roque de castro reis",
+        "suecia",
+        "suica",
+        "wellington queiroz de oliveira"
+      ],
+      "centroid": {
+        "lat": -23.033905,
+        "lon": -45.582908
+      },
+      "bbox": {
+        "min_lat": -23.038216,
+        "max_lat": -23.0292843,
+        "min_lon": -45.5900778,
+        "max_lon": -45.5751117
+      }
+    },
+    "mexico": {
+      "status": "EXACT",
+      "matched_osm_key": "mexico",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "colombia",
+        "espanha",
+        "john fitzgerald kennedy",
+        "nicaragua",
+        "siria",
+        "suica"
+      ],
+      "centroid": {
+        "lat": -23.03403,
+        "lon": -45.574401
+      },
+      "bbox": {
+        "min_lat": -23.0351278,
+        "max_lat": -23.0328453,
+        "min_lon": -45.576544,
+        "max_lon": -45.5723778
+      }
+    },
+    "mirian auxiliadora ferraz": {
+      "status": "AMBIGUOUS",
+      "matched_osm_key": null,
+      "candidate_keys": [
+        "a",
+        "d",
+        "m",
+        "l"
+      ],
+      "score": 0.8,
+      "direct_cross_streets": [],
+      "centroid": null,
+      "bbox": null
+    },
+    "nicaragua": {
+      "status": "EXACT",
+      "matched_osm_key": "nicaragua",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "cuba",
+        "estados unidos",
+        "mexico",
+        "panama",
+        "praca general julio marcondes salgado"
+      ],
+      "centroid": {
+        "lat": -23.034665,
+        "lon": -45.573164
+      },
+      "bbox": {
+        "min_lat": -23.0358516,
+        "max_lat": -23.0334543,
+        "min_lon": -45.5739254,
+        "max_lon": -45.5723765
+      }
+    },
+    "noruega": {
+      "status": "EXACT",
+      "matched_osm_key": "noruega",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "italia",
+        "polonia",
+        "praca vaticano"
+      ],
+      "centroid": {
+        "lat": -23.033644,
+        "lon": -45.578997
+      },
+      "bbox": {
+        "min_lat": -23.0340146,
+        "max_lat": -23.0333112,
+        "min_lon": -45.5796329,
+        "max_lon": -45.5782957
+      }
+    },
+    "nossa senhora piedade": {
+      "status": "AMBIGUOUS",
+      "matched_osm_key": null,
+      "candidate_keys": [
+        "nossa senhora da piedade",
+        "a",
+        "d",
+        "i"
+      ],
+      "score": 1.0,
+      "direct_cross_streets": [],
+      "centroid": null,
+      "bbox": null
+    },
+    "pedro marcon": {
+      "status": "EXACT",
+      "matched_osm_key": "pedro marcon",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "amaralina",
+        "belmont",
+        "canavieiras",
+        "dois",
+        "doutor joao baptista ortiz monteiro",
+        "itapagipe",
+        "itaparica",
+        "itapoa",
+        "joao scherma",
+        "maragogipe",
+        "salvador",
+        "sao felix",
+        "um"
+      ],
+      "centroid": {
+        "lat": -23.029101,
+        "lon": -45.599684
+      },
+      "bbox": {
+        "min_lat": -23.0294322,
+        "max_lat": -23.0289316,
+        "min_lon": -45.6036607,
+        "max_lon": -45.5957244
+      }
+    },
+    "polonia": {
+      "status": "EXACT",
+      "matched_osm_key": "polonia",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "canada",
+        "dinamarca",
+        "marrocos",
+        "noruega",
+        "praca turquia",
+        "praca vaticano",
+        "romenia",
+        "suecia"
+      ],
+      "centroid": {
+        "lat": -23.032784,
+        "lon": -45.577759
+      },
+      "bbox": {
+        "min_lat": -23.0348329,
+        "max_lat": -23.0307328,
+        "min_lon": -45.5788483,
+        "max_lon": -45.577238
+      }
+    },
+    "ramiro adolpho souza guimaraes": {
+      "status": "AMBIGUOUS",
+      "matched_osm_key": null,
+      "candidate_keys": [
+        "ramiro adolpho de souza guimaraes",
+        "a",
+        "d",
+        "g"
+      ],
+      "score": 1.0,
+      "direct_cross_streets": [],
+      "centroid": null,
+      "bbox": null
+    },
+    "rene rachou": {
+      "status": "AMBIGUOUS",
+      "matched_osm_key": null,
+      "candidate_keys": [
+        "a",
+        "professor rene rachou",
+        "c"
+      ],
+      "score": 0.8,
+      "direct_cross_streets": [],
+      "centroid": null,
+      "bbox": null
+    },
+    "siria": {
+      "status": "EXACT",
+      "matched_osm_key": "siria",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "austria",
+        "canada",
+        "estados unidos",
+        "franca",
+        "mexico"
+      ],
+      "centroid": {
+        "lat": -23.033875,
+        "lon": -45.574941
+      },
+      "bbox": {
+        "min_lat": -23.0362082,
+        "max_lat": -23.0317175,
+        "min_lon": -45.5764208,
+        "max_lon": -45.5735247
+      }
+    },
+    "suecia": {
+      "status": "EXACT",
+      "matched_osm_key": "suecia",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "marrocos",
+        "polonia",
+        "praca vaticano"
+      ],
+      "centroid": {
+        "lat": -23.032504,
+        "lon": -45.578929
+      },
+      "bbox": {
+        "min_lat": -23.033191,
+        "max_lat": -23.0319638,
+        "min_lon": -45.579615,
+        "max_lon": -45.5777982
+      }
+    },
+    "suica": {
+      "status": "EXACT",
+      "matched_osm_key": "suica",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "abssinia",
+        "canada",
+        "conego joao antonio da costa bueno",
+        "doutor georg heiduscka",
+        "doutor joao ferreira galvao",
+        "eduardo ryomei yassuda",
+        "egito",
+        "guaratingueta",
+        "irma maria esperanca degasperi",
+        "marrocos",
+        "mexico",
+        "padre antonio dalla via",
+        "praca vaticano",
+        "romenia",
+        "rotatoria doutor vito ardito lerario",
+        "sao joao bosco"
+      ],
+      "centroid": {
+        "lat": -22.949584,
+        "lon": -45.477342
+      },
+      "bbox": {
+        "min_lat": -23.0359613,
+        "max_lat": -22.919915,
+        "min_lon": -45.5782939,
+        "max_lon": -45.4395849
+      }
+    },
+    "tulipa": {
+      "status": "EXACT",
+      "matched_osm_key": "tulipa",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "acacia",
+        "flamboyant",
+        "lirio"
+      ],
+      "centroid": {
+        "lat": -23.044138,
+        "lon": -45.609592
+      },
+      "bbox": {
+        "min_lat": -23.0443737,
+        "max_lat": -23.0438774,
+        "min_lon": -45.6129133,
+        "max_lon": -45.6063668
+      }
+    },
+    "turquia": {
+      "status": "HIGH_CONFIDENCE_UNIQUE",
+      "matched_osm_key": "praca turquia",
+      "score": 1.0,
+      "match_reason": "canonical_exact",
+      "direct_cross_streets": [
+        "canada",
+        "italia",
+        "polonia"
+      ],
+      "centroid": {
+        "lat": -23.034901,
+        "lon": -45.579226
+      },
+      "bbox": {
+        "min_lat": -23.0349396,
+        "max_lat": -23.0348329,
+        "min_lon": -45.5794428,
+        "max_lon": -45.5788483
+      }
+    },
+    "ubatuba": {
+      "status": "EXACT",
+      "matched_osm_key": "ubatuba",
+      "score": 1.0,
+      "direct_cross_streets": [
+        "doutor emilio winther",
+        "marechal arthur da costa e silva",
+        "tiradentes"
+      ],
+      "centroid": {
+        "lat": -23.0324,
+        "lon": -45.564396
+      },
+      "bbox": {
+        "min_lat": -23.0338275,
+        "max_lat": -23.0319042,
+        "min_lon": -45.5646414,
+        "max_lon": -45.5638692
+      }
+    },
+    "vaticano": {
+      "status": "HIGH_CONFIDENCE_UNIQUE",
+      "matched_osm_key": "praca vaticano",
+      "score": 1.0,
+      "match_reason": "canonical_exact",
+      "direct_cross_streets": [
+        "estados unidos",
+        "noruega",
+        "polonia",
+        "suecia",
+        "suica"
+      ],
+      "centroid": {
+        "lat": -23.03393,
+        "lon": -45.577419
+      },
+      "bbox": {
+        "min_lat": -23.0340936,
+        "max_lat": -23.033191,
+        "min_lon": -45.5782957,
+        "max_lon": -45.5772399
+      }
+    }
+  }
+}

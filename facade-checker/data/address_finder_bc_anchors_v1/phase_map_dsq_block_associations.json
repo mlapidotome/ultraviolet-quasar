@@ -1,0 +1,718 @@
+{
+  "metadata": {
+    "total_dsqs": 63,
+    "spatial_status_breakdown": {
+      "LOCAL_BLOCK_UNRESOLVED": 53,
+      "LOCAL_BLOCK_RESOLVED": 10
+    }
+  },
+  "associations": {
+    "1.6.001": {
+      "dsq": "1.6.001",
+      "parcels_count": 39,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "1.6.002": {
+      "dsq": "1.6.002",
+      "parcels_count": 29,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "1.6.003": {
+      "dsq": "1.6.003",
+      "parcels_count": 37,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "ubatuba"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "1.6.004": {
+      "dsq": "1.6.004",
+      "parcels_count": 31,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "1.6.005": {
+      "dsq": "1.6.005",
+      "parcels_count": 21,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "1.6.006": {
+      "dsq": "1.6.006",
+      "parcels_count": 30,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "1.6.007": {
+      "dsq": "1.6.007",
+      "parcels_count": 29,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "jose gomes tinoco"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "1.6.008": {
+      "dsq": "1.6.008",
+      "parcels_count": 38,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "1.6.009": {
+      "dsq": "1.6.009",
+      "parcels_count": 17,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "1.6.010": {
+      "dsq": "1.6.010",
+      "parcels_count": 13,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "1.6.011": {
+      "dsq": "1.6.011",
+      "parcels_count": 8,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "1.6.012": {
+      "dsq": "1.6.012",
+      "parcels_count": 8,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "1.6.013": {
+      "dsq": "1.6.013",
+      "parcels_count": 7,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "1.6.014": {
+      "dsq": "1.6.014",
+      "parcels_count": 4,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "1.6.015": {
+      "dsq": "1.6.015",
+      "parcels_count": 4,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "1.6.016": {
+      "dsq": "1.6.016",
+      "parcels_count": 2,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "3.3.001": {
+      "dsq": "3.3.001",
+      "parcels_count": 32,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "italia",
+        "independencia",
+        "egito"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.002": {
+      "dsq": "3.3.002",
+      "parcels_count": 7,
+      "status": "LOCAL_BLOCK_RESOLVED",
+      "assigned_block_id": "PRB-0777",
+      "binding_evidence": "UNIQUE_CLOSED_PERIMETER_GRAPH_MATCH",
+      "mapped_streets": [
+        "finlandia",
+        "independencia"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.003": {
+      "dsq": "3.3.003",
+      "parcels_count": 16,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "praca holanda",
+        "finlandia",
+        "canada",
+        "independencia"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.004": {
+      "dsq": "3.3.004",
+      "parcels_count": 23,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "estados unidos",
+        "independencia",
+        "john fitzgerald kennedy"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.005": {
+      "dsq": "3.3.005",
+      "parcels_count": 7,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "colombia"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.006": {
+      "dsq": "3.3.006",
+      "parcels_count": 20,
+      "status": "LOCAL_BLOCK_RESOLVED",
+      "assigned_block_id": "PRB-0400",
+      "binding_evidence": "UNIQUE_CLOSED_PERIMETER_GRAPH_MATCH",
+      "mapped_streets": [
+        "mexico",
+        "espanha",
+        "austria",
+        "siria"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.007": {
+      "dsq": "3.3.007",
+      "parcels_count": 13,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "mexico",
+        "colombia",
+        "nicaragua"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.008": {
+      "dsq": "3.3.008",
+      "parcels_count": 20,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "john fitzgerald kennedy",
+        "nicaragua"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.009": {
+      "dsq": "3.3.009",
+      "parcels_count": 16,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "john fitzgerald kennedy",
+        "nicaragua"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.010": {
+      "dsq": "3.3.010",
+      "parcels_count": 22,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "estados unidos",
+        "siria",
+        "john fitzgerald kennedy"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.011": {
+      "dsq": "3.3.011",
+      "parcels_count": 24,
+      "status": "LOCAL_BLOCK_RESOLVED",
+      "assigned_block_id": "PRB-0388",
+      "binding_evidence": "UNIQUE_CLOSED_PERIMETER_GRAPH_MATCH",
+      "mapped_streets": [
+        "estados unidos",
+        "canada",
+        "siria",
+        "john fitzgerald kennedy"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.012": {
+      "dsq": "3.3.012",
+      "parcels_count": 29,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "estados unidos",
+        "canada",
+        "siria",
+        "espanha",
+        "praca belgica"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.013": {
+      "dsq": "3.3.013",
+      "parcels_count": 32,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "italia",
+        "praca turquia",
+        "canada",
+        "egito"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.014": {
+      "dsq": "3.3.014",
+      "parcels_count": 33,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "suica",
+        "estados unidos",
+        "canada",
+        "espanha",
+        "praca belgica"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.015": {
+      "dsq": "3.3.015",
+      "parcels_count": 20,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "polonia",
+        "suica",
+        "praca vaticano"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.016": {
+      "dsq": "3.3.016",
+      "parcels_count": 31,
+      "status": "LOCAL_BLOCK_RESOLVED",
+      "assigned_block_id": "PRB-0386",
+      "binding_evidence": "UNIQUE_CLOSED_PERIMETER_GRAPH_MATCH",
+      "mapped_streets": [
+        "suica",
+        "mexico",
+        "espanha",
+        "estados unidos"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.017": {
+      "dsq": "3.3.017",
+      "parcels_count": 28,
+      "status": "LOCAL_BLOCK_RESOLVED",
+      "assigned_block_id": "PRB-0387",
+      "binding_evidence": "UNIQUE_CLOSED_PERIMETER_GRAPH_MATCH",
+      "mapped_streets": [
+        "estados unidos",
+        "espanha",
+        "siria"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.018": {
+      "dsq": "3.3.018",
+      "parcels_count": 18,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "siria",
+        "john fitzgerald kennedy"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.019": {
+      "dsq": "3.3.019",
+      "parcels_count": 12,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "franca",
+        "siria",
+        "john fitzgerald kennedy"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.020": {
+      "dsq": "3.3.020",
+      "parcels_count": 21,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "polonia",
+        "italia",
+        "noruega",
+        "praca turquia"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.021": {
+      "dsq": "3.3.021",
+      "parcels_count": 31,
+      "status": "LOCAL_BLOCK_RESOLVED",
+      "assigned_block_id": "PRB-0229",
+      "binding_evidence": "UNIQUE_CLOSED_PERIMETER_GRAPH_MATCH",
+      "mapped_streets": [
+        "polonia",
+        "italia",
+        "noruega",
+        "suecia"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.022": {
+      "dsq": "3.3.022",
+      "parcels_count": 40,
+      "status": "LOCAL_BLOCK_RESOLVED",
+      "assigned_block_id": "PRB-0346",
+      "binding_evidence": "UNIQUE_CLOSED_PERIMETER_GRAPH_MATCH",
+      "mapped_streets": [
+        "polonia",
+        "suecia",
+        "marrocos",
+        "dinamarca"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.023": {
+      "dsq": "3.3.023",
+      "parcels_count": 27,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "polonia",
+        "marrocos",
+        "dinamarca"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.026": {
+      "dsq": "3.3.026",
+      "parcels_count": 1,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "polonia"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.027": {
+      "dsq": "3.3.027",
+      "parcels_count": 22,
+      "status": "LOCAL_BLOCK_RESOLVED",
+      "assigned_block_id": "PRB-0401",
+      "binding_evidence": "UNIQUE_CLOSED_PERIMETER_GRAPH_MATCH",
+      "mapped_streets": [
+        "franca",
+        "espanha",
+        "austria",
+        "siria"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.028": {
+      "dsq": "3.3.028",
+      "parcels_count": 14,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "franca",
+        "espanha",
+        "alemanha"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.029": {
+      "dsq": "3.3.029",
+      "parcels_count": 29,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "polonia",
+        "suica",
+        "praca vaticano"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.030": {
+      "dsq": "3.3.030",
+      "parcels_count": 27,
+      "status": "LOCAL_BLOCK_RESOLVED",
+      "assigned_block_id": "PRB-0737",
+      "binding_evidence": "UNIQUE_CLOSED_PERIMETER_GRAPH_MATCH",
+      "mapped_streets": [
+        "polonia",
+        "suica",
+        "marrocos"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.031": {
+      "dsq": "3.3.031",
+      "parcels_count": 9,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "alemanha",
+        "marrocos",
+        "espanha"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "3.3.032": {
+      "dsq": "3.3.032",
+      "parcels_count": 1,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "independencia"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "4.4.101": {
+      "dsq": "4.4.101",
+      "parcels_count": 12,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "cleber paixao pereira pinto"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "4.4.102": {
+      "dsq": "4.4.102",
+      "parcels_count": 38,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "4.4.103": {
+      "dsq": "4.4.103",
+      "parcels_count": 5,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "4.4.105": {
+      "dsq": "4.4.105",
+      "parcels_count": 32,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "4.4.110": {
+      "dsq": "4.4.110",
+      "parcels_count": 4,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "cleber paixao pereira pinto"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "4.4.115": {
+      "dsq": "4.4.115",
+      "parcels_count": 35,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "antonio celidonio monteiro"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "4.4.120": {
+      "dsq": "4.4.120",
+      "parcels_count": 40,
+      "status": "LOCAL_BLOCK_RESOLVED",
+      "assigned_block_id": "PRB-3193",
+      "binding_evidence": "UNIQUE_CLOSED_PERIMETER_GRAPH_MATCH",
+      "mapped_streets": [
+        "lirio",
+        "tulipa"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "4.4.130": {
+      "dsq": "4.4.130",
+      "parcels_count": 38,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "pedro marcon"
+      ],
+      "verified_coordinates_count": 0
+    },
+    "4.4.206": {
+      "dsq": "4.4.206",
+      "parcels_count": 19,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "4.4.207": {
+      "dsq": "4.4.207",
+      "parcels_count": 34,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "4.4.208": {
+      "dsq": "4.4.208",
+      "parcels_count": 6,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "4.4.209": {
+      "dsq": "4.4.209",
+      "parcels_count": 9,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "4.4.210": {
+      "dsq": "4.4.210",
+      "parcels_count": 33,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "4.4.211": {
+      "dsq": "4.4.211",
+      "parcels_count": 15,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "4.4.212": {
+      "dsq": "4.4.212",
+      "parcels_count": 2,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "4.4.213": {
+      "dsq": "4.4.213",
+      "parcels_count": 39,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [],
+      "verified_coordinates_count": 0
+    },
+    "4.4.214": {
+      "dsq": "4.4.214",
+      "parcels_count": 3,
+      "status": "LOCAL_BLOCK_UNRESOLVED",
+      "assigned_block_id": null,
+      "binding_evidence": null,
+      "mapped_streets": [
+        "francisco alves monteiro"
+      ],
+      "verified_coordinates_count": 0
+    }
+  }
+}
