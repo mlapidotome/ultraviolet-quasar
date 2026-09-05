@@ -3,16 +3,17 @@
  * Bali Imóveis (Fase 3C.1 — Final Hardening)
  * 
  * Responsabilidades:
- * 1. Sanitização estrita de strings contra filter injection (11 caracteres)
+ * 1. Sanitização estrita de strings contra filter injection
  * 2. Whitelist estrita de compatibilidade entre tipo de overlay e preset
- * 3. Cálculo determinístico de métricas de largura para fontes proporcionais
+ * 3. Cálculo de métricas físicas REAIS lendo o arquivo TTF (.ttf) do FONT_REGISTRY (sem heurísticas manuais)
  * 4. Quebra de linha determinística (text wrapping) e fail-fast por layout overflow
  * 5. Validação rigorosa de bounding boxes contra Safe Rectangles (overlays e captions)
- * 6. Compilação de nós de drawtext/drawbox no filtergraph do FFmpeg
+ * 6. Compilação de nós de drawtext no filtergraph do FFmpeg
  * 7. Ordenação estrita por layer_order (sem ambiguidades de sobreposição)
  * 8. Modulação de transparência (fade) e punch zoom determinísticos
  */
 
+const fs = require('fs');
 const { FONT_REGISTRY } = require('./styles/presets');
 
 const ALLOWED_OVERLAY_TYPES = Object.freeze(['headline', 'price_badge', 'location_tag', 'cta_banner']);
@@ -22,8 +23,216 @@ const MAX_OVERLAY_CHARS = 250;
 const MAX_CAPTIONS_COUNT = 60;
 
 /**
+ * Leitor determinístico de métricas físicas de fontes TrueType (.ttf)
+ * Lê tabelas 'head', 'hhea', 'cmap' (format 4 e 12) e 'hmtx' diretamente do arquivo binário da fonte no servidor.
+ * Zero dependências externas, 100% determinístico e thread-safe.
+ */
+class TrueTypeFontMetrics {
+  constructor(fontFilePath) {
+    this.fontFilePath = fontFilePath;
+    const buffer = fs.readFileSync(fontFilePath);
+    this.buffer = buffer;
+    this.tables = {};
+
+    const numTables = buffer.readUInt16BE(4);
+    for (let i = 0; i < numTables; i++) {
+      const offset = 12 + i * 16;
+      const tag = buffer.toString('ascii', offset, offset + 4);
+      const tableOffset = buffer.readUInt32BE(offset + 8);
+      const tableLength = buffer.readUInt32BE(offset + 12);
+      this.tables[tag] = { offset: tableOffset, length: tableLength };
+    }
+
+    // 1. Ler unitsPerEm de 'head'
+    const headOffset = this.tables['head']?.offset;
+    if (headOffset === undefined) throw new Error(`[TTF ERROR] Tabela 'head' não encontrada em ${fontFilePath}`);
+    this.unitsPerEm = buffer.readUInt16BE(headOffset + 18);
+
+    // 2. Ler numberOfHMetrics de 'hhea'
+    const hheaOffset = this.tables['hhea']?.offset;
+    if (hheaOffset === undefined) throw new Error(`[TTF ERROR] Tabela 'hhea' não encontrada em ${fontFilePath}`);
+    this.numberOfHMetrics = buffer.readUInt16BE(hheaOffset + 34);
+
+    // 3. Tabela 'hmtx'
+    const hmtxOffset = this.tables['hmtx']?.offset;
+    if (hmtxOffset === undefined) throw new Error(`[TTF ERROR] Tabela 'hmtx' não encontrada em ${fontFilePath}`);
+    this.hmtxOffset = hmtxOffset;
+
+    // 4. Mapear 'cmap'
+    this.cmap = this._parseCmap();
+
+    // Cache de larguras de glyphs para performance instantânea
+    this._glyphWidthCache = new Map();
+  }
+
+  _parseCmap() {
+    const cmapOffset = this.tables['cmap']?.offset;
+    if (cmapOffset === undefined) throw new Error(`[TTF ERROR] Tabela 'cmap' não encontrada em ${this.fontFilePath}`);
+    const numSubtables = this.buffer.readUInt16BE(cmapOffset + 2);
+
+    let format4Offset = null;
+    let format12Offset = null;
+
+    for (let i = 0; i < numSubtables; i++) {
+      const subOffset = cmapOffset + 4 + i * 8;
+      const platformId = this.buffer.readUInt16BE(subOffset);
+      const encodingId = this.buffer.readUInt16BE(subOffset + 2);
+      const tableOffset = cmapOffset + this.buffer.readUInt32BE(subOffset + 4);
+      const format = this.buffer.readUInt16BE(tableOffset);
+
+      if (format === 4 && (platformId === 0 || (platformId === 3 && (encodingId === 1 || encodingId === 0)))) {
+        format4Offset = tableOffset;
+      } else if (format === 12 && (platformId === 0 || (platformId === 3 && encodingId === 10))) {
+        format12Offset = tableOffset;
+      }
+    }
+
+    if (format12Offset !== null) {
+      return this._parseCmapFormat12(format12Offset);
+    }
+    if (format4Offset !== null) {
+      return this._parseCmapFormat4(format4Offset);
+    }
+    throw new Error(`[TTF ERROR] Nenhum subtable de cmap compatível (format 4 ou 12) encontrado em ${this.fontFilePath}`);
+  }
+
+  _parseCmapFormat4(offset) {
+    const segCountX2 = this.buffer.readUInt16BE(offset + 6);
+    const segCount = segCountX2 / 2;
+    const endCodes = [];
+    const startCodes = [];
+    const idDeltas = [];
+    const idRangeOffsets = [];
+
+    const endCodesOffset = offset + 14;
+    for (let i = 0; i < segCount; i++) {
+      endCodes.push(this.buffer.readUInt16BE(endCodesOffset + i * 2));
+    }
+
+    const startCodesOffset = endCodesOffset + segCountX2 + 2;
+    for (let i = 0; i < segCount; i++) {
+      startCodes.push(this.buffer.readUInt16BE(startCodesOffset + i * 2));
+    }
+
+    const idDeltasOffset = startCodesOffset + segCountX2;
+    for (let i = 0; i < segCount; i++) {
+      idDeltas.push(this.buffer.readInt16BE(idDeltasOffset + i * 2));
+    }
+
+    const idRangeOffsetsOffset = idDeltasOffset + segCountX2;
+    for (let i = 0; i < segCount; i++) {
+      idRangeOffsets.push(this.buffer.readUInt16BE(idRangeOffsetsOffset + i * 2));
+    }
+
+    return (charCode) => {
+      for (let i = 0; i < segCount; i++) {
+        if (charCode <= endCodes[i]) {
+          if (charCode >= startCodes[i]) {
+            if (idRangeOffsets[i] === 0) {
+              return (charCode + idDeltas[i]) & 0xFFFF;
+            } else {
+              const rangeOffsetLocation = idRangeOffsetsOffset + i * 2;
+              const glyphIndexAddress = rangeOffsetLocation + idRangeOffsets[i] + (charCode - startCodes[i]) * 2;
+              const glyphId = this.buffer.readUInt16BE(glyphIndexAddress);
+              return glyphId !== 0 ? (glyphId + idDeltas[i]) & 0xFFFF : 0;
+            }
+          }
+          break;
+        }
+      }
+      return 0;
+    };
+  }
+
+  _parseCmapFormat12(offset) {
+    const nGroups = this.buffer.readUInt32BE(offset + 12);
+    const groups = [];
+    for (let i = 0; i < nGroups; i++) {
+      const gOffset = offset + 16 + i * 12;
+      const startCharCode = this.buffer.readUInt32BE(gOffset);
+      const endCharCode = this.buffer.readUInt32BE(gOffset + 4);
+      const startGlyphId = this.buffer.readUInt32BE(gOffset + 8);
+      groups.push({ startCharCode, endCharCode, startGlyphId });
+    }
+
+    return (charCode) => {
+      for (const g of groups) {
+        if (charCode >= g.startCharCode && charCode <= g.endCharCode) {
+          return g.startGlyphId + (charCode - g.startCharCode);
+        }
+      }
+      return 0;
+    };
+  }
+
+  getGlyphAdvanceWidth(glyphIndex) {
+    if (this._glyphWidthCache.has(glyphIndex)) {
+      return this._glyphWidthCache.get(glyphIndex);
+    }
+    let advance = 0;
+    if (glyphIndex < this.numberOfHMetrics) {
+      advance = this.buffer.readUInt16BE(this.hmtxOffset + glyphIndex * 4);
+    } else {
+      advance = this.buffer.readUInt16BE(this.hmtxOffset + (this.numberOfHMetrics - 1) * 4);
+    }
+    this._glyphWidthCache.set(glyphIndex, advance);
+    return advance;
+  }
+
+  getCharWidth(char, fontSize) {
+    const code = char.codePointAt(0);
+    const glyphIndex = this.cmap(code);
+    const advance = this.getGlyphAdvanceWidth(glyphIndex);
+    return (advance / this.unitsPerEm) * fontSize;
+  }
+
+  getTextWidth(text, fontSize) {
+    if (!text || typeof text !== 'string') return 0;
+    let total = 0;
+    for (const char of text) {
+      total += this.getCharWidth(char, fontSize);
+    }
+    return total;
+  }
+}
+
+// Cache global em memória das métricas físicas das fontes
+const _fontMetricsCache = new Map();
+
+/**
+ * Obtém a instância de métricas da fonte física correspondente ao font_id
+ * @param {string} fontId
+ * @returns {TrueTypeFontMetrics}
+ */
+function getFontMetrics(fontId = 'dejavu_bold') {
+  const fontPath = FONT_REGISTRY[fontId] || FONT_REGISTRY['dejavu_medium'] || FONT_REGISTRY['dejavu_bold'];
+  if (!fontPath || !fs.existsSync(fontPath)) {
+    throw new Error(`[FONT METRICS ERROR] Arquivo físico da fonte '${fontId}' não encontrado em: ${fontPath}`);
+  }
+  let metrics = _fontMetricsCache.get(fontPath);
+  if (!metrics) {
+    metrics = new TrueTypeFontMetrics(fontPath);
+    _fontMetricsCache.set(fontPath, metrics);
+  }
+  return metrics;
+}
+
+/**
+ * Mede a largura física real de um texto em pixels baseando-se no arquivo TTF físico da fonte
+ * @param {string} text
+ * @param {number} fontSize
+ * @param {string} fontId
+ * @returns {number} Largura exata em pixels
+ */
+function measurePhysicalTextWidth(text, fontSize, fontId = 'dejavu_bold') {
+  if (!text || typeof text !== 'string') return 0;
+  const metrics = getFontMetrics(fontId);
+  return metrics.getTextWidth(text, fontSize);
+}
+
+/**
  * Sanitiza texto para uso seguro no drawtext do FFmpeg (Defesa em Profundidade)
- * Escapa: \ : ' % [ ] , ; = e normaliza quebras de linha
+ * Escapa % e normaliza quebras de linha e apóstrofes
  * @param {string} rawText
  * @returns {string}
  */
@@ -38,47 +247,18 @@ function sanitizeDrawtextString(rawText) {
 }
 
 /**
- * Retorna o fator de largura proporcional do glifo para fontes sans-serif (DejaVu/Liberation)
- * @param {string} char
- * @param {boolean} isBold
- * @returns {number} Fator multiplicado pelo font_size
- */
-function getCharacterWidthFactor(char, isBold = true) {
-  if ('WM@%—©'.includes(char)) return isBold ? 0.95 : 0.88;
-  if ('wm'.includes(char)) return isBold ? 0.82 : 0.75;
-  if ('iljtfI!.:;\'|[]() '.includes(char)) return isBold ? 0.32 : 0.27;
-  if ('ABCDEFGHJKLNOPQRSTUVWXYZ0123456789#$&+?'.includes(char)) return isBold ? 0.70 : 0.64;
-  return isBold ? 0.58 : 0.52; // caracteres minúsculos padrão e acentos PT-BR (ç, ã, é, ó, ú, etc.)
-}
-
-/**
- * Calcula a largura física proporcional de uma linha de texto em pixels
- * @param {string} line
- * @param {number} fontSize
- * @param {boolean} isBold
- * @returns {number} Largura em pixels
- */
-function calculateProportionalLineWidth(line, fontSize, isBold = true) {
-  if (!line || typeof line !== 'string') return 0;
-  let totalWidth = 0;
-  for (const char of line) {
-    totalWidth += fontSize * getCharacterWidthFactor(char, isBold);
-  }
-  return Math.round(totalWidth);
-}
-
-/**
  * Quebra de linha determinística para texto de overlay respeitando maxCharsPerLine, maxLines e safeWidth
+ * Usa as métricas físicas REAIS do arquivo TTF da fonte.
  * @param {string} text
  * @param {number} maxCharsPerLine
  * @param {number} maxLines
  * @param {number} fontSize
  * @param {number} maxLineWidthPx
- * @param {boolean} isBold
- * @returns {{ lines: string[], formattedText: string }}
+ * @param {string} fontId
+ * @returns {{ lines: string[], formattedText: string, maxLineWidthPx: number }}
  */
-function wrapText(text, maxCharsPerLine, maxLines, fontSize = 50, maxLineWidthPx = 900, isBold = true) {
-  if (!text) return { lines: [], formattedText: '' };
+function wrapText(text, maxCharsPerLine, maxLines, fontSize = 50, maxLineWidthPx = 900, fontId = 'dejavu_bold') {
+  if (!text) return { lines: [], formattedText: '', maxLineWidthPx: 0 };
   
   const words = text.split(/\s+/);
   const lines = [];
@@ -86,7 +266,7 @@ function wrapText(text, maxCharsPerLine, maxLines, fontSize = 50, maxLineWidthPx
 
   for (const word of words) {
     const candidate = currentLine ? `${currentLine} ${word}` : word;
-    const candidateWidth = calculateProportionalLineWidth(candidate, fontSize, isBold);
+    const candidateWidth = measurePhysicalTextWidth(candidate, fontSize, fontId);
 
     if (!currentLine) {
       currentLine = word;
@@ -105,25 +285,32 @@ function wrapText(text, maxCharsPerLine, maxLines, fontSize = 50, maxLineWidthPx
     throw new Error(`[LAYOUT ERROR] Texto ('${text.slice(0, 30)}...') gerou ${lines.length} linhas, excedendo o limite permitido de ${maxLines} linhas`);
   }
 
+  let measuredMaxLine = 0;
+  for (const l of lines) {
+    const w = measurePhysicalTextWidth(l, fontSize, fontId);
+    if (w > measuredMaxLine) measuredMaxLine = w;
+  }
+
   return {
     lines,
-    formattedText: lines.join('\n')
+    formattedText: lines.join('\n'),
+    maxLineWidthPx: Math.round(measuredMaxLine)
   };
 }
 
 /**
- * Validação de bounding box proporcional contra o retângulo seguro (Safe Rectangle)
+ * Validação de bounding box física contra o retângulo seguro (Safe Rectangle)
  * @param {Object} params
  */
-function validateBoundingBoxInSafeRect({ lines, fontSize, padding, safeRect, positionName, isBold = true }) {
+function validateBoundingBoxInSafeRect({ lines, fontSize, padding, safeRect, positionName, fontId = 'dejavu_bold' }) {
   const lineCount = lines.length;
   let maxLineWidth = 0;
   for (const line of lines) {
-    const w = calculateProportionalLineWidth(line, fontSize, isBold);
+    const w = measurePhysicalTextWidth(line, fontSize, fontId);
     if (w > maxLineWidth) maxLineWidth = w;
   }
 
-  const totalBoxWidth = maxLineWidth + (padding * 2);
+  const totalBoxWidth = Math.round(maxLineWidth + (padding * 2));
   const estimatedTextHeight = Math.round(lineCount * fontSize * 1.25);
   const totalBoxHeight = estimatedTextHeight + (padding * 2);
 
@@ -239,7 +426,7 @@ function validateOverlays(overlays, style, totalDurationMs) {
       throw new Error(`[OVERLAY VALIDATION ERROR] Preset '${ov.preset}' não é compatível com o tipo de overlay '${ov.type}'. Tipos suportados pelo preset: [${supportedTypes.join(', ')}]`);
     }
 
-    // 8. Validação de layout contra Safe Rectangle
+    // 8. Validação de layout contra Safe Rectangle usando fontes físicas reais
     const safeRect = style.safe_rectangles?.[ov.position];
     if (!safeRect) {
       throw new Error(`[STYLE ERROR] safe_rectangles não definido para a posição '${ov.position}' no estilo '${style.id}'`);
@@ -247,16 +434,15 @@ function validateOverlays(overlays, style, totalDurationMs) {
 
     const safeWidth = (safeRect.x_max - safeRect.x_min) - (preset.box_padding * 2);
     const maxCharsPerLine = getEffectiveMaxCharsPerLine(preset, safeRect);
-    const isBold = preset.font_id?.includes('bold') ?? true;
 
-    const { lines } = wrapText(ov.text, maxCharsPerLine, preset.max_lines, preset.font_size, safeWidth, isBold);
+    const { lines } = wrapText(ov.text, maxCharsPerLine, preset.max_lines, preset.font_size, safeWidth, preset.font_id);
     validateBoundingBoxInSafeRect({
       lines,
       fontSize: preset.font_size,
       padding: preset.box_padding,
       safeRect,
       positionName: ov.position,
-      isBold
+      fontId: preset.font_id
     });
   }
 
@@ -264,7 +450,7 @@ function validateOverlays(overlays, style, totalDurationMs) {
 }
 
 /**
- * Validação estrutural do array de captions do Blueprint 1.1 com safe area layout check
+ * Validação estrutural do array de captions do Blueprint 1.1 com safe area layout check baseado em fonte física
  * @param {Array} captions
  * @param {Object} style
  * @param {number} totalDurationMs
@@ -283,8 +469,8 @@ function validateCaptions(captions, style, totalDurationMs) {
     font_id: 'dejavu_medium',
     font_size: 42,
     max_lines: 2,
-    max_chars: 40,
-    max_chars_per_line: 20,
+    max_chars: 60,
+    max_chars_per_line: 30,
     box_padding: 16
   };
   const captionSafeRect = style.safe_rectangles?.captions || { x_min: 80, x_max: 1000, y_min: 1350, y_max: 1550 };
@@ -312,15 +498,15 @@ function validateCaptions(captions, style, totalDurationMs) {
       throw new Error(`[CAPTIONS VALIDATION ERROR] Legenda ${i + 1} termina em ${endMs}ms, excedendo a duração total do vídeo (${totalDurationMs}ms)`);
     }
 
-    // Validação de layout de caption contra safe area
-    const { lines } = wrapText(cap.text, captionPreset.max_chars_per_line || 20, captionPreset.max_lines || 2, captionPreset.font_size, safeWidth, false);
+    // Validação de layout de caption contra safe area usando fonte física real
+    const { lines } = wrapText(cap.text, captionPreset.max_chars_per_line || 30, captionPreset.max_lines || 2, captionPreset.font_size, safeWidth, captionPreset.font_id);
     validateBoundingBoxInSafeRect({
       lines,
       fontSize: captionPreset.font_size,
       padding: captionPreset.box_padding,
       safeRect: captionSafeRect,
       positionName: 'captions',
-      isBold: false
+      fontId: captionPreset.font_id
     });
   }
 
@@ -372,9 +558,8 @@ function compileOverlayFiltergraph({
     const safeRect = style.safe_rectangles[ov.position];
     const safeWidth = (safeRect.x_max - safeRect.x_min) - (preset.box_padding * 2);
     const maxCharsPerLine = getEffectiveMaxCharsPerLine(preset, safeRect);
-    const isBold = preset.font_id?.includes('bold') ?? true;
 
-    const { formattedText } = wrapText(ov.text, maxCharsPerLine, preset.max_lines, preset.font_size, safeWidth, isBold);
+    const { formattedText } = wrapText(ov.text, maxCharsPerLine, preset.max_lines, preset.font_size, safeWidth, preset.font_id);
     const sanitizedText = sanitizeDrawtextString(formattedText);
 
     const t0 = (ov.start_ms / 1000).toFixed(3);
@@ -430,8 +615,8 @@ function compileOverlayFiltergraph({
     font_id: 'dejavu_medium',
     font_size: 42,
     max_lines: 2,
-    max_chars: 40,
-    max_chars_per_line: 20,
+    max_chars: 60,
+    max_chars_per_line: 30,
     box_padding: 16,
     box_color: '#000000B3',
     text_color: '#FFFFFF'
@@ -441,7 +626,7 @@ function compileOverlayFiltergraph({
   const safeCaptionWidth = (captionSafeRect.x_max - captionSafeRect.x_min) - (captionPreset.box_padding * 2);
 
   for (const cap of sortedCaptions) {
-    const { formattedText } = wrapText(cap.text, captionPreset.max_chars_per_line || 20, captionPreset.max_lines || 2, captionPreset.font_size, safeCaptionWidth, false);
+    const { formattedText } = wrapText(cap.text, captionPreset.max_chars_per_line || 30, captionPreset.max_lines || 2, captionPreset.font_size, safeCaptionWidth, captionPreset.font_id);
     const sanitizedText = sanitizeDrawtextString(formattedText);
     const c0 = (cap.start_ms / 1000).toFixed(3);
     const c1 = (cap.end_ms / 1000).toFixed(3);
@@ -468,9 +653,10 @@ module.exports = {
   MAX_OVERLAYS_COUNT,
   MAX_OVERLAY_CHARS,
   MAX_CAPTIONS_COUNT,
+  TrueTypeFontMetrics,
+  getFontMetrics,
+  measurePhysicalTextWidth,
   sanitizeDrawtextString,
-  getCharacterWidthFactor,
-  calculateProportionalLineWidth,
   wrapText,
   validateBoundingBoxInSafeRect,
   validateOverlays,
