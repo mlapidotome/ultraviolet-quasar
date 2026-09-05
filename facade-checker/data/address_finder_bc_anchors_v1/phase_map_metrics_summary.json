@@ -1,5 +1,5 @@
 {
-  "classification": "MAP_AWARE_LLL_TOPOLOGY_HIGH_VALUE",
+  "classification": "MAP_AWARE_LLL_TOPOLOGY_PARTIAL_VALUE",
   "cohort_audit": {
     "raw_records": 1325,
     "unique_dsqlll_parcels": 1306,
@@ -32,5 +32,6 @@
     "phase_map_candidate_rankings.json": "4f587d7ed8bdda65f640da8b3fa36db7d23621dcfc781b9125675d849bb15251",
     "phase_map_frozen_rules.json": "95d25c38f42ce63d6d6bade2b37bfee1de36b9e55f0b8d5e758d50b0c6e8ce29",
     "phase_map_holdout_results.json": "9de2a7f1a0e4c187c0b8e2f34cbeff1dc694b5b055306763ea61d0b54c1e135d"
-  }
+  },
+  "classification_rationale": "The observed map-aware LLL topology signal is strong in the currently resolved subset and replicates on holdout, but local-block coverage remains too limited to establish a broad cadastral rule."
 }

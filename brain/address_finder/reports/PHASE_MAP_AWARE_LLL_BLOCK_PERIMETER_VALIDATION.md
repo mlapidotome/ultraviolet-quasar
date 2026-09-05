@@ -2,18 +2,19 @@
 ## Physical Road-Block Topology, Corner Transitions & Multi-Signal Candidate Ranking
 
 **Phase Status**: `COMPLETED`
-**Global Classification**: `MAP_AWARE_LLL_TOPOLOGY_HIGH_VALUE`
+**Global Classification**: `MAP_AWARE_LLL_TOPOLOGY_PARTIAL_VALUE`
 **Evaluation Protocol**: `PRE_REGISTERED_STRATIFIED_COMPLETE_DSQ_ISOLATION` (Seed 42)
 
 ---
 
-## 1. Executive Summary
+## 1. Executive Summary & Scientific Interpretation
 
 This scientific validation phase evaluated whether cadastral lot numbering (`LLL`) within Taubaté cadastral blocks (`D.S.QQQ`) carries physical perimeter and corner transition information when bound to an independent OpenStreetMap road graph and physical block polygon model.
 
-All evaluations maintained a strict separation between:
-1. **Level 1 — Street-Graph Topology**: Global connectivity across the municipal road graph (3,452 streets).
-2. **Level 2 — Local Block Geometry**: Physical corner confirmation bounded by independently established road-block polygons (3,360 blocks), with unanchored parcels classified as `LOCAL_BLOCK_UNRESOLVED`.
+> [!NOTE]
+> **Interpretation & Generalization Bound**:
+> The observed map-aware LLL topology signal is strong in the currently resolved subset and replicates on holdout, but local-block coverage remains too limited to establish a broad cadastral rule.
+> Level 2 local physical geometry evaluations were based on 26 resolved block transitions in Development (21 confirmed corners, 5 not confirmed) and 10 in Holdout (8 confirmed corners, 2 not confirmed).
 
 ### Key Experimental Findings:
 
@@ -96,7 +97,7 @@ Simulated across 34,900 anchor-target queries (26,362 Dev, 8,538 Holdout):
 | `phase_map_candidate_rankings.json` | `4f587d7ed8bdda65f640da8b3fa36db7d23621dcfc781b9125675d849bb15251` |
 | `phase_map_frozen_rules.json` | `95d25c38f42ce63d6d6bade2b37bfee1de36b9e55f0b8d5e758d50b0c6e8ce29` |
 | `phase_map_holdout_results.json` | `9de2a7f1a0e4c187c0b8e2f34cbeff1dc694b5b055306763ea61d0b54c1e135d` |
-| `phase_map_metrics_summary.json` | `e6c670611fbc79e40ca6794f22ff31a6d5be00de19c283d435124b0a83f01f28` |
+| `phase_map_metrics_summary.json` | `f67c082427a4828391512e6b3a3f82b49213c91171b5cdb24119ea3c7f1cd592` |
 
 ---
 
