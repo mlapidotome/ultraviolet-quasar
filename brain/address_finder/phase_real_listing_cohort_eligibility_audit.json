@@ -1,0 +1,164 @@
+{
+  "audit_type": "PRE_PREDICTION_COHORT_ELIGIBILITY_AUDIT",
+  "cohort_size": 10,
+  "generated_at": "2026-09-05T21:27:20Z",
+  "listings": [
+    {
+      "classification": "NO_CONDO_EVIDENCE",
+      "eligibility_error_code": null,
+      "is_eligibility_error": false,
+      "listing_id": "26230879",
+      "supporting_evidence": [
+        "Listing title: 'Casa com 2 quartos no Jardim Gurilândia, Taubaté - SP - ID: 26230879 | Chaves na Mão'",
+        "Target image alt: 'Casa com 2 quartos à venda no Jardim Gurilândia, Taubaté'",
+        "Target description mentions traditional residential neighborhood Jardim Gurilândia (347m² total area)",
+        "Zero condominium fees, zero portaria/gate/condominium mentions in target text or page props"
+      ],
+      "target_neighbourhood": "Jardim Gurilândia",
+      "target_street": null
+    },
+    {
+      "classification": "OPEN_STREET_CONFIRMED",
+      "eligibility_error_code": null,
+      "is_eligibility_error": false,
+      "listing_id": "30744879",
+      "supporting_evidence": [
+        "Listing title: 'Casa com 2 quartos na Rua Doutor Cyro Lemos de Oliveira, Jardim Continental III, Taubaté - SP - ID: 30744879 | Chaves na Mão'",
+        "Target address explicitly publishes open public municipal street 'Rua Doutor Cyro Lemos de Oliveira' and postalCode '12093-720'",
+        "Broker description details standard single-family residential lot (A/T 125m², A/C 70m², quintal, 2 vagas descobertas)",
+        "Zero condominium fees, zero portaria/gate/condominium mentions in target text or page props"
+      ],
+      "target_neighbourhood": "Jardim Continental III",
+      "target_street": "Rua Doutor Cyro Lemos de Oliveira"
+    },
+    {
+      "classification": "CONDOMINIUM_EVIDENCE",
+      "eligibility_error_code": "PRESELECTION_ELIGIBILITY_ERROR",
+      "is_eligibility_error": true,
+      "listing_id": "32738189",
+      "supporting_evidence": [
+        "Target-owned image alt explicitly states: 'Sobrado à venda, 310 m² por R$ 1.500.000,00 - Condomínio Ouro Ville - Taubaté/SP'",
+        "Target listing page H1 states: 'Sobrado à venda, 310 m² por R$ 1.500.000,00 - Condomínio Ouro Ville - Taubaté/SP'",
+        "Target description states: 'Residencial OuroVille Sobrado com 4 dormitórios... O Condomínio oferece Lazer e Segurança com Portaria Monitorada 24 horas e com Biometria, Pista de Caminhada, Mirante... Clube'",
+        "Page props explicitly specify 'showCondominium': true and 'condominiumFee': 'R$ 260'"
+      ],
+      "target_neighbourhood": "Jardim Santa Tereza",
+      "target_street": null
+    },
+    {
+      "classification": "NO_CONDO_EVIDENCE",
+      "eligibility_error_code": null,
+      "is_eligibility_error": false,
+      "listing_id": "37154734",
+      "supporting_evidence": [
+        "Listing title: 'Casa com 2 quartos no Jardim Eulália, Taubaté - SP - ID: 37154734 | Chaves na Mão'",
+        "Target image alt: 'Casa com 2 dormitórios à venda, 170 m² - Jardim Eulália - Taubaté/SP'",
+        "Target description states: 'Casa à venda em sobre piso e com edícula completa, com potencial de renda! Localizada estrategicamente no cobiçado Jardim Eulália'",
+        "Zero condominium fees, zero portaria/gate/condominium mentions in target text or page props"
+      ],
+      "target_neighbourhood": "Jardim Eulália",
+      "target_street": null
+    },
+    {
+      "classification": "NO_CONDO_EVIDENCE",
+      "eligibility_error_code": null,
+      "is_eligibility_error": false,
+      "listing_id": "38732282",
+      "supporting_evidence": [
+        "Listing title: 'Casa com 3 quartos no Jardim Mourisco, Taubaté - SP - ID: 38732282 | Chaves na Mão'",
+        "Target image alt: 'Casa com 3 dormitórios à venda, 160 m² por R$ 520.000,00 - Jardim Mourisco - Taubaté/SP'",
+        "Target description states: 'CASA para VENDA, com terreno de 248,28m² e área construída de 160m². O Imóvel está localizado no Bairro Jardim Mourisco'",
+        "Zero condominium fees, zero portaria/gate/condominium mentions in target text or page props"
+      ],
+      "target_neighbourhood": "Jardim Mourisco",
+      "target_street": null
+    },
+    {
+      "classification": "NO_CONDO_EVIDENCE",
+      "eligibility_error_code": null,
+      "is_eligibility_error": false,
+      "listing_id": "38813993",
+      "supporting_evidence": [
+        "Listing title: 'Casa com 4 quartos no Campos Elíseos, Taubaté - SP - ID: 38813993 | Chaves na Mão'",
+        "Target image alt: 'Casa à venda, 185 m² por R$ 890.000,00 - Campos Elíseos - Taubaté/SP'",
+        "Target description states: 'Casa maravilhosa e muito espaçosa , imóvel com construção sólida e acabamento lindo ,com cômodos amplos e arejados e uma área gourmet espetacular para seus momentos em família , garagem para 4 carros'",
+        "Zero condominium fees, zero portaria/gate/condominium mentions in target text or page props"
+      ],
+      "target_neighbourhood": "Campos Elíseos",
+      "target_street": null
+    },
+    {
+      "classification": "CONDOMINIUM_EVIDENCE",
+      "eligibility_error_code": "PRESELECTION_ELIGIBILITY_ERROR",
+      "is_eligibility_error": true,
+      "listing_id": "40591449",
+      "supporting_evidence": [
+        "Target description explicitly states: 'Casa térrea com piscina no Condomínio Jardim Oásis em Taubaté. A Jeremias Rodrigues Imóveis de Alto Padrão disponibiliza para venda essa excelente casa térrea no Condomínio Jardim Oásis em Taubaté. Com 500 m² de área de terreno e 271 m² de área construída... O condomínio oferece aos moradores playground, salão de festas, churrasqueira e portaria 24 horas.'",
+        "Page body text mentions: 'Condomínio Jardim Oásis', 'portaria 24 horas', and 'taxa de condomínio'",
+        "While Avenida Carlos Pedroso da Silveira is the public road fronting the development entrance, the property itself is located within a gated community (Condomínio Fechado Jardim Oásis)"
+      ],
+      "target_neighbourhood": "Jardim Oasis",
+      "target_street": "Avenida Carlos Pedroso da Silveira"
+    },
+    {
+      "classification": "NO_CONDO_EVIDENCE",
+      "eligibility_error_code": null,
+      "is_eligibility_error": false,
+      "listing_id": "40712114",
+      "supporting_evidence": [
+        "Listing title: 'Casa com 4 quartos na Vila Santa Isabel, Taubaté - SP - ID: 40712114 | Chaves na Mão'",
+        "Target image alt: 'Casa Térrea a Venda, com 04 dormitórios, Vila Santa Isabel, Taubaté SP'",
+        "Target description states: 'Casa Térrea a Venda, com 04 dormitórios, Vila Santa Isabel, Taubaté SP Excelente Localização, Próximo da Avenida Vila Rica, na Estiva'",
+        "Zero condominium fees, zero portaria/gate/condominium mentions in target text or page props"
+      ],
+      "target_neighbourhood": "Vila Santa Isabel",
+      "target_street": null
+    },
+    {
+      "classification": "OPEN_STREET_CONFIRMED",
+      "eligibility_error_code": null,
+      "is_eligibility_error": false,
+      "listing_id": "42910754",
+      "supporting_evidence": [
+        "Listing title: 'Casa com 2 quartos na Rua Edu Mattos Ortiz, Jardim Oasis, Taubaté - SP - ID: 42910754 | Chaves na Mão'",
+        "Target address explicitly publishes open public municipal street 'Rua Edu Mattos Ortiz' and postalCode '12042-247'",
+        "Target description states: 'Casa a venda com 2 quartos, sendo 1 suíte, sala dois ambientes, cozinha, 2 banheiros, área gourmet, amplo quintal e garagem para 2 carros. Localizada no Bairro Jardim Oásis em Taubate-SP Aceita financiamento bancario'",
+        "Zero condominium fees, zero portaria/gate/condominium mentions in target text or page props"
+      ],
+      "target_neighbourhood": "Jardim Oasis",
+      "target_street": "Rua Edu Mattos Ortiz"
+    },
+    {
+      "classification": "NO_CONDO_EVIDENCE",
+      "eligibility_error_code": null,
+      "is_eligibility_error": false,
+      "listing_id": "44628622",
+      "supporting_evidence": [
+        "Listing title: 'Casa com 2 quartos no Jardim Continental III, Taubaté - SP - ID: 44628622 | Chaves na Mão'",
+        "Target image alt: 'Oportunidade - Casa Térrea - Jardim Continental - 2 Dormitórios - 70m² - 1 Vaga'",
+        "Target description states: '70m² de construção, Terreno de 125m², 2 Dormitórios, Sala, Cozinha, Banheiro, Área de serviços, 1 Vaga de garagem, Diferenciais Exclusivos: Casa térrea, Despensa no fundo do quintal'",
+        "Zero condominium fees, zero portaria/gate/condominium mentions in target text or page props"
+      ],
+      "target_neighbourhood": "Jardim Continental III",
+      "target_street": null
+    }
+  ],
+  "protocol_rules": {
+    "cohort_preservation": "All 10 frozen listings are preserved in the authoritative cohort without substitution or reselection.",
+    "dual_reporting_mandate": "Evaluation metrics must be reported for both (A) All 10 frozen cases and (B) Protocol-compliant subset excluding confirmed eligibility errors.",
+    "stage_1_artifact_integrity": "Stage 1 discovery pool artifacts remain unmodified for historical reproducibility."
+  },
+  "schema_version": "1.0",
+  "summary": {
+    "affected_listing_ids": [
+      "32738189",
+      "40591449"
+    ],
+    "ambiguous_condo_status_count": 0,
+    "condominium_evidence_count": 2,
+    "no_condo_evidence_count": 6,
+    "open_street_confirmed_count": 2,
+    "preselection_eligibility_error_count": 2,
+    "protocol_compliant_subset_count": 8
+  }
+}
