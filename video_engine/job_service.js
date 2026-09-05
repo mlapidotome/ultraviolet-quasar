@@ -6,6 +6,7 @@
  * - Busca e padronização de dados de imóveis (CRM + fallback)
  * - Simulação financeira e geração de roteiros de retenção
  * - Inicialização e persistência de Jobs no PostgreSQL
+ * - Geração de Creative Blueprints iniciais declarativos (Fase 3A)
  * 
  * NÃO contém regras ou formatações de WhatsApp.
  * NÃO importa video_anuncios_engine.js (Zero dependência circular).
@@ -16,6 +17,12 @@ const fs = require('fs');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 const axios = require('axios');
 const { createVideoJob } = require('./db');
+let assetService = null;
+try {
+  assetService = require('./asset_service');
+} catch (e) {
+  // Fail-open se asset_service não estiver carregado
+}
 
 // Configurações do CRM ImobTotal
 const IMOBTOTAL_API_KEY = process.env.IMOBTOTAL_API_KEY;
@@ -231,6 +238,18 @@ async function initializeVideoJob({ property_ref, broker_id, source = 'system', 
       metadata: metadata || {}
     });
     console.log(`[JOB_CORE] VideoJob persistido com sucesso: ${job.id} (broker: ${broker_id}, status: ${job.status})`);
+
+    // Fase 3A: Gerar e persistir Creative Blueprints iniciais declarativos (Fail-Open)
+    try {
+      if (!assetService) {
+        assetService = require('./asset_service');
+      }
+      const blueprints = assetService.buildCreativeBlueprints(job);
+      await assetService.saveBlueprintsToJob(job.id, blueprints);
+      job.creative_blueprints = blueprints;
+    } catch (bpErr) {
+      console.warn(`[JOB_CORE ASSET_SERVICE WARNING] Falha não-bloqueante ao persistir blueprints para job ${job.id}:`, bpErr.message);
+    }
   } catch (dbErr) {
     console.error(`[JOB_CORE ERROR] Falha ao persistir VideoJob no PostgreSQL para ref ${property_ref}:`, dbErr.message);
     // Fail-open: job permanece null, mas success permanece true para a V1 continuar operando
