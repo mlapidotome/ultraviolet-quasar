@@ -33,24 +33,41 @@ A inspeção em `/var/www/bali-gestor/video_anuncios_engine.js` (linhas 580 a 63
 
 ## 2. Regras Arquiteturais Absolutas da Fase 2C
 
-### 2.1. Validação Forte do `body.mp4` Reutilizado
-O arquivo de corpo utilizado na concatenação dos Vídeos 2 e 3 **não é considerado válido apenas porque o arquivo existe**. Ele deve cumprir obrigatoriamente e cumulativamente todas as seguintes condições:
-1. `metadata.pilot.body.local_path` existe e está preenchido no banco de dados;
-2. **Isolamento de Diretório & Anti-Path-Traversal:**
-   - `path.resolve(localPath)` deve residir estritamente dentro de `path.resolve('/var/www/bali-gestor/outputs/jobs/' + jobId)`;
-   - `path.basename(localPath) === 'body.mp4'`;
-   - Nenhuma possibilidade de caracteres relativos (`..`, `~`) ou symlinks para fora da pasta do job;
-3. **Existência Física & Integridade de Conteúdo:**
+### 2.1. Validação Forte do `body.mp4` Reutilizado (Anti-Symlink & Mídia Completa)
+O arquivo de corpo utilizado na concatenação dos Vídeos 2 e 3 **não é considerado válido apenas porque o arquivo existe ou possui duração positiva**. Ele deve cumprir obrigatoriamente e cumulativamente todas as seguintes condições:
+
+1. **Rastreabilidade no Banco:**  
+   `metadata.pilot.body.local_path` existe e está preenchido no banco de dados.
+
+2. **Isolamento de Diretório Físico Real & Proteção Anti-Symlink:**
+   - O diretório esperado do job é obtido e canonicamente resolvido via `fs.realpathSync(jobDir)`:
+     `const realJobDir = fs.realpathSync(path.resolve('/var/www/bali-gestor/outputs/jobs', jobId));`
+   - O caminho do arquivo é inspecionado com `fs.lstatSync(localPath)`:
+     - Se `fs.lstatSync(localPath).isSymbolicLink()`, sua resolução canônica real deve ser obrigatoriamente inspecionada;
+   - O caminho físico real do arquivo é resolvido via `fs.realpathSync(localPath)`:
+     `const realBodyPath = fs.realpathSync(localPath);`
+   - **Verificação de Pertença Estrita:**  
+     `realBodyPath.startsWith(realJobDir + path.sep)` deve ser `true`. É expressamente proibido qualquer link simbólico ou caminho que aponte para fora do diretório físico daquele Job;
+   - **Verificação de Basename:**  
+     `path.basename(realBodyPath) === 'body.mp4'` e `path.basename(localPath) === 'body.mp4'`.
+
+3. **Existência Física & Integridade de Bytes:**
    - `fs.existsSync(localPath) === true`;
-   - `fs.statSync(localPath).size > 0` (tamanho estritamente maior que zero bytes);
-4. **Validação Estrutural de Mídia via `ffprobe`:**
-   - Execução síncrona/assíncrona de:
-     `ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 <localPath>`
-   - `parseFloat(duration) > 0` (comprova que o container MP4 possui stream de áudio/vídeo legível e não é arquivo truncado ou corrompido).
+   - `fs.statSync(localPath).size > 0` (tamanho estritamente maior que zero bytes).
+
+4. **Validação Estrutural Completa de Streams de Mídia via `ffprobe`:**
+   - Execução de análise de streams e formato:
+     ```bash
+     ffprobe -v error -show_entries stream=codec_type -show_entries format=duration -of json "<localPath>"
+     ```
+   - **Critérios Obrigatórios e Cumulativos:**
+     1. `parseFloat(probe.format?.duration) > 0` (duração estritamente positiva);
+     2. Pelo menos 1 stream com `codec_type === 'video'` (vídeo válido presente);
+     3. Pelo menos 1 stream com `codec_type === 'audio'` (áudio de voz/narração presente).
 
 > [!CAUTION]
-> **Ação em Caso de Falha de Validação do Body:**
-> Se qualquer uma dessas validações falhar:
+> **Ação em Caso de Falha de Qualquer Validação do Body:**
+> Se o arquivo for symlink para fora da pasta do Job, se tiver 0 bytes, ou se o `ffprobe` acusar falta de vídeo, falta de áudio ou duração <= 0:
 > - **NÃO** regenerar Body automaticamente;
 > - **NÃO** procurar outro Body por nome em `outputs/`;
 > - **NÃO** usar Body de outro Job ou de sessões legadas;
@@ -63,17 +80,19 @@ Quando o Job estiver em `REMAINDER_FAILED` e Marcel clicar em **"Tentar Novament
 
 | Asset / Etapa | Condição Encontrada | Ação do Sistema |
 |---|---|---|
-| **Body Original** | Validado pelo item 2.1 | Reutiliza diretamente o `body.mp4` sem nenhuma chamada à HeyGen. |
+| **Body Original** | Validado pelo item 2.1 (Anti-symlink + Streams V/A + Duração) | Reutiliza diretamente o `body.mp4` sem nenhuma chamada à HeyGen. |
 | **Hook 2 (HeyGen)** | `metadata.remainder.hook2.heygen_video_id` existe e é válido | **NÃO** submete à HeyGen. Apenas consulta status na API da HeyGen. |
 | **Hook 2 (HeyGen)** | ID ausente ou inválido | Submete apenas Hook 2 à HeyGen e persiste imediatamente o novo `heygen_video_id`. |
 | **Hook 3 (HeyGen)** | `metadata.remainder.hook3.heygen_video_id` existe e é válido | **NÃO** submete à HeyGen. Apenas consulta status na API da HeyGen. |
 | **Hook 3 (HeyGen)** | ID ausente ou inválido | Submete apenas Hook 3 à HeyGen e persiste imediatamente o novo `heygen_video_id`. |
 | **Download Hook 2** | `hook_2.mp4` existe fisicamente com `size > 0` | **NÃO** faz download novamente. Usa o arquivo local. |
 | **Download Hook 3** | `hook_3.mp4` existe fisicamente com `size > 0` | **NÃO** faz download novamente. Usa o arquivo local. |
-| **Vídeo 2 (FFmpeg)** | `video_2.mp4` existe com `size > 0` e `ffprobe duration > 0` | **NÃO** concatena novamente. Preserva o Vídeo 2 intacto. |
-| **Vídeo 3 (FFmpeg)** | `video_3.mp4` existe com `size > 0` e `ffprobe duration > 0` | **NÃO** concatena novamente. Preserva o Vídeo 3 intacto. |
+| **Vídeo 2 (FFmpeg)** | `video_2.mp4` existe com `size > 0`, `duration > 0`, stream de vídeo E stream de áudio | **NÃO** concatena novamente. Preserva o Vídeo 2 intacto. |
+| **Vídeo 3 (FFmpeg)** | `video_3.mp4` existe com `size > 0`, `duration > 0`, stream de vídeo E stream de áudio | **NÃO** concatena novamente. Preserva o Vídeo 3 intacto. |
 
-Se ambos os Hooks já estiverem prontos e o Vídeo 2 já estiver montado, a tentativa de retry executará **exclusivamente a concatenação do Vídeo 3**, sem gerar chamadas à HeyGen, sem novo download e sem reprocessar o Vídeo 2.
+> [!IMPORTANT]
+> **Validação Forte Aplicada aos Vídeos Finais no Retry:**
+> `video_2.mp4` ou `video_3.mp4` só são considerados "já concluídos" se passarem pela mesma validação de streams via `ffprobe` (tamanho > 0, duração > 0, stream de vídeo e stream de áudio). Se um vídeo existente no disco estiver corrompido ou sem áudio/vídeo, o retry descarta o arquivo inválido e refaz estritamente a concatenação daquele vídeo.
 
 ---
 
@@ -219,9 +238,9 @@ async function executeRemainderPipeline(jobId) {
   const job = await getJobById(jobId);
   const jobDir = path.resolve('/var/www/bali-gestor/outputs/jobs', jobId);
 
-  // 2. Validação Forte do Body Existente
+  // 2. Validação Forte do Body Existente (Anti-Symlink + Streams V/A + Duração)
   const bodyLocalPath = job.metadata?.pilot?.body?.local_path;
-  validateStrongBody(bodyLocalPath, jobDir); // Lança erro se inválido/inexistente/zerado/ffprobe duration 0
+  validateStrongBody(bodyLocalPath, jobDir); // Lança erro explícito se inválido/symlink/sem áudio/sem vídeo
 
   // 3. Gerenciamento do Hook 2
   let hook2VideoId = job.metadata?.remainder?.hook2?.heygen_video_id;
@@ -254,17 +273,19 @@ async function executeRemainderPipeline(jobId) {
     await persistHook3Downloaded(jobId, hook3Local);
   }
 
-  // 6. Concatenação FFmpeg Granular (Vídeo 2)
+  // 6. Concatenação FFmpeg Granular (Vídeo 2 com Validação Forte de Streams)
   const video2Local = path.join(jobDir, 'video_2.mp4');
-  if (!isValidMediaFileWithDuration(video2Local)) {
+  if (!isValidMediaWithStreams(video2Local)) {
     await concatVideosFFmpeg(hook2Local, bodyLocalPath, video2Local);
+    validateStrongMedia(video2Local); // Confirma vídeo + áudio + duração
     await persistVideo2Ready(jobId, video2Local);
   }
 
-  // 7. Concatenação FFmpeg Granular (Vídeo 3)
+  // 7. Concatenação FFmpeg Granular (Vídeo 3 com Validação Forte de Streams)
   const video3Local = path.join(jobDir, 'video_3.mp4');
-  if (!isValidMediaFileWithDuration(video3Local)) {
+  if (!isValidMediaWithStreams(video3Local)) {
     await concatVideosFFmpeg(hook3Local, bodyLocalPath, video3Local);
+    validateStrongMedia(video3Local); // Confirma vídeo + áudio + duração
     await persistVideo3Ready(jobId, video3Local);
   }
 
@@ -323,25 +344,29 @@ async function executeRemainderPipeline(jobId) {
 
 ## 8. Bateria de Testes e Homologação da Fase 2C
 
-A suíte automatizada de homologação abrangerá 20 verificações rigorosas:
+A suíte automatizada de homologação abrangerá 24 verificações rigorosas:
 
 1. **Aprovação Nominal de `PILOT_READY`:** Submissão de `POST /approve-pilot` retorna `HTTP 202` e transita para `REMAINDER_SUBMITTED`.
 2. **Reprovação de `PILOT_READY`:** Submissão de `POST /reject-pilot` retorna `HTTP 200` e transita para `PILOT_REJECTED`.
 3. **Concorrência Atômica:** Chamadas concorrentes simultâneas de aprovação resultam em exatamente uma vitória (`HTTP 202`) e uma rejeição (`HTTP 409 Conflict`).
 4. **Reuso Estrito do Body:** Validação de que `outputs/jobs/<job_id>/body.mp4` é utilizado sem requisição de novo corpo.
-5. **[NOVO] Teste de Body com Tamanho Zero:** Se `body.mp4` tiver 0 bytes, a rotina falha imediatamente para `REMAINDER_FAILED` sem chamar a HeyGen.
-6. **[NOVO] Teste de Body com Path Traversal:** Se `local_path` apontar para fora de `outputs/jobs/<job_id>/`, a rotina rejeita com erro de segurança.
-7. **[NOVO] Teste de Body com Duração Zero (`ffprobe`):** Se `body.mp4` for inválido ou tiver duração 0, transita para `REMAINDER_FAILED`.
-8. **[NOVO] Smart Retry com Hook 2 Salvo:** Ao reexecutar job em falha onde Hook 2 já tem ID, o sistema NÃO reenvia Hook 2 para a HeyGen.
-9. **[NOVO] Smart Retry com Hook 3 Salvo:** Ao reexecutar job em falha onde Hook 3 já tem ID, o sistema NÃO reenvia Hook 3 para a HeyGen.
-10. **[NOVO] Smart Retry com Vídeo 2 Concatenado:** Ao reexecutar job em falha onde Vídeo 2 já está pronto e validado por `ffprobe`, o sistema NÃO refaz a concatenação do Vídeo 2.
-11. **[NOVO] Smart Retry com Ambos os Hooks Prontos:** Se ambos os clips já foram baixados, o retry executa estritamente a concatenação FFmpeg com zero chamadas à HeyGen.
-12. **Geração dos Ganchos 2 e 3:** Submissão correta dos textos de `hooks[1]` e `hooks[2]`.
-13. **Montagem dos Vídeos 2 e 3:** Concatenação FFmpeg sem perdas de áudio ou vídeo.
-14. **Smart Resume no Boot com Hook 2 Salvo e Hook 3 Faltando:** Recuperação automática no boot sem reenvio de Hook 2.
-15. **Smart Resume no Boot com Ambos os IDs Salvos:** Recuperação automática de polling/download no boot.
-16. **Resiliência a Falhas:** Registro inequívoco de `error_message` no metadata ao simular erro na HeyGen.
-17. **Streaming Autenticado dos 3 Vídeos:** `GET /video/1`, `/video/2` e `/video/3` entregam arquivos com Basic Auth e rejeitam sem credenciais (`HTTP 401`).
-18. **Bloqueio Estático Mantido:** `/outputs/jobs/<job_id>/video_2.mp4` retorna `HTTP 403 Forbidden`.
-19. **Idempotência de Consulta:** `GET /panel/video-jobs/:id` é estritamente read-only.
-20. **Saúde de Produção e Não-Regressão Total:** PM2 online, PostgreSQL active, WhatsApp V1 (`CLONE`, `OK`) 100% ONLINE e Fase 2B intacta.
+5. **Teste de Body com Tamanho Zero:** Se `body.mp4` tiver 0 bytes, a rotina falha imediatamente para `REMAINDER_FAILED` sem chamar a HeyGen.
+6. **Teste de Body com Path Traversal:** Se `local_path` contiver `../` apontando para fora de `outputs/jobs/<job_id>/`, a rotina rejeita com erro de segurança.
+7. **[OBRIGATÓRIO] Teste de Symlink Externo:** Se `body.mp4` for um link simbólico apontando para arquivo fora de `outputs/jobs/<job_id>/`, resolução física via `realpathSync` detecta e rejeita para `REMAINDER_FAILED`.
+8. **[OBRIGATÓRIO] Teste de Body Sem Stream de Áudio:** Se `body.mp4` tiver duração > 0 porém sem faixa de áudio no `ffprobe`, a validação falha para `REMAINDER_FAILED`.
+9. **[OBRIGATÓRIO] Teste de Body Sem Stream de Vídeo:** Se `body.mp4` tiver duração > 0 porém sem faixa de vídeo no `ffprobe`, a validação falha para `REMAINDER_FAILED`.
+10. **Teste de Body com Duração Zero (`ffprobe`):** Se `body.mp4` tiver duração 0, transita para `REMAINDER_FAILED`.
+11. **Smart Retry com Hook 2 Salvo:** Ao reexecutar job em falha onde Hook 2 já tem ID, o sistema NÃO reenvia Hook 2 para a HeyGen.
+12. **Smart Retry com Hook 3 Salvo:** Ao reexecutar job em falha onde Hook 3 já tem ID, o sistema NÃO reenvia Hook 3 para a HeyGen.
+13. **[OBRIGATÓRIO] Smart Retry com Vídeo 2 Inválido (Sem Áudio/Vídeo):** Se `video_2.mp4` existir no disco mas faltar stream de áudio ou vídeo, o sistema NÃO considera concluído e refaz a montagem.
+14. **Smart Retry com Vídeo 2 Concatenado e Válido:** Ao reexecutar job em falha onde Vídeo 2 possui áudio, vídeo e duração comprovados, o sistema NÃO refaz a concatenação do Vídeo 2.
+15. **Smart Retry com Ambos os Hooks Prontos:** Se ambos os clips já foram baixados, o retry executa estritamente a concatenação FFmpeg com zero chamadas à HeyGen.
+16. **Geração dos Ganchos 2 e 3:** Submissão correta dos textos de `hooks[1]` e `hooks[2]`.
+17. **Montagem dos Vídeos 2 e 3:** Concatenação FFmpeg sem perdas de áudio ou vídeo.
+18. **Smart Resume no Boot com Hook 2 Salvo e Hook 3 Faltando:** Recuperação automática no boot sem reenvio de Hook 2.
+19. **Smart Resume no Boot com Ambos os IDs Salvos:** Recuperação automática de polling/download no boot.
+20. **Resiliência a Falhas:** Registro inequívoco de `error_message` no metadata ao simular erro na HeyGen.
+21. **Streaming Autenticado dos 3 Vídeos:** `GET /video/1`, `/video/2` e `/video/3` entregam arquivos com Basic Auth e rejeitam sem credenciais (`HTTP 401`).
+22. **Bloqueio Estático Mantido:** `/outputs/jobs/<job_id>/video_2.mp4` retorna `HTTP 403 Forbidden`.
+23. **Idempotência de Consulta:** `GET /panel/video-jobs/:id` é estritamente read-only.
+24. **Saúde de Produção e Não-Regressão Total:** PM2 online, PostgreSQL active, WhatsApp V1 (`CLONE`, `OK`) 100% ONLINE e Fase 2B intacta.
