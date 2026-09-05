@@ -1,0 +1,51 @@
+{
+  "evaluation_status": "LLL_SPATIAL_MONOTONICITY_NOT_EVALUABLE",
+  "methodological_justification": "Conforme o Adendo Metodológico da Phase 2.3X1, a correlação de Kendall τ / Spearman ρ só pode ser reportada como Ground Truth espacial quando existir uma ordem espacial independente (PHYSICAL_SEQUENCE_INDEX) geometricamente ou documentalmente resolvida por planta de loteamento independente com coordenadas periciais. Como o corpus histórico contém certidões de IPTU com numeração predial e designação de lote (R01 a R10), mas não a planta topográfica vetorial das divisas internas dos lotes, o cálculo formal de monotonicidade de Ground Truth espacial é estritamente classificado como LLL_SPATIAL_MONOTONICITY_NOT_EVALUABLE para evitar raciocínio circular.",
+  "exploratory_observation": {
+    "description": "Correlação exploratória univariada entre LLL e numeração predial ao longo da Rua Antônio Delgado da Veiga",
+    "lots_evaluated": [
+      {
+        "lll": 2,
+        "num": 20,
+        "lot": "R02"
+      },
+      {
+        "lll": 3,
+        "num": 30,
+        "lot": "R3"
+      },
+      {
+        "lll": 4,
+        "num": 40,
+        "lot": "RP/04"
+      },
+      {
+        "lll": 5,
+        "num": 60,
+        "lot": "R5"
+      },
+      {
+        "lll": 7,
+        "num": 80,
+        "lot": "RP/07"
+      },
+      {
+        "lll": 8,
+        "num": 90,
+        "lot": "RP/08"
+      },
+      {
+        "lll": 9,
+        "num": 100,
+        "lot": "RP/09"
+      },
+      {
+        "lll": 10,
+        "num": 110,
+        "lot": "RP/10"
+      }
+    ],
+    "monotonicity_along_interior_lots": "STRICTLY_MONOTONIC (rho = 1.0 para lotes R02 a R10)",
+    "corner_discontinuity_note": "O Lote R1 (LLL 001, Edifício Monet) porta o número predial 160 no vértice de esquina com a Rua Claudino Veloso Borges, enquanto a numeração dos lotes residenciais R02-R10 inicia em 20 e ascende monotonicamente até 110."
+  }
+}

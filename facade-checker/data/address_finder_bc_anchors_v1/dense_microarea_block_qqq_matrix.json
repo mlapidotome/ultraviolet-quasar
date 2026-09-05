@@ -1,0 +1,171 @@
+{
+  "metadata": {
+    "phase": "2.3X1",
+    "description": "Empirical Cross-Tabulation Matrices for Physical Blocks, QQQs, and Streets"
+  },
+  "analysis_1_block_to_qqq": [
+    {
+      "physical_block_id": "PRB-0733",
+      "observed_dsqlll_count": 1,
+      "observed_bc_count": 1,
+      "observed_exact_qqqs": [],
+      "observed_probable_qqqs": [
+        "209"
+      ],
+      "total_observed_distinct_qqq_count": 1,
+      "observed_qqq_list": [
+        "209"
+      ],
+      "evidence_status": "PROBABLE_EVIDENCE_ONLY"
+    },
+    {
+      "physical_block_id": "PRB-0734",
+      "observed_dsqlll_count": 1,
+      "observed_bc_count": 1,
+      "observed_exact_qqqs": [],
+      "observed_probable_qqqs": [
+        "203"
+      ],
+      "total_observed_distinct_qqq_count": 1,
+      "observed_qqq_list": [
+        "203"
+      ],
+      "evidence_status": "PROBABLE_EVIDENCE_ONLY"
+    },
+    {
+      "physical_block_id": "PRB-0735",
+      "observed_dsqlll_count": 16,
+      "observed_bc_count": 23,
+      "observed_exact_qqqs": [
+        "206"
+      ],
+      "observed_probable_qqqs": [
+        "206",
+        "208"
+      ],
+      "total_observed_distinct_qqq_count": 2,
+      "observed_qqq_list": [
+        "206",
+        "208"
+      ],
+      "evidence_status": "EXACT_AND_PROBABLE_EVIDENCE"
+    },
+    {
+      "physical_block_id": "PRB-0736",
+      "observed_dsqlll_count": 4,
+      "observed_bc_count": 4,
+      "observed_exact_qqqs": [],
+      "observed_probable_qqqs": [
+        "207"
+      ],
+      "total_observed_distinct_qqq_count": 1,
+      "observed_qqq_list": [
+        "207"
+      ],
+      "evidence_status": "PROBABLE_EVIDENCE_ONLY"
+    }
+  ],
+  "analysis_2_qqq_to_block": [
+    {
+      "qqq": "203",
+      "observed_bc_count": 1,
+      "observed_dsqlll_count": 1,
+      "distinct_blocks_observed_count": 1,
+      "distinct_blocks_list": [
+        "PRB-0734"
+      ],
+      "distinct_exact_blocks_list": [],
+      "dispersion_class": "SINGLE_BLOCK_OBSERVED"
+    },
+    {
+      "qqq": "206",
+      "observed_bc_count": 19,
+      "observed_dsqlll_count": 12,
+      "distinct_blocks_observed_count": 1,
+      "distinct_blocks_list": [
+        "PRB-0735"
+      ],
+      "distinct_exact_blocks_list": [
+        "PRB-0735"
+      ],
+      "dispersion_class": "SINGLE_BLOCK_OBSERVED"
+    },
+    {
+      "qqq": "207",
+      "observed_bc_count": 4,
+      "observed_dsqlll_count": 4,
+      "distinct_blocks_observed_count": 1,
+      "distinct_blocks_list": [
+        "PRB-0736"
+      ],
+      "distinct_exact_blocks_list": [],
+      "dispersion_class": "SINGLE_BLOCK_OBSERVED"
+    },
+    {
+      "qqq": "208",
+      "observed_bc_count": 4,
+      "observed_dsqlll_count": 4,
+      "distinct_blocks_observed_count": 1,
+      "distinct_blocks_list": [
+        "PRB-0735"
+      ],
+      "distinct_exact_blocks_list": [],
+      "dispersion_class": "SINGLE_BLOCK_OBSERVED"
+    },
+    {
+      "qqq": "209",
+      "observed_bc_count": 1,
+      "observed_dsqlll_count": 1,
+      "distinct_blocks_observed_count": 1,
+      "distinct_blocks_list": [
+        "PRB-0733"
+      ],
+      "distinct_exact_blocks_list": [],
+      "dispersion_class": "SINGLE_BLOCK_OBSERVED"
+    }
+  ],
+  "analysis_3_street_bipartition": [
+    {
+      "street_name": "Rua Antônio Delgado da Veiga",
+      "segment": "Between Rua Claudino Veloso Borges and Rua Benedito Antônio Barbosa",
+      "west_side_qqqs": [
+        "206"
+      ],
+      "east_side_qqqs": [
+        "207"
+      ],
+      "opposing_sides_match": false,
+      "bipartition_type": "DIFFERENT_QQQ_ACROSS_STREET",
+      "evidence_basis": "O lado oeste contém lotes da Quadra R (206, lotes R1-R10, paridade par 20-160, Monet na esquina). O lado leste contém a Quadra S (207, lote S6, paridade ímpar 67). A rua opera empiricamente como divisa cadastral."
+    },
+    {
+      "street_name": "Rua Claudino Veloso Borges",
+      "segment": "Bordering PRB-0735 and PRB-0736",
+      "north_side_qqqs": [
+        "206 (Monet corner)",
+        "207 (lotes S01, S2)",
+        "208 (lotes T1, T2, T3)"
+      ],
+      "south_side_qqqs": [
+        "External cadastral quadras"
+      ],
+      "opposing_sides_match": false,
+      "bipartition_type": "MULTI_QQQ_ON_SAME_SIDE_AND_EXTERNAL_OPPOSITE",
+      "evidence_basis": "A face norte da via transiciona entre quadras cadastrais: 206 na esquina com Delgado, 208 no bloco PRB-0735 e 207 no bloco PRB-0736."
+    },
+    {
+      "street_name": "Rua Melchior Félix Corrêa",
+      "segment": "Western perimeter bordering PRB-0733 and PRB-0735",
+      "east_side_qqqs": [
+        "208 (lote T8)",
+        "209 (lote UP/03, nº 86)"
+      ],
+      "west_side_qqqs": [
+        "External cadastral quadras"
+      ],
+      "opposing_sides_match": false,
+      "bipartition_type": "TRANSITION_ACROSS_BLOCKS_ALONG_STREET",
+      "evidence_basis": "A Quadra 208 aparece na face do PRB-0735; a Quadra 209 aparece mais ao norte no PRB-0733."
+    }
+  ]
+}

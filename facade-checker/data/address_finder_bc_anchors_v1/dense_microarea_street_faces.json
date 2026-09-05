@@ -1,0 +1,313 @@
+{
+  "metadata": {
+    "phase": "2.3X1",
+    "description": "Street Faces of the 4 Physical Road Blocks in CAND-MICRO-14585",
+    "total_faces": 16
+  },
+  "street_faces": [
+    {
+      "face_id": "FACE-PRB0733-E-DELGADO",
+      "physical_block_id": "PRB-0733",
+      "street_name": "Rua Antônio Delgado da Veiga",
+      "cardinal_direction": "EAST_FACE",
+      "street_side": "WEST_SIDE_OF_STREET",
+      "segment_description": "Between Rua Treze and Rua Benedito Antônio Barbosa",
+      "line_coords": [
+        [
+          -45.575412,
+          -23.026742
+        ],
+        [
+          -45.574296,
+          -23.025831
+        ]
+      ],
+      "length_m": 152.4
+    },
+    {
+      "face_id": "FACE-PRB0733-N-BARBOSA",
+      "physical_block_id": "PRB-0733",
+      "street_name": "Rua Benedito Antônio Barbosa",
+      "cardinal_direction": "NORTH_FACE",
+      "street_side": "SOUTH_SIDE_OF_STREET",
+      "segment_description": "Between Rua Melchior Félix Corrêa and Rua Antônio Delgado da Veiga",
+      "line_coords": [
+        [
+          -45.57456,
+          -23.025496
+        ],
+        [
+          -45.574296,
+          -23.025831
+        ]
+      ],
+      "length_m": 45.9
+    },
+    {
+      "face_id": "FACE-PRB0733-W-CORREA",
+      "physical_block_id": "PRB-0733",
+      "street_name": "Rua Melchior Félix Corrêa",
+      "cardinal_direction": "WEST_FACE",
+      "street_side": "EAST_SIDE_OF_STREET",
+      "segment_description": "Between Rua Treze and Rua Benedito Antônio Barbosa",
+      "line_coords": [
+        [
+          -45.575831,
+          -23.026313
+        ],
+        [
+          -45.57456,
+          -23.025496
+        ]
+      ],
+      "length_m": 158.5
+    },
+    {
+      "face_id": "FACE-PRB0733-S-TREZE",
+      "physical_block_id": "PRB-0733",
+      "street_name": "Rua Treze",
+      "cardinal_direction": "SOUTH_FACE",
+      "street_side": "NORTH_SIDE_OF_STREET",
+      "segment_description": "Between Rua Melchior Félix Corrêa and Rua Antônio Delgado da Veiga",
+      "line_coords": [
+        [
+          -45.575831,
+          -23.026313
+        ],
+        [
+          -45.575412,
+          -23.026742
+        ]
+      ],
+      "length_m": 64.0
+    },
+    {
+      "face_id": "FACE-PRB0734-W-DELGADO",
+      "physical_block_id": "PRB-0734",
+      "street_name": "Rua Antônio Delgado da Veiga",
+      "cardinal_direction": "WEST_FACE",
+      "street_side": "EAST_SIDE_OF_STREET",
+      "segment_description": "Between Rua Treze and Rua Benedito Antônio Barbosa",
+      "line_coords": [
+        [
+          -45.575412,
+          -23.026742
+        ],
+        [
+          -45.574296,
+          -23.025831
+        ]
+      ],
+      "length_m": 152.4
+    },
+    {
+      "face_id": "FACE-PRB0734-N-BARBOSA",
+      "physical_block_id": "PRB-0734",
+      "street_name": "Rua Benedito Antônio Barbosa",
+      "cardinal_direction": "NORTH_FACE",
+      "street_side": "SOUTH_SIDE_OF_STREET",
+      "segment_description": "Between Rua Antônio Delgado da Veiga and Rua Capitão Bernardo Sanches Pimenta",
+      "line_coords": [
+        [
+          -45.574296,
+          -23.025831
+        ],
+        [
+          -45.57383,
+          -23.026192
+        ]
+      ],
+      "length_m": 62.2
+    },
+    {
+      "face_id": "FACE-PRB0734-E-PIMENTA",
+      "physical_block_id": "PRB-0734",
+      "street_name": "Rua Capitão Bernardo Sanches Pimenta",
+      "cardinal_direction": "EAST_FACE",
+      "street_side": "WEST_SIDE_OF_STREET",
+      "segment_description": "Between Rua Treze and Rua Benedito Antônio Barbosa",
+      "line_coords": [
+        [
+          -45.57383,
+          -23.026192
+        ],
+        [
+          -45.575016,
+          -23.027155
+        ]
+      ],
+      "length_m": 161.6
+    },
+    {
+      "face_id": "FACE-PRB0734-S-TREZE",
+      "physical_block_id": "PRB-0734",
+      "street_name": "Rua Treze",
+      "cardinal_direction": "SOUTH_FACE",
+      "street_side": "NORTH_SIDE_OF_STREET",
+      "segment_description": "Between Rua Antônio Delgado da Veiga and Rua Capitão Bernardo Sanches Pimenta",
+      "line_coords": [
+        [
+          -45.575412,
+          -23.026742
+        ],
+        [
+          -45.575016,
+          -23.027155
+        ]
+      ],
+      "length_m": 61.1
+    },
+    {
+      "face_id": "FACE-PRB0735-E-DELGADO",
+      "physical_block_id": "PRB-0735",
+      "street_name": "Rua Antônio Delgado da Veiga",
+      "cardinal_direction": "EAST_FACE",
+      "street_side": "WEST_SIDE_OF_STREET",
+      "segment_description": "Between Rua Claudino Veloso Borges and Rua Treze",
+      "line_coords": [
+        [
+          -45.576571,
+          -23.027688
+        ],
+        [
+          -45.575412,
+          -23.026742
+        ]
+      ],
+      "length_m": 158.2
+    },
+    {
+      "face_id": "FACE-PRB0735-S-BORGES",
+      "physical_block_id": "PRB-0735",
+      "street_name": "Rua Claudino Veloso Borges",
+      "cardinal_direction": "SOUTH_FACE",
+      "street_side": "NORTH_SIDE_OF_STREET",
+      "segment_description": "Between Rua Melchior Félix Corrêa and Rua Antônio Delgado da Veiga",
+      "line_coords": [
+        [
+          -45.576882,
+          -23.027145
+        ],
+        [
+          -45.576571,
+          -23.027688
+        ]
+      ],
+      "length_m": 68.0
+    },
+    {
+      "face_id": "FACE-PRB0735-W-CORREA",
+      "physical_block_id": "PRB-0735",
+      "street_name": "Rua Melchior Félix Corrêa",
+      "cardinal_direction": "WEST_FACE",
+      "street_side": "EAST_SIDE_OF_STREET",
+      "segment_description": "Between Rua Claudino Veloso Borges and Rua Treze",
+      "line_coords": [
+        [
+          -45.576882,
+          -23.027145
+        ],
+        [
+          -45.575831,
+          -23.026313
+        ]
+      ],
+      "length_m": 141.6
+    },
+    {
+      "face_id": "FACE-PRB0735-N-TREZE",
+      "physical_block_id": "PRB-0735",
+      "street_name": "Rua Treze",
+      "cardinal_direction": "NORTH_FACE",
+      "street_side": "SOUTH_SIDE_OF_STREET",
+      "segment_description": "Between Rua Melchior Félix Corrêa and Rua Antônio Delgado da Veiga",
+      "line_coords": [
+        [
+          -45.575831,
+          -23.026313
+        ],
+        [
+          -45.575412,
+          -23.026742
+        ]
+      ],
+      "length_m": 64.0
+    },
+    {
+      "face_id": "FACE-PRB0736-W-DELGADO",
+      "physical_block_id": "PRB-0736",
+      "street_name": "Rua Antônio Delgado da Veiga",
+      "cardinal_direction": "WEST_FACE",
+      "street_side": "EAST_SIDE_OF_STREET",
+      "segment_description": "Between Rua Claudino Veloso Borges and Rua Treze",
+      "line_coords": [
+        [
+          -45.576571,
+          -23.027688
+        ],
+        [
+          -45.575412,
+          -23.026742
+        ]
+      ],
+      "length_m": 158.2
+    },
+    {
+      "face_id": "FACE-PRB0736-S-BORGES",
+      "physical_block_id": "PRB-0736",
+      "street_name": "Rua Claudino Veloso Borges",
+      "cardinal_direction": "SOUTH_FACE",
+      "street_side": "NORTH_SIDE_OF_STREET",
+      "segment_description": "Between Rua Antônio Delgado da Veiga and Rua Capitão Bernardo Sanches Pimenta",
+      "line_coords": [
+        [
+          -45.576571,
+          -23.027688
+        ],
+        [
+          -45.576227,
+          -23.028176
+        ]
+      ],
+      "length_m": 64.4
+    },
+    {
+      "face_id": "FACE-PRB0736-E-PIMENTA",
+      "physical_block_id": "PRB-0736",
+      "street_name": "Rua Capitão Bernardo Sanches Pimenta",
+      "cardinal_direction": "EAST_FACE",
+      "street_side": "WEST_SIDE_OF_STREET",
+      "segment_description": "Between Rua Claudino Veloso Borges and Rua Treze",
+      "line_coords": [
+        [
+          -45.576227,
+          -23.028176
+        ],
+        [
+          -45.575016,
+          -23.027155
+        ]
+      ],
+      "length_m": 167.7
+    },
+    {
+      "face_id": "FACE-PRB0736-N-TREZE",
+      "physical_block_id": "PRB-0736",
+      "street_name": "Rua Treze",
+      "cardinal_direction": "NORTH_FACE",
+      "street_side": "SOUTH_SIDE_OF_STREET",
+      "segment_description": "Between Rua Antônio Delgado da Veiga and Rua Capitão Bernardo Sanches Pimenta",
+      "line_coords": [
+        [
+          -45.575412,
+          -23.026742
+        ],
+        [
+          -45.575016,
+          -23.027155
+        ]
+      ],
+      "length_m": 61.1
+    }
+  ]
+}
