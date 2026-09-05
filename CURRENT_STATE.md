@@ -1,10 +1,10 @@
 # Estado Atual da Video Engine — Bali Imóveis (V2)
 
 **Última Atualização:** 05/09/2026  
-**Fase Atual Concluída:** Fase 3B — Video Composer MVP (Timeline Engine orientada a Blueprint — Pós-Review Homologada)  
+**Fase Atual Concluída:** Fase 3B — Video Composer MVP (Timeline Engine orientada a Blueprint — Final Hardening Homologado)  
 **Próxima Fase:** Fase 3C — Editing Styles & Overlays Dinâmicos (B-roll, Overlays, Motion)  
 **Ambiente:** VPS Ubuntu 24.04 (`159.223.118.129`)  
-**Status do PM2:** `bali-gestor` online (pid 81857)  
+**Status do PM2:** `bali-gestor` online (pid 82828)  
 **Status do Banco:** PostgreSQL 16 `active` (DB: `bali_gestor`)  
 
 ---
@@ -47,20 +47,21 @@ video_anuncios_engine.js   POST /api/v2/video-jobs        GET /video-painel
                                    ▼
                      ┌────────────────────────────┐
                      │video_engine/composer_service ── Composer MVP: render_key, Claim SQL,
-                     └─────────────┬──────────────┘    Trims Reais, Re-encode Canônico, Shadow
-                                   │
+                     └─────────────┬──────────────┘    Trims Bilaterais, Re-encode Canônico, Shadow,
+                                   │                   Invariante de Claim & Recuperação READY
                                    ▼
                      PostgreSQL (video_jobs + video_assets)
 ```
 
 * **Video Composer MVP (`video_engine/composer_service.js`):**
   - **Identidade Semântica Canônica:** `render_key` determinística (SHA-256 de todas as especificações e `file_hash` físico de cada clipe de entrada).
-  - **Claim Atômico SQL:** Bloqueio persistente no PostgreSQL com lease e recuperação automática de `stale processing` (> 5 minutos).
-  - **Asset Resolver & Pre-FFmpeg Validation:** Validação de contrato (schema_version 1.0, 1080x1920@30fps, 9:16, layer 0, trims válidos) e ownership físico estrito (`outputs/jobs/<jobId>/`).
-  - **Trims Físicos Reais:** Aplicação determinística de filtros `trim` + `setpts` e `atrim` + `asetpts` para vídeo e áudio nos pontos especificados em `source_in_ms` e `source_out_ms`.
+  - **Claim Atômico SQL & Invariante Estrito:** Bloqueio persistente no PostgreSQL com lease e recuperação automática de `stale processing` (> 5 minutos). FFmpeg **NUNCA** executa sem `claim.acquired === true`.
+  - **Recuperação Controlada de READY Corrompido:** Casos de arquivo físico ausente ou adulteração de hash são detectados, invalidados no catálogo (`failed`) e re-reivindicados atomicamente antes da re-renderização. Concorrência ativa retorna estritamente HTTP 409 Conflict.
+  - **Asset Resolver & Pre-FFmpeg Validation:** Validação de contrato (schema_version 1.0, 1080x1920@30fps, 9:16, layer 0, trims bilaterais obrigatórios), regex restritiva em `creative_id` (`/^[a-zA-Z0-9_-]{1,64}$/`) e validação estrita anti-path-traversal garantindo contenção física dentro de `outputs/jobs/<jobId>/`.
+  - **Trims Físicos Bilaterais Reais:** Aplicação determinística de filtros `trim` + `setpts` e `atrim` + `asetpts` para vídeo e áudio nos pontos especificados em `source_in_ms` e `source_out_ms` (trims unilaterais são formalmente rejeitados).
   - **Unidade Oficial de Duração:** Inteiro em milissegundos (`duration_ms`), descartando placeholders conceituais legados.
   - **Pipeline Canônico de Re-encode:** Concatenação única padronizada FFmpeg via `filter_complex` codificada em H.264 (yuv420p, 1080x1920@30fps) e áudio AAC (192k stereo, 44100Hz) com `-movflags +faststart`.
-  - **Escrita Atômica, QC Estrito & Imutabilidade:** Render em arquivo temporário `.tmp.<uuid>.mp4`, inspeção `ffprobe` (validação real de codecs H.264/AAC, dimensões 1080x1920 e medição de FPS físico real a partir de `avg_frame_rate`/`r_frame_rate`), política conservadora de remoção de órfãos antes da promoção e promoção atômica via `renameSync`.
+  - **Escrita Atômica, Cleanup Autônomo & QC Estrito:** Render em arquivo temporário `.tmp.<uuid>.mp4`, inspeção `ffprobe` (validação real de codecs H.264/AAC, dimensões 1080x1920 e medição de FPS físico real a partir de `avg_frame_rate`/`r_frame_rate`), política de remoção de órfãos antes da promoção, remoção autônoma de `.tmp` em caso de falha de QC e promoção atômica via `renameSync`.
   - **Modo Shadow:** Produz artefatos paralelos (`shadow_crv_<id>_<render_key>.mp4`) com `asset_type = 'shadow_creative'` sem alterar campos oficiais da Fase 2C (`pilot_video_url`, `video2_url`, `video3_url`, `video_jobs.status`).
   - **Comparador Semântico:** `compareLegacyVsComposer()` demonstra equivalência formal ($\Delta \le 250\text{ ms}$, dimensões e streams idênticos).
 
@@ -90,7 +91,7 @@ video_anuncios_engine.js   POST /api/v2/video-jobs        GET /video-painel
 ## 2. Componentes e Estrutura de Arquivos
 
 * `/var/www/bali-gestor/video_engine/composer_service.js`:  
-  Motor do Video Composer MVP (contrato, render_key, claim atômico, trims reais, re-encode FFmpeg, QC estrito e modo shadow).
+  Motor do Video Composer MVP (contrato, render_key, claim atômico, trims bilaterais reais, re-encode FFmpeg, QC estrito, recuperação controlada de READY e modo shadow).
 
 * `/var/www/bali-gestor/video_engine/api_v2.js`:  
   Endpoints da V2 incluindo rotas de shadow compose, comparação semântica e streaming de shadow videos.
@@ -125,8 +126,8 @@ video_anuncios_engine.js   POST /api/v2/video-jobs        GET /video-painel
   Tabela `video_assets`, coluna `creative_blueprints`, separação `generation_key` e `file_hash`, imutabilidade de assets ready, ownership físico de jobs e 26 testes homologados.  
   Commit Final Fase 3A: `8e2bf0306f557c595e8070628ee3e646a599d759`
 
-* **Fase 3B (Video Composer MVP — Pós-Review Homologada):**  
-  Validação completa de **35 cenários automatizados no VPS (35/35 PASS)**:
+* **Fase 3B (Video Composer MVP — Final Hardening Homologado):**  
+  Validação completa de **40 cenários automatizados no VPS (40/40 PASS)**:
   1. Blueprint válido Hook+Body renderiza com sucesso;
   2. Ordem sequencial dos clipes respeitada;
   3. Asset inexistente rejeitado antes de invocar FFmpeg;
@@ -146,7 +147,7 @@ video_anuncios_engine.js   POST /api/v2/video-jobs        GET /video-painel
   17. Pipeline de re-encode padronizado único gera output íntegro;
   18. Unidade de duração oficial (`duration_ms`) aplicada sem truncamento;
   19. Placeholders antigos de metadata ignorados (fala completa preservada);
-  20. **Cleanup automático de `.tmp` em falha sem intervenção manual do teste;**
+  20. **Cleanup automático de `.tmp` em falha pós-render sem intervenção manual do teste;**
   21. Arquivo final existente não corrompido em caso de erro no retry;
   22. Mesma `render_key` gera retorno idempotente imediato sem invocar FFmpeg;
   23. Mudança no `file_hash` de um asset de entrada altera a `render_key`;
@@ -158,7 +159,12 @@ video_anuncios_engine.js   POST /api/v2/video-jobs        GET /video-painel
   29. Comparação semântica entre Shadow Composer e concat legado demonstra equivalência;
   30. Job showcase da Fase 2C permanece 100% íntegro servindo os 3 vídeos (HTTP 200);
   31. WhatsApp V1 e bloqueio estático 403 em `/outputs/jobs/` permanecem intocados;
-  32. **PM2 `bali-gestor` (processo verificado online via `pm2 jlist`) e PostgreSQL 16 saudáveis;**
-  33. **Trims reais aplicados fisicamente no FFmpeg (clipe de 5s com trim 1s→3s gerou exatamente 2000ms);**
-  34. **Proteção contra arquivo órfão prévio em `finalPath` (removido com segurança antes da promoção);**
-  35. **QC estrito de Codecs físicos (H.264 / AAC) e FPS físico derivado de streams reais.**
+  32. PM2 `bali-gestor` (processo verificado online via `pm2 jlist`) e PostgreSQL 16 saudáveis;
+  33. Trims bilaterais reais aplicados fisicamente no FFmpeg (clipe de 5s com trim 1s→3s gerou exatamente 2000ms);
+  34. Proteção contra arquivo órfão prévio em `finalPath` (removido com segurança antes da promoção);
+  35. QC estrito de Codecs físicos (H.264 / AAC) e FPS físico derivado de streams reais;
+  36. **Trims unilaterais estritamente rejeitados pelo contrato;**
+  37. **`creative_id` malicioso ou tentativa de path traversal (`../../`) rejeitados;**
+  38. **Recuperação controlada de READY corrompido (DB READY + arquivo físico ausente no disco);**
+  39. **Recuperação controlada de READY adulterado (DB READY + hash físico divergente);**
+  40. **Invariante estrito: FFmpeg NUNCA executa sem claim adquirido (Bloqueio 409 em concorrência ativa).**
