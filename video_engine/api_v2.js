@@ -425,8 +425,17 @@ async function serveJobVideo(jobId, index, res) {
     const job = result.rows[0];
 
     // Validações de estado por índice
+    const ALLOWED_PILOT_STATUSES = [
+      'PILOT_READY',
+      'PILOT_REJECTED',
+      'REMAINDER_SUBMITTED',
+      'REMAINDER_RENDERING',
+      'REMAINDER_FAILED',
+      'CREATIVE_SET_READY'
+    ];
+
     if (index === 1) {
-      if (job.status !== 'PILOT_READY' && job.status !== 'CREATIVE_SET_READY') {
+      if (!ALLOWED_PILOT_STATUSES.includes(job.status)) {
         return res.status(409).json({
           success: false,
           error: 'VIDEO_NOT_READY',
