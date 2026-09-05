@@ -1,0 +1,114 @@
+{
+  "metadata": {
+    "phase": "2.3Z",
+    "purpose": "FREEZE_PREPHASE_GEOMETRY_BASELINE",
+    "timestamp": "2026-09-05T02:08:00Z",
+    "description": "Frozen pre-phase baseline state for Jardim das Nações pilot parcels before geometry discovery."
+  },
+  "pilot_targets": [
+    {
+      "dsqlll": "3.1.004.013",
+      "bcs": [
+        "3.1.004.013.001"
+      ],
+      "target_tier": "PRIMARY",
+      "subdivision_name": "Jardim das Nações",
+      "subdivision_block": "Quadra Q",
+      "lot_id": "Lote 13",
+      "street": "Rua Argentina",
+      "house_number": null,
+      "current_face_level": "STREET_ONLY",
+      "pre_phase_geom_level": "GEOM_1",
+      "known_documents": [
+        "Diário Oficial Eletrônico de Taubaté - Edição 906 (URL: https://plenussistemas.dioenet.com.br/diario/publicacoes/33470)"
+      ]
+    },
+    {
+      "dsqlll": "3.1.009.004",
+      "bcs": [
+        "3.1.009.004.001"
+      ],
+      "target_tier": "PRIMARY",
+      "subdivision_name": "Jardim das Nações",
+      "subdivision_block": "Quadra O",
+      "lot_id": "Lote 14",
+      "street": "Rua França",
+      "house_number": "261",
+      "current_face_level": "STREET_ONLY",
+      "pre_phase_geom_level": "GEOM_1",
+      "known_documents": [
+        "Diário Oficial Eletrônico de Taubaté - Edição 977 (URL: https://plenussistemas.dioenet.com.br/diario/publicacoes/35835)",
+        "Matrícula nº 86.760 CRI Taubaté (cited in Gazette 977 notice)"
+      ]
+    },
+    {
+      "dsqlll": "3.1.009.006",
+      "bcs": [
+        "3.1.009.006.001"
+      ],
+      "target_tier": "SECONDARY",
+      "subdivision_name": "Jardim das Nações",
+      "subdivision_block": "Quadra O (co-located with 3.1.009.004)",
+      "lot_id": null,
+      "street": "Rua França",
+      "house_number": "261",
+      "current_face_level": "STREET_ONLY",
+      "pre_phase_geom_level": "GEOM_1",
+      "known_documents": [
+        "Processo Municipal Habite-se Taubaté (URL: https://taubate.sp.gov.br/processos/habite_se_3_1_009_006.pdf)"
+      ]
+    },
+    {
+      "dsqlll": "3.1.014.001",
+      "bcs": [
+        "3.1.014.001.001"
+      ],
+      "target_tier": "PRIMARY",
+      "subdivision_name": "Jardim das Nações",
+      "subdivision_block": "Quadra A",
+      "lot_id": "Lote 01",
+      "street": "Rua França",
+      "house_number": null,
+      "current_face_level": "STREET_ONLY",
+      "pre_phase_geom_level": "GEOM_1",
+      "known_documents": [
+        "Edital de Leilão Judicial - Franklin Leilões (URL: https://franklinleiloes.com.br/lote/imovel-jardim-das-nacoes-taubate-sp/821/)",
+        "Processo de Execução Cível nº 1004821-44.2021.8.26.0625 (1ª Vara Cível de Taubaté)"
+      ]
+    },
+    {
+      "dsqlll": "3.3.019.005",
+      "bcs": [
+        "3.3.019.005.001"
+      ],
+      "target_tier": "SECONDARY",
+      "subdivision_name": "Jardim Continental II",
+      "subdivision_block": "Jardim Continental II",
+      "lot_id": null,
+      "street": "Rua Síria",
+      "house_number": "560",
+      "current_face_level": "STREET_ONLY",
+      "pre_phase_geom_level": "GEOM_1",
+      "known_documents": [
+        "Edital Notificação Tributária Taubaté (URL: https://taubate.sp.gov.br/editais/notificacao_3_3_019_005.pdf)"
+      ]
+    },
+    {
+      "dsqlll": "3.3.019.006",
+      "bcs": [
+        "3.3.019.006.001"
+      ],
+      "target_tier": "PRIMARY",
+      "subdivision_name": "Jardim das Nações",
+      "subdivision_block": "QD: X",
+      "lot_id": "LT: 03",
+      "street": "Rua Síria",
+      "house_number": "91",
+      "current_face_level": "STREET_ONLY",
+      "pre_phase_geom_level": "GEOM_1",
+      "known_documents": [
+        "Diário Oficial Eletrônico de Taubaté - Edição 906 (URL: https://plenussistemas.dioenet.com.br/diario/publicacoes/33470)"
+      ]
+    }
+  ]
+}

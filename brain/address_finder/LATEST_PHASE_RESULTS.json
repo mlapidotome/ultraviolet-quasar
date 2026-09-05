@@ -1,26 +1,22 @@
 {
-  "phase": "2.3Y",
-  "phase_name": "PUBLIC_SPATIAL_GT_SOURCE_DISCOVERY",
-  "classification": "PUBLIC_SPATIAL_GT_SOURCE_PARTIAL_VALUE",
+  "phase": "2.3Z",
+  "phase_name": "SUBDIVISION_GEOMETRY_RECOVERY",
+  "classification": "SUBDIVISION_GEOMETRY_LOW_VALUE",
   "status": "COMPLETE",
   "signal": "STOP_FOR_HUMAN_REVIEW",
-  "prephase_baseline_sha256": "7e691467a99868790be942b48ffadec4ed66ed202c5a83dfcd03fb1e07e4c2cc",
+  "prephase_geometry_baseline_sha256": "49794de70c39c483a9ea914ad13d3cc7b16d0219aba2402fbd74884dda723682",
   "metrics": {
-    "public_source_families_found": 6,
-    "high_value_source_families": 2,
-    "documents_reviewed": 42,
-    "total_source_links_found": 18,
-    "new_source_links_found": 4,
-    "rediscovered_source_links": 14,
-    "total_bc_to_address_links": 16,
-    "new_bc_to_address_links": 2,
-    "total_bc_to_lot_links": 12,
-    "new_bc_to_lot_links": 2,
-    "total_bc_to_face_links": 0,
-    "new_bc_to_face_links": 0,
-    "pilot_pre_phase_usable_face_gt": 0,
-    "pilot_post_phase_usable_face_gt": 0,
-    "pilot_incremental_usable_face_gt": 0
+    "SUBDIVISION_DOCUMENTS_REVIEWED": 28,
+    "BLUEPRINTS_FOUND": 0,
+    "BLUEPRINTS_WITH_LOT_NUMBERS": 0,
+    "PHYSICAL_BLOCKS_MAPPED": 0,
+    "TARGET_LOTS_GEOM_3_PLUS": 0,
+    "TARGET_LOTS_GEOM_4_PLUS": 0,
+    "TARGET_LOTS_GEOM_5": 0,
+    "NEW_FACE_GT_FROM_GEOMETRY": 0,
+    "INCREMENTAL_TARGET_LOT_GEOMETRY_RECOVERY": 0,
+    "PILOT_TARGETS_EVALUATED": 6,
+    "PILOT_TARGETS_REMAINING_STREET_ONLY": 6
   },
-  "timestamp": "2026-09-05T01:58:21.327161+00:00"
+  "timestamp": "2026-09-05T02:08:00.055742+00:00"
 }

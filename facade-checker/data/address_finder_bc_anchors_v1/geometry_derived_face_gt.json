@@ -1,0 +1,93 @@
+{
+  "metadata": {
+    "phase": "2.3Z",
+    "title": "GEOMETRY-DERIVED STREET-FACE GROUND TRUTH",
+    "timestamp": "2026-09-05T02:07:59.970917+00:00",
+    "derivation_rule": "Street-face may only be derived if independent physical geometry reaches GEOM_4 or GEOM_5. Zero face inference permitted from parity, door numbers, or cadastral sequences."
+  },
+  "derivation_summary": {
+    "total_targets_evaluated": 6,
+    "geometry_recovered_count": 0,
+    "face_derived_from_geometry_count": 0,
+    "face_levels": {
+      "EXACT_PARCEL": 0,
+      "EXACT_STREET_FACE": 0,
+      "PROBABLE_STREET_FACE": 0,
+      "STREET_ONLY": 6
+    }
+  },
+  "derived_records": [
+    {
+      "dsqlll": "3.1.004.013",
+      "target_tier": "PRIMARY",
+      "street": "Rua Argentina",
+      "subdivision_block": "Quadra Q",
+      "lot_id": "Lote 13",
+      "achieved_geom_level": "GEOM_1",
+      "geometry_recovered": false,
+      "face_derived_from_geometry": false,
+      "assigned_face_level": "STREET_ONLY",
+      "derivation_justification": "Achieved GEOM_1 (subdivision/block name only). In the absence of GEOM_4+ spatial geometry or explicit corner deeds, no street face can be derived without violating the strict prohibition against parity-based inference."
+    },
+    {
+      "dsqlll": "3.1.009.004",
+      "target_tier": "PRIMARY",
+      "street": "Rua França",
+      "subdivision_block": "Quadra O",
+      "lot_id": "Lote 14",
+      "achieved_geom_level": "GEOM_1",
+      "geometry_recovered": false,
+      "face_derived_from_geometry": false,
+      "assigned_face_level": "STREET_ONLY",
+      "derivation_justification": "Achieved GEOM_1 (subdivision/block name only). In the absence of GEOM_4+ spatial geometry or explicit corner deeds, no street face can be derived without violating the strict prohibition against parity-based inference."
+    },
+    {
+      "dsqlll": "3.1.014.001",
+      "target_tier": "PRIMARY",
+      "street": "Rua França",
+      "subdivision_block": "Quadra A",
+      "lot_id": "Lote 01",
+      "achieved_geom_level": "GEOM_1",
+      "geometry_recovered": false,
+      "face_derived_from_geometry": false,
+      "assigned_face_level": "STREET_ONLY",
+      "derivation_justification": "Achieved GEOM_1 (subdivision/block name only). In the absence of GEOM_4+ spatial geometry or explicit corner deeds, no street face can be derived without violating the strict prohibition against parity-based inference."
+    },
+    {
+      "dsqlll": "3.3.019.006",
+      "target_tier": "PRIMARY",
+      "street": "Rua Síria",
+      "subdivision_block": "Quadra X",
+      "lot_id": "LT: 03",
+      "achieved_geom_level": "GEOM_1",
+      "geometry_recovered": false,
+      "face_derived_from_geometry": false,
+      "assigned_face_level": "STREET_ONLY",
+      "derivation_justification": "Achieved GEOM_1 (subdivision/block name only). In the absence of GEOM_4+ spatial geometry or explicit corner deeds, no street face can be derived without violating the strict prohibition against parity-based inference."
+    },
+    {
+      "dsqlll": "3.1.009.006",
+      "target_tier": "SECONDARY",
+      "street": "Rua França",
+      "subdivision_block": "Quadra O",
+      "lot_id": null,
+      "achieved_geom_level": "GEOM_1",
+      "geometry_recovered": false,
+      "face_derived_from_geometry": false,
+      "assigned_face_level": "STREET_ONLY",
+      "derivation_justification": "Achieved GEOM_1 (subdivision/block name only). In the absence of GEOM_4+ spatial geometry or explicit corner deeds, no street face can be derived without violating the strict prohibition against parity-based inference."
+    },
+    {
+      "dsqlll": "3.3.019.005",
+      "target_tier": "SECONDARY",
+      "street": "Rua Síria",
+      "subdivision_block": "Outer Boundary",
+      "lot_id": null,
+      "achieved_geom_level": "GEOM_1",
+      "geometry_recovered": false,
+      "face_derived_from_geometry": false,
+      "assigned_face_level": "STREET_ONLY",
+      "derivation_justification": "Achieved GEOM_1 (subdivision/block name only). In the absence of GEOM_4+ spatial geometry or explicit corner deeds, no street face can be derived without violating the strict prohibition against parity-based inference."
+    }
+  ]
+}

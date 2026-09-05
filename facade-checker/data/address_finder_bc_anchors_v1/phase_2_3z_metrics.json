@@ -1,0 +1,24 @@
+{
+  "metadata": {
+    "phase": "2.3Z",
+    "title": "PHASE 2.3Z SUBDIVISION GEOMETRY SUCCESS METRICS",
+    "timestamp": "2026-09-05T02:07:59.970917+00:00"
+  },
+  "metrics": {
+    "SUBDIVISION_DOCUMENTS_REVIEWED": 28,
+    "BLUEPRINTS_FOUND": 0,
+    "BLUEPRINTS_WITH_LOT_NUMBERS": 0,
+    "PHYSICAL_BLOCKS_MAPPED": 0,
+    "TARGET_LOTS_GEOM_3_PLUS": 0,
+    "TARGET_LOTS_GEOM_4_PLUS": 0,
+    "TARGET_LOTS_GEOM_5": 0,
+    "NEW_FACE_GT_FROM_GEOMETRY": 0,
+    "INCREMENTAL_TARGET_LOT_GEOMETRY_RECOVERY": 0,
+    "PILOT_TARGETS_EVALUATED": 6,
+    "PILOT_TARGETS_REMAINING_STREET_ONLY": 6
+  },
+  "phase_classification": "SUBDIVISION_GEOMETRY_LOW_VALUE",
+  "status": "COMPLETE",
+  "signal": "STOP_FOR_HUMAN_REVIEW",
+  "classification_justification": "Publicly available online documents for Jardim das Nações repeat textual block and lot identifiers (Level 2 attributes) without physical geometry, subdivision blueprints, or vector lot boundary drawings. Zero target lots could be independently positioned on physical road blocks at GEOM_3 or higher without invoking prohibited cadastral or parity assumptions. Under Section 10 of the protocol, because open sources repeat textual identifiers without supplying physical geometry, the phase outcome is classified as SUBDIVISION_GEOMETRY_LOW_VALUE."
+}

@@ -1,0 +1,24 @@
+{
+  "metadata": {
+    "phase": "2.3Z",
+    "title": "JARDIM DAS NAÇÕES SUBDIVISION BLUEPRINT DISCOVERY AUDIT",
+    "timestamp": "2026-09-05T02:07:59.969880+00:00"
+  },
+  "search_queries_executed": [
+    "\"planta\" \"loteamento\" \"Jardim das Nações\" \"Taubaté\"",
+    "\"planta de aprovação\" \"Jardim das Nações\" \"Taubaté\"",
+    "\"memorial descritivo\" \"Jardim das Nações\" \"Taubaté\"",
+    "\"Jardim das Nações\" \"Quadra O\" \"Lote 14\" \"Taubaté\" \"confronta\"",
+    "\"Jardim das Nações\" \"Quadra A\" \"Lote 01\" \"Taubaté\" \"confronta\"",
+    "\"Jardim das Nações\" \"Quadra Q\" \"Lote 13\" \"Taubaté\"",
+    "\"Jardim das Nações\" \"Quadra X\" \"Lote 03\" \"Taubaté\"",
+    "\"Laudo Pericial\" \"Jardim das Nações\" \"Taubaté\" (\"lote\" OR \"quadra\" OR \"planta\")"
+  ],
+  "blueprint_discovery_findings": {
+    "total_blueprints_found": 0,
+    "blueprints_with_lot_numbers": 0,
+    "complete_block_diagrams_found": 0,
+    "metes_and_bounds_records_found": 2,
+    "finding_summary": "No complete public subdivision blueprint (planta de loteamento) showing individual numbered lot polygons for Jardim das Nações was found in open-access digital repositories. The available public records provide textual references to lot numbers and subdivision blocks (Level 2), but omit full-block cartographic lot layouts or vector lot boundaries."
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "metadata": {
+    "phase": "2.3Z",
+    "title": "SUBDIVISION GEOMETRY SOURCE CATALOG",
+    "generated_at": "2026-09-05T02:07:59.969354+00:00",
+    "target_subdivision": "Jardim das Nações (Taubaté/SP)"
+  },
+  "geometry_source_repositories": [
+    {
+      "source_id": "GEOM-SRC-01",
+      "source_name": "Cartório de Registro de Imóveis de Taubaté (1º CRI)",
+      "repository_type": "OFFICIAL_PROPERTY_REGISTRY",
+      "geometry_type": "OFFICIAL_REGISTERED_BLUEPRINT_AND_METES",
+      "public_accessibility": "RESTRICTED_ON_DEMAND (Requires paid certidão or formal in-person archival request; not open bulk web indexed)",
+      "open_web_availability": "NO_BULK_OPEN_ACCESS",
+      "description": "Legal depository of the approved subdivision blueprint (Planta de Loteamento) and individual property deeds (matrículas) containing registered lot perimeters, lot numbers, and block layouts.",
+      "potential_geom_level": "GEOM_5",
+      "achieved_open_level": "GEOM_1 (Textual citations in secondary legal notices only)"
+    },
+    {
+      "source_id": "GEOM-SRC-02",
+      "source_name": "Prefeitura Municipal de Taubaté - Arquivo de Planejamento Urbano (SEPLAN)",
+      "repository_type": "MUNICIPAL_PLANNING_ARCHIVE",
+      "geometry_type": "HISTORICAL_SUBDIVISION_APPROVAL_PLANS",
+      "public_accessibility": "ADMINISTRATIVE_ON_DEMAND (Processos de Aprovação de Loteamento via 1Doc / SEPLAN; macrozoning is open, but subdivision blueprint files are archived physically or within administrative dockets)",
+      "open_web_availability": "PARTIAL_MACRO_ONLY",
+      "description": "Municipal archive holding historical subdivision dossiers and infrastructure approval maps.",
+      "potential_geom_level": "GEOM_4",
+      "achieved_open_level": "GEOM_0 (Open geodata provides macrozoning only; zero parcel drawings)"
+    },
+    {
+      "source_id": "GEOM-SRC-03",
+      "source_name": "Tribunal de Justiça de SP (TJSP) - Laudos Periciais de Avaliação Imobiliária",
+      "repository_type": "JUDICIAL_APPRAISAL_REPORTS",
+      "geometry_type": "METES_AND_BOUNDS_TRANSCRIPTS_AND_PROPERTY_SKETCHES",
+      "public_accessibility": "OPEN_SEARCHABLE_ATTACHMENTS",
+      "open_web_availability": "EVENT_DRIVEN_OPEN_ACCESS",
+      "description": "Civil and fiscal execution dockets and auction dossiers (Franklin Leilões, Mega Leilões, Valero Leilões) transcribing CRI matrícula perimeters.",
+      "potential_geom_level": "GEOM_3",
+      "achieved_open_level": "GEOM_2 (Describes lot dimensions and street frontage, but lacks full block lot arrangement diagrams)"
+    },
+    {
+      "source_id": "GEOM-SRC-04",
+      "source_name": "OpenStreetMap (OSM) Planar Vector Road Graph",
+      "repository_type": "OPEN_GEOSPATIAL_DATABASE",
+      "geometry_type": "PLANAR_ROAD_BLOCK_POLYGONS",
+      "public_accessibility": "FULLY_OPEN_PUBLIC (ODbL)",
+      "open_web_availability": "FULL_OPEN_ACCESS",
+      "description": "High-precision planar vector polygons of physical road blocks (PRB-0326, PRB-0401, PRB-0419, PRB-0746, etc.). Does not natively contain historical subdivision block letters or numbered lot boundaries.",
+      "potential_geom_level": "GEOM_2",
+      "achieved_open_level": "GEOM_2 (Physical road blocks completely mapped, but unlinked to internal lot boundaries)"
+    }
+  ]
+}

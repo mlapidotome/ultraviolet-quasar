@@ -1,0 +1,150 @@
+{
+  "metadata": {
+    "phase": "2.3Z",
+    "title": "JARDIM DAS NAÇÕES GEOMETRY RECOVERY & CLASSIFICATION",
+    "timestamp": "2026-09-05T02:07:59.970393+00:00",
+    "geometry_level_definitions": {
+      "GEOM_0": "No geometry",
+      "GEOM_1": "Subdivision/block location only",
+      "GEOM_2": "Physical block identified",
+      "GEOM_3": "Lot ordering or lot diagram available",
+      "GEOM_4": "Specific target lot identifiable on physical block",
+      "GEOM_5": "Target parcel polygon / explicit boundary geometry"
+    }
+  },
+  "recovery_records": [
+    {
+      "dsqlll": "3.1.004.013",
+      "bcs": [
+        "3.1.004.013.001"
+      ],
+      "target_tier": "PRIMARY",
+      "subdivision_name": "Jardim das Nações",
+      "subdivision_block": "Quadra Q",
+      "lot_id": "Lote 13",
+      "street": "Rua Argentina",
+      "pre_phase_geom_level": "GEOM_1",
+      "post_phase_geom_level": "GEOM_1",
+      "incremental_geom_recovery": false,
+      "candidate_physical_blocks": [
+        "PRB-0326",
+        "PRB-0327",
+        "PRB-0434",
+        "PRB-0732"
+      ],
+      "independent_block_disambiguation": false,
+      "physical_geometry_recovered": null,
+      "geometry_audit_notes": "Documented textually as Lote 13 da Quadra Q. In the absence of an open subdivision blueprint, Quadra Q cannot be independently mapped to a specific physical road block polygon without circular cadastral inference. Preserved as GEOM_1."
+    },
+    {
+      "dsqlll": "3.1.009.004",
+      "bcs": [
+        "3.1.009.004.001"
+      ],
+      "target_tier": "PRIMARY",
+      "subdivision_name": "Jardim das Nações",
+      "subdivision_block": "Quadra O",
+      "lot_id": "Lote 14",
+      "street": "Rua França",
+      "pre_phase_geom_level": "GEOM_1",
+      "post_phase_geom_level": "GEOM_1",
+      "incremental_geom_recovery": false,
+      "candidate_physical_blocks": [
+        "PRB-0419",
+        "PRB-0746"
+      ],
+      "independent_block_disambiguation": false,
+      "physical_geometry_recovered": null,
+      "geometry_audit_notes": "Documented textually as Lote 14 da Quadra O with door number 261. While door number 261 provides textual street localization, no blueprint exists showing the spatial sequence or boundaries of lots within Quadra O. Preserved as GEOM_1."
+    },
+    {
+      "dsqlll": "3.1.014.001",
+      "bcs": [
+        "3.1.014.001.001"
+      ],
+      "target_tier": "PRIMARY",
+      "subdivision_name": "Jardim das Nações",
+      "subdivision_block": "Quadra A",
+      "lot_id": "Lote 01",
+      "street": "Rua França",
+      "pre_phase_geom_level": "GEOM_1",
+      "post_phase_geom_level": "GEOM_1",
+      "incremental_geom_recovery": false,
+      "candidate_physical_blocks": [
+        "PRB-0401",
+        "PRB-0738",
+        "PRB-0739"
+      ],
+      "independent_block_disambiguation": false,
+      "physical_geometry_recovered": null,
+      "geometry_audit_notes": "Documented as Lote 01 da Quadra A. Head-lot designation indicates a block boundary position, but without the registered blueprint or full corner metes-and-bounds deed, the physical block polygon and corner face cannot be independently verified. Preserved as GEOM_1."
+    },
+    {
+      "dsqlll": "3.3.019.006",
+      "bcs": [
+        "3.3.019.006.001"
+      ],
+      "target_tier": "PRIMARY",
+      "subdivision_name": "Jardim das Nações",
+      "subdivision_block": "Quadra X",
+      "lot_id": "LT: 03",
+      "street": "Rua Síria",
+      "pre_phase_geom_level": "GEOM_1",
+      "post_phase_geom_level": "GEOM_1",
+      "incremental_geom_recovery": false,
+      "candidate_physical_blocks": [
+        "PRB-0387",
+        "PRB-0388",
+        "PRB-0389",
+        "PRB-0400",
+        "PRB-0746",
+        "PRB-0748"
+      ],
+      "independent_block_disambiguation": false,
+      "physical_geometry_recovered": null,
+      "geometry_audit_notes": "Documented textually as LT: 03 da Quadra X with door number 91. Rua Síria spans multiple contiguous blocks; without a blueprint diagram, the exact physical block polygon is unconfirmed. Preserved as GEOM_1."
+    },
+    {
+      "dsqlll": "3.1.009.006",
+      "bcs": [
+        "3.1.009.006.001"
+      ],
+      "target_tier": "SECONDARY",
+      "subdivision_name": "Jardim das Nações",
+      "subdivision_block": "Quadra O",
+      "lot_id": null,
+      "street": "Rua França",
+      "pre_phase_geom_level": "GEOM_1",
+      "post_phase_geom_level": "GEOM_1",
+      "incremental_geom_recovery": false,
+      "candidate_physical_blocks": [
+        "PRB-0419",
+        "PRB-0746"
+      ],
+      "independent_block_disambiguation": false,
+      "physical_geometry_recovered": null,
+      "geometry_audit_notes": "Habite-se record binds to Rua França 261 (co-located with 3.1.009.004). Lacks independent lot boundary drawing. Preserved as GEOM_1."
+    },
+    {
+      "dsqlll": "3.3.019.005",
+      "bcs": [
+        "3.3.019.005.001"
+      ],
+      "target_tier": "SECONDARY",
+      "subdivision_name": "Jardim Continental II",
+      "subdivision_block": "Outer Boundary",
+      "lot_id": null,
+      "street": "Rua Síria",
+      "pre_phase_geom_level": "GEOM_1",
+      "post_phase_geom_level": "GEOM_1",
+      "incremental_geom_recovery": false,
+      "candidate_physical_blocks": [
+        "PRB-0387",
+        "PRB-0388"
+      ],
+      "independent_block_disambiguation": false,
+      "physical_geometry_recovered": null,
+      "geometry_audit_notes": "Municipal tax notice binds to Rua Síria 560. Lacks subdivision blueprint geometry. Preserved as GEOM_1."
+    }
+  ]
+}
