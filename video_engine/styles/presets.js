@@ -1,12 +1,13 @@
 /**
  * Módulo de Editing Styles Versionáveis — Video Engine V2
- * Bali Imóveis (Fase 3C.1)
+ * Bali Imóveis (Fase 3C.1 — Final Hardening)
  * 
  * Responsabilidades:
  * 1. Catálogo canônico de presets de estilo de edição versionados em código
- * 2. Registro imutável de fontes no servidor (FONT_REGISTRY)
- * 3. Resolução estrita com fail-fast (sem fallback silencioso)
- * 4. Cálculo determinístico do style_hash (SHA-256 da serialização canônica do preset)
+ * 2. Whitelist estrita de compatibilidade entre tipos de overlay e presets
+ * 3. Registro imutável de fontes no servidor (FONT_REGISTRY)
+ * 4. Resolução estrita com fail-fast (sem fallback silencioso)
+ * 5. Cálculo determinístico do style_hash (SHA-256 da serialização canônica do preset)
  */
 
 const fs = require('fs');
@@ -41,7 +42,8 @@ const PRESETS = {
     typography: {
       headline_font_id: 'dejavu_bold',
       body_font_id: 'dejavu_medium',
-      accent_font_id: 'dejavu_bold'
+      accent_font_id: 'dejavu_bold',
+      caption_font_id: 'dejavu_medium'
     },
     colors: {
       primary: '#FFFFFF',
@@ -58,42 +60,61 @@ const PRESETS = {
       top_safe: { x_min: 60, x_max: 1020, y_min: 220, y_max: 500 },
       center: { x_min: 60, x_max: 1020, y_min: 760, y_max: 1160 },
       lower_third: { x_min: 60, x_max: 1020, y_min: 1280, y_max: 1540 },
-      bottom_safe: { x_min: 60, x_max: 1020, y_min: 1540, y_max: 1720 }
+      bottom_safe: { x_min: 60, x_max: 1020, y_min: 1540, y_max: 1720 },
+      captions: { x_min: 80, x_max: 1000, y_min: 1350, y_max: 1550 }
+    },
+    captions_preset: {
+      font_id: 'dejavu_medium',
+      font_size: 42,
+      max_lines: 2,
+      max_chars: 60,
+      max_chars_per_line: 30,
+      box_padding: 16,
+      box_color: '#000000B3',
+      text_color: '#FFFFFF'
     },
     overlay_presets: {
       'bold_headline': {
+        supported_types: ['headline'],
         font_id: 'dejavu_bold',
         font_size: 56,
         max_lines: 2,
         max_chars: 60,
+        max_chars_per_line: 25,
         box_padding: 24,
         box_color: '#000000CC',
         text_color: '#FFFFFF'
       },
       'price_punch': {
+        supported_types: ['price_badge'],
         font_id: 'dejavu_bold',
         font_size: 64,
         max_lines: 1,
         max_chars: 25,
+        max_chars_per_line: 20,
         box_padding: 28,
         box_color: '#00C853',
         text_color: '#FFFFFF',
         punch_zoom: true
       },
       'location_badge': {
+        supported_types: ['location_tag'],
         font_id: 'dejavu_medium',
         font_size: 40,
         max_lines: 1,
         max_chars: 40,
+        max_chars_per_line: 35,
         box_padding: 16,
         box_color: '#000000B3',
         text_color: '#FFD700'
       },
       'cta_bar': {
+        supported_types: ['cta_banner'],
         font_id: 'dejavu_bold',
         font_size: 48,
         max_lines: 2,
         max_chars: 50,
+        max_chars_per_line: 28,
         box_padding: 20,
         box_color: '#000000E6',
         text_color: '#FFFFFF'
@@ -109,7 +130,8 @@ const PRESETS = {
     typography: {
       headline_font_id: 'liberation_bold',
       body_font_id: 'liberation_medium',
-      accent_font_id: 'liberation_bold'
+      accent_font_id: 'liberation_bold',
+      caption_font_id: 'liberation_medium'
     },
     colors: {
       primary: '#FFFFFF',
@@ -126,42 +148,61 @@ const PRESETS = {
       top_safe: { x_min: 70, x_max: 1010, y_min: 220, y_max: 480 },
       center: { x_min: 70, x_max: 1010, y_min: 780, y_max: 1140 },
       lower_third: { x_min: 70, x_max: 1010, y_min: 1300, y_max: 1540 },
-      bottom_safe: { x_min: 70, x_max: 1010, y_min: 1540, y_max: 1700 }
+      bottom_safe: { x_min: 70, x_max: 1010, y_min: 1540, y_max: 1700 },
+      captions: { x_min: 80, x_max: 1000, y_min: 1350, y_max: 1550 }
+    },
+    captions_preset: {
+      font_id: 'liberation_medium',
+      font_size: 40,
+      max_lines: 2,
+      max_chars: 60,
+      max_chars_per_line: 30,
+      box_padding: 16,
+      box_color: '#1A1A1AB3',
+      text_color: '#FFFFFF'
     },
     overlay_presets: {
       'bold_headline': {
+        supported_types: ['headline'],
         font_id: 'liberation_bold',
         font_size: 52,
         max_lines: 2,
         max_chars: 60,
+        max_chars_per_line: 25,
         box_padding: 20,
         box_color: '#1A1A1AE6',
         text_color: '#FFFFFF'
       },
       'price_punch': {
+        supported_types: ['price_badge'],
         font_id: 'liberation_bold',
         font_size: 58,
         max_lines: 1,
         max_chars: 25,
+        max_chars_per_line: 20,
         box_padding: 24,
         box_color: '#1A1A1AE6',
         text_color: '#00E5FF',
         punch_zoom: false
       },
       'location_badge': {
+        supported_types: ['location_tag'],
         font_id: 'liberation_medium',
         font_size: 38,
         max_lines: 1,
         max_chars: 40,
+        max_chars_per_line: 35,
         box_padding: 16,
         box_color: '#1A1A1AB3',
         text_color: '#FFFFFF'
       },
       'cta_bar': {
+        supported_types: ['cta_banner'],
         font_id: 'liberation_bold',
         font_size: 44,
         max_lines: 2,
         max_chars: 50,
+        max_chars_per_line: 28,
         box_padding: 20,
         box_color: '#1A1A1AF2',
         text_color: '#00E5FF'
@@ -204,7 +245,8 @@ function resolveEditingStyle(styleId, version) {
   // Validação estrita de todas as fontes utilizadas pelo estilo
   const typographyFonts = Object.values(rawPreset.typography || {});
   const overlayFonts = Object.values(rawPreset.overlay_presets || {}).map(p => p.font_id);
-  const allReferencedFonts = new Set([...typographyFonts, ...overlayFonts]);
+  const captionFont = rawPreset.captions_preset?.font_id ? [rawPreset.captions_preset.font_id] : [];
+  const allReferencedFonts = new Set([...typographyFonts, ...overlayFonts, ...captionFont]);
 
   for (const fontId of allReferencedFonts) {
     const fontPath = FONT_REGISTRY[fontId];
