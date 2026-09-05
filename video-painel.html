@@ -881,6 +881,50 @@
         </div>
       </section>
 
+      
+      <!-- Card do Shadow Composer 3C (Fase 3C.1) -->
+      <section class="card" style="border: 1px solid var(--purple); background: rgba(139, 92, 246, 0.05);">
+        <div class="card-header">
+          <h3 class="card-title" style="color: var(--purple);">✨ Shadow Composer 3C (Edição Dinâmica & Overlays)</h3>
+          <span class="badge" style="background: rgba(139, 92, 246, 0.2); color: var(--purple); border: 1px solid var(--purple);">FASE 3C.1</span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+          Gere uma versão editada do vídeo com <strong>Editing Styles versionáveis</strong>, <strong>Headlines em Safe Area</strong>, <strong>Badges de Preço com Punch Zoom</strong> e <strong>Legendas sincronizadas</strong> em modo Shadow (sem alterar o pipeline oficial).
+        </p>
+
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end; margin-bottom: 1rem;">
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Estilo de Edição:</label>
+            <select id="shadow3cStyleSelect" class="input-field" style="padding: 0.5rem 0.75rem; font-size: 0.85rem; width: auto; min-width: 220px;">
+              <option value="performance_reels_v1">⚡ Performance Reels v1 (Dourado/Verde)</option>
+              <option value="clean_modern_v1">💎 Clean Modern v1 (Ciano/Dark)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Variante / Gancho:</label>
+            <select id="shadow3cVarSelect" class="input-field" style="padding: 0.5rem 0.75rem; font-size: 0.85rem; width: auto;">
+              <option value="1">Vídeo 1 (Gancho 1)</option>
+              <option value="2">Vídeo 2 (Gancho 2)</option>
+              <option value="3">Vídeo 3 (Gancho 3)</option>
+            </select>
+          </div>
+          <button type="button" id="btnComposeShadow3c" class="btn-pilot" style="background: var(--purple); padding: 0.6rem 1.25rem;" onclick="handleComposeShadow3c()">
+            <span>✨ Renderizar Edição Shadow 3C</span>
+          </button>
+        </div>
+
+        <div id="shadow3cStatus" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; display: none;"></div>
+
+        <!-- Player do Shadow 3C -->
+        <div id="shadow3cPlayerBox" style="display: none; flex-direction: column; gap: 0.75rem; margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid var(--border-color);">
+          <div style="font-size: 0.85rem; font-weight: 700; color: var(--purple); display: flex; align-items: center; gap: 0.4rem;">
+            <span>🎬 Vídeo Editado Shadow 3C (Preview)</span>
+          </div>
+          <video id="shadow3cVideoElement" controls playsinline preload="metadata" style="max-width: 320px; border-radius: 6px;"></video>
+          <div id="shadow3cMetaText" style="font-size: 0.75rem; color: var(--text-muted);"></div>
+        </div>
+      </section>
+
       <!-- Roteiros -->
       <section class="card">
         <div class="card-header">
