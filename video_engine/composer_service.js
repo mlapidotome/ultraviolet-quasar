@@ -56,13 +56,18 @@ function validateBlueprintContract(blueprint) {
     throw new Error(`[COMPOSER VALIDATION ERROR] creative_id inválido (${blueprint.creative_id}). Deve conter apenas letras, números, hífen e underscore (1-64 caracteres)`);
   }
 
-  if (!blueprint.format || typeof blueprint.format !== 'object') {
+  if (typeof blueprint.format === 'string') {
+    if (blueprint.format.trim() !== '9:16') {
+      throw new Error(`[COMPOSER VALIDATION ERROR] Formato '${blueprint.format}' não suportado (esperado 1080x1920@30fps 9:16)`);
+    }
+    blueprint.format = { aspect_ratio: '9:16', width: 1080, height: 1920, fps: 30 };
+  } else if (!blueprint.format || typeof blueprint.format !== 'object') {
     throw new Error('[COMPOSER VALIDATION ERROR] Objeto format é obrigatório');
-  }
-
-  const { aspect_ratio, width, height, fps } = blueprint.format;
-  if (aspect_ratio !== '9:16' || Number(width) !== 1080 || Number(height) !== 1920 || Number(fps) !== 30) {
-    throw new Error(`[COMPOSER VALIDATION ERROR] Formato ${width}x${height}@${fps} (${aspect_ratio}) não suportado (esperado 1080x1920@30fps 9:16)`);
+  } else {
+    const { aspect_ratio = '9:16', width = 1080, height = 1920, fps = 30 } = blueprint.format;
+    if (aspect_ratio !== '9:16' || Number(width) !== 1080 || Number(height) !== 1920 || Number(fps) !== 30) {
+      throw new Error(`[COMPOSER VALIDATION ERROR] Formato ${width}x${height}@${fps} (${aspect_ratio}) não suportado (esperado 1080x1920@30fps 9:16)`);
+    }
   }
 
   if (!Array.isArray(blueprint.timeline) || blueprint.timeline.length === 0) {
@@ -158,14 +163,23 @@ async function resolveTimelineAssets(jobId, timeline) {
 function computeRenderKey(blueprint, resolvedAssets, resolvedStyle = null) {
   const schemaVersion = String(blueprint.schema_version || '1.0');
   
-  const inputAssetsCanonical = resolvedAssets.map(item => ({
+  const resolvedList = Array.isArray(resolvedAssets)
+    ? resolvedAssets
+    : Object.values(resolvedAssets || {}).map((item, idx) => ({
+        segment_index: item.segment_index || (idx + 1),
+        role: item.role || `clip_${idx + 1}`,
+        asset: { id: item.id || item.asset?.id },
+        file_hash: item.file_hash
+      }));
+
+  const inputAssetsCanonical = resolvedList.map(item => ({
     segment_index: item.segment_index,
     role: item.role,
-    asset_id: item.asset.id,
+    asset_id: item.asset?.id || item.asset_id,
     file_hash: item.file_hash
   }));
 
-  const timelineCanonical = blueprint.timeline.map((seg, idx) => ({
+  const timelineCanonical = (blueprint.timeline || []).map((seg, idx) => ({
     segment_index: seg.segment_index || (idx + 1),
     role: seg.role,
     asset_id: seg.asset_id,
@@ -174,6 +188,20 @@ function computeRenderKey(blueprint, resolvedAssets, resolvedStyle = null) {
     source_out_ms: seg.source_out_ms !== undefined ? seg.source_out_ms : null
   }));
 
+  const formatCanonical = (typeof blueprint.format === 'object' && blueprint.format !== null)
+    ? {
+        aspect_ratio: String(blueprint.format.aspect_ratio || '9:16').trim(),
+        width: Number(blueprint.format.width || 1080),
+        height: Number(blueprint.format.height || 1920),
+        fps: Number(blueprint.format.fps || 30)
+      }
+    : {
+        aspect_ratio: String(blueprint.format || '9:16').trim(),
+        width: 1080,
+        height: 1920,
+        fps: 30
+      };
+
   // Caminho 1.0 (Preserva estritamente a fórmula homologada da Fase 3B)
   if (schemaVersion === '1.0') {
     const renderSpec10 = {
@@ -181,12 +209,7 @@ function computeRenderKey(blueprint, resolvedAssets, resolvedStyle = null) {
       composer_contract_version: 'composer_v1',
       creative_id: String(blueprint.creative_id),
       blueprint_version: Number(blueprint.blueprint_version || 1),
-      format: {
-        aspect_ratio: String(blueprint.format.aspect_ratio || '9:16').trim(),
-        width: Number(blueprint.format.width || 1080),
-        height: Number(blueprint.format.height || 1920),
-        fps: Number(blueprint.format.fps || 30)
-      },
+      format: formatCanonical,
       timeline: timelineCanonical,
       composition_directives: blueprint.composition_directives || {},
       input_assets: inputAssetsCanonical
@@ -607,7 +630,7 @@ async function composeCreative({
   if (schemaVersion === '1.1') {
     resolvedStyle = resolveEditingStyle(blueprint.editing_style.style_id, blueprint.editing_style.version);
     overlayService.validateOverlays(blueprint.overlays || [], resolvedStyle, executionPlan.total_duration_ms);
-    overlayService.validateCaptions(blueprint.captions || [], executionPlan.total_duration_ms);
+    overlayService.validateCaptions(blueprint.captions || [], resolvedStyle, executionPlan.total_duration_ms);
   }
 
   // 4. Cálculo Determinístico da render_key
@@ -747,8 +770,8 @@ async function composeCreative({
     const specs = await verifyAndPromoteOutput({
       tempPath: tempOutputPath,
       finalPath: finalOutputPath,
-      expectedDurationMs: executionPlan.total_duration_ms,
-      toleranceMs: options.toleranceMs !== undefined ? options.toleranceMs : COMPOSER_DURATION_TOLERANCE_MS
+      expectedDurationMs: options.forceExpectedDurationMs !== undefined ? options.forceExpectedDurationMs : executionPlan.total_duration_ms,
+      toleranceMs: options.maxDurationToleranceMs !== undefined ? options.maxDurationToleranceMs : (options.toleranceMs !== undefined ? options.toleranceMs : COMPOSER_DURATION_TOLERANCE_MS)
     });
 
     // 8. Marcar Asset como READY no Catálogo
