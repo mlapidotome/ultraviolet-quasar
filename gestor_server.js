@@ -48,7 +48,7 @@ app.use(cors());
 app.use(express.json());
 // Proteger rotas e arquivos sensíveis antes do static geral
 const { panelAuthMiddleware } = require('./video_engine/panel_auth');
-app.use(['/video_engine', '/.env'], (req, res) => res.status(403).send('Forbidden'));
+app.use(['/video_engine', '/.env', '/outputs/jobs'], (req, res) => res.status(403).send('Forbidden: Acesso direto a jobs bloqueado'));
 app.get(['/video-painel', '/video-painel.html'], panelAuthMiddleware, (req, res) => {
   res.sendFile(path.join(__dirname, 'video-painel.html'));
 });
