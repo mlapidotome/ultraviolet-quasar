@@ -3,10 +3,10 @@
  * Bali Imóveis
  */
 
-require('dotenv').config();
-const { Pool } = require('pg');
-const fs = require('fs');
 const path = require('path');
+const fs = require('fs');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+const { Pool } = require('pg');
 
 let pool = null;
 
@@ -52,6 +52,9 @@ async function createVideoJob(data) {
   if (!data || !data.property_ref) {
     throw new Error('[DB] property_ref é obrigatório para criar um video_job');
   }
+  if (!data.broker_id) {
+    throw new Error('[DB] broker_id é obrigatório para criar um video_job');
+  }
 
   const p = getPool();
   const query = `
@@ -70,7 +73,7 @@ async function createVideoJob(data) {
 
   const values = [
     String(data.property_ref),
-    data.broker_id || 'marcel_teste',
+    String(data.broker_id),
     data.status || 'PENDING',
     data.source || 'whatsapp',
     parseInt(data.script_version || 1, 10),
