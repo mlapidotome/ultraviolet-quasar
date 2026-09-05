@@ -268,32 +268,63 @@ async function claimRenderLock({
 }
 
 /**
- * 6. Pipeline Canônico Único de Re-encode FFmpeg (H.264 1080x1920@30fps + AAC)
+ * 6. Pipeline Canônico Único de Re-encode FFmpeg (H.264 1080x1920@30fps + AAC) com Trims Reais
  * @param {Object} params
  * @returns {Promise<void>}
  */
 function renderTimelineFFmpeg({ executionPlan, tempOutputPath }) {
   return new Promise((resolve, reject) => {
-    const inputs = executionPlan.segments.map(s => s.storage_path);
-    const n = inputs.length;
+    const segments = executionPlan.segments;
+    const n = segments.length;
 
     if (n < 1) {
-      return reject(new Error('[FFMPEG ERROR] Nenum segmento para renderizar'));
+      return reject(new Error('[FFMPEG ERROR] Nenhum segmento para renderizar'));
     }
 
     const args = ['-y'];
 
     // Entradas
-    for (const inPath of inputs) {
-      args.push('-i', inPath);
+    for (const seg of segments) {
+      args.push('-i', seg.storage_path);
     }
 
-    // Construção do filtro complexo concat padronizado
-    let filterString = '';
+    // Construção do filtro complexo com suporte a trims reais para vídeo e áudio
+    const filterParts = [];
+    let concatInputs = '';
+
     for (let i = 0; i < n; i++) {
-      filterString += `[${i}:v][${i}:a]`;
+      const seg = segments[i];
+      const hasIn = seg.source_in_ms !== null && seg.source_in_ms !== undefined;
+      const hasOut = seg.source_out_ms !== null && seg.source_out_ms !== undefined;
+
+      let vFilter = '';
+      let aFilter = '';
+
+      if (hasIn || hasOut) {
+        const inSec = hasIn ? (Number(seg.source_in_ms) / 1000).toFixed(3) : '0';
+        if (hasOut) {
+          const outSec = (Number(seg.source_out_ms) / 1000).toFixed(3);
+          vFilter = `[${i}:v]trim=start=${inSec}:end=${outSec},setpts=PTS-STARTPTS[v${i}]`;
+          aFilter = `[${i}:a]atrim=start=${inSec}:end=${outSec},asetpts=PTS-STARTPTS[a${i}]`;
+        } else {
+          vFilter = `[${i}:v]trim=start=${inSec},setpts=PTS-STARTPTS[v${i}]`;
+          aFilter = `[${i}:a]atrim=start=${inSec},asetpts=PTS-STARTPTS[a${i}]`;
+        }
+      } else {
+        // Sem trims: consome 100% do asset com normalização de PTS
+        vFilter = `[${i}:v]setpts=PTS-STARTPTS[v${i}]`;
+        aFilter = `[${i}:a]asetpts=PTS-STARTPTS[a${i}]`;
+      }
+
+      filterParts.push(vFilter);
+      filterParts.push(aFilter);
+      concatInputs += `[v${i}][a${i}]`;
     }
-    filterString += `concat=n=${n}:v=1:a=1[outv][outa]`;
+
+    const concatFilter = `${concatInputs}concat=n=${n}:v=1:a=1[outv][outa]`;
+    filterParts.push(concatFilter);
+
+    const filterString = filterParts.join(';');
 
     args.push(
       '-filter_complex', filterString,
@@ -334,7 +365,7 @@ function renderTimelineFFmpeg({ executionPlan, tempOutputPath }) {
 }
 
 /**
- * 7. Inspecção Pós-Render e Promoção Atômica
+ * 7. Inspeção Pós-Render Rigorosa (QC) e Promoção Atômica Segura
  * @param {string} tempPath
  * @param {string} finalPath
  * @param {number} expectedDurationMs
@@ -350,7 +381,7 @@ function verifyAndPromoteOutput({ tempPath, finalPath, expectedDurationMs, toler
       'ffprobe',
       [
         '-v', 'error',
-        '-show_entries', 'stream=codec_type,duration,width,height,r_frame_rate',
+        '-show_entries', 'stream=codec_type,codec_name,duration,width,height,r_frame_rate,avg_frame_rate',
         '-show_entries', 'format=duration,size',
         '-of', 'json',
         tempPath
@@ -377,8 +408,31 @@ function verifyAndPromoteOutput({ tempPath, finalPath, expectedDurationMs, toler
             return reject(new Error('[VALIDATION ERROR] Stream de áudio ausente na saída do Composer'));
           }
 
-          if (videoStream.width !== 1080 || videoStream.height !== 1920) {
+          // Validação rigorosa dos Codecs físicos
+          if (videoStream.codec_name !== 'h264') {
+            return reject(new Error(`[VALIDATION ERROR] Codec de vídeo inválido: esperado 'h264', obtido '${videoStream.codec_name}'`));
+          }
+          if (audioStream.codec_name !== 'aac') {
+            return reject(new Error(`[VALIDATION ERROR] Codec de áudio inválido: esperado 'aac', obtido '${audioStream.codec_name}'`));
+          }
+
+          // Validação rigorosa das Dimensões físicas
+          if (Number(videoStream.width) !== 1080 || Number(videoStream.height) !== 1920) {
             return reject(new Error(`[VALIDATION ERROR] Dimensões inválidas: esperado 1080x1920, obtido ${videoStream.width}x${videoStream.height}`));
+          }
+
+          // Cálculo e validação do FPS real a partir dos streams físicos
+          let physicalFps = 0;
+          const rateStr = videoStream.avg_frame_rate || videoStream.r_frame_rate || '';
+          if (rateStr.includes('/')) {
+            const [num, den] = rateStr.split('/').map(Number);
+            if (den && den > 0) physicalFps = Math.round(num / den);
+          } else {
+            physicalFps = Math.round(parseFloat(rateStr) || 0);
+          }
+
+          if (physicalFps < 29 || physicalFps > 31) {
+            return reject(new Error(`[VALIDATION ERROR] FPS físico inválido: esperado ~30 fps, obtido ${physicalFps} fps (${rateStr})`));
           }
 
           // Verificação de tolerância de duração configurável
@@ -394,14 +448,18 @@ function verifyAndPromoteOutput({ tempPath, finalPath, expectedDurationMs, toler
             return reject(new Error(`[VALIDATION ERROR] Descompasso excessivo entre streams de vídeo (${vDur}s) e áudio (${aDur}s)`));
           }
 
-          // Promoção Atômica (Atomic Rename)
-          // Se o destino final já existir com status pronto, preserva
+          // Promoção Atômica Segura:
+          // Se o destino final já existir (ex: arquivo órfão prévio de tentativa abortada),
+          // ele NUNCA é aceito cegamente. O órfão é removido e a nova saída recém-validada é promovida.
           if (fs.existsSync(finalPath)) {
-            // Em caso de existência prévia por concorrência ou re-execução idêntica
-            try { fs.unlinkSync(tempPath); } catch (e) {}
-          } else {
-            fs.renameSync(tempPath, finalPath);
+            console.warn(`[COMPOSER WARNING] Arquivo prévio não-homologado encontrado em finalPath (${finalPath}). Removendo órfão antes da promoção.`);
+            try {
+              fs.unlinkSync(finalPath);
+            } catch (uErr) {
+              return reject(new Error(`[PROMOTION ERROR] Falha ao remover arquivo órfão existente: ${uErr.message}`));
+            }
           }
+          fs.renameSync(tempPath, finalPath);
 
           const fileStats = fs.statSync(finalPath);
           const fileHash = assetService.computeFileHash(finalPath);
@@ -409,9 +467,11 @@ function verifyAndPromoteOutput({ tempPath, finalPath, expectedDurationMs, toler
           resolve({
             duration: formatDuration,
             duration_ms: formatDurationMs,
-            width: videoStream.width,
-            height: videoStream.height,
-            fps: 30,
+            width: Number(videoStream.width),
+            height: Number(videoStream.height),
+            fps: physicalFps,
+            codec_video: videoStream.codec_name,
+            codec_audio: audioStream.codec_name,
             hasVideo: true,
             hasAudio: true,
             size_bytes: fileStats.size,
