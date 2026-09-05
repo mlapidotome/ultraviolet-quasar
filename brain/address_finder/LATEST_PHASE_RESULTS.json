@@ -16,11 +16,11 @@
     "new_bc_to_address_links": 2,
     "total_bc_to_lot_links": 12,
     "new_bc_to_lot_links": 2,
-    "total_bc_to_face_links": 5,
-    "new_bc_to_face_links": 5,
+    "total_bc_to_face_links": 0,
+    "new_bc_to_face_links": 0,
     "pilot_pre_phase_usable_face_gt": 0,
-    "pilot_post_phase_usable_face_gt": 5,
-    "pilot_incremental_usable_face_gt": 5
+    "pilot_post_phase_usable_face_gt": 0,
+    "pilot_incremental_usable_face_gt": 0
   },
-  "timestamp": "2026-09-05T01:52:44.209018+00:00"
+  "timestamp": "2026-09-05T01:58:21.327161+00:00"
 }

@@ -10,7 +10,7 @@ In strict adherence to the approved implementation plan and methodological adden
 2. **Microarea A Provenance Deconstructed**: All 18 usable Face-GT parcels in `CAND-MICRO-14585` were audited back to their originating Certidões de Valor Venal from Loteamento 302 (Bosque Flamboyant), establishing the exact template of evidence required for spatial resolution.
 3. **Public Source Taxonomy Profiled**: 6 source families were evaluated across Levels 0 to 5. Two high-value open families were confirmed: the **Diário Oficial Eletrônico de Taubaté (DIOENET)** and **Editais de Leilões Judiciais (Hastas Públicas)**. Both provide Level 2 and Level 3 spatial bindings with zero CAPTCHA or protected portal access.
 4. **Subdivision Block Relationships Audited**: Historical subdivision block associations (`Quadra R <-> QQQ 206`, `Quadra O <-> QQQ 009`, `Quadra A <-> QQQ 014`) were cataloged and rigorously classified as `DOCUMENTED_RELATION` based on explicit public records, while universal cross-municipality mapping remains a `HYPOTHESIS_TO_VERIFY`.
-5. **Pilot Recovery Test**: Evaluated the 6 `STREET_ONLY` pilot parcels in Jardim das Nações (`CAND-MICRO-06598`). By extracting door numbers, lot identifiers, and subdivision blocks, **5 parcels achieved incremental upgrade to `PROBABLE_STREET_FACE`**, while 1 remains `STREET_ONLY`.
+5. **Pilot Recovery Test**: Evaluated the 6 `STREET_ONLY` pilot parcels in Jardim das Nações (`CAND-MICRO-06598`). While door numbers, lot identifiers, and subdivision blocks were documented from public records for 5 parcels, **all 6 parcels strictly remain `STREET_ONLY` at the face resolution**, because per the mandatory interpretation rule, parity and lot contiguity cannot by themselves confer face assignment in the absence of independent corner descriptions or boundary deeds.
 
 ```
 CLASSIFICATION: PUBLIC_SPATIAL_GT_SOURCE_PARTIAL_VALUE
@@ -70,25 +70,27 @@ Per approved Addendum 1, prior topological observations were audited and classif
 
 ## 4. Pilot Face-GT Recovery Test: Jardim das Nações
 
-Per approved Addenda 2 & 3, recovery was evaluated against the frozen pre-phase baseline:
+Per approved Addenda 2 & 3 and the **mandatory interpretation rule**:
+> *PARITY and LOT CONTIGUITY may be recorded as supporting evidence, but they must NEVER, by themselves, upgrade a parcel to EXACT_STREET_FACE or PROBABLE_STREET_FACE without independent spatial evidence.*
 
-| Parcel (DSQLLL) | Street | Pre-Phase Face Level | Post-Phase Extracted Attributes | Public Source Citation | Post-Phase Face Level | Incremental Face-GT Recovery? |
+| Parcel (DSQLLL) | Street | Pre-Phase Face Level | Post-Phase Recovered Attributes | Public Source Citation | Post-Phase Face Level | Incremental Face-GT Recovery? |
 | :--- | :--- | :---: | :--- | :--- | :---: | :---: |
 | `3.1.004.013` | Rua Argentina | `STREET_ONLY` | Lote 13, Quadra Q (No door number) | Diário Oficial Edição 906 | `STREET_ONLY` | **No** (No side-of-street anchor) |
-| `3.1.009.004` | Rua França | `STREET_ONLY` | Nº 261, Quadra O, Lote 14, Matrícula 86.760 | Diário Oficial Edição 977 | `PROBABLE_STREET_FACE` | **Yes (Incremental Upgrade)** |
-| `3.1.009.006` | Rua França | `STREET_ONLY` | Nº 261, Habite-se Residencial | Processo Habite-se Municipal | `PROBABLE_STREET_FACE` | **Yes (Incremental Upgrade)** |
-| `3.1.014.001` | Rua França | `STREET_ONLY` | Quadra A, Lote 01 (Head lot) | Edital Franklin Leilões / Proc. 1004821 | `PROBABLE_STREET_FACE` | **Yes (Incremental Upgrade)** |
-| `3.3.019.005` | Rua Síria | `STREET_ONLY` | Nº 560, Jardim Continental II | Edital Notificação Tributária | `PROBABLE_STREET_FACE` | **Yes (Incremental Upgrade)** |
-| `3.3.019.006` | Rua Síria | `STREET_ONLY` | Nº 91, QD: X, LT: 03 | Diário Oficial Edição 906 | `PROBABLE_STREET_FACE` | **Yes (Incremental Upgrade)** |
+| `3.1.009.004` | Rua França | `STREET_ONLY` | Nº 261, Quadra O, Lote 14, Matrícula 86.760 | Diário Oficial Edição 977 | `STREET_ONLY` | **No** (Parity alone cannot upgrade) |
+| `3.1.009.006` | Rua França | `STREET_ONLY` | Nº 261, Habite-se Residencial | Processo Habite-se Municipal | `STREET_ONLY` | **No** (Parity alone cannot upgrade) |
+| `3.1.014.001` | Rua França | `STREET_ONLY` | Quadra A, Lote 01 | Edital Franklin Leilões / Proc. 1004821 | `STREET_ONLY` | **No** (Head-lot contiguity cannot upgrade) |
+| `3.3.019.005` | Rua Síria | `STREET_ONLY` | Nº 560, Jardim Continental II | Edital Notificação Tributária | `STREET_ONLY` | **No** (Parity alone cannot upgrade) |
+| `3.3.019.006` | Rua Síria | `STREET_ONLY` | Nº 91, QD: X, LT: 03 | Diário Oficial Edição 906 | `STREET_ONLY` | **No** (Parity alone cannot upgrade) |
 
 ### Pilot Test Quantitative Metrics:
 - **Total Pilot Parcels Evaluated**: 6
 - **Pre-Phase Usable Face-GT**: 0
-- **Post-Phase Usable Face-GT**: 5
-- **Incremental Usable Face-GT**: **5 (83.3%)**
-- **Exact Street Face Recovered**: 0 (Full corner metes-and-bounds deed required)
-- **Probable Street Face Recovered**: 5
-- **Remaining Street-Only**: 1
+- **Post-Phase Usable Face-GT**: **0**
+- **Incremental Usable Face-GT**: **0 (0.0%)**
+- **Exact Street Face Recovered**: 0
+- **Probable Street Face Recovered**: 0
+- **Remaining Street-Only**: **6 (100.0%)**
+- **Supporting Level 2 Attributes Recovered (Door Nº / Lot ID)**: **5 of 6 (83.3%)**
 
 ---
 
@@ -99,16 +101,15 @@ Per approved Addenda 2 & 3, recovery was evaluated against the frozen pre-phase 
 | `PUBLIC_SOURCE_FAMILIES_FOUND` | **6** | **2** (SEPLAN KMZ, DJe TJSP) | Broad multi-family search |
 | `HIGH_VALUE_SOURCE_FAMILIES` | **2** | **0** (DIOENET, Leilões already identified in 2.2A) | Legitimate open gazettes and auction portals |
 | `DOCUMENTS_REVIEWED` | **42** | **14** | Complete document review |
-| `BC_TO_ADDRESS_LINKS` | **16** | **2** | Full address bindings |
-| `BC_TO_LOT_LINKS` | **12** | **2** | Subdivision lot bindings |
-| `BC_TO_FACE_LINKS` | **5** | **5** | Pilot parcel face upgrades |
+| `BC_TO_ADDRESS_LINKS` | **16** | **2** | Full address bindings (Level 2) |
+| `BC_TO_LOT_LINKS` | **12** | **2** | Subdivision lot bindings (Level 2) |
+| `BC_TO_FACE_LINKS` | **0** | **0** | **Zero face upgrades under strict anti-parity rule** |
 | `BC_TO_PARCEL_GEOMETRY_LINKS`| **0** | **0** | No open vector parcel boundaries found in bulk |
 
 ### Impact on Microarea B Feasibility Gate:
 - Prior to Phase 2.3Y, Jardim das Nações (`CAND-MICRO-06598`) had **0 usable face parcels**.
-- With the verified documentary evidence from gazettes and auctions, **5 parcels qualify as `PROBABLE_STREET_FACE`**.
-- However, the pre-registered feasibility threshold for Phase 2.3X replication requires **$\ge 8$ usable face parcels**.
-- Reaching 5 parcels confirms that public gazettes and auction notices are viable, but the cluster remains 3 parcels short of launching full Phase 2.3X replication.
+- While public gazettes and auction notices successfully recovered door numbers and lot identifiers for 5 parcels, **zero parcels qualify as Face-GT** under the rule that parity and lot contiguity cannot confer face assignment without independent corner/confrontation deeds.
+- Consequently, `USABLE_FACE_DSQLLL` remains at **0**, confirming that candidate microareas in Jardim das Nações remain underpowered for Phase 2.3X replication until registered subdivision blueprints (plantas de loteamento com confrontações de quadra) or municipal parcel geometry layers are discovered.
 
 ---
 
@@ -118,10 +119,10 @@ Per approved Addenda 2 & 3, recovery was evaluated against the frozen pre-phase 
 | :--- | :--- |
 | `phase_2_3y_prephase_baseline.json` | `7e691467a99868790be942b48ffadec4ed66ed202c5a83dfcd03fb1e07e4c2cc` |
 | `microarea_a_face_gt_provenance_audit.json` | `9f5f487edd064a1783d4cdbbcc2be026b8e0c4fcd247fcab12cf7ddc1addada2` |
-| `public_spatial_gt_source_catalog.json` | `b9c8842c64281edfbcfddaa6f0c0709de3f850a43e0719712a81dac2aa6d44ac` |
+| `public_spatial_gt_source_catalog.json` | `b910f126271323d83b83f6f9416a56bba51a3314bc86f3f1da06221f716bceb7` |
 | `subdivision_document_discovery.json` | `3ac9eff8c4776ddf608551f4fd9174f75844225bb45cd11b94847a0c2595f385` |
-| `jardim_nacoes_face_gt_recovery.json` | `fa7d19f6076324274c9cf6ab7e71fd854de4d50fefe6b029caf972834556a7c3` |
-| `public_spatial_gt_metrics.json` | `dcecde438f05bdd08181d8c11201e55b608e1557c04239e5340de87dea2cebf9` |
+| `jardim_nacoes_face_gt_recovery.json` | `83ab3bae4b5f45e121adcb8ce050d30afa6bdc848883306da34e359a5c1178df` |
+| `public_spatial_gt_metrics.json` | `53455f1cdb942661d698f1d419f923ab00e7506749e601bf6eaa31e28d2df399` |
 
 ---
 
