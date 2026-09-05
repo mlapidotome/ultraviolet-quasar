@@ -1,0 +1,176 @@
+{
+  "audit_exclusions": [
+    {
+      "listing_id": "43948250",
+      "reason": "CONDOMINIUM_EXCLUDED_MAIN_COHORT",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-3-quartos-com-garagem-sp-taubate-jardim-santa-tereza-300m2-RS1320000/id-43948250/"
+    },
+    {
+      "listing_id": "44441112",
+      "reason": "DIRECT_EXACT_ADDRESS_LEAK",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-5-quartos-com-garagem-sp-taubate-campos-eliseos-498m2-RS1250000/id-44441112/"
+    },
+    {
+      "listing_id": "11156005",
+      "reason": "DIRECT_EXACT_ADDRESS_LEAK",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-3-quartos-com-garagem-sp-taubate-chacara-do-visconde-330m2-RS450000/id-11156005/"
+    },
+    {
+      "listing_id": "43123702",
+      "reason": "DIRECT_EXACT_ADDRESS_LEAK",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-2-quartos-com-garagem-sp-taubate-jardim-continental-iii-125m2-RS380000/id-43123702/"
+    },
+    {
+      "listing_id": "30434199",
+      "reason": "DIRECT_EXACT_ADDRESS_LEAK",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-3-quartos-com-garagem-sp-taubate-parque-sao-jorge-520m2-RS900000/id-30434199/"
+    },
+    {
+      "listing_id": "40194096",
+      "reason": "CONDOMINIUM_EXCLUDED_MAIN_COHORT",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-4-quartos-com-garagem-sp-taubate-chacara-sao-felix-630m2-RS4017400/id-40194096/"
+    },
+    {
+      "listing_id": "45245924",
+      "reason": "DIRECT_EXACT_ADDRESS_LEAK",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-4-quartos-com-garagem-sp-taubate-jardim-ana-rosa-150m2-RS235000/id-45245924/"
+    },
+    {
+      "listing_id": "35576961",
+      "reason": "DIRECT_EXACT_ADDRESS_LEAK",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-2-quartos-com-garagem-sp-taubate-residencial-estoril-125m2-RS320000/id-35576961/"
+    },
+    {
+      "listing_id": "16490642",
+      "reason": "CONDOMINIUM_EXCLUDED_MAIN_COHORT",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-3-quartos-com-garagem-sp-taubate-chacaras-catagua-300m2-RS950000/id-16490642/"
+    },
+    {
+      "listing_id": "43192322",
+      "reason": "DIRECT_EXACT_ADDRESS_LEAK",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-2-quartos-com-garagem-sp-taubate-jardim-do-lago-i-75m2-RS340000/id-43192322/"
+    },
+    {
+      "listing_id": "44956729",
+      "reason": "DIRECT_EXACT_ADDRESS_LEAK",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-5-quartos-com-garagem-sp-taubate-jardim-das-nacoes-530m2-RS5100000/id-44956729/"
+    }
+  ],
+  "audit_exclusions_count": 11,
+  "eligible_count": 12,
+  "generated_at": "2026-09-05T19:40:53Z",
+  "listings": [
+    {
+      "direct_address_leaked": false,
+      "has_facade_image": true,
+      "listing_id": "26230879",
+      "municipality": "Taubate",
+      "property_type": "sobrado",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-2-quartos-sp-taubate-jardim-gurilandia-RS649000/id-26230879/",
+      "state": "SP"
+    },
+    {
+      "direct_address_leaked": false,
+      "has_facade_image": true,
+      "listing_id": "30744879",
+      "municipality": "Taubate",
+      "property_type": "sobrado",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-2-quartos-com-garagem-sp-taubate-jardim-continental-iii-125m2-RS320000/id-30744879/",
+      "state": "SP"
+    },
+    {
+      "direct_address_leaked": false,
+      "has_facade_image": true,
+      "listing_id": "32738189",
+      "municipality": "Taubate",
+      "property_type": "sobrado",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-4-quartos-com-garagem-sp-taubate-jardim-santa-tereza-300m2-RS1500000/id-32738189/",
+      "state": "SP"
+    },
+    {
+      "direct_address_leaked": false,
+      "has_facade_image": true,
+      "listing_id": "37154734",
+      "municipality": "Taubate",
+      "property_type": "sobrado",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-2-quartos-com-garagem-sp-taubate-jardim-eulalia-360m2-RS380000/id-37154734/",
+      "state": "SP"
+    },
+    {
+      "direct_address_leaked": false,
+      "has_facade_image": true,
+      "listing_id": "38732282",
+      "municipality": "Taubate",
+      "property_type": "sobrado",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-3-quartos-com-garagem-sp-taubate-jardim-mourisco-248m2-RS520000/id-38732282/",
+      "state": "SP"
+    },
+    {
+      "direct_address_leaked": false,
+      "has_facade_image": true,
+      "listing_id": "38813993",
+      "municipality": "Taubate",
+      "property_type": "sobrado",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-4-quartos-com-garagem-sp-taubate-campos-eliseos-417m2-RS890000/id-38813993/",
+      "state": "SP"
+    },
+    {
+      "direct_address_leaked": false,
+      "has_facade_image": true,
+      "listing_id": "40591449",
+      "municipality": "Taubate",
+      "property_type": "sobrado",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-3-quartos-com-garagem-sp-taubate-jardim-oasis-RS990000/id-40591449/",
+      "state": "SP"
+    },
+    {
+      "direct_address_leaked": false,
+      "has_facade_image": true,
+      "listing_id": "40712114",
+      "municipality": "Taubate",
+      "property_type": "sobrado",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-4-quartos-com-garagem-sp-taubate-vila-santa-isabel-283m2-RS690000/id-40712114/",
+      "state": "SP"
+    },
+    {
+      "direct_address_leaked": false,
+      "has_facade_image": true,
+      "listing_id": "42910754",
+      "municipality": "Taubate",
+      "property_type": "sobrado",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-2-quartos-com-garagem-sp-taubate-jardim-oasis-150m2-RS360000/id-42910754/",
+      "state": "SP"
+    },
+    {
+      "direct_address_leaked": false,
+      "has_facade_image": true,
+      "listing_id": "44628622",
+      "municipality": "Taubate",
+      "property_type": "sobrado",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-2-quartos-com-garagem-sp-taubate-jardim-continental-iii-125m2-RS340000/id-44628622/",
+      "state": "SP"
+    },
+    {
+      "direct_address_leaked": false,
+      "has_facade_image": true,
+      "listing_id": "45973292",
+      "municipality": "Taubate",
+      "property_type": "sobrado",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-3-quartos-sp-taubate-centro-RS400000/id-45973292/",
+      "state": "SP"
+    },
+    {
+      "direct_address_leaked": false,
+      "has_facade_image": true,
+      "listing_id": "46147002",
+      "municipality": "Taubate",
+      "property_type": "sobrado",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-5-quartos-com-garagem-sp-taubate-esplanada-independencia-530m2-RS5500000/id-46147002/",
+      "state": "SP"
+    }
+  ],
+  "municipality": "Taubate",
+  "schema_version": "1.0",
+  "source": "chavesnamao.com.br",
+  "state": "SP"
+}
