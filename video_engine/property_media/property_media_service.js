@@ -461,12 +461,12 @@ class PropertyMediaService {
         // Cálculo SHA-256 via streaming
         const physicalHash = await this.computeFileHashStream(materializedStagingPath);
 
-        // Publicação Atômica no mesmo filesystem
+        // Publicação Atômica no mesmo filesystem com isolamento estrito de Owner/Claim
         const finalExt = path.extname(materializedStagingPath).toLowerCase();
-        const finalPath = path.join(propertyVideosDir, `${assetId}${finalExt}`);
+        const finalPath = path.join(propertyVideosDir, `${assetId}.${claimToken}${finalExt}`);
 
         fs.renameSync(materializedStagingPath, finalPath);
-        materializedStagingPath = null; // Renomeado com sucesso
+        materializedStagingPath = null; // Renomeado com sucesso para candidate exclusivo do claim_token
 
         // Publicação Fenced para READY no PostgreSQL
         const readyRes = await pool.query(

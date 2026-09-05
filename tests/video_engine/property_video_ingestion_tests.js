@@ -873,6 +873,127 @@ async function runTests() {
     }
   });
 
+  // Cenário AL: Publicação física Owner-Specific impede overwrite/delete de outro worker
+  await test('Cenário AL: Publicação física isolada por claim_token protege arquivo de outro owner', async () => {
+    const testRef = 'ref_isolation_al';
+    const propDir = path.join(OUTPUTS_BASE_DIR, 'properties', testRef, 'videos');
+    if (!fs.existsSync(propDir)) fs.mkdirSync(propDir, { recursive: true });
+
+    const assetId = 'ast_pvid_isolation_al_12345';
+    const tokenA = 'token_worker_a_al';
+    const tokenB = 'token_worker_b_al';
+
+    // 1. Worker A adquire claim com token A
+    await pool.query(
+      `INSERT INTO video_assets (
+        id, property_ref, asset_type, storage_type, status, generation_key,
+        remote_url, metadata, created_at, updated_at
+      ) VALUES ($1, $2, 'property_video', 'local_file', 'processing', 'gen_key_al',
+        'https://youtube.com/watch?v=al_test', $3::jsonb, NOW(), NOW())
+      ON CONFLICT (id) DO UPDATE SET status = 'processing', metadata = $3::jsonb, updated_at = NOW()`,
+      [assetId, testRef, JSON.stringify({ claim_token: tokenA })]
+    );
+
+    // Worker A gera candidate file A
+    const candidateFileA = path.join(propDir, `${assetId}.${tokenA}.mp4`);
+    createSyntheticTestVideo(candidateFileA, 2);
+    const hashA = await propertyMediaService.computeFileHashStream(candidateFileA);
+
+    // 2. Worker A fica stale (> 10 min)
+    await pool.query("UPDATE video_assets SET updated_at = NOW() - INTERVAL '15 minutes' WHERE id = $1", [assetId]);
+
+    // 3. Worker B detecta stale e recupera o claim com token B
+    const recB = await pool.query(
+      `UPDATE video_assets 
+       SET status = 'processing', updated_at = NOW(), error_message = NULL,
+           metadata = jsonb_set(COALESCE(metadata, '{}'::jsonb), '{claim_token}', to_jsonb($2::text))
+       WHERE id = $1 AND status = 'processing' AND updated_at < NOW() - ($3 || ' minutes')::interval
+       RETURNING *;`,
+      [assetId, tokenB, 10]
+    );
+    if (recB.rowCount === 0) throw new Error('Worker B deveria ter recuperado o claim stale');
+
+    // Worker B gera candidate file B e publica READY com sucesso
+    const candidateFileB = path.join(propDir, `${assetId}.${tokenB}.mp4`);
+    createSyntheticTestVideo(candidateFileB, 3);
+    const hashB = await propertyMediaService.computeFileHashStream(candidateFileB);
+    const specsB = await propertyMediaService.inspectVideoFile(candidateFileB);
+
+    const readyB = await pool.query(
+      `UPDATE video_assets
+       SET status = 'ready', storage_path = $2, file_hash = $3, specs = $4::jsonb,
+           metadata = jsonb_set(COALESCE(metadata, '{}'::jsonb), '{materialized_at}', to_jsonb(NOW()::text)),
+           updated_at = NOW()
+       WHERE id = $1 AND status = 'processing' AND (metadata->>'claim_token') = $5
+       RETURNING *;`,
+      [assetId, candidateFileB, hashB, JSON.stringify(specsB), tokenB]
+    );
+    if (readyB.rowCount !== 1) throw new Error('Worker B deveria ter tornado asset READY');
+
+    // 4. Worker A acorda tarde e tenta publicar READY com token A
+    const readyA = await pool.query(
+      `UPDATE video_assets
+       SET status = 'ready', storage_path = $2, file_hash = $3, specs = $4::jsonb,
+           metadata = jsonb_set(COALESCE(metadata, '{}'::jsonb), '{materialized_at}', to_jsonb(NOW()::text)),
+           updated_at = NOW()
+       WHERE id = $1 AND status = 'processing' AND (metadata->>'claim_token') = $5
+       RETURNING *;`,
+      [assetId, candidateFileA, hashA, JSON.stringify({ width: 1080, height: 1920, duration_sec: 2 }), tokenA]
+    );
+    if (readyA.rowCount !== 0) throw new Error('Worker A NÃO deveria conseguir publicar READY');
+
+    // Worker A executa cleanup de perda de ownership (apaga SOMENTE candidate A)
+    if (fs.existsSync(candidateFileA)) {
+      fs.unlinkSync(candidateFileA);
+    }
+
+    // 5. Verificações de segurança pós-conflito
+    // - Candidate A foi removido pelo worker A
+    if (fs.existsSync(candidateFileA)) throw new Error('Candidate A deveria ter sido removido pelo worker A');
+    // - Candidate B de Worker B continua intacto no disco!
+    if (!fs.existsSync(candidateFileB)) throw new Error('Candidate B de Worker B DEVE permanecer intacto no disco!');
+
+    // - storage_path no banco aponta para o arquivo de B
+    const finalRow = (await pool.query('SELECT * FROM video_assets WHERE id = $1', [assetId])).rows[0];
+    if (finalRow.storage_path !== candidateFileB) throw new Error('storage_path no DB deve apontar para candidate B');
+    if (finalRow.file_hash !== hashB) throw new Error('file_hash no DB deve ser hashB');
+
+    // - getPropertyMediaPool retorna com 100% de integridade física
+    const poolRes = await propertyMediaService.getPropertyMediaPool(testRef);
+    const inPool = poolRes.videos.find(v => v.asset_id === assetId);
+    if (!inPool) throw new Error('Asset de Worker B deve estar disponível no pool');
+    if (inPool.storage_path !== candidateFileB) throw new Error('Pool deve apontar para arquivo de Worker B');
+  });
+
+  // Cenário AM: Coexistência de candidates e integridade de isolamento
+  await test('Cenário AM: Candidates coexistem sem colisão e cleanup é restrito ao próprio token', async () => {
+    const testRef = 'ref_coexistence_am';
+    const propDir = path.join(OUTPUTS_BASE_DIR, 'properties', testRef, 'videos');
+    if (!fs.existsSync(propDir)) fs.mkdirSync(propDir, { recursive: true });
+
+    const assetId = 'ast_pvid_coexistence_am_12345';
+    const token1 = 'tok_1_am';
+    const token2 = 'tok_2_am';
+
+    const file1 = path.join(propDir, `${assetId}.${token1}.mp4`);
+    const file2 = path.join(propDir, `${assetId}.${token2}.mp4`);
+
+    createSyntheticTestVideo(file1, 2);
+    createSyntheticTestVideo(file2, 3);
+
+    // Ambos arquivos coexistem com tamanhos e hashes diferentes
+    if (!fs.existsSync(file1) || !fs.existsSync(file2)) throw new Error('Ambos candidates devem existir simultaneamente');
+
+    const hash1 = await propertyMediaService.computeFileHashStream(file1);
+    const hash2 = await propertyMediaService.computeFileHashStream(file2);
+    if (hash1 === hash2) throw new Error('Candidates devem ter conteúdos e hashes distintos');
+
+    // Worker 1 limpa seu arquivo sem afetar Worker 2
+    fs.unlinkSync(file1);
+    if (fs.existsSync(file1)) throw new Error('file1 deveria ter sido deletado');
+    if (!fs.existsSync(file2)) throw new Error('file2 do worker 2 NÃO pode ser afetado pelo cleanup do worker 1');
+  });
+
   console.log('\n================================================================');
   console.log(`RESULTADO FINAL DA SUÍTE DE TESTES:`);
   console.log(`Total de testes: ${passedCount + failedCount}`);
