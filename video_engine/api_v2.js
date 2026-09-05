@@ -164,7 +164,8 @@ router.get('/panel/video-jobs/:id', panelAuthMiddleware, async (req, res) => {
       error_message: job.error_message,
       metadata: job.metadata,
       created_at: job.created_at,
-      updated_at: job.updated_at
+      updated_at: job.updated_at,
+      creative_blueprints: job.creative_blueprints || []
     });
   } catch (err) {
     console.error('[API_V2 PANEL ERROR] Erro ao consultar Job:', err.message);
@@ -172,6 +173,83 @@ router.get('/panel/video-jobs/:id', panelAuthMiddleware, async (req, res) => {
       success: false,
       error: 'INTERNAL_ERROR',
       message: 'Erro interno ao consultar Job'
+    });
+  }
+});
+
+/**
+ * GET /api/v2/panel/video-jobs/:id/blueprints
+ * Consulta dos Creative Blueprints declarativos do Job (Fase 3A)
+ */
+router.get('/panel/video-jobs/:id/blueprints', panelAuthMiddleware, async (req, res) => {
+  const { id } = req.params;
+  if (!id || !UUID_REGEX.test(id)) {
+    return res.status(400).json({
+      success: false,
+      error: 'INVALID_JOB_ID',
+      message: 'ID de Job inválido'
+    });
+  }
+
+  try {
+    const pool = getPool();
+    const result = await pool.query('SELECT id, creative_blueprints FROM video_jobs WHERE id = $1', [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'JOB_NOT_FOUND',
+        message: 'Job não encontrado'
+      });
+    }
+
+    return res.json({
+      success: true,
+      job_id: id,
+      creative_blueprints: result.rows[0].creative_blueprints || []
+    });
+  } catch (err) {
+    console.error('[API_V2 ERROR] Erro ao consultar blueprints:', err.message);
+    return res.status(500).json({
+      success: false,
+      error: 'INTERNAL_ERROR',
+      message: 'Erro ao consultar blueprints'
+    });
+  }
+});
+
+/**
+ * GET /api/v2/panel/video-jobs/:id/assets
+ * Catálogo de assets registrados para o Job (Fase 3A)
+ */
+router.get('/panel/video-jobs/:id/assets', panelAuthMiddleware, async (req, res) => {
+  const { id } = req.params;
+  if (!id || !UUID_REGEX.test(id)) {
+    return res.status(400).json({
+      success: false,
+      error: 'INVALID_JOB_ID',
+      message: 'ID de Job inválido'
+    });
+  }
+
+  try {
+    const pool = getPool();
+    const result = await pool.query(
+      'SELECT id, job_id, property_ref, asset_type, storage_type, storage_path, provider_ref, file_hash, generation_key, status, specs, metadata, created_at, updated_at FROM video_assets WHERE job_id = $1 ORDER BY created_at ASC',
+      [id]
+    );
+
+    return res.json({
+      success: true,
+      job_id: id,
+      total_assets: result.rows.length,
+      assets: result.rows
+    });
+  } catch (err) {
+    console.error('[API_V2 ERROR] Erro ao consultar assets do Job:', err.message);
+    return res.status(500).json({
+      success: false,
+      error: 'INTERNAL_ERROR',
+      message: 'Erro ao consultar assets'
     });
   }
 });
@@ -592,7 +670,8 @@ router.get('/video-jobs/:id', requireBearerAuth, async (req, res) => {
       video3_url: job.video3_url,
       error_message: job.error_message,
       created_at: job.created_at,
-      updated_at: job.updated_at
+      updated_at: job.updated_at,
+      creative_blueprints: job.creative_blueprints || []
     });
   } catch (err) {
     console.error('[API_V2 ERROR] Erro ao consultar Job via Bearer:', err.message);
