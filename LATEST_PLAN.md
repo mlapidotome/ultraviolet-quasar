@@ -1,54 +1,80 @@
-# Proposta Arquitetural & Plano de Implementação — Fase 2A: Painel Web Mínimo de Criação e Visualização de Job
+# Proposta Arquitetural & Plano de Implementação — Fase 2A (Revisado)
+## Painel Web Mínimo de Criação e Visualização de Job
 
 **Projeto:** Video Engine V2 — Bali Imóveis  
 **Fase:** 2A (Primeira Interface Visual Independente de WhatsApp)  
 **Status do Documento:** AGUARDANDO REVISÃO E APROVAÇÃO  
-**Objetivo Estratégico:** Prover uma interface visual leve, moderna e responsiva (`video-painel.html`), permitindo que Marcel digite o código de um imóvel, crie o Job e visualize instantaneamente os dados do imóvel, simulação financeira e os 3 ganchos + corpo, **sem utilizar o WhatsApp e sem expor a chave de API secreta no navegador**.
+**Objetivo Estratégico:** Prover uma interface visual leve, moderna e responsiva (`video-painel.html`), permitindo que Marcel digite o código de um imóvel, crie o Job e visualize instantaneamente os dados do imóvel, simulação financeira e os 3 ganchos + corpo, **sem utilizar o WhatsApp, sem expor a chave de API externa e com barreira server-side de autenticação HTTP Basic Auth**.
 
 ---
 
 ## 1. Diagnóstico da Arquitetura do Frontend Existente
 
-Uma inspeção detalhada no servidor `/var/www/bali-gestor/` revelou:
+Uma inspeção no servidor `/var/www/bali-gestor/` e na infraestrutura Nginx revelou:
 
-1. **Padrão dos Cockpits Atuais (`/gestor`, `/leads`, `/imoveis`, `/compradores`):**
+1. **Padrão dos Cockpits Atuais (`/gestor`, `/leads`, `/imoveis`):**
    - São páginas HTML5 autocontidas com CSS moderno (Dark Mode com paleta `#0B0F19`, `#111827`, `#3B82F6`, tipografia *Plus Jakarta Sans*).
    - Utilizam JavaScript Vanilla puro com `fetch()` assíncrono para endpoints locais.
    - Servidas diretamente pelo Express através de `res.sendFile(path.join(__dirname, 'nome-da-pagina.html'))`.
    - **Zero frameworks pesados (React, Vue, Angular)**: Não exigem etapa de build (`npm build` ou `webpack`), tornando os arquivos leves, estáveis e de manutenção trivial.
 
 2. **Exposição de Rede & Nginx:**
-   - O servidor escuta na porta 3005 e Nginx atua como proxy reverso em `http://127.0.0.1:3005`.
-   - Como qualquer usuário com acesso ao navegador pode inspecionar o código-fonte (F12 / DevTools), **qualquer chave gravada em HTML, JS ou storage é pública**.
+   - Nginx atua como proxy reverso padrão escutando na porta 80 e encaminhando tudo para `http://127.0.0.1:3005`.
+   - Atualmente não há `.htpasswd` global configurado no Nginx.
+   - Como qualquer usuário que acesse o domínio público da VPS poderia visualizar páginas desprotegidas, **é indispensável uma barreira de autenticação server-side** para o novo painel e seu endpoint BFF.
 
 ---
 
-## 2. Ponto Crítico de Segurança: Como Manter a API Key Fora do Navegador
+## 2. Arquitetura de Segurança: HTTP Basic Auth Server-Side + BFF Isolado
 
-Para cumprir com rigor a diretriz de segurança de **NUNCA expor `VIDEO_ENGINE_API_KEY` ao navegador** (nem em HTML, JS, `localStorage`, `sessionStorage` ou endpoint auxiliar), adotaremos o padrão **BFF (Backend-For-Frontend)** integrado ao Express:
+Para atender com precisão aos requisitos de segurança:
+1. **`Origin` e `Referer` NÃO são tratados como autenticação principal**, atuando apenas como camada secundária de defesa em profundidade (CSRF defense-in-depth).
+2. **Barreira Server-Side de Autenticação Primária: HTTP Basic Auth nativo:**
+   - Protege tanto a rota da interface (`GET /video-painel`) quanto o endpoint BFF (`POST /api/v2/panel/video-jobs`).
+   - Credenciais configuradas exclusivamente no `.env` do servidor: `PANEL_USER` e `PANEL_PASSWORD`.
+   - Quando o usuário acessa `/video-painel` sem credenciais, o servidor responde `HTTP 401 Unauthorized` com cabeçalho `WWW-Authenticate: Basic realm="Video Engine V2 Painel"`.
+   - O navegador exibe nativamente a caixa de diálogo do sistema operacional solicitando Usuário e Senha.
+   - Após validação, o próprio navegador gerencia o envio transparente do header `Authorization: Basic ...` nas requisições subsequentes (inclusive nas chamadas `fetch('/api/v2/panel/video-jobs')`).
+3. **Credenciais e Secrets 100% Fora do Browser:**
+   - **ZERO credenciais no HTML.**
+   - **ZERO credenciais no JavaScript.**
+   - **ZERO credenciais em `localStorage` ou `sessionStorage`.**
+   - A chave mestra `VIDEO_ENGINE_API_KEY` permanece **100% no servidor** e nunca transita no navegador.
+4. **Isolamento de Contratos:**
+   - A rota externa `POST /api/v2/video-jobs` (homologada na Fase 1D) permanece totalmente independente, protegida exclusivamente por `Authorization: Bearer <VIDEO_ENGINE_API_KEY>`.
+   - O endpoint BFF `POST /api/v2/panel/video-jobs` atende o painel sob proteção do HTTP Basic Auth, injetando no backend `broker_id = 'marcel'` e `source = 'web_panel'`.
+   - Sem necessidade de criar banco de usuários ou sistema complexo de sessões nesta fase.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                            NAVEGADOR DO USUÁRIO                             │
 │                                                                             │
-│  Marcel acessa: GET /video-painel                                           │
-│  Digita "#1639" e clica em "Buscar / Criar Job"                             │
-│  Dispara: fetch('/api/v2/panel/video-jobs', { body: { property_ref } })     │
-│  ⚠️ ZERO HEADERS DE AUTORIZAÇÃO / ZERO API KEYS NO BROWSER                  │
+│  1. Marcel acessa: GET /video-painel                                        │
+│     → Servidor responde 401 (WWW-Authenticate: Basic realm="...")           │
+│     → Navegador exibe popup nativo de Usuário e Senha                       │
+│     → Marcel digita credenciais                                             │
+│     → Servidor valida e entrega video-painel.html                           │
+│                                                                             │
+│  2. Marcel digita "#1639" e clica em "Buscar / Criar Job"                   │
+│     → fetch('/api/v2/panel/video-jobs', { body: { property_ref: "1639" } }) │
+│     → Navegador anexa automaticamente Authorization: Basic <credentials>    │
+│     ⚠️ ZERO TOKENS OU API KEYS NO JS/HTML/STORAGE                           │
 └──────────────────────────────────────┬──────────────────────────────────────┘
-                                       │ HTTP POST (Same-Origin)
+                                       │ HTTP POST (Basic Auth + JSON)
                                        ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                     BACKEND (video_engine/api_v2.js)                        │
 │                                                                             │
-│  Endpoint BFF: POST /api/v2/panel/video-jobs                                │
-│  1. Valida Same-Origin (Origin / Referer local)                             │
-│  2. Injeta internamente no servidor:                                        │
-│     broker_id = 'marcel'                                                    │
-│     source = 'web_panel'                                                    │
-│  3. Invoca diretamente o Job Core: initializeVideoJob(...)                  │
-│  4. Retorna o resultado padronizado (201 / 400 / 404 / 503 / 500)           │
-│  🔒 Chave secreta permanece 100% no servidor (.env)                         │
+│  Middleware de Proteção: basicAuthMiddleware                                │
+│  1. Valida Authorization: Basic contra PANEL_USER e PANEL_PASSWORD (.env)   │
+│  2. Se inválido/ausente: 401 Unauthorized                                   │
+│  3. Se válido:                                                              │
+│     Injeta internamente no servidor:                                        │
+│       broker_id = 'marcel'                                                  │
+│       source = 'web_panel'                                                  │
+│     Invoca diretamente o Job Core: initializeVideoJob(...)                  │
+│  4. Retorna resposta JSON padronizada (201 / 400 / 404 / 503 / 500)         │
+│  🔒 Chave VIDEO_ENGINE_API_KEY permanece 100% restrita ao servidor          │
 └──────────────────────────────────────┬──────────────────────────────────────┘
                                        │
                                        ▼
@@ -61,18 +87,13 @@ Para cumprir com rigor a diretriz de segurança de **NUNCA expor `VIDEO_ENGINE_A
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Por que esta solução é a mais segura e elegante?
-1. **API Key 100% Oculta:** O browser faz requisição para uma rota interna do mesmo domínio (`/api/v2/panel/video-jobs`). A autenticação com o Job Core é realizada server-side.
-2. **Rota Externa `POST /api/v2/video-jobs` Continua Protegida:** A rota homologada na Fase 1D continua exigindo estritamente `Authorization: Bearer <KEY>` para integrações externas e scripts.
-3. **Sem Complexidade Prematura:** Não necessita de login/senhas/cookies criptografados nesta fase, mas impede vazamento de secrets.
-
 ---
 
 ## 3. Wireframe Textual da Interface (`video-painel.html`)
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│ 🏢 BALI IMÓVEIS  |  🎬 Video Engine V2 — Criação & Visualização de Job      │
+│ 🏢 BALI IMÓVEIS  |  🎬 Video Engine V2 — Painel Web de Jobs                  │
 │ [Status: 🟢 Core Ativo]                                                    │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
@@ -84,7 +105,7 @@ Para cumprir com rigor a diretriz de segurança de **NUNCA expor `VIDEO_ENGINE_A
 │  └───────────────────────────────────────────────┘  └─────────────────────┘ │
 │                                                                             │
 │  [⏳ Carregando dados do CRM e gerando roteiros inteligentes...]            │
-│  [⚠️ Mensagem de Alerta / Erro quando aplicável (400, 404, 503, 500)]       │
+│  [⚠️ Alertas de erro renderizados dinamicamente (400, 404, 503, 500)]       │
 │                                                                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
@@ -129,11 +150,13 @@ Para cumprir com rigor a diretriz de segurança de **NUNCA expor `VIDEO_ENGINE_A
 ## 4. Contratos entre Browser e Backend
 
 ### 1. Rota de Interface: `GET /video-painel`
-- **Servidor:** Retorna `video-painel.html`.
+- **Proteção:** Requer HTTP Basic Auth (`PANEL_USER` / `PANEL_PASSWORD`).
+- **Sem Autenticação:** Retorna `HTTP 401 Unauthorized` com `WWW-Authenticate: Basic realm="Video Engine V2 Painel"`.
+- **Autenticado:** Retorna o conteúdo de `video-painel.html`.
 
 ### 2. Endpoint BFF: `POST /api/v2/panel/video-jobs`
-- **Origem:** Browser (Same-Origin).
-- **Headers:** `Content-Type: application/json` (sem headers de autorização).
+- **Proteção:** Requer HTTP Basic Auth (`PANEL_USER` / `PANEL_PASSWORD`).
+- **Headers:** `Content-Type: application/json`.
 - **Body:**
   ```json
   {
@@ -141,95 +164,137 @@ Para cumprir com rigor a diretriz de segurança de **NUNCA expor `VIDEO_ENGINE_A
   }
   ```
 
-#### Mapeamento de Respostas para a Interface:
-* **HTTP 201 Created (Sucesso):**  
-  Painel exibe card verde de sucesso, preenche os dados do imóvel, tabela financeira, os 3 ganchos, corpo e o UUID do Job com status `SCRIPT_READY`.
+#### Mapeamento de Respostas na Interface:
+* **HTTP 201 Created (Sucesso Total):**  
+  Card verde de sucesso; preenche resumo do imóvel, simulação financeira, 3 ganchos, corpo e exibe o UUID do Job com status `SCRIPT_READY`.
+* **HTTP 401 Unauthorized (Não Autenticado / Credenciais Inválidas):**  
+  Navegador reapresenta solicitação de credenciais ou exibe *"Acesso não autorizado ao painel."*
 * **HTTP 404 Not Found (Imóvel Não Encontrado):**  
-  Painel exibe alerta vermelho: *"Imóvel não encontrado no CRM para a referência informada."*
+  Card de alerta vermelho: *"Imóvel não encontrado no CRM para a referência informada."*
 * **HTTP 400 Bad Request (Parâmetro Inválido):**  
-  Painel exibe alerta âmbar: *"Por favor, informe uma referência de imóvel válida."*
-* **HTTP 503 Service Unavailable (Modo Degradado / Banco Offline):**  
-  Painel exibe badge amarelo de alerta: *"Roteiros gerados com sucesso, mas persistência em banco temporariamente indisponível."* Exibe os roteiros e imóvel, com `Job ID: [Não persistido]`.
-* **HTTP 500 Internal Error:**  
-  Painel exibe alerta: *"Erro interno ao processar solicitação. Tente novamente em instantes."*
+  Card de alerta âmbar: *"Por favor, informe uma referência de imóvel válida."*
+* **HTTP 503 Service Unavailable (Modo Degradado / PostgreSQL Offline):**  
+  Badge amarelo de alerta: **"Roteiros gerados com sucesso, mas persistência em banco indisponível no momento."**  
+  *(Ajuste de linguagem: NÃO utilizar "persistência pendente", pois não existe fila nem retry automático nesta fase).* Exibe os roteiros e dados normalmente, com campo de Job ID indicando *"Persistência indisponível"*.
+* **HTTP 500 Internal Error (Falha Inesperada):**  
+  Card de erro: *"Erro interno ao processar solicitação. Tente novamente em instantes."*
 
 #### Prevenção de Ações Concorrentes (Client-Side):
-- Enquanto a requisição estiver ativa:
-  - O botão "Buscar e Criar" fica desabilitado (`disabled`);
-  - O texto do botão muda para *"⏳ Processando no CRM..."*;
-  - Um indicador de carregamento (spinner) é exibido;
-  - O campo de input é bloqueado temporariamente para evitar cliques duplos.
+- Enquanto uma requisição estiver em processamento:
+  - O botão "Buscar e Criar" fica `disabled`;
+  - O texto do botão altera para *"⏳ Processando no CRM..."*;
+  - Um spinner de carregamento é ativado;
+  - O campo de input é bloqueado temporariamente para evitar duplo clique ou chamadas paralelas acidentais.
 
 ---
 
 ## 5. Arquivos a Criar e Modificar
 
-1. **`video-painel.html` [NOVO]:**
-   - Página HTML5 responsiva, autocontida com CSS Dark Mode padronizado (Plus Jakarta Sans).
-   - JavaScript puro manipulando DOM e fazendo `fetch('/api/v2/panel/video-jobs')`.
-   - Zero dependências de build ou bibliotecas externas.
-
-2. **`video_engine/api_v2.js` [MODIFICAR]:**
-   - Adicionar o endpoint BFF:
+1. **`video_engine/panel_auth.js` [NOVO]:**
+   - Middleware leve de autenticação HTTP Basic Auth:
      ```javascript
-     router.post('/panel/video-jobs', async (req, res) => { ... });
+     function panelAuthMiddleware(req, res, next) {
+       const authHeader = req.headers['authorization'] || '';
+       if (!authHeader.startsWith('Basic ')) {
+         res.setHeader('WWW-Authenticate', 'Basic realm="Video Engine V2 Painel"');
+         return res.status(401).json({ error: 'UNAUTHORIZED_PANEL_ACCESS' });
+       }
+       const [user, pass] = Buffer.from(authHeader.slice(6), 'base64').toString('utf-8').split(':');
+       const expectedUser = process.env.PANEL_USER || 'admin';
+       const expectedPass = process.env.PANEL_PASSWORD;
+       if (!expectedPass || user !== expectedUser || pass !== expectedPass) {
+         res.setHeader('WWW-Authenticate', 'Basic realm="Video Engine V2 Painel"');
+         return res.status(401).json({ error: 'INVALID_CREDENTIALS' });
+       }
+       next();
+     }
      ```
-   - Invoca `jobService.initializeVideoJob({ property_ref, broker_id: 'marcel', source: 'web_panel', metadata })`.
 
-3. **`gestor_server.js` [MODIFICAR]:**
-   - Adicionar a rota para servir a página:
+2. **`video-painel.html` [NOVO]:**
+   - Página HTML5 autocontida com CSS Dark Mode padronizado (Plus Jakarta Sans).
+   - JavaScript puro manipulando DOM e disparando `fetch('/api/v2/panel/video-jobs')`.
+   - **Zero chaves ou senhas no código-fonte.**
+
+3. **`video_engine/api_v2.js` [MODIFICAR]:**
+   - Adicionar o endpoint BFF protegido pelo middleware:
      ```javascript
-     app.get('/video-painel', (req, res) => {
+     router.post('/panel/video-jobs', panelAuthMiddleware, async (req, res) => {
+       // extrai property_ref
+       // chama jobService.initializeVideoJob({ property_ref, broker_id: 'marcel', source: 'web_panel' })
+       // mapeia 201, 400, 404, 503, 500
+     });
+     ```
+
+4. **`gestor_server.js` [MODIFICAR]:**
+   - Proteger e servir a página:
+     ```javascript
+     app.get('/video-painel', panelAuthMiddleware, (req, res) => {
        res.sendFile(path.join(__dirname, 'video-painel.html'));
      });
      ```
+
+5. **`.env` [CONFIGURAR NA VPS]:**
+   - Adicionar variáveis:
+     `PANEL_USER=admin`  
+     `PANEL_PASSWORD=<senha_forte_gerada_no_env>`  
+   - *(Valores mantidos exclusivamente no `.env`, nunca versionados no Git).*
 
 ---
 
 ## 6. O Que Permanece Rigorosamente Intocado
 
-* ❌ Sem geração/renderização de vídeo pelo painel (HeyGen/FFmpeg não são chamados pelo painel nesta fase).
-* ❌ Sem biblioteca/histórico de vídeos ou dashboard analítico.
-* ❌ Sem alteração no fluxo WhatsApp V1 (`activeVideoSessions`, áudios 1-4, `CLONE`, `OK`).
-* ❌ Sem alteração no contrato homologado da API externa `POST /api/v2/video-jobs`.
-* ❌ Toda a inteligência reside no `job_service.js`; zero duplicação de regras no frontend.
+* ❌ **Sem geração/renderização de vídeo pelo painel**: HeyGen, FFmpeg e R2 não são chamados pelo painel nesta fase.
+* ❌ **Sem biblioteca/histórico de vídeos**: Apenas o Job recém-criado é exibido.
+* ❌ **Fluxo WhatsApp V1 100% Intacto**: Sessões ativas (`activeVideoSessions`), áudios 1 a 4, `CLONE` e `OK` permanecem inalterados.
+* ❌ **API Externa da Fase 1D Intacta**: `POST /api/v2/video-jobs` continua protegida estritamente por `Authorization: Bearer <VIDEO_ENGINE_API_KEY>`.
+* ❌ **Regras de Negócio no Core**: O frontend apenas renderiza o retorno de `job_service.js`; nenhuma lógica de domínio é duplicada.
 
 ---
 
 ## 7. Plano de Testes e Homologação da Fase 2A
 
-A homologação cobrirá os seguintes cenários:
+A homologação da Fase 2A executará a seguinte bateria estrita de testes:
 
-1. **Disponibilidade da Página:**
-   - Acesso via browser/curl a `http://localhost:3005/video-painel`.
-   - Validar retorno HTTP 200 e entrega do HTML.
-2. **Criação Nominal pelo Painel (`#1639`):**
-   - Disparo de `POST /api/v2/panel/video-jobs` com `{ "property_ref": "1639" }`.
-   - Validar retorno HTTP 201 com dados, roteiros e `job_id`.
-3. **Persistência no PostgreSQL:**
-   - Conferir registro no banco com `source = 'web_panel'`, `broker_id = 'marcel'` e snapshots JSONB.
-4. **Prevenção de Clique Duplo:**
-   - Validar que o botão fica desabilitado e com estado de loading durante a requisição.
-5. **Imóvel Inexistente (`#99999999`):**
-   - Validar retorno HTTP 404 e renderização do alerta de erro na interface.
-6. **Campo Vazio:**
-   - Validar rejeição HTTP 400 antes ou durante envio.
-7. **Modo Degradado / PostgreSQL Offline (HTTP 503):**
-   - Parar temporariamente o PostgreSQL cluster (`systemctl stop postgresql@16-main`).
-   - Disparar requisição pelo painel com `#1639`.
-   - Validar retorno HTTP 503 e exibição amigável dos roteiros com aviso de persistência pendente.
-   - Restaurar PostgreSQL para `active`.
-8. **Auditoria de Segurança:**
-   - Inspecionar `video-painel.html` e comprovar ausência absoluta de tokens, chaves ou referências a `VIDEO_ENGINE_API_KEY`.
-9. **Não-Regressão de WhatsApp e API Externa:**
-   - Validar que o WhatsApp V1 e `POST /api/v2/video-jobs` (Bearer) continuam funcionando 100%.
-10. **Saúde de Produção:**
-    - PM2 online e PostgreSQL active.
+1. **Acesso ao Painel sem Autenticação (Negativa):**
+   - Requisição `GET /video-painel` sem cabeçalhos de autenticação.
+   - Deve retornar `HTTP 401 Unauthorized` com `WWW-Authenticate: Basic realm="Video Engine V2 Painel"`.
+2. **Chamada Direta ao Endpoint BFF sem Autenticação (Negativa):**
+   - Requisição `POST /api/v2/panel/video-jobs` com `{ "property_ref": "1639" }` sem autenticação.
+   - Deve retornar `HTTP 401 Unauthorized`.
+3. **Acesso Autenticado ao Painel (Positiva):**
+   - Requisição `GET /video-painel` com credenciais válidas (`PANEL_USER` / `PANEL_PASSWORD`).
+   - Deve retornar `HTTP 200 OK` e entregar o HTML da interface.
+4. **Auditoria de Código Entregue ao Navegador (Segurança):**
+   - Inspecionar o HTML e scripts entregues ao navegador.
+   - Comprovar ausência absoluta de `PANEL_PASSWORD`, `VIDEO_ENGINE_API_KEY`, tokens ou secrets.
+5. **Criação Nominal de Job pelo Painel (`#1639`):**
+   - Submissão autenticada de `POST /api/v2/panel/video-jobs` com `{ "property_ref": "1639" }`.
+   - Deve retornar `HTTP 201 Created` contendo dados do imóvel, simulação financeira, 3 ganchos, corpo e `job.id`.
+6. **Conferência no PostgreSQL:**
+   - Consultar tabela `video_jobs` para comprovar persistência com `source = 'web_panel'`, `broker_id = 'marcel'` e snapshots JSONB íntegros.
+7. **Prevenção de Duplo Clique e Concorrência:**
+   - Validar bloqueio do botão (`disabled`) e estado de loading durante processamento.
+8. **Imóvel Inexistente (`#99999999`):**
+   - Submeter referência inexistente.
+   - Deve retornar `HTTP 404 Not Found` e renderizar alerta de imóvel não encontrado.
+9. **Referência Inválida ou Vazia:**
+   - Submeter payload vazio.
+   - Deve retornar `HTTP 400 Bad Request`.
+10. **Modo Degradado / PostgreSQL Offline (HTTP 503):**
+    - Parar temporariamente o PostgreSQL (`systemctl stop postgresql@16-main`).
+    - Disparar requisição pelo painel com `#1639`.
+    - Deve retornar `HTTP 503 Service Unavailable` com corpo contendo imóvel e roteiros gerados, e `job: null`.
+    - Painel deve exibir os roteiros com o alerta exato: *"Roteiros gerados com sucesso, mas persistência em banco indisponível no momento."*
+    - Restaurar PostgreSQL para `active`.
+11. **Não-Regressão de WhatsApp e API Externa:**
+    - Validar que o fluxo WhatsApp V1 e o endpoint `POST /api/v2/video-jobs` (Bearer) continuam operando normalmente.
+12. **Saúde de Produção:**
+    - PM2 `bali-gestor` online e PostgreSQL active.
 
 ---
 
 ## 8. Limites Explícitos da Fase 2A
 
-* O painel NÃO renderiza vídeos nesta fase (somente cria o Job e visualiza roteiros e dados).
-* O painel NÃO possui autenticação de usuários (opera como cockpit interno na VPS).
-* Toda mutação de estado de vídeo fica reservada para as fases posteriores.
+* O painel NÃO renderiza vídeos nesta fase (apenas cria o Job e visualiza dados e roteiros).
+* Sem gestão multiusuário ou controle de permissões por perfil.
+* Toda mutação de estado de vídeo fica reservada para as fases subsequentes.
