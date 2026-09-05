@@ -1,0 +1,37 @@
+{
+  "protocol": "PRE_REGISTERED_FROZEN_ANCHOR_TARGET_RULES",
+  "seed": 42,
+  "selected_house_number_weight": "LOW_NUMBER_WEIGHT",
+  "models_configured": {
+    "MODEL_F_MULTI_SIGNAL_TARGET_STREET_ONLY": {
+      "w_delta_lll": 1.0,
+      "w_target_street_match": 2.5,
+      "w_anchor_street_match": 0.5,
+      "w_graph_intersection": 0.8
+    },
+    "MODEL_G_UNVERIFIED_HOUSE_NUMBER": {
+      "w_delta_lll": 1.0,
+      "w_target_street_match": 2.5,
+      "w_anchor_street_match": 0.5,
+      "w_graph_intersection": 0.8,
+      "number_weight_multiplier": 0.3
+    }
+  },
+  "structural_interval_tiers": [
+    5,
+    10,
+    15,
+    20,
+    30
+  ],
+  "pre_registered_success_thresholds": {
+    "HIGH_VALUE": {
+      "top5_min": 0.7,
+      "top10_min": 0.85
+    },
+    "PARTIAL_VALUE": {
+      "top5_min": 0.45,
+      "top10_min": 0.65
+    }
+  }
+}

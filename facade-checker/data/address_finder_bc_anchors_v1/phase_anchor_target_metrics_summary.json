@@ -28,7 +28,6 @@
     "phase_anchor_target_holdout_manifest.json": "24d28269bd27aca8c0fbcd2d654c7aed9fe16134c5bd267ee8d934b05bfc3c04",
     "phase_anchor_target_frozen_rules.json": "083db257ebf3e407eddc7cc8d72d4a5e5a19f5c6e7717373c3b06e84e9e50b7a",
     "phase_anchor_target_holdout_results.json": "d2381e267b6d10ccf413a86a3a72ed0a34c77cf0b12ea0aa7d43b0fb750d3517",
-    "phase_anchor_target_house_number_robustness.json": "35494fb6ad5af295747c5c83c5dd7b9175b49d7b6fcea856982542f9c5285e3a",
-    "phase_anchor_target_metrics_summary.json": "13be5086d7e5c0ebc0909a0987e2eeda9cabf928c3775bf7873253c8e39bd22d"
+    "phase_anchor_target_house_number_robustness.json": "35494fb6ad5af295747c5c83c5dd7b9175b49d7b6fcea856982542f9c5285e3a"
   }
 }

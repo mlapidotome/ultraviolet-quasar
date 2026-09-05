@@ -1,8 +1,33 @@
-# Phase Report — Anchor to Target Street LLL Prediction
+import json, os, hashlib
+
+def compute_sha256(filepath):
+    h = hashlib.sha256()
+    with open(filepath, 'rb') as f:
+        while chunk := f.read(8192):
+            h.update(chunk)
+    return h.hexdigest()
+
+sum_path = 'facade-checker/data/address_finder_bc_anchors_v1/phase_anchor_target_metrics_summary.json'
+with open(sum_path, 'r', encoding='utf-8') as f:
+    summary = json.load(f)
+
+summary_hash = compute_sha256(sum_path)
+summary['deliverable_hashes']['phase_anchor_target_metrics_summary.json'] = summary_hash
+
+with open('facade-checker/data/address_finder_bc_anchors_v1/phase_anchor_target_rankings.json', 'r', encoding='utf-8') as f:
+    rankings = json.load(f)
+
+with open('facade-checker/data/address_finder_bc_anchors_v1/phase_anchor_target_house_number_robustness.json', 'r', encoding='utf-8') as f:
+    robustness = json.load(f)
+
+with open('facade-checker/data/address_finder_bc_anchors_v1/phase_anchor_target_holdout_results.json', 'r', encoding='utf-8') as f:
+    holdout = json.load(f)
+
+report_md = f"""# Phase Report — Anchor to Target Street LLL Prediction
 ## Directed Cadastral Candidate Generation, House-Number Reliability & Structural Interval Prediction
 
 **Phase Status**: `COMPLETED`
-**Primary Classification (`TARGET_STREET_ONLY`)**: `PARTIAL_VALUE`
+**Primary Classification (`TARGET_STREET_ONLY`)**: `{summary['classification']}`
 **Evaluation Protocol**: `PRE_REGISTERED_COMPLETE_DSQ_ISOLATION` (Seed 42)
 
 ---
@@ -16,7 +41,7 @@ This phase evaluated whether a known reference anchor (`BC_anchor`, `Street_anch
 1. **Primary Benchmark (`TARGET_STREET_ONLY` — Zero House Numbers)**:
    - **Development Cohort (48 DSQs, 26,370 queries)**: Top 5 Recall = **43.53%**, Top 10 Recall = **69.22%**, MRR = **0.254**.
    - **Blind Holdout Cohort (15 DSQs, 8,540 queries)**: Top 5 Recall = **41.03%**, Top 10 Recall = **66.00%**, MRR = **0.237**.
-   - **Discriminatory Lift**: Outperforms pure $\Delta\text{LLL}$ (Top 5 = 18.68%) by **2.20x–2.33x** without seeing any house number. Meets pre-registered **`PARTIAL_VALUE`** criteria (Holdout Top 10 $\ge 65\%$).
+   - **Discriminatory Lift**: Outperforms pure $\\Delta\\text{{LLL}}$ (Top 5 = 18.68%) by **2.20x–2.33x** without seeing any house number. Meets pre-registered **`PARTIAL_VALUE`** criteria (Holdout Top 10 $\\ge 65\\%$).
 
 2. **House-Number Reliability & Soft Proxy Weighting**:
    - Evaluated candidate weight strengths (`NO_NUMBER_WEIGHT`, `LOW_NUMBER_WEIGHT`, `MEDIUM_NUMBER_WEIGHT`) across 8 synthetic corruption regimes.
@@ -25,7 +50,7 @@ This phase evaluated whether a known reference anchor (`BC_anchor`, `Street_anch
    - Under extreme number corruption (`NUMBER_LARGE_CONFLICT`, offset $>150$): Top 5 recall degrades gracefully to **44.04%** (Dev) and **41.45%** (Holdout) — maintaining baseline street performance with **zero** candidate discards (`TRUE_TARGET_DISCARDED_BY_NUMBER_RULE = 0`).
 
 3. **Structural Interval Prediction (Unindexed Search)**:
-   - For novel, uncatalogued, or unindexed parcels, predicting a bounded interval around anchor LLL ($W = 10$, $\pm 5$ lots) captures the true target lot with **39.4% recall** while reducing candidate queries from 80 down to 10 (**8.0x candidate list reduction**). At $W = 20$ (20 candidates), interval recall reaches **69.5%** (**4.0x candidate list reduction**).
+   - For novel, uncatalogued, or unindexed parcels, predicting a bounded interval around anchor LLL ($W = 10$, $\\pm 5$ lots) captures the true target lot with **39.4% recall** while reducing candidate queries from 80 down to 10 (**8.0x candidate list reduction**). At $W = 20$ (20 candidates), interval recall reaches **69.5%** (**4.0x candidate list reduction**).
 
 ---
 
@@ -35,7 +60,7 @@ Simulated across 34,910 pairwise anchor-target queries:
 
 | Model / Baseline | Dev Top 1 | Dev Top 3 | Dev Top 5 | Dev Top 10 | Dev MRR | Holdout Top 5 | Holdout Top 10 | Holdout MRR |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Baseline A (Pure $\Delta\text{LLL}$)** | 3.71% | 11.13% | 18.44% | 36.24% | 0.126 | 18.68% | 36.36% | 0.128 |
+| **Baseline A (Pure $\\Delta\\text{{LLL}}$)** | 3.71% | 11.13% | 18.44% | 36.24% | 0.126 | 18.68% | 36.36% | 0.128 |
 | **Baseline B (Target Street Filter)** | 3.71% | 11.13% | 18.44% | 36.24% | 0.126 | 18.68% | 36.36% | 0.128 |
 | **Baseline C (Graph Intersection)** | 9.83% | 27.95% | 43.51% | 69.21% | 0.254 | 41.02% | 65.99% | 0.237 |
 | **Baseline D (Map Perimeter Model)** | 9.83% | 27.95% | 43.51% | 69.21% | 0.254 | 41.02% | 65.99% | 0.237 |
@@ -50,7 +75,7 @@ Simulated across 34,910 pairwise anchor-target queries:
 
 Stress-test of Model G (`LOW_NUMBER_WEIGHT`) across 8 corruption regimes (Development & Holdout):
 
-| Corruption Regime | Dev Top 5 | Dev Top 10 | $\Delta\text{Top5 vs Model F}$ | Holdout Top 5 | Holdout Top 10 | Discarded Targets |
+| Corruption Regime | Dev Top 5 | Dev Top 10 | $\\Delta\\text{{Top5 vs Model F}}$ | Holdout Top 5 | Holdout Top 10 | Discarded Targets |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **`NUMBER_CORRECT`** | 77.92% | 88.64% | +34.39% | 74.12% | 85.38% | **0** |
 | **`NUMBER_OFFSET_1_TO_10`** | 76.51% | 87.82% | +32.98% | 72.80% | 84.60% | **0** |
@@ -83,13 +108,13 @@ Stress-test of Model G (`LOW_NUMBER_WEIGHT`) across 8 corruption regimes (Develo
 
 | Deliverable File | SHA-256 Hash |
 | :--- | :--- |
-| `phase_anchor_target_queries.json` | `bc10b59cd1a22438fbdc3bf746295e77f0551c17f13e19255bacb4de8ff58fec` |
-| `phase_anchor_target_rankings.json` | `2333b1565ba05fcc7458afacf20dd5185d72c6001741cfe2fa934c3b98647c89` |
-| `phase_anchor_target_holdout_manifest.json` | `24d28269bd27aca8c0fbcd2d654c7aed9fe16134c5bd267ee8d934b05bfc3c04` |
-| `phase_anchor_target_frozen_rules.json` | `083db257ebf3e407eddc7cc8d72d4a5e5a19f5c6e7717373c3b06e84e9e50b7a` |
-| `phase_anchor_target_holdout_results.json` | `d2381e267b6d10ccf413a86a3a72ed0a34c77cf0b12ea0aa7d43b0fb750d3517` |
-| `phase_anchor_target_house_number_robustness.json` | `35494fb6ad5af295747c5c83c5dd7b9175b49d7b6fcea856982542f9c5285e3a` |
-| `phase_anchor_target_metrics_summary.json` | `13be5086d7e5c0ebc0909a0987e2eeda9cabf928c3775bf7873253c8e39bd22d` |
+| `phase_anchor_target_queries.json` | `{summary['deliverable_hashes']['phase_anchor_target_queries.json']}` |
+| `phase_anchor_target_rankings.json` | `{summary['deliverable_hashes']['phase_anchor_target_rankings.json']}` |
+| `phase_anchor_target_holdout_manifest.json` | `{summary['deliverable_hashes']['phase_anchor_target_holdout_manifest.json']}` |
+| `phase_anchor_target_frozen_rules.json` | `{summary['deliverable_hashes']['phase_anchor_target_frozen_rules.json']}` |
+| `phase_anchor_target_holdout_results.json` | `{summary['deliverable_hashes']['phase_anchor_target_holdout_results.json']}` |
+| `phase_anchor_target_house_number_robustness.json` | `{summary['deliverable_hashes']['phase_anchor_target_house_number_robustness.json']}` |
+| `phase_anchor_target_metrics_summary.json` | `{summary['deliverable_hashes']['phase_anchor_target_metrics_summary.json']}` |
 
 ---
 
@@ -101,3 +126,20 @@ Stress-test of Model G (`LOW_NUMBER_WEIGHT`) across 8 corruption regimes (Develo
    Preserve `TRUE_TARGET_DISCARDED_BY_NUMBER_RULE = 0` as a permanent production constraint.
 3. **Use Structural Intervals for Cold Lead Generation**:
    When scouting unindexed parcels or desdobros, querying a bounded window of $\pm 10$ lots ($W=20$) provides ~70% recall while cutting candidate verification costs by 4x.
+"""
+
+# Save reports
+os.makedirs('brain/address_finder/reports', exist_ok=True)
+hist_path = 'brain/address_finder/reports/PHASE_ANCHOR_TO_TARGET_STREET_LLL_PREDICTION.md'
+with open(hist_path, 'w', encoding='utf-8') as f:
+    f.write(report_md.strip() + '\n')
+
+latest_report_path = 'brain/address_finder/LATEST_PHASE_REPORT.md'
+with open(latest_report_path, 'w', encoding='utf-8') as f:
+    f.write(report_md.strip() + '\n')
+
+latest_results_path = 'brain/address_finder/LATEST_PHASE_RESULTS.json'
+with open(latest_results_path, 'w', encoding='utf-8') as f:
+    json.dump(summary, f, indent=2, ensure_ascii=False)
+
+print("All reports and LATEST files written successfully!")

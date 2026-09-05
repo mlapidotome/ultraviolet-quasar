@@ -1,0 +1,252 @@
+{
+  "metadata": {
+    "cohort_breakdown": {
+      "dev_queries": 26370,
+      "holdout_queries": 8540
+    }
+  },
+  "development_cohort": {
+    "BASELINE_A_DELTA_LLL_ONLY": {
+      "total_queries": 26370,
+      "top1_recall": 0.0372772089495639,
+      "top3_recall": 0.11156617368221464,
+      "top5_recall": 0.18464163822525598,
+      "top10_recall": 0.3626090254076602,
+      "top20_recall": 0.6788016685627607,
+      "mrr": 0.1411567400894225,
+      "candidate_burden": {
+        "p50": 15,
+        "p75": 23,
+        "p90": 30
+      },
+      "true_targets_discarded": 0
+    },
+    "BASELINE_B_TARGET_STREET_FILTER": {
+      "total_queries": 26370,
+      "top1_recall": 0.09920364050056883,
+      "top3_recall": 0.2820250284414107,
+      "top5_recall": 0.43947667804323093,
+      "top10_recall": 0.7020477815699658,
+      "top20_recall": 0.9101251422070534,
+      "mrr": 0.2646888672137189,
+      "candidate_burden": {
+        "p50": 6,
+        "p75": 12,
+        "p90": 20
+      },
+      "true_targets_discarded": 0
+    },
+    "BASELINE_C_GRAPH_INTERSECTION": {
+      "total_queries": 26370,
+      "top1_recall": 0.09848312476298825,
+      "top3_recall": 0.27967387182404246,
+      "top5_recall": 0.4352673492605233,
+      "top10_recall": 0.6921501706484642,
+      "top20_recall": 0.8946909366704588,
+      "mrr": 0.2622484564011643,
+      "candidate_burden": {
+        "p50": 6,
+        "p75": 12,
+        "p90": 21
+      },
+      "true_targets_discarded": 0
+    },
+    "BASELINE_D_MAP_PERIMETER": {
+      "total_queries": 26370,
+      "top1_recall": 0.09848312476298825,
+      "top3_recall": 0.27967387182404246,
+      "top5_recall": 0.4352673492605233,
+      "top10_recall": 0.6921501706484642,
+      "top20_recall": 0.8946909366704588,
+      "mrr": 0.2622484564011643,
+      "candidate_burden": {
+        "p50": 6,
+        "p75": 12,
+        "p90": 21
+      },
+      "true_targets_discarded": 0
+    },
+    "BASELINE_E_RANDOM_SAME_DSQ": {
+      "total_queries": 26370,
+      "top1_recall": 0.03594994311717861,
+      "top3_recall": 0.10523321956769056,
+      "top5_recall": 0.18047023132347365,
+      "top10_recall": 0.3602199469093667,
+      "top20_recall": 0.6784982935153584,
+      "mrr": 0.13861721785271502,
+      "candidate_burden": {
+        "p50": 15,
+        "p75": 23,
+        "p90": 30
+      },
+      "true_targets_discarded": 0
+    },
+    "MODEL_F_MULTI_SIGNAL_TARGET_STREET_ONLY": {
+      "total_queries": 26370,
+      "top1_recall": 0.09848312476298825,
+      "top3_recall": 0.27967387182404246,
+      "top5_recall": 0.4352673492605233,
+      "top10_recall": 0.6921501706484642,
+      "top20_recall": 0.8946909366704588,
+      "mrr": 0.2622484564011643,
+      "candidate_burden": {
+        "p50": 6,
+        "p75": 12,
+        "p90": 21
+      },
+      "true_targets_discarded": 0
+    },
+    "MODEL_G_UNVERIFIED_HOUSE_NUMBER": {
+      "total_queries": 26370,
+      "top1_recall": 0.6013651877133106,
+      "top3_recall": 0.7372013651877133,
+      "top5_recall": 0.7791808873720136,
+      "top10_recall": 0.8281380356465681,
+      "top20_recall": 0.9169890026545316,
+      "mrr": 0.6868739564775703,
+      "candidate_burden": {
+        "p50": 1,
+        "p75": 4,
+        "p90": 19
+      },
+      "true_targets_discarded": 0
+    },
+    "MODEL_H_VERIFIED_UPPER_BOUND": {
+      "total_queries": 26370,
+      "top1_recall": 0.7204778156996587,
+      "top3_recall": 0.7545695866514979,
+      "top5_recall": 0.7799393249905195,
+      "top10_recall": 0.8281380356465681,
+      "top20_recall": 0.9169890026545316,
+      "mrr": 0.7561521766772922,
+      "candidate_burden": {
+        "p50": 1,
+        "p75": 3,
+        "p90": 19
+      },
+      "true_targets_discarded": 0
+    }
+  },
+  "holdout_cohort": {
+    "BASELINE_A_DELTA_LLL_ONLY": {
+      "total_queries": 8540,
+      "top1_recall": 0.037587822014051524,
+      "top3_recall": 0.11229508196721312,
+      "top5_recall": 0.1870023419203747,
+      "top10_recall": 0.36370023419203745,
+      "top20_recall": 0.6985948477751757,
+      "mrr": 0.14234716694470828,
+      "candidate_burden": {
+        "p50": 14,
+        "p75": 22,
+        "p90": 29
+      },
+      "true_targets_discarded": 0
+    },
+    "BASELINE_B_TARGET_STREET_FILTER": {
+      "total_queries": 8540,
+      "top1_recall": 0.08934426229508197,
+      "top3_recall": 0.2605386416861827,
+      "top5_recall": 0.4122950819672131,
+      "top10_recall": 0.6660421545667448,
+      "top20_recall": 0.8140515222482435,
+      "mrr": 0.24648739683934198,
+      "candidate_burden": {
+        "p50": 7,
+        "p75": 15,
+        "p90": 28
+      },
+      "true_targets_discarded": 0
+    },
+    "BASELINE_C_GRAPH_INTERSECTION": {
+      "total_queries": 8540,
+      "top1_recall": 0.08911007025761124,
+      "top3_recall": 0.25960187353629977,
+      "top5_recall": 0.41030444964871193,
+      "top10_recall": 0.6599531615925058,
+      "top20_recall": 0.8111241217798595,
+      "mrr": 0.24544823189208181,
+      "candidate_burden": {
+        "p50": 7,
+        "p75": 15,
+        "p90": 28
+      },
+      "true_targets_discarded": 0
+    },
+    "BASELINE_D_MAP_PERIMETER": {
+      "total_queries": 8540,
+      "top1_recall": 0.08911007025761124,
+      "top3_recall": 0.25960187353629977,
+      "top5_recall": 0.41030444964871193,
+      "top10_recall": 0.6599531615925058,
+      "top20_recall": 0.8111241217798595,
+      "mrr": 0.24544823189208181,
+      "candidate_burden": {
+        "p50": 7,
+        "p75": 15,
+        "p90": 28
+      },
+      "true_targets_discarded": 0
+    },
+    "BASELINE_E_RANDOM_SAME_DSQ": {
+      "total_queries": 8540,
+      "top1_recall": 0.03372365339578454,
+      "top3_recall": 0.1094847775175644,
+      "top5_recall": 0.1819672131147541,
+      "top10_recall": 0.36124121779859486,
+      "top20_recall": 0.7005854800936768,
+      "mrr": 0.1389630338764984,
+      "candidate_burden": {
+        "p50": 15,
+        "p75": 22,
+        "p90": 29
+      },
+      "true_targets_discarded": 0
+    },
+    "MODEL_F_MULTI_SIGNAL_TARGET_STREET_ONLY": {
+      "total_queries": 8540,
+      "top1_recall": 0.08911007025761124,
+      "top3_recall": 0.25960187353629977,
+      "top5_recall": 0.41030444964871193,
+      "top10_recall": 0.6599531615925058,
+      "top20_recall": 0.8111241217798595,
+      "mrr": 0.24544823189208181,
+      "candidate_burden": {
+        "p50": 7,
+        "p75": 15,
+        "p90": 28
+      },
+      "true_targets_discarded": 0
+    },
+    "MODEL_G_UNVERIFIED_HOUSE_NUMBER": {
+      "total_queries": 8540,
+      "top1_recall": 0.4966042154566745,
+      "top3_recall": 0.5837236533957846,
+      "top5_recall": 0.625175644028103,
+      "top10_recall": 0.6980093676814988,
+      "top20_recall": 0.8111241217798595,
+      "mrr": 0.5692433058657272,
+      "candidate_burden": {
+        "p50": 2,
+        "p75": 15,
+        "p90": 28
+      },
+      "true_targets_discarded": 0
+    },
+    "MODEL_H_VERIFIED_UPPER_BOUND": {
+      "total_queries": 8540,
+      "top1_recall": 0.5510538641686182,
+      "top3_recall": 0.5853629976580796,
+      "top5_recall": 0.625175644028103,
+      "top10_recall": 0.6980093676814988,
+      "top20_recall": 0.8111241217798595,
+      "mrr": 0.5982831185120973,
+      "candidate_burden": {
+        "p50": 1,
+        "p75": 15,
+        "p90": 28
+      },
+      "true_targets_discarded": 0
+    }
+  }
+}
