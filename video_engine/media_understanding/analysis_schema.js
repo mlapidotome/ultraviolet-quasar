@@ -10,6 +10,8 @@ const SCHEMA_VERSION = '1.0.0';
 const DEFAULT_ANALYZER_TYPE = 'vlm_temporal_sampling';
 const DEFAULT_ANALYZER_VERSION = '1.0.0';
 const DEFAULT_PROMPT_VERSION = 'vlm_prompt_v1';
+const DEFAULT_SAMPLE_INTERVAL_MS = 1200;
+const DEFAULT_MIN_SEGMENT_DURATION_MS = 1200;
 
 const ALLOWED_ROOM_TYPES = Object.freeze([
   'living_room',
@@ -59,23 +61,43 @@ function clampScore(val, defaultVal = 0.5) {
 }
 
 /**
- * Validação rigorosa do resultado de análise de um sample/frame
+ * Validação rigorosa do resultado de análise de um sample/frame (com Fail-Fast em Features)
  */
 function validateFrameSampleResult(sample) {
   if (!sample || typeof sample !== 'object') {
     throw new Error('[SCHEMA_ERROR] Sample de análise nulo ou inválido');
   }
 
+  // 1. Validação estrita de room_type
   let roomType = String(sample.room_type || '').toLowerCase().trim();
   if (!ALLOWED_ROOM_TYPES.includes(roomType)) {
     throw new Error(`[SCHEMA_ERROR] room_type inválido: '${sample.room_type}' (permitidos: ${ALLOWED_ROOM_TYPES.join(', ')})`);
   }
 
+  // 2. Validação estrita de features (Fail-Fast se feature for desconhecida)
   const rawFeatures = Array.isArray(sample.features) ? sample.features : [];
-  const normalizedFeatures = rawFeatures
-    .map(f => String(f).toLowerCase().trim())
-    .filter(f => f.length > 0);
+  const normalizedFeatures = [];
+  const seenFeatures = new Set();
 
+  for (const f of rawFeatures) {
+    if (typeof f !== 'string') {
+      throw new Error(`[SCHEMA_ERROR] feature deve ser uma string, recebido: ${typeof f}`);
+    }
+    const cleanF = f.toLowerCase().trim();
+    if (!cleanF) continue;
+
+    if (!ALLOWED_FEATURES.includes(cleanF)) {
+      throw new Error(`[SCHEMA_ERROR] feature inválida: '${f}' (permitidas: ${ALLOWED_FEATURES.join(', ')})`);
+    }
+
+    if (!seenFeatures.has(cleanF)) {
+      seenFeatures.add(cleanF);
+      normalizedFeatures.push(cleanF);
+    }
+  }
+  normalizedFeatures.sort(); // Ordenação determinística para garantir canonismo
+
+  // 3. Validação estrita de scores numéricos
   const technicalQuality = clampScore(sample.technical_quality_score, 0.5);
   const aestheticScore = clampScore(sample.aesthetic_score, 0.5);
   const confidence = clampScore(sample.confidence, 0.5);
@@ -139,6 +161,7 @@ function validateTemporalSegment(seg, totalDurationMs = null) {
 
 /**
  * Cálculo determinístico do Analysis Fingerprint (analysis_key)
+ * Inclui TODOS os parâmetros comportamentais da análise
  */
 function computeAnalysisKey({
   physical_file_hash,
@@ -146,7 +169,9 @@ function computeAnalysisKey({
   analyzer_version = DEFAULT_ANALYZER_VERSION,
   model_id,
   prompt_version = DEFAULT_PROMPT_VERSION,
-  schema_version = SCHEMA_VERSION
+  schema_version = SCHEMA_VERSION,
+  sample_interval_ms = DEFAULT_SAMPLE_INTERVAL_MS,
+  min_segment_duration_ms = DEFAULT_MIN_SEGMENT_DURATION_MS
 }) {
   if (!physical_file_hash || typeof physical_file_hash !== 'string') {
     throw new Error('[SCHEMA_ERROR] physical_file_hash é obrigatório para computeAnalysisKey');
@@ -155,13 +180,25 @@ function computeAnalysisKey({
     throw new Error('[SCHEMA_ERROR] model_id é obrigatório para computeAnalysisKey');
   }
 
+  const sampleInterval = Number(sample_interval_ms);
+  const minSegmentDuration = Number(min_segment_duration_ms);
+
+  if (isNaN(sampleInterval) || sampleInterval <= 0) {
+    throw new Error(`[SCHEMA_ERROR] sample_interval_ms inválido: ${sample_interval_ms}`);
+  }
+  if (isNaN(minSegmentDuration) || minSegmentDuration <= 0) {
+    throw new Error(`[SCHEMA_ERROR] min_segment_duration_ms inválido: ${min_segment_duration_ms}`);
+  }
+
   const canonicalObj = {
     physical_file_hash: physical_file_hash.trim().toLowerCase(),
     analyzer_type: analyzer_type.trim(),
     analyzer_version: analyzer_version.trim(),
     model_id: model_id.trim().toLowerCase(),
     prompt_version: prompt_version.trim(),
-    schema_version: schema_version.trim()
+    schema_version: schema_version.trim(),
+    sample_interval_ms: sampleInterval,
+    min_segment_duration_ms: minSegmentDuration
   };
 
   const canonicalJSON = canonicalStringify(canonicalObj);
@@ -173,6 +210,8 @@ module.exports = {
   DEFAULT_ANALYZER_TYPE,
   DEFAULT_ANALYZER_VERSION,
   DEFAULT_PROMPT_VERSION,
+  DEFAULT_SAMPLE_INTERVAL_MS,
+  DEFAULT_MIN_SEGMENT_DURATION_MS,
   ALLOWED_ROOM_TYPES,
   ALLOWED_FEATURES,
   clampScore,

@@ -1,6 +1,6 @@
 ﻿/**
  * Suíte de Testes Formais: Media Understanding (Fase 4A.1)
- * Cenários A a S
+ * Cenários A a AC
  * Bali Imóveis
  */
 
@@ -12,6 +12,7 @@ const { getPool } = require('../../video_engine/db');
 const mediaUnderstandingService = require('../../video_engine/media_understanding/media_understanding_service');
 const {
   ALLOWED_ROOM_TYPES,
+  ALLOWED_FEATURES,
   validateFrameSampleResult,
   computeAnalysisKey
 } = require('../../video_engine/media_understanding/analysis_schema');
@@ -62,7 +63,7 @@ async function createDummyVideo(targetPath, durationSec = 6) {
 
 async function runSuite() {
   console.log('================================================================');
-  console.log('INICIANDO SUÍTE FORMAL: MEDIA UNDERSTANDING 4A.1 (Cenários A a S)');
+  console.log('INICIANDO SUÍTE FORMAL: MEDIA UNDERSTANDING 4A.1 (Cenários A a AC)');
   console.log('================================================================\n');
 
   const pool = getPool();
@@ -153,7 +154,9 @@ async function runSuite() {
       analyzer_version: '1.0.0',
       model_id: 'gpt-4o-mini',
       prompt_version: 'p1',
-      schema_version: '1.0.0'
+      schema_version: '1.0.0',
+      sample_interval_ms: 1200,
+      min_segment_duration_ms: 1200
     });
     const k2 = computeAnalysisKey({
       physical_file_hash: 'abc123hash',
@@ -161,7 +164,9 @@ async function runSuite() {
       analyzer_version: '1.0.0',
       model_id: 'gpt-4o-mini',
       prompt_version: 'p1',
-      schema_version: '1.0.0'
+      schema_version: '1.0.0',
+      sample_interval_ms: 1200,
+      min_segment_duration_ms: 1200
     });
     assert.strictEqual(k1, k2);
     assert.strictEqual(k1.length, 64);
@@ -260,12 +265,12 @@ async function runSuite() {
   // Cenário J: Continuous tour sem cuts produz múltiplos segmentos semânticos
   try {
     const continuousSamples = [
-      { timestamp_ms: 0, room_type: 'living_room', technical_quality_score: 0.8, aesthetic_score: 0.8, confidence: 0.9 },
-      { timestamp_ms: 1200, room_type: 'living_room', technical_quality_score: 0.85, aesthetic_score: 0.8, confidence: 0.9 },
-      { timestamp_ms: 2400, room_type: 'kitchen', technical_quality_score: 0.9, aesthetic_score: 0.85, confidence: 0.95 },
-      { timestamp_ms: 3600, room_type: 'kitchen', technical_quality_score: 0.88, aesthetic_score: 0.85, confidence: 0.95 },
-      { timestamp_ms: 4800, room_type: 'balcony', technical_quality_score: 0.92, aesthetic_score: 0.9, confidence: 0.95 },
-      { timestamp_ms: 6000, room_type: 'balcony', technical_quality_score: 0.95, aesthetic_score: 0.95, confidence: 0.95 }
+      { timestamp_ms: 0, room_type: 'living_room', features: ['natural_lighting'], technical_quality_score: 0.8, aesthetic_score: 0.8, confidence: 0.9 },
+      { timestamp_ms: 1200, room_type: 'living_room', features: ['natural_lighting'], technical_quality_score: 0.85, aesthetic_score: 0.8, confidence: 0.9 },
+      { timestamp_ms: 2400, room_type: 'kitchen', features: ['planned_cabinets'], technical_quality_score: 0.9, aesthetic_score: 0.85, confidence: 0.95 },
+      { timestamp_ms: 3600, room_type: 'kitchen', features: ['planned_cabinets'], technical_quality_score: 0.88, aesthetic_score: 0.85, confidence: 0.95 },
+      { timestamp_ms: 4800, room_type: 'balcony', features: ['city_view'], technical_quality_score: 0.92, aesthetic_score: 0.9, confidence: 0.95 },
+      { timestamp_ms: 6000, room_type: 'balcony', features: ['city_view'], technical_quality_score: 0.95, aesthetic_score: 0.95, confidence: 0.95 }
     ];
 
     const segs = segmentContinuousTour(continuousSamples, {
@@ -380,7 +385,9 @@ async function runSuite() {
   try {
     const key = computeAnalysisKey({
       physical_file_hash: fileHash,
-      model_id: 'mock_corrupt_test'
+      model_id: 'mock_corrupt_test',
+      sample_interval_ms: 1200,
+      min_segment_duration_ms: 1200
     });
     const corruptDir = path.join(PROPERTIES_OUTPUTS_DIR, testRef, 'analysis', key);
     if (!fs.existsSync(corruptDir)) fs.mkdirSync(corruptDir, { recursive: true });
@@ -409,6 +416,209 @@ async function runSuite() {
     reportPass('Cenário S: Composer V3 permanece estritamente desacoplado e intocado');
   } catch (err) {
     reportFail('Cenário S', err);
+  }
+
+  // =========================================================================
+  // NOVOS TESTES BLOCKER 1 (FINGERPRINT COMPLETO)
+  // =========================================================================
+
+  // Cenário T: Mesma configuração completa -> mesma analysis_key
+  try {
+    const k1 = computeAnalysisKey({
+      physical_file_hash: fileHash,
+      model_id: 'gpt-4o-mini',
+      sample_interval_ms: 1200,
+      min_segment_duration_ms: 1200
+    });
+    const k2 = computeAnalysisKey({
+      physical_file_hash: fileHash,
+      model_id: 'gpt-4o-mini',
+      sample_interval_ms: 1200,
+      min_segment_duration_ms: 1200
+    });
+    assert.strictEqual(k1, k2);
+    reportPass('Cenário T: Mesma configuração completa gera exatamente a mesma analysis_key');
+  } catch (err) {
+    reportFail('Cenário T', err);
+  }
+
+  // Cenário U: Mudança apenas de sample_interval_ms -> analysis_key diferente
+  try {
+    const k1 = computeAnalysisKey({
+      physical_file_hash: fileHash,
+      model_id: 'gpt-4o-mini',
+      sample_interval_ms: 1200,
+      min_segment_duration_ms: 1200
+    });
+    const k2 = computeAnalysisKey({
+      physical_file_hash: fileHash,
+      model_id: 'gpt-4o-mini',
+      sample_interval_ms: 2500,
+      min_segment_duration_ms: 1200
+    });
+    assert.notStrictEqual(k1, k2);
+    reportPass('Cenário U: Mudança de sample_interval_ms gera nova analysis_key');
+  } catch (err) {
+    reportFail('Cenário U', err);
+  }
+
+  // Cenário V: Mudança apenas de min_segment_duration_ms -> analysis_key diferente
+  try {
+    const k1 = computeAnalysisKey({
+      physical_file_hash: fileHash,
+      model_id: 'gpt-4o-mini',
+      sample_interval_ms: 1200,
+      min_segment_duration_ms: 1200
+    });
+    const k2 = computeAnalysisKey({
+      physical_file_hash: fileHash,
+      model_id: 'gpt-4o-mini',
+      sample_interval_ms: 1200,
+      min_segment_duration_ms: 3000
+    });
+    assert.notStrictEqual(k1, k2);
+    reportPass('Cenário V: Mudança de min_segment_duration_ms gera nova analysis_key');
+  } catch (err) {
+    reportFail('Cenário V', err);
+  }
+
+  // Cenário W: Análise com Config A e depois Config B: B NÃO retorna cache de A
+  try {
+    const mockProvider = new MockMediaUnderstandingProvider({ defaultRoom: 'balcony' });
+    const resA = await mediaUnderstandingService.analyzePropertyVideo(testRef, {
+      provider: mockProvider,
+      modelId: 'mock_param_test',
+      sampleIntervalMs: 1000,
+      minSegmentDurationMs: 1000
+    });
+
+    const resB = await mediaUnderstandingService.analyzePropertyVideo(testRef, {
+      provider: mockProvider,
+      modelId: 'mock_param_test',
+      sampleIntervalMs: 2500,
+      minSegmentDurationMs: 2500
+    });
+
+    assert.notStrictEqual(resA.analysis_key, resB.analysis_key);
+    assert.strictEqual(resA.source, 'computed');
+    assert.strictEqual(resB.source, 'computed');
+    reportPass('Cenário W: Configurações A e B geram chaves distintas e não compartilham cache indevidamente');
+  } catch (err) {
+    reportFail('Cenário W', err);
+  }
+
+  // Cenário X: Re-execução da mesma configuração A retorna cache_hit
+  try {
+    const mockProvider = new MockMediaUnderstandingProvider({ defaultRoom: 'balcony' });
+    const callsBefore = mockProvider.callsCount;
+
+    const resA2 = await mediaUnderstandingService.analyzePropertyVideo(testRef, {
+      provider: mockProvider,
+      modelId: 'mock_param_test',
+      sampleIntervalMs: 1000,
+      minSegmentDurationMs: 1000
+    });
+
+    assert.strictEqual(resA2.source, 'cache_hit');
+    assert.strictEqual(mockProvider.callsCount, callsBefore, 'Zero chamadas ao provider no cache hit');
+    reportPass('Cenário X: Re-execução da mesma Config A resulta em cache_hit exato');
+  } catch (err) {
+    reportFail('Cenário X', err);
+  }
+
+  // =========================================================================
+  // NOVOS TESTES BLOCKER 2 (ALLOWED_FEATURES ENFORCEMENT)
+  // =========================================================================
+
+  // Cenário Y: Feature válida é aceita
+  try {
+    const res = validateFrameSampleResult({
+      room_type: 'balcony',
+      features: ['city_view', 'gourmet'],
+      technical_quality_score: 0.8,
+      confidence: 0.9
+    });
+    assert.deepStrictEqual(res.features, ['city_view', 'gourmet']);
+    reportPass('Cenário Y: Features válidas pertencentes à taxonomia são aceitas');
+  } catch (err) {
+    reportFail('Cenário Y', err);
+  }
+
+  // Cenário Z: Feature inválida fora de ALLOWED_FEATURES é rejeitada com fail-fast
+  try {
+    assert.throws(
+      () => {
+        validateFrameSampleResult({
+          room_type: 'balcony',
+          features: ['city_view', 'flying_unicorn'],
+          technical_quality_score: 0.8,
+          confidence: 0.9
+        });
+      },
+      /feature inválida: 'flying_unicorn'/
+    );
+    reportPass('Cenário Z: Feature desconhecida fora da taxonomia é rejeitada com fail-fast');
+  } catch (err) {
+    reportFail('Cenário Z', err);
+  }
+
+  // Cenário AA: Múltiplas features válidas continuam válidas e são ordenadas deterministicamente
+  try {
+    const res = validateFrameSampleResult({
+      room_type: 'kitchen',
+      features: ['porcelain_tile', 'planned_cabinets', 'modern_fixtures'],
+      technical_quality_score: 0.8,
+      confidence: 0.9
+    });
+    assert.deepStrictEqual(res.features, ['modern_fixtures', 'planned_cabinets', 'porcelain_tile']);
+    reportPass('Cenário AA: Múltiplas features válidas são preservadas e ordenadas deterministicamente');
+  } catch (err) {
+    reportFail('Cenário AA', err);
+  }
+
+  // Cenário AB: Feature duplicada é deduplicada deterministicamente
+  try {
+    const res = validateFrameSampleResult({
+      room_type: 'balcony',
+      features: ['city_view', 'city_view', 'CITY_VIEW'],
+      technical_quality_score: 0.8,
+      confidence: 0.9
+    });
+    assert.deepStrictEqual(res.features, ['city_view']);
+    reportPass('Cenário AB: Features duplicadas são deduplicadas deterministicamente');
+  } catch (err) {
+    reportFail('Cenário AB', err);
+  }
+
+  // Cenário AC: Provider real/mock passa pela mesma validação estrita de schema
+  try {
+    const mockProvider = new MockMediaUnderstandingProvider();
+    mockProvider.setMockForTimestamp(0, {
+      room_type: 'living_room',
+      features: ['natural_lighting', 'spacious'],
+      technical_quality_score: 0.85,
+      confidence: 0.95
+    });
+
+    const sampleRes = await mockProvider.analyzeFrame(dummyVideoPath, { timestamp_ms: 0 });
+    assert.strictEqual(sampleRes.room_type, 'living_room');
+    assert.deepStrictEqual(sampleRes.features, ['natural_lighting', 'spacious']);
+
+    // Tentar setar mock inválido
+    mockProvider.setMockForTimestamp(1000, {
+      room_type: 'living_room',
+      features: ['invalid_secret_feature']
+    });
+
+    await assert.rejects(
+      async () => {
+        await mockProvider.analyzeFrame(dummyVideoPath, { timestamp_ms: 1000 });
+      },
+      /feature inválida/
+    );
+    reportPass('Cenário AC: Providers passam pela mesma validação rigorosa de schema');
+  } catch (err) {
+    reportFail('Cenário AC', err);
   }
 
   console.log('\n================================================================');

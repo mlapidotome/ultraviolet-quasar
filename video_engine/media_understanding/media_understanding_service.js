@@ -12,11 +12,11 @@ const {
   DEFAULT_ANALYZER_TYPE,
   DEFAULT_ANALYZER_VERSION,
   DEFAULT_PROMPT_VERSION,
+  DEFAULT_SAMPLE_INTERVAL_MS,
+  DEFAULT_MIN_SEGMENT_DURATION_MS,
   computeAnalysisKey
 } = require('./analysis_schema');
 const {
-  DEFAULT_SAMPLE_INTERVAL_MS,
-  DEFAULT_MIN_SEGMENT_DURATION_MS,
   extractFramesUniformly,
   segmentContinuousTour
 } = require('./semantic_segmenter');
@@ -68,14 +68,16 @@ class MediaUnderstandingService {
       throw new Error(`[MEDIA_UNDERSTANDING_ERROR] Divergência de file_hash no vídeo da REF ${cleanRef}: esperado ${physicalHash}, obtido ${actualHash}`);
     }
 
-    // 3. Cálculo determinístico do Analysis Fingerprint
+    // 3. Cálculo determinístico do Analysis Fingerprint (inclui TODOS os parâmetros comportamentais)
     const analysisKey = computeAnalysisKey({
       physical_file_hash: physicalHash,
       analyzer_type: analyzerType,
       analyzer_version: analyzerVersion,
       model_id: modelId,
       prompt_version: promptVersion,
-      schema_version: SCHEMA_VERSION
+      schema_version: SCHEMA_VERSION,
+      sample_interval_ms: sampleIntervalMs,
+      min_segment_duration_ms: minSegmentDurationMs
     });
 
     const propAnalysisDir = path.join(PROPERTIES_OUTPUTS_DIR, cleanRef, 'analysis', analysisKey);
