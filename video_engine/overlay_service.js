@@ -1,15 +1,16 @@
 /**
  * Módulo Overlay Engine — Video Engine V2
- * Bali Imóveis (Fase 3C.1)
+ * Bali Imóveis (Fase 3C.1 — Final Hardening)
  * 
  * Responsabilidades:
- * 1. Sanitização estrita de strings contra filter injection
- * 2. Validação declarativa de overlays e captions
- * 3. Cálculo determinístico de quebra de linha (text wrapping)
- * 4. Validação rigorosa de bounding boxes contra Safe Rectangles
- * 5. Compilação de nós de drawtext/drawbox no filtergraph do FFmpeg
- * 6. Ordenação estrita por layer_order (sem ambiguidades de sobreposição)
- * 7. Modulação de transparência (fade) e punch zoom determinísticos
+ * 1. Sanitização estrita de strings contra filter injection (11 caracteres)
+ * 2. Whitelist estrita de compatibilidade entre tipo de overlay e preset
+ * 3. Cálculo determinístico de métricas de largura para fontes proporcionais
+ * 4. Quebra de linha determinística (text wrapping) e fail-fast por layout overflow
+ * 5. Validação rigorosa de bounding boxes contra Safe Rectangles (overlays e captions)
+ * 6. Compilação de nós de drawtext/drawbox no filtergraph do FFmpeg
+ * 7. Ordenação estrita por layer_order (sem ambiguidades de sobreposição)
+ * 8. Modulação de transparência (fade) e punch zoom determinísticos
  */
 
 const { FONT_REGISTRY } = require('./styles/presets');
@@ -29,27 +30,54 @@ const MAX_CAPTIONS_COUNT = 60;
 function sanitizeDrawtextString(rawText) {
   if (typeof rawText !== 'string') return '';
   return rawText
-    .replace(/\\/g, '\\\\')
-    .replace(/:/g, '\\:')
-    .replace(/'/g, "\\'")
-    .replace(/%/g, '\\%')
-    .replace(/\[/g, '\\[')
-    .replace(/\]/g, '\\]')
-    .replace(/,/g, '\\,')
-    .replace(/;/g, '\\;')
-    .replace(/=/g, '\\=')
     .replace(/[\r\n]+/g, ' ')
+    .replace(/[\x00-\x1F\x7F]/g, '')
+    .replace(/'/g, '’')
+    .replace(/%/g, '\\%')
     .trim();
 }
 
 /**
- * Quebra de linha determinística para texto de overlay respeitando max_chars e max_lines
- * @param {string} text Texto sanitizado
+ * Retorna o fator de largura proporcional do glifo para fontes sans-serif (DejaVu/Liberation)
+ * @param {string} char
+ * @param {boolean} isBold
+ * @returns {number} Fator multiplicado pelo font_size
+ */
+function getCharacterWidthFactor(char, isBold = true) {
+  if ('WM@%—©'.includes(char)) return isBold ? 0.95 : 0.88;
+  if ('wm'.includes(char)) return isBold ? 0.82 : 0.75;
+  if ('iljtfI!.:;\'|[]() '.includes(char)) return isBold ? 0.32 : 0.27;
+  if ('ABCDEFGHJKLNOPQRSTUVWXYZ0123456789#$&+?'.includes(char)) return isBold ? 0.70 : 0.64;
+  return isBold ? 0.58 : 0.52; // caracteres minúsculos padrão e acentos PT-BR (ç, ã, é, ó, ú, etc.)
+}
+
+/**
+ * Calcula a largura física proporcional de uma linha de texto em pixels
+ * @param {string} line
+ * @param {number} fontSize
+ * @param {boolean} isBold
+ * @returns {number} Largura em pixels
+ */
+function calculateProportionalLineWidth(line, fontSize, isBold = true) {
+  if (!line || typeof line !== 'string') return 0;
+  let totalWidth = 0;
+  for (const char of line) {
+    totalWidth += fontSize * getCharacterWidthFactor(char, isBold);
+  }
+  return Math.round(totalWidth);
+}
+
+/**
+ * Quebra de linha determinística para texto de overlay respeitando maxCharsPerLine, maxLines e safeWidth
+ * @param {string} text
  * @param {number} maxCharsPerLine
  * @param {number} maxLines
+ * @param {number} fontSize
+ * @param {number} maxLineWidthPx
+ * @param {boolean} isBold
  * @returns {{ lines: string[], formattedText: string }}
  */
-function wrapText(text, maxCharsPerLine, maxLines) {
+function wrapText(text, maxCharsPerLine, maxLines, fontSize = 50, maxLineWidthPx = 900, isBold = true) {
   if (!text) return { lines: [], formattedText: '' };
   
   const words = text.split(/\s+/);
@@ -57,10 +85,13 @@ function wrapText(text, maxCharsPerLine, maxLines) {
   let currentLine = '';
 
   for (const word of words) {
+    const candidate = currentLine ? `${currentLine} ${word}` : word;
+    const candidateWidth = calculateProportionalLineWidth(candidate, fontSize, isBold);
+
     if (!currentLine) {
       currentLine = word;
-    } else if ((currentLine + ' ' + word).length <= maxCharsPerLine) {
-      currentLine += ' ' + word;
+    } else if (candidate.length <= maxCharsPerLine && candidateWidth <= maxLineWidthPx) {
+      currentLine = candidate;
     } else {
       lines.push(currentLine);
       currentLine = word;
@@ -81,17 +112,18 @@ function wrapText(text, maxCharsPerLine, maxLines) {
 }
 
 /**
- * Validação de bounding box contra o retângulo seguro (Safe Rectangle)
+ * Validação de bounding box proporcional contra o retângulo seguro (Safe Rectangle)
  * @param {Object} params
  */
-function validateBoundingBoxInSafeRect({ lines, fontSize, padding, safeRect, positionName }) {
+function validateBoundingBoxInSafeRect({ lines, fontSize, padding, safeRect, positionName, isBold = true }) {
   const lineCount = lines.length;
-  const maxLineLength = Math.max(...lines.map(l => l.length), 0);
+  let maxLineWidth = 0;
+  for (const line of lines) {
+    const w = calculateProportionalLineWidth(line, fontSize, isBold);
+    if (w > maxLineWidth) maxLineWidth = w;
+  }
 
-  // Estimativa determinística de dimensões em pixels (média de 0.60 * font_size por char em fontes sans-serif bold)
-  const estimatedTextWidth = Math.round(maxLineLength * fontSize * 0.60);
-  const totalBoxWidth = estimatedTextWidth + (padding * 2);
-
+  const totalBoxWidth = maxLineWidth + (padding * 2);
   const estimatedTextHeight = Math.round(lineCount * fontSize * 1.25);
   const totalBoxHeight = estimatedTextHeight + (padding * 2);
 
@@ -115,7 +147,7 @@ function validateBoundingBoxInSafeRect({ lines, fontSize, padding, safeRect, pos
 function getEffectiveMaxCharsPerLine(preset, safeRect) {
   if (preset.max_chars_per_line) return preset.max_chars_per_line;
   const safeWidth = (safeRect.x_max - safeRect.x_min) - (preset.box_padding * 2);
-  const charWidth = preset.font_size * 0.60;
+  const charWidth = preset.font_size * 0.65;
   const maxCharsFittingInWidth = Math.floor(safeWidth / charWidth);
   if (preset.max_lines > 1) {
     return Math.min(maxCharsFittingInWidth, Math.ceil(preset.max_chars / preset.max_lines));
@@ -196,10 +228,15 @@ function validateOverlays(overlays, style, totalDurationMs) {
       throw new Error(`[OVERLAY VALIDATION ERROR] Posição desconhecida '${ov.position}' no overlay '${ov.id}'. Posições permitidas: ${ALLOWED_POSITIONS.join(', ')}`);
     }
 
-    // 7. Preset
+    // 7. Preset e Whitelist de Compatibilidade
     const preset = style.overlay_presets?.[ov.preset];
     if (!preset) {
       throw new Error(`[OVERLAY VALIDATION ERROR] Preset '${ov.preset}' não encontrado no estilo '${style.id}'. Presets disponíveis: ${Object.keys(style.overlay_presets || {}).join(', ')}`);
+    }
+
+    const supportedTypes = preset.supported_types || [];
+    if (supportedTypes.length > 0 && !supportedTypes.includes(ov.type)) {
+      throw new Error(`[OVERLAY VALIDATION ERROR] Preset '${ov.preset}' não é compatível com o tipo de overlay '${ov.type}'. Tipos suportados pelo preset: [${supportedTypes.join(', ')}]`);
     }
 
     // 8. Validação de layout contra Safe Rectangle
@@ -208,14 +245,18 @@ function validateOverlays(overlays, style, totalDurationMs) {
       throw new Error(`[STYLE ERROR] safe_rectangles não definido para a posição '${ov.position}' no estilo '${style.id}'`);
     }
 
+    const safeWidth = (safeRect.x_max - safeRect.x_min) - (preset.box_padding * 2);
     const maxCharsPerLine = getEffectiveMaxCharsPerLine(preset, safeRect);
-    const { lines } = wrapText(ov.text, maxCharsPerLine, preset.max_lines);
+    const isBold = preset.font_id?.includes('bold') ?? true;
+
+    const { lines } = wrapText(ov.text, maxCharsPerLine, preset.max_lines, preset.font_size, safeWidth, isBold);
     validateBoundingBoxInSafeRect({
       lines,
       fontSize: preset.font_size,
       padding: preset.box_padding,
       safeRect,
-      positionName: ov.position
+      positionName: ov.position,
+      isBold
     });
   }
 
@@ -223,11 +264,12 @@ function validateOverlays(overlays, style, totalDurationMs) {
 }
 
 /**
- * Validação estrutural do array de captions do Blueprint 1.1
+ * Validação estrutural do array de captions do Blueprint 1.1 com safe area layout check
  * @param {Array} captions
+ * @param {Object} style
  * @param {number} totalDurationMs
  */
-function validateCaptions(captions, totalDurationMs) {
+function validateCaptions(captions, style, totalDurationMs) {
   if (!captions) return true;
   if (!Array.isArray(captions)) {
     throw new Error('[CAPTIONS VALIDATION ERROR] captions deve ser um array');
@@ -236,6 +278,17 @@ function validateCaptions(captions, totalDurationMs) {
   if (captions.length > MAX_CAPTIONS_COUNT) {
     throw new Error(`[CAPTIONS VALIDATION ERROR] Quantidade de legendas (${captions.length}) excede o limite máximo de ${MAX_CAPTIONS_COUNT}`);
   }
+
+  const captionPreset = style.captions_preset || {
+    font_id: 'dejavu_medium',
+    font_size: 42,
+    max_lines: 2,
+    max_chars: 40,
+    max_chars_per_line: 20,
+    box_padding: 16
+  };
+  const captionSafeRect = style.safe_rectangles?.captions || { x_min: 80, x_max: 1000, y_min: 1350, y_max: 1550 };
+  const safeWidth = (captionSafeRect.x_max - captionSafeRect.x_min) - (captionPreset.box_padding * 2);
 
   for (let i = 0; i < captions.length; i++) {
     const cap = captions[i];
@@ -258,6 +311,17 @@ function validateCaptions(captions, totalDurationMs) {
     if (endMs > totalDurationMs + 250) {
       throw new Error(`[CAPTIONS VALIDATION ERROR] Legenda ${i + 1} termina em ${endMs}ms, excedendo a duração total do vídeo (${totalDurationMs}ms)`);
     }
+
+    // Validação de layout de caption contra safe area
+    const { lines } = wrapText(cap.text, captionPreset.max_chars_per_line || 20, captionPreset.max_lines || 2, captionPreset.font_size, safeWidth, false);
+    validateBoundingBoxInSafeRect({
+      lines,
+      fontSize: captionPreset.font_size,
+      padding: captionPreset.box_padding,
+      safeRect: captionSafeRect,
+      positionName: 'captions',
+      isBold: false
+    });
   }
 
   return true;
@@ -306,8 +370,11 @@ function compileOverlayFiltergraph({
     const preset = style.overlay_presets[ov.preset];
     const fontPath = FONT_REGISTRY[preset.font_id];
     const safeRect = style.safe_rectangles[ov.position];
+    const safeWidth = (safeRect.x_max - safeRect.x_min) - (preset.box_padding * 2);
     const maxCharsPerLine = getEffectiveMaxCharsPerLine(preset, safeRect);
-    const { formattedText } = wrapText(ov.text, maxCharsPerLine, preset.max_lines);
+    const isBold = preset.font_id?.includes('bold') ?? true;
+
+    const { formattedText } = wrapText(ov.text, maxCharsPerLine, preset.max_lines, preset.font_size, safeWidth, isBold);
     const sanitizedText = sanitizeDrawtextString(formattedText);
 
     const t0 = (ov.start_ms / 1000).toFixed(3);
@@ -331,36 +398,59 @@ function compileOverlayFiltergraph({
 
     const xPosExpr = '(w-text_w)/2'; // Centralizado horizontalmente
 
-    // Suporte a Punch Zoom exclusivo no badge de preço
-    let fontSizeExpr = String(preset.font_size);
-    if (ov.type === 'price_badge' && preset.punch_zoom) {
-      const punchScale = style.motion?.badge_punch_scale || 1.15;
-      const punchFontSize = Math.round(preset.font_size * punchScale);
-      fontSizeExpr = `if(lt(t\\,${t0}+0.15)\\,${punchFontSize}\\,${preset.font_size})`;
-    }
-
-    const nextStream = `[v_ov_${streamCounter++}]`;
     const boxColorStr = formatFFmpegColor(preset.box_color);
     const fontColorStr = formatFFmpegColor(preset.text_color);
 
-    const drawtextFilter = `${currentStream}drawtext=fontfile='${fontPath}':text='${sanitizedText}':fontcolor=${fontColorStr}:fontsize=${fontSizeExpr}:box=1:boxcolor=${boxColorStr}:boxborderw=${preset.box_padding}:x=${xPosExpr}:y=${yPosExpr}:enable='between(t\\,${t0}\\,${t1})':alpha='${alphaExpr}'${nextStream}`;
+    // Suporte a Punch Zoom EXCLUSIVO no badge de preço quando preset.punch_zoom === true
+    if (ov.type === 'price_badge' && preset.punch_zoom === true) {
+      const punchScale = style.motion?.badge_punch_scale || 1.15;
+      const punchFontSize = Math.round(preset.font_size * punchScale);
+      const punchEndSec = (Number(t0) + 0.15).toFixed(3);
 
-    filterNodes.push(drawtextFilter);
-    currentStream = nextStream;
+      const nextStream1 = `[v_ov_${streamCounter++}]`;
+      const filter1 = `${currentStream}drawtext=fontfile='${fontPath}':text='${sanitizedText}':fontcolor=${fontColorStr}:fontsize=${punchFontSize}:box=1:boxcolor=${boxColorStr}:boxborderw=${preset.box_padding}:x=${xPosExpr}:y=${yPosExpr}:enable='between(t\\,${t0}\\,${punchEndSec})':alpha='${alphaExpr}'${nextStream1}`;
+      filterNodes.push(filter1);
+      currentStream = nextStream1;
+
+      const nextStream2 = `[v_ov_${streamCounter++}]`;
+      const filter2 = `${currentStream}drawtext=fontfile='${fontPath}':text='${sanitizedText}':fontcolor=${fontColorStr}:fontsize=${preset.font_size}:box=1:boxcolor=${boxColorStr}:boxborderw=${preset.box_padding}:x=${xPosExpr}:y=${yPosExpr}:enable='between(t\\,${punchEndSec}\\,${t1})':alpha='${alphaExpr}'${nextStream2}`;
+      filterNodes.push(filter2);
+      currentStream = nextStream2;
+    } else {
+      const nextStream = `[v_ov_${streamCounter++}]`;
+      const drawtextFilter = `${currentStream}drawtext=fontfile='${fontPath}':text='${sanitizedText}':fontcolor=${fontColorStr}:fontsize=${preset.font_size}:box=1:boxcolor=${boxColorStr}:boxborderw=${preset.box_padding}:x=${xPosExpr}:y=${yPosExpr}:enable='between(t\\,${t0}\\,${t1})':alpha='${alphaExpr}'${nextStream}`;
+      filterNodes.push(drawtextFilter);
+      currentStream = nextStream;
+    }
   }
 
   // 2. Compilar Captions (se existirem)
   const sortedCaptions = [...captions].sort((a, b) => a.start_ms - b.start_ms);
-  const captionFontPath = FONT_REGISTRY[style.typography?.body_font_id] || FONT_REGISTRY['dejavu_medium'];
+  const captionPreset = style.captions_preset || {
+    font_id: 'dejavu_medium',
+    font_size: 42,
+    max_lines: 2,
+    max_chars: 40,
+    max_chars_per_line: 20,
+    box_padding: 16,
+    box_color: '#000000B3',
+    text_color: '#FFFFFF'
+  };
+  const captionFontPath = FONT_REGISTRY[captionPreset.font_id] || FONT_REGISTRY['dejavu_medium'];
+  const captionSafeRect = style.safe_rectangles?.captions || { x_min: 80, x_max: 1000, y_min: 1350, y_max: 1550 };
+  const safeCaptionWidth = (captionSafeRect.x_max - captionSafeRect.x_min) - (captionPreset.box_padding * 2);
 
   for (const cap of sortedCaptions) {
-    const { formattedText } = wrapText(cap.text, 36, 2);
+    const { formattedText } = wrapText(cap.text, captionPreset.max_chars_per_line || 20, captionPreset.max_lines || 2, captionPreset.font_size, safeCaptionWidth, false);
     const sanitizedText = sanitizeDrawtextString(formattedText);
     const c0 = (cap.start_ms / 1000).toFixed(3);
     const c1 = (cap.end_ms / 1000).toFixed(3);
 
     const nextStream = `[v_cap_${streamCounter++}]`;
-    const captionFilter = `${currentStream}drawtext=fontfile='${captionFontPath}':text='${sanitizedText}':fontcolor=white:fontsize=42:box=1:boxcolor=black@0.75:boxborderw=16:x=(w-text_w)/2:y=1400:enable='between(t\\,${c0}\\,${c1})'${nextStream}`;
+    const boxColor = formatFFmpegColor(captionPreset.box_color);
+    const fontColor = formatFFmpegColor(captionPreset.text_color);
+
+    const captionFilter = `${currentStream}drawtext=fontfile='${captionFontPath}':text='${sanitizedText}':fontcolor=${fontColor}:fontsize=${captionPreset.font_size}:box=1:boxcolor=${boxColor}:boxborderw=${captionPreset.box_padding}:x=(w-text_w)/2:y=${captionSafeRect.y_min + 10}:enable='between(t\\,${c0}\\,${c1})'${nextStream}`;
 
     filterNodes.push(captionFilter);
     currentStream = nextStream;
@@ -379,6 +469,8 @@ module.exports = {
   MAX_OVERLAY_CHARS,
   MAX_CAPTIONS_COUNT,
   sanitizeDrawtextString,
+  getCharacterWidthFactor,
+  calculateProportionalLineWidth,
   wrapText,
   validateBoundingBoxInSafeRect,
   validateOverlays,
