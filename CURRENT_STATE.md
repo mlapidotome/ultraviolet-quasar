@@ -1,10 +1,10 @@
 # Estado Atual da Video Engine — Bali Imóveis (V2)
 
 **Última Atualização:** 05/09/2026  
-**Fase Atual Concluída:** Fase 3B — Video Composer MVP (Timeline Engine orientada a Blueprint)  
+**Fase Atual Concluída:** Fase 3B — Video Composer MVP (Timeline Engine orientada a Blueprint — Pós-Review Homologada)  
 **Próxima Fase:** Fase 3C — Editing Styles & Overlays Dinâmicos (B-roll, Overlays, Motion)  
 **Ambiente:** VPS Ubuntu 24.04 (`159.223.118.129`)  
-**Status do PM2:** `bali-gestor` online (pid 81056)  
+**Status do PM2:** `bali-gestor` online (pid 81857)  
 **Status do Banco:** PostgreSQL 16 `active` (DB: `bali_gestor`)  
 
 ---
@@ -47,7 +47,7 @@ video_anuncios_engine.js   POST /api/v2/video-jobs        GET /video-painel
                                    ▼
                      ┌────────────────────────────┐
                      │video_engine/composer_service ── Composer MVP: render_key, Claim SQL,
-                     └─────────────┬──────────────┘    Re-encode Canônico, Shadow Mode
+                     └─────────────┬──────────────┘    Trims Reais, Re-encode Canônico, Shadow
                                    │
                                    ▼
                      PostgreSQL (video_jobs + video_assets)
@@ -57,9 +57,10 @@ video_anuncios_engine.js   POST /api/v2/video-jobs        GET /video-painel
   - **Identidade Semântica Canônica:** `render_key` determinística (SHA-256 de todas as especificações e `file_hash` físico de cada clipe de entrada).
   - **Claim Atômico SQL:** Bloqueio persistente no PostgreSQL com lease e recuperação automática de `stale processing` (> 5 minutos).
   - **Asset Resolver & Pre-FFmpeg Validation:** Validação de contrato (schema_version 1.0, 1080x1920@30fps, 9:16, layer 0, trims válidos) e ownership físico estrito (`outputs/jobs/<jobId>/`).
+  - **Trims Físicos Reais:** Aplicação determinística de filtros `trim` + `setpts` e `atrim` + `asetpts` para vídeo e áudio nos pontos especificados em `source_in_ms` e `source_out_ms`.
   - **Unidade Oficial de Duração:** Inteiro em milissegundos (`duration_ms`), descartando placeholders conceituais legados.
   - **Pipeline Canônico de Re-encode:** Concatenação única padronizada FFmpeg via `filter_complex` codificada em H.264 (yuv420p, 1080x1920@30fps) e áudio AAC (192k stereo, 44100Hz) com `-movflags +faststart`.
-  - **Escrita Atômica & Imutabilidade:** Render em arquivo temporário `.tmp.<uuid>.mp4`, inspeção `ffprobe` e promoção atômica via `renameSync`. Assets `ready` nunca sofrem sobrescrita.
+  - **Escrita Atômica, QC Estrito & Imutabilidade:** Render em arquivo temporário `.tmp.<uuid>.mp4`, inspeção `ffprobe` (validação real de codecs H.264/AAC, dimensões 1080x1920 e medição de FPS físico real a partir de `avg_frame_rate`/`r_frame_rate`), política conservadora de remoção de órfãos antes da promoção e promoção atômica via `renameSync`.
   - **Modo Shadow:** Produz artefatos paralelos (`shadow_crv_<id>_<render_key>.mp4`) com `asset_type = 'shadow_creative'` sem alterar campos oficiais da Fase 2C (`pilot_video_url`, `video2_url`, `video3_url`, `video_jobs.status`).
   - **Comparador Semântico:** `compareLegacyVsComposer()` demonstra equivalência formal ($\Delta \le 250\text{ ms}$, dimensões e streams idênticos).
 
@@ -89,7 +90,7 @@ video_anuncios_engine.js   POST /api/v2/video-jobs        GET /video-painel
 ## 2. Componentes e Estrutura de Arquivos
 
 * `/var/www/bali-gestor/video_engine/composer_service.js`:  
-  Motor do Video Composer MVP (contrato, render_key, claim atômico, re-encode FFmpeg, verificação e modo shadow).
+  Motor do Video Composer MVP (contrato, render_key, claim atômico, trims reais, re-encode FFmpeg, QC estrito e modo shadow).
 
 * `/var/www/bali-gestor/video_engine/api_v2.js`:  
   Endpoints da V2 incluindo rotas de shadow compose, comparação semântica e streaming de shadow videos.
@@ -124,8 +125,8 @@ video_anuncios_engine.js   POST /api/v2/video-jobs        GET /video-painel
   Tabela `video_assets`, coluna `creative_blueprints`, separação `generation_key` e `file_hash`, imutabilidade de assets ready, ownership físico de jobs e 26 testes homologados.  
   Commit Final Fase 3A: `8e2bf0306f557c595e8070628ee3e646a599d759`
 
-* **Fase 3B (Video Composer MVP — Homologada):**  
-  Validação completa de **32 cenários automatizados no VPS (32/32 PASS)**:
+* **Fase 3B (Video Composer MVP — Pós-Review Homologada):**  
+  Validação completa de **35 cenários automatizados no VPS (35/35 PASS)**:
   1. Blueprint válido Hook+Body renderiza com sucesso;
   2. Ordem sequencial dos clipes respeitada;
   3. Asset inexistente rejeitado antes de invocar FFmpeg;
@@ -145,7 +146,7 @@ video_anuncios_engine.js   POST /api/v2/video-jobs        GET /video-painel
   17. Pipeline de re-encode padronizado único gera output íntegro;
   18. Unidade de duração oficial (`duration_ms`) aplicada sem truncamento;
   19. Placeholders antigos de metadata ignorados (fala completa preservada);
-  20. Arquivo temporário `.tmp` deletado em caso de falha de renderização;
+  20. **Cleanup automático de `.tmp` em falha sem intervenção manual do teste;**
   21. Arquivo final existente não corrompido em caso de erro no retry;
   22. Mesma `render_key` gera retorno idempotente imediato sem invocar FFmpeg;
   23. Mudança no `file_hash` de um asset de entrada altera a `render_key`;
@@ -157,4 +158,7 @@ video_anuncios_engine.js   POST /api/v2/video-jobs        GET /video-painel
   29. Comparação semântica entre Shadow Composer e concat legado demonstra equivalência;
   30. Job showcase da Fase 2C permanece 100% íntegro servindo os 3 vídeos (HTTP 200);
   31. WhatsApp V1 e bloqueio estático 403 em `/outputs/jobs/` permanecem intocados;
-  32. PM2 `bali-gestor` e PostgreSQL 16 saudáveis.
+  32. **PM2 `bali-gestor` (processo verificado online via `pm2 jlist`) e PostgreSQL 16 saudáveis;**
+  33. **Trims reais aplicados fisicamente no FFmpeg (clipe de 5s com trim 1s→3s gerou exatamente 2000ms);**
+  34. **Proteção contra arquivo órfão prévio em `finalPath` (removido com segurança antes da promoção);**
+  35. **QC estrito de Codecs físicos (H.264 / AAC) e FPS físico derivado de streams reais.**
