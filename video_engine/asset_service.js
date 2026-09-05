@@ -3,10 +3,10 @@
  * Bali Imóveis (Fase 3A)
  * 
  * Responsabilidades:
- * 1. Identidade semântica determinística (generation_key)
+ * 1. Identidade semântica determinística com canonicalização recursiva (generation_key) [FIX 1]
  * 2. Hashing físico de bytes (file_hash via SHA-256)
- * 3. Catálogo de assets em video_assets (lifecycle: pending -> processing -> remote_ready -> ready -> failed)
- * 4. Resolução e validação de integridade física e anti-tampering
+ * 3. Catálogo de assets em video_assets com imutabilidade estrita em createAsset [FIX 2]
+ * 4. Resolução e validação de ownership físico de Job e anti-symlink [FIX 3]
  * 5. Geração e persistência de Creative Blueprints declarativos em video_jobs.creative_blueprints
  * 6. Suporte estrito a fail-open para não-bloqueio do pipeline de renderização da Fase 2C
  * 7. Invariantes de imutabilidade (assets ready e blueprints publicados não são sobrescritos)
@@ -20,9 +20,48 @@ const crypto = require('crypto');
 const { getPool } = require('./db');
 
 const MARCEL_VOICE_CLONE_ID = process.env.MARCEL_VOICE_CLONE_ID || 'dccd1a85e6b1450facf9ec953b648df2';
+const OUTPUTS_BASE_DIR = path.join(__dirname, '..', 'outputs');
+const JOBS_OUTPUTS_DIR = path.join(OUTPUTS_BASE_DIR, 'jobs');
+
+// Garantir diretório base de jobs
+if (!fs.existsSync(JOBS_OUTPUTS_DIR)) {
+  fs.mkdirSync(JOBS_OUTPUTS_DIR, { recursive: true });
+}
 
 /**
- * 1. Normalização e Geração de Chave Semântica Determinística (generation_key)
+ * Helper: Canonicalização recursiva determinística de valores para hashing [FIX 1]
+ * - Objetos têm suas chaves ordenadas alfabeticamente em todos os níveis
+ * - Arrays preservam sua ordem ordinal original
+ * - Tipos primitivos são normalizados
+ */
+function canonicalizeValue(val) {
+  if (val === null || typeof val !== 'object') {
+    return val;
+  }
+  if (Array.isArray(val)) {
+    return val.map(canonicalizeValue);
+  }
+  const sortedObj = {};
+  const keys = Object.keys(val).sort();
+  for (const k of keys) {
+    if (val[k] !== undefined) {
+      sortedObj[k] = canonicalizeValue(val[k]);
+    }
+  }
+  return sortedObj;
+}
+
+/**
+ * Helper: Serialização canônica em string [FIX 1]
+ */
+function canonicalStringify(val) {
+  return JSON.stringify(canonicalizeValue(val));
+}
+
+/**
+ * 1. Normalização e Geração de Chave Semântica Determinística (generation_key) [FIX 1]
+ * Canonicalização recursiva profunda garantindo que qualquer propriedade alterada
+ * gere um hash diferente, e qualquer reordenação de chaves gere o mesmo hash.
  * @param {Object} recipe
  * @returns {string} SHA-256 hex (64 chars)
  */
@@ -37,6 +76,9 @@ function computeGenerationKey(recipe = {}) {
     .trim()
     .replace(/\s+/g, ' ');
 
+  const formatObj = recipe.format || recipe.output_format || {};
+  const paramsObj = recipe.params || recipe.generation_params || {};
+
   const canonicalObj = {
     asset_type: String(recipe.asset_type || '').toLowerCase().trim(),
     provider: String(recipe.provider || 'heygen').toLowerCase().trim(),
@@ -45,17 +87,16 @@ function computeGenerationKey(recipe = {}) {
     look_id: String(recipe.look_id || recipe.look?.id || '').trim(),
     voice_id: String(recipe.voice_id || MARCEL_VOICE_CLONE_ID).trim(),
     output_format: {
-      aspect_ratio: recipe.format?.aspect_ratio || '9:16',
-      width: Number(recipe.format?.width || 1080),
-      height: Number(recipe.format?.height || 1920),
-      fps: Number(recipe.format?.fps || 30)
+      aspect_ratio: String(formatObj.aspect_ratio || '9:16').trim(),
+      width: Number(formatObj.width !== undefined ? formatObj.width : 1080),
+      height: Number(formatObj.height !== undefined ? formatObj.height : 1920),
+      fps: Number(formatObj.fps !== undefined ? formatObj.fps : 30)
     },
-    generation_params: recipe.params || {}
+    generation_params: paramsObj
   };
 
-  // Serialização determinística de chaves ordenadas
-  const sortedString = JSON.stringify(canonicalObj, Object.keys(canonicalObj).sort());
-  return crypto.createHash('sha256').update(sortedString, 'utf8').digest('hex');
+  const canonicalJSON = canonicalStringify(canonicalObj);
+  return crypto.createHash('sha256').update(canonicalJSON, 'utf8').digest('hex');
 }
 
 /**
@@ -76,9 +117,10 @@ function computeFileHash(filePath) {
 }
 
 /**
- * 3. Criar ou Obter Asset no Catálogo (video_assets)
- * Lifecycle inicial: pending / processing
- * storage_path pode ser NULL
+ * 3. Criar ou Obter Asset no Catálogo (video_assets) [FIX 2]
+ * Regra de Imutabilidade Estrita:
+ * Um asset existente com status = 'ready' NÃO PODE ser alterado nem rebaixado para pending/processing.
+ * Tentativa de redefinição com generation_key divergente lança erro explícito.
  */
 async function createAsset({
   id = null,
@@ -104,7 +146,43 @@ async function createAsset({
   const pool = getPool();
   const assetId = id || `ast_${asset_type.replace(/[^a-zA-Z0-9]/g, '').slice(0, 4)}_${crypto.randomBytes(8).toString('hex')}`;
 
-  const query = `
+  // Verificar se o asset já existe [FIX 2]
+  const existingRes = await pool.query('SELECT * FROM video_assets WHERE id = $1', [assetId]);
+  if (existingRes.rows.length > 0) {
+    const existing = existingRes.rows[0];
+
+    // Se já estiver READY: NÃO pode ser alterado nem rebaixado
+    if (existing.status === 'ready') {
+      if (generation_key && existing.generation_key !== generation_key) {
+        throw new Error(`[ASSET_SERVICE IMMUTABILITY ERROR] Asset ${assetId} já está READY com generation_key ${existing.generation_key} e não pode ser redefinido com ${generation_key}`);
+      }
+      // Retornar intacto (imutabilidade estrita)
+      return existing;
+    }
+
+    // Se NÃO estiver READY (ex: pending -> processing): atualizar metadados operacionais
+    const updateQuery = `
+      UPDATE video_assets
+      SET status = $2,
+          provider_ref = COALESCE($3, provider_ref),
+          remote_url = COALESCE($4, remote_url),
+          metadata = video_assets.metadata || $5::jsonb,
+          updated_at = NOW()
+      WHERE id = $1 AND status != 'ready'
+      RETURNING *;
+    `;
+    const updateRes = await pool.query(updateQuery, [
+      assetId,
+      status,
+      provider_ref,
+      remote_url,
+      JSON.stringify(metadata || {})
+    ]);
+    return updateRes.rows[0] || existing;
+  }
+
+  // Não existe: Criar novo registro
+  const insertQuery = `
     INSERT INTO video_assets (
       id, job_id, property_ref, asset_type, storage_type,
       storage_path, provider_ref, remote_url, file_hash,
@@ -114,12 +192,6 @@ async function createAsset({
       $6, $7, $8, NULL,
       $9, $10, $11, $12, NOW(), NOW()
     )
-    ON CONFLICT (id) DO UPDATE SET
-      status = EXCLUDED.status,
-      provider_ref = COALESCE(EXCLUDED.provider_ref, video_assets.provider_ref),
-      remote_url = COALESCE(EXCLUDED.remote_url, video_assets.remote_url),
-      metadata = video_assets.metadata || EXCLUDED.metadata,
-      updated_at = NOW()
     RETURNING *;
   `;
 
@@ -138,7 +210,7 @@ async function createAsset({
     JSON.stringify(metadata || {})
   ];
 
-  const res = await pool.query(query, values);
+  const res = await pool.query(insertQuery, values);
   return res.rows[0];
 }
 
@@ -227,7 +299,13 @@ async function getAssetById(assetId) {
 }
 
 /**
- * 7. Resolução e Validação de Integridade Física (Asset Resolver)
+ * 7. Resolução e Validação de Integridade Física (Asset Resolver) [FIX 3]
+ * Valida:
+ * - Existência física
+ * - Tamanho > 0
+ * - Resolução de symlinks (rejeita symlinks externos)
+ * - Ownership físico do Job: storage_path DEVE residir estritamente dentro de outputs/jobs/<job_id>/
+ * - Integridade anti-tampering via file_hash
  */
 async function resolveAndValidateAsset(assetId, { checkFile = true, checkHash = true } = {}) {
   const asset = await getAssetById(assetId);
@@ -256,8 +334,19 @@ async function resolveAndValidateAsset(assetId, { checkFile = true, checkHash = 
     // Validação de contenção real contra symlink
     const realPhysicalPath = fs.realpathSync(asset.storage_path);
     if (path.resolve(realPhysicalPath) !== path.resolve(asset.storage_path)) {
-      // Se for symlink para fora ou nome divergente
       throw new Error(`[ASSET_RESOLVER] Inconsistência de symlink ou caminho físico para asset ${assetId}`);
+    }
+
+    // FIX 3: Validação estrita de Ownership físico do Job
+    if (asset.storage_type === 'local_file' && asset.job_id) {
+      const expectedJobDir = path.resolve(JOBS_OUTPUTS_DIR, String(asset.job_id));
+      if (!fs.existsSync(expectedJobDir)) {
+        throw new Error(`[ASSET_RESOLVER] Diretório físico do Job ${asset.job_id} não encontrado: ${expectedJobDir}`);
+      }
+      const realJobDir = fs.realpathSync(expectedJobDir);
+      if (!realPhysicalPath.startsWith(realJobDir + path.sep)) {
+        throw new Error(`[ASSET_RESOLVER SECURITY VIOLATION] Arquivo do asset ${assetId} não pertence ao diretório canônico do Job ${asset.job_id} (${realPhysicalPath})`);
+      }
     }
 
     if (checkHash && asset.file_hash) {
@@ -401,6 +490,8 @@ async function safeCatalogOperation(opName, fn) {
 }
 
 module.exports = {
+  canonicalizeValue,
+  canonicalStringify,
   computeGenerationKey,
   computeFileHash,
   createAsset,
