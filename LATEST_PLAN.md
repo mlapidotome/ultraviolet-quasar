@@ -1,372 +1,328 @@
-# Proposta Arquitetural & Plano de Implementação — Fase 2C (Revisado)
-## Aprovação do Piloto e Geração dos Vídeos Restantes (Ganchos 2 e 3)
+# Arquitetura e Plano de Implementação — Fase 3A
+## Asset Model & Creative Blueprint Foundation (Video Engine V2)
 
-**Projeto:** Video Engine V2 — Bali Imóveis  
-**Fase:** 2C (Aprovação / Reprovação do Piloto e Conclusão do Creative Set)  
-**Status do Documento:** AGUARDANDO REVISÃO E APROVAÇÃO FINAL  
-**Objetivo Estratégico:** Após o Job atingir o estado `PILOT_READY` na Fase 2B, permitir que Marcel avalie o vídeo piloto no painel e decida entre **APROVAR** ou **REPROVAR**.  
-Se aprovado, o sistema reaproveita o `body.mp4` **já existente e validado de forma forte e inequívoca no Job**, gera exclusivamente os Ganchos 2 e 3 na HeyGen, monta os Vídeos 2 e 3 via FFmpeg e entrega a coleção criativa completa (3 vídeos), **sem regenerar o corpo, sem gastar créditos duplicados na HeyGen, com concorrência atômica, Smart Resume granular no boot e em retry, e entrega 100% autenticada**.
-
----
-
-## 1. Diagnóstico do Fluxo Legado (`OK / GERAR RESTANTE` no WhatsApp)
-
-A inspeção em `/var/www/bali-gestor/video_anuncios_engine.js` (linhas 580 a 635) evidenciou os seguintes acoplamentos e fragilidades no fluxo legado:
-
-1. **Dependência Volátil e Fallback Arbitrário:**
-   - O gatilho de aprovação (`OK`, `GERAR RESTANTE`) pesquisa a sessão em `activeVideoSessions[sessionKey]`.
-   - Se a memória RAM foi reiniciada pelo PM2, invoca `getOrInitSession("1639")`, recorrendo ao imóvel fixo `#1639`.
-
-2. **Reutilização Insegura de Body via Varredura de Disco:**
-   - Se `session.bodyPath` estiver vazio na RAM, o sistema executa:
-     `fs.readdirSync(OUTPUTS_DIR).filter(f => f.startsWith("body_" + session.imovelRef) && f.endsWith(".mp4")).sort().reverse()[0]`
-   - O código vasculha a pasta compartilhada `outputs/` e escolhe o último arquivo pelo nome.
-   - **Grave Risco:** Se os roteiros foram alterados, se houve erro parcial ou se outro job do mesmo imóvel foi gerado, o sistema reutiliza um corpo de outro contexto ou versão desatualizada.
-
-3. **Sobrescrita de Arquivos Físicos:**
-   - Os vídeos finais são nomeados como `Anuncio_Completo_2_Imovel_<ref>.mp4` e `Anuncio_Completo_3_Imovel_<ref>.mp4`, sobrescrevendo arquivos de execuções anteriores na pasta pública.
-
-4. **Ausência de Rastreamento de Estado:**
-   - Não há persistência em banco dos `video_id` da HeyGen dos Ganchos 2 e 3. Se o processo cair durante a geração dos restantes, o WhatsApp perde a referência e exige reiniciar todo o fluxo.
+**Status:** Proposta de Planejamento Arquitetural (PLAN ONLY)  
+**Data:** 05/09/2026  
+**Repositório:** `mlapidotome/facade-checker` (`main`)  
+**Commit Base Homologado (Fase 2C):** `6837749827104faf6ae198da0b77d055e0ec6e5f`  
+**Escopo:** Definição da fundação de dados e abstração para Assets e Blueprints Criativos, sem implementação de código produtivo nesta etapa.
 
 ---
 
-## 2. Regras Arquiteturais Absolutas da Fase 2C
+## 1. Diagnóstico da Arquitetura Atual (Fases 2A, 2B e 2C)
 
-### 2.1. Validação Forte do `body.mp4` Reutilizado (Anti-Symlink & Mídia Completa)
-O arquivo de corpo utilizado na concatenação dos Vídeos 2 e 3 **não é considerado válido apenas porque o arquivo existe ou possui duração positiva**. Ele deve cumprir obrigatoriamente e cumulativamente todas as seguintes condições:
+Nas Fases 2A, 2B e 2C, o ciclo de vida do Job evoluiu para uma máquina de estados robusta e resiliente:
+`SCRIPT_READY` → `PILOT_SUBMITTED` → `PILOT_RENDERING` → `PILOT_READY` → `REMAINDER_SUBMITTED` → `REMAINDER_RENDERING` → `CREATIVE_SET_READY`.
 
-1. **Rastreabilidade no Banco:**  
-   `metadata.pilot.body.local_path` existe e está preenchido no banco de dados.
+No entanto, a representação interna dos componentes do vídeo ainda reflete o modelo inicial de geração monolítica:
 
-2. **Isolamento de Diretório Físico Real & Proteção Anti-Symlink:**
-   - O diretório esperado do job é obtido e canonicamente resolvido via `fs.realpathSync(jobDir)`:
-     `const realJobDir = fs.realpathSync(path.resolve('/var/www/bali-gestor/outputs/jobs', jobId));`
-   - O caminho do arquivo é inspecionado com `fs.lstatSync(localPath)`:
-     - Se `fs.lstatSync(localPath).isSymbolicLink()`, sua resolução canônica real deve ser obrigatoriamente inspecionada;
-   - O caminho físico real do arquivo é resolvido via `fs.realpathSync(localPath)`:
-     `const realBodyPath = fs.realpathSync(localPath);`
-   - **Verificação de Pertença Estrita:**  
-     `realBodyPath.startsWith(realJobDir + path.sep)` deve ser `true`. É expressamente proibido qualquer link simbólico ou caminho que aponte para fora do diretório físico daquele Job;
-   - **Verificação de Basename:**  
-     `path.basename(realBodyPath) === 'body.mp4'` e `path.basename(localPath) === 'body.mp4'`.
+1. **Acoplamento Físico e Topológico ao Job:**
+   - Os arquivos de mídia são gerados e salvos diretamente em `/var/www/bali-gestor/outputs/jobs/<job_id>/` com nomes fixos (`hook_1.mp4`, `hook_2.mp4`, `hook_3.mp4`, `body.mp4`, `pilot.mp4`, `video_2.mp4`, `video_3.mp4`).
+   - Não existe registro independente que permita dizer: *"O imóvel ref 1639 possui um clip de corpo renderizado com o Avatar Look X que pode ser reaproveitado em outro Job ou por outro corretor"*.
 
-3. **Existência Física & Integridade de Bytes:**
-   - `fs.existsSync(localPath) === true`;
-   - `fs.statSync(localPath).size > 0` (tamanho estritamente maior que zero bytes).
+2. **Conflito entre Conceito Lógico e Arquivo Físico:**
+   - Em `scripts_snapshot`, um "Gancho" é uma string de copy associada a um ID de avatar da HeyGen.
+   - Em `metadata.pilot.hook1`, esse mesmo gancho é representado por um `heygen_video_id`, uma URL temporária da CDN da HeyGen e um caminho local `local_path`.
+   - Se o arquivo físico for corrompido ou precisar ser reprocessado com outro bitrate, o conceito do roteiro se confunde com o artefato de mídia gerado.
 
-4. **Validação Estrutural Completa de Streams de Mídia via `ffprobe`:**
-   - Execução de análise de streams e formato:
-     ```bash
-     ffprobe -v error -show_entries stream=codec_type -show_entries format=duration -of json "<localPath>"
-     ```
-   - **Critérios Obrigatórios e Cumulativos:**
-     1. `parseFloat(probe.format?.duration) > 0` (duração estritamente positiva);
-     2. Pelo menos 1 stream com `codec_type === 'video'` (vídeo válido presente);
-     3. Pelo menos 1 stream com `codec_type === 'audio'` (áudio de voz/narração presente).
+3. **Mídias do Imóvel Transientes:**
+   - As fotos e vídeos do imóvel vêm em `property_snapshot.fotos` como URLs de CDN do CRM (ImobTotal).
+   - Não há validação de resolução, proporção (1080x1920 para 9:16), integridade ou armazenamento local desses assets.
 
-> [!CAUTION]
-> **Ação em Caso de Falha de Qualquer Validação do Body:**
-> Se o arquivo for symlink para fora da pasta do Job, se tiver 0 bytes, ou se o `ffprobe` acusar falta de vídeo, falta de áudio ou duração <= 0:
-> - **NÃO** regenerar Body automaticamente;
-> - **NÃO** procurar outro Body por nome em `outputs/`;
-> - **NÃO** usar Body de outro Job ou de sessões legadas;
-> - Transitar o Job imediatamente para `REMAINDER_FAILED` com mensagem de erro explícita no banco (`metadata.remainder.error_message = 'INVALID_OR_CORRUPT_PILOT_BODY'`).
+4. **Composição Hardcoded no Código:**
+   - A montagem dos vídeos 1, 2 e 3 está programada proceduralmente no `pilot_service.js` via chamadas imperativas ao FFmpeg (`concatWithFfmpeg(hook, body, output)`).
+   - Não existe um "contrato declarativo" (Blueprint) que descreva como o vídeo é estruturado. Sem isso, a introdução futura de B-roll, trilha sonora, legendas dinâmicas, enquadramentos e novos formatos exigiria modificar o núcleo do `pilot_service.js` para cada nova regra de edição.
 
 ---
 
-### 2.2. Smart Retry Granular (Nunca Refazer o que já Foi Concluído)
-Quando o Job estiver em `REMAINDER_FAILED` e Marcel clicar em **"Tentar Novamente"**, ou quando o servidor reiniciar (Smart Resume), o sistema inspeciona o estado exato dos assets e **apenas executa o delta pendente**:
+## 2. Conceitos Centrais da Fase 3A
 
-| Asset / Etapa | Condição Encontrada | Ação do Sistema |
-|---|---|---|
-| **Body Original** | Validado pelo item 2.1 (Anti-symlink + Streams V/A + Duração) | Reutiliza diretamente o `body.mp4` sem nenhuma chamada à HeyGen. |
-| **Hook 2 (HeyGen)** | `metadata.remainder.hook2.heygen_video_id` existe e é válido | **NÃO** submete à HeyGen. Apenas consulta status na API da HeyGen. |
-| **Hook 2 (HeyGen)** | ID ausente ou inválido | Submete apenas Hook 2 à HeyGen e persiste imediatamente o novo `heygen_video_id`. |
-| **Hook 3 (HeyGen)** | `metadata.remainder.hook3.heygen_video_id` existe e é válido | **NÃO** submete à HeyGen. Apenas consulta status na API da HeyGen. |
-| **Hook 3 (HeyGen)** | ID ausente ou inválido | Submete apenas Hook 3 à HeyGen e persiste imediatamente o novo `heygen_video_id`. |
-| **Download Hook 2** | `hook_2.mp4` existe fisicamente com `size > 0` | **NÃO** faz download novamente. Usa o arquivo local. |
-| **Download Hook 3** | `hook_3.mp4` existe fisicamente com `size > 0` | **NÃO** faz download novamente. Usa o arquivo local. |
-| **Vídeo 2 (FFmpeg)** | `video_2.mp4` existe com `size > 0`, `duration > 0`, stream de vídeo E stream de áudio | **NÃO** concatena novamente. Preserva o Vídeo 2 intacto. |
-| **Vídeo 3 (FFmpeg)** | `video_3.mp4` existe com `size > 0`, `duration > 0`, stream de vídeo E stream de áudio | **NÃO** concatena novamente. Preserva o Vídeo 3 intacto. |
+Para transformar a Video Engine em uma plataforma escalável de geração de criativos sem comprometer as fases anteriores, estabelecemos 8 pilares:
 
-> [!IMPORTANT]
-> **Validação Forte Aplicada aos Vídeos Finais no Retry:**
-> `video_2.mp4` ou `video_3.mp4` só são considerados "já concluídos" se passarem pela mesma validação de streams via `ffprobe` (tamanho > 0, duração > 0, stream de vídeo e stream de áudio). Se um vídeo existente no disco estiver corrompido ou sem áudio/vídeo, o retry descarta o arquivo inválido e refaz estritamente a concatenação daquele vídeo.
+### 2.1 Representação Explícita de Assets
+Um **Asset** deixa de ser apenas uma propriedade aninhada em um JSON de Job ou um arquivo solto no disco. Ele passa a ser uma entidade catalogada com:
+- Tipo explícito (`hook_clip`, `body_clip`, `property_photo`, `property_video`, `avatar_look`, `audio_voice`, `cta_clip`, `bg_music`);
+- Especificações técnicas inspecionadas (`width`, `height`, `duration`, `fps`, `codec`, `audio_channels`, `file_size`);
+- Hash criptográfico/lógico de integridade (`content_hash`);
+- Ciclo de vida próprio (`pending`, `ready`, `failed`).
+
+### 2.2 Distinção entre Conceito Lógico e Arquivo Físico
+- **Asset Lógico (Definição):** A intenção criativa (ex: Roteiro do Gancho 1 + Look Executivo + Voz Marcel).
+- **Asset Físico (Artefato):** O arquivo de vídeo MP4 baixado, inspecionado via `ffprobe` e armazenado no disco local ou S3/storage.
+- Um asset lógico pode dar origem a múltiplos artefatos físicos (ex: resolução 1080x1920 para Stories/Reels e 1080x1080 para Feed) sem perder sua identidade semântica.
+
+### 2.3 Identidade Estável (Asset URNs / IDs)
+Para garantir referenciamento inequívoco, todo asset recebe um identificador determinístico e estável:
+- Padrão: `ast_<tipo>_<hash_curto_ou_uuid>` (ex: `ast_hk_e3b0c442`, `ast_bd_8b2cf780`, `ast_img_1639_01`).
+- Permite que qualquer componente do sistema cite o asset sem depender do caminho absoluto do filesystem.
+
+### 2.4 Proveniência, Versionamento, Status e Vínculo com o Job
+Todo asset registra:
+- `origin_job_id`: Qual Job produziu originalmente este asset (se gerado por pipeline);
+- `property_ref`: Referência do imóvel (permitindo busca de acervo por imóvel);
+- `version`: Versão do artefato (permite atualizar um asset sem deletar o histórico);
+- `status`: `pending`, `ready`, `failed`, `archived`;
+- `metadata`: Provedor de origem (ex: `heygen_video_id`, `crm_media_url`, `elevenlabs_id`).
+
+### 2.5 Reutilização Segura de Assets (Idempotência e Deduplicação)
+- Se um Job B solicitar a geração de um corpo de vídeo idêntico (mesmo texto, mesmo avatar, mesma voz) para o mesmo imóvel que já foi gerado com sucesso no Job A, o sistema localiza o asset existente via `content_hash`, valida sua integridade física (`validateStrongBody`) e o referencia diretamente, com **custo zero de HeyGen** e **tempo zero de renderização**.
+
+### 2.6 O Conceito de `Creative ID`
+Um **Creative ID** (`crv_<job_id>_<variante>`) identifica um criativo final único e testável:
+- Cada Job produz 3 criativos distintos:
+  - Criativo 1: Gancho 1 + Corpo + Look 1
+  - Criativo 2: Gancho 2 + Corpo + Look 2
+  - Criativo 3: Gancho 3 + Corpo + Look 3
+- No futuro, o `Creative ID` será a chave de correlação com o Meta Ads (Facebook Ads API) para identificar qual criativo gerou menor CPL (Custo por Lead) e maior taxa de retenção.
+
+### 2.7 O `Creative Blueprint` Declarativo
+O Blueprint é uma receita JSON declarativa que descreve a composição completa do vídeo antes de sua montagem física. O Blueprint não executa FFmpeg; ele declara:
+- Qual o formato e dimensões;
+- Quais assets compõem a receita (IDs dos ganchos, corpos, imagens, áudios);
+- As diretrizes de edição (estilo de transição, legendas, volume relativo da fala e música);
+- A linha do tempo conceitual (timeline de segmentos).
+
+### 2.8 Determinismo para o Futuro Video Composer
+Com o Blueprint, o futuro Video Composer (Fase 3B) opera como uma função pura:
+$$\text{Video Composer}(\text{Creative Blueprint}, \text{Asset Resolver}) \longrightarrow \text{Final Rendered MP4}$$
+Isso elimina qualquer lógica arbitrária de montagem espalhada pelo código.
 
 ---
 
-### 2.3. Transição Atômica de Concorrência no PostgreSQL
-A transição de estado para início da produção restante é 100% atômica no banco:
+## 3. Decisão Arquitetural de Armazenamento
+
+Avaliamos profundamente as três alternativas técnicas para suportar a Fase 3A:
+
+| Critério | Opção A: Pure JSONB em `video_jobs` | Opção B: Hiper-Normalização Relacional (5+ Tabelas) | Opção C (Recomendada): Abordagem Híbrida Pragmática |
+| :--- | :--- | :--- | :--- |
+| **Consistência** | Fraca (assets duplicados entre jobs sem integridade referencial) | Máxima (constraints FK rígidas) | Forte (tabela de assets com hash único + blueprints declarativos) |
+| **Versionamento** | Difícil (histórico aninhado cresce desordenadamente no JSON) | Alto custo (múltiplas linhas de junção em cascata) | Excelente (assets imutáveis com versão + blueprint imutável versionado) |
+| **Retries / Resume** | Já funciona, mas baseado em caminhos físicos soltos | Alto risco de locks e complexidade transacional | Perfeito (Smart Retry consulta status e integridade do asset) |
+| **Reutilização Cross-Job** | Muito difícil (exige varredura sequencial em JSONB) | Suportada | Imediata (`SELECT FROM video_assets WHERE content_hash = ...`) |
+| **Consultas Futuras** | Lentas e complexas para catálogos e BI | Otimizadas para SQL analítico | Otimizadas (assets indexados em B-Tree; blueprint flexível) |
+| **Migração de Jobs Legados** | Zero impacto imediato, mas dívida técnica acumulada | Complexa e arriscada para jobs em produção | Segura e retrocompatível (backfill transparente) |
+| **Custo de Implementação** | Baixo | Excessivamente Alto (Overengineering) | Enxuto, modular e progressivo |
+
+### Decisão Arquitetural Justificada:
+Adotamos a **Opção C: Abordagem Híbrida Pragmática**.
+1. **Criamos uma tabela dedicada `video_assets`:**  
+   Garante que todo arquivo físico ou recurso externo (clip da HeyGen, foto do CRM, áudio, etc.) possua identidade primária, status, caminho físico canônico, especificações inspecionadas e fingerprint (`content_hash`).
+2. **Mantemos o `Creative Blueprint` declarativo em JSONB:**  
+   Armazenado em uma nova coluna `creative_blueprints JSONB` (ou em `metadata.blueprints`) na tabela `video_jobs`.
+   - *Por que não normalizar a timeline e as camadas em tabelas relacionais?* Porque a estrutura de uma timeline de edição de vídeo (keyframes, efeitos, camadas de b-roll, legendas, cortes) varia rapidamente conforme o Video Composer evolui. Normalizar isso em dezenas de tabelas relacionais geraria migrações contínuas de schema. O JSONB é o padrão da indústria para representação de grafos de composição de mídia (ex: schemas Remotion, OpenTimelineIO, After Effects).
+
+---
+
+## 4. Especificação Técnica do Modelo Proposto
+
+### 4.1 DDL da Tabela `video_assets`
+
 ```sql
-UPDATE video_jobs
-SET status = 'REMAINDER_SUBMITTED', updated_at = NOW()
-WHERE id = $1
-  AND status IN ('PILOT_READY', 'REMAINDER_FAILED')
-RETURNING *;
-```
-- **Somente a requisição que obtiver linha no `RETURNING`** dispara a rotina assíncrona.
-- Requisições concorrentes recebem:
-  - `HTTP 409 Conflict` se `status IN ('REMAINDER_SUBMITTED', 'REMAINDER_RENDERING')`;
-  - `HTTP 200 OK` se `status = 'CREATIVE_SET_READY'`;
-  - `HTTP 400 Bad Request` em qualquer outro estado.
+-- migrations/004_create_video_assets.sql
+-- Fase 3A: Fundação do Catálogo e Modelo de Assets
 
----
+CREATE TABLE IF NOT EXISTS video_assets (
+    id VARCHAR(64) PRIMARY KEY, -- ex: ast_hk_e3b0c442, ast_bd_8b2cf780, ast_img_1639_01
+    job_id UUID REFERENCES video_jobs(id) ON DELETE SET NULL, -- Job de origem (se houver)
+    property_ref VARCHAR(32), -- Permite catálogo e reuso por imóvel
+    asset_type VARCHAR(32) NOT NULL, -- 'hook_clip', 'body_clip', 'property_photo', 'property_video', 'audio_speech', 'bg_music', 'cta_clip'
+    storage_type VARCHAR(32) NOT NULL DEFAULT 'local_file', -- 'local_file', 'external_cdn', 'provider_ref'
+    storage_path TEXT NOT NULL, -- Caminho canônico absoluto no VPS ou URL remota
+    content_hash VARCHAR(64), -- SHA-256 do arquivo ou hash semântico do roteiro+look (deduplicação)
+    status VARCHAR(32) NOT NULL DEFAULT 'pending', -- 'pending', 'ready', 'failed', 'archived'
+    specs JSONB NOT NULL DEFAULT '{}'::jsonb, -- { duration, width, height, fps, codec, audio_channels, file_size }
+    metadata JSONB NOT NULL DEFAULT '{}'::jsonb, -- { provider: 'heygen', heygen_video_id, text, look_id, voice_id, etc. }
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
 
-### 2.4. Entrega de Vídeos 100% Autenticada
-- O diretório `/outputs/jobs/` permanece **estritamente bloqueado contra acesso estático público (`HTTP 403 Forbidden`)**.
-- A entrega dos vídeos finais ocorre exclusivamente por endpoints autenticados:
-  - Vídeo 1 (Piloto): `GET /api/v2/panel/video-jobs/:id/pilot` ou `/video/1`
-  - Vídeo 2 (Gancho 2 + Body): `GET /api/v2/panel/video-jobs/:id/video/2`
-  - Vídeo 3 (Gancho 3 + Body): `GET /api/v2/panel/video-jobs/:id/video/3`
-- Validação anti-path-traversal e streaming nativo via `res.sendFile()`.
-
----
-
-## 3. Máquina de Estados da Fase 2C
-
-```
-                  ┌───────────────────────────────┐
-                  │          PILOT_READY          │
-                  └───────┬───────────────┬───────┘
-                          │               │
-      Marcel Reprova      │               │ Marcel Aprova
-     (reject-pilot)       │               │ (approve-and-generate)
-                          ▼               ▼
-         ┌──────────────────┐   ┌───────────────────────┐
-         │  PILOT_REJECTED  │   │  REMAINDER_SUBMITTED  │
-         └──────────────────┘   └───────────┬───────────┘
-                                            │ Submete / Retoma Hooks 2 & 3
-                                            ▼
-                                ┌───────────────────────┐
-                                │  REMAINDER_RENDERING  │
-                                └─────┬───────────┬─────┘
-                     Sucesso Total    │           │ Falha (Validação/HeyGen/FFmpeg)
-                                      ▼           ▼
-                         ┌────────────────────┐ ┌────────────────────┐
-                         │ CREATIVE_SET_READY │ │  REMAINDER_FAILED  │
-                         └────────────────────┘ └─────────┬──────────┘
-                                                          │ Retry (Granular / Smart)
-                                                          └───────────► REMAINDER_SUBMITTED
+-- Índices para busca rápida, integridade e deduplicação
+CREATE INDEX IF NOT EXISTS idx_video_assets_type_status ON video_assets (asset_type, status);
+CREATE INDEX IF NOT EXISTS idx_video_assets_property ON video_assets (property_ref);
+CREATE INDEX IF NOT EXISTS idx_video_assets_job_id ON video_assets (job_id);
+CREATE INDEX IF NOT EXISTS idx_video_assets_hash ON video_assets (content_hash) WHERE content_hash IS NOT NULL;
 ```
 
-| Estado | Significado | Ações Permitidas |
-|---|---|---|
-| `PILOT_READY` | Vídeo Piloto gerado e disponível para avaliação. | Marcel pode clicar em **"Aprovar Piloto"** ou **"Reprovar Piloto"**. |
-| `PILOT_REJECTED` | Piloto reprovado por Marcel. Pipeline paralisado. | Exibe aviso no painel; não gera assets adicionais. Permite arquivamento. |
-| `REMAINDER_SUBMITTED` | Aprovação registrada via lock atômico; clips 2 e 3 sendo despachados ou retomados. | Painel desabilita botões e exibe spinner de processamento. |
-| `REMAINDER_RENDERING` | HeyGen processando Ganchos 2 e/ou 3; polling ativo. | Painel realiza polling read-only (`GET /api/v2/panel/video-jobs/:id`). |
-| `CREATIVE_SET_READY` | Ganchos 2 e 3 baixados e concatenados com o mesmo `body.mp4`. Os 3 vídeos estão prontos. | Painel exibe os 3 players de vídeo e botões de download. |
-| `REMAINDER_FAILED` | Erro na validação do body, HeyGen, download ou FFmpeg. | Painel exibe mensagem descritiva de erro e botão **"Tentar Novamente"**. |
+### 4.2 Especificação do Schema: `Creative Blueprint`
 
----
+Cada Job conterá em seu blueprint a especificação dos 3 criativos. Abaixo a estrutura formal de um Criativo:
 
-## 4. Persistência e Estrutura de Metadados
-
-### 4.1. Migração Estrutural: `migrations/003_add_creative_set_fields.sql`
-```sql
--- Colunas para acesso direto aos vídeos da coleção
-ALTER TABLE video_jobs 
-  ADD COLUMN IF NOT EXISTS video2_url TEXT,
-  ADD COLUMN IF NOT EXISTS video3_url TEXT;
-
--- Atualizar índice de status para abranger os novos estados da Fase 2C
-CREATE INDEX IF NOT EXISTS idx_video_jobs_creative_status ON video_jobs (status, updated_at DESC);
-```
-
-### 4.2. Estrutura em `metadata` (JSONB)
 ```json
 {
-  "pilot": {
-    "hook1": {
-      "heygen_video_id": "v78a1bc90d",
-      "local_path": "/var/www/bali-gestor/outputs/jobs/<job_id>/hook_1.mp4",
-      "completed_at": "2026-09-05T03:01:00.000Z"
+  "schema_version": "1.0",
+  "creative_id": "crv_bbddf3ba_v1",
+  "job_id": "bbddf3ba-f7c6-44f5-a81a-2ac09dae611b",
+  "property_ref": "1639",
+  "name": "Criativo 1 — Choque / Entrada",
+  "format": {
+    "aspect_ratio": "9:16",
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
+  },
+  "components": {
+    "hook": {
+      "asset_id": "ast_hk_1_bbddf3ba",
+      "index": 1,
+      "type": "talking_head",
+      "look": {
+        "id": "a2cfb3ad10054e6f87c5ce6ca8ab483b",
+        "name": "Terno Executivo Escuro"
+      },
+      "script_text": "300 mil reais num imóvel completo no Centro com entrada de apenas 60 mil reais?..."
     },
     "body": {
-      "heygen_video_id": "v89b2cd01e",
-      "local_path": "/var/www/bali-gestor/outputs/jobs/<job_id>/body.mp4",
-      "completed_at": "2026-09-05T03:01:10.000Z"
+      "asset_id": "ast_bd_bbddf3ba",
+      "type": "talking_head",
+      "reused_from_asset_id": null,
+      "look": {
+        "id": "a2cfb3ad10054e6f87c5ce6ca8ab483b",
+        "name": "Terno Executivo"
+      },
+      "script_text": "Estamos falando de uma oportunidade com 65 metros quadrados..."
     },
-    "final": {
-      "local_path": "/var/www/bali-gestor/outputs/jobs/<job_id>/pilot.mp4",
-      "authenticated_url": "/api/v2/panel/video-jobs/<job_id>/pilot",
-      "completed_at": "2026-09-05T03:01:30.000Z"
+    "property_assets": [
+      {
+        "asset_id": "ast_img_1639_01",
+        "role": "facade",
+        "display_mode": "pan_zoom"
+      }
+    ],
+    "cta": {
+      "asset_id": "ast_cta_default",
+      "type": "button_overlay",
+      "label": "Saiba Mais",
+      "action_url": "https://wa.me/554899999999"
+    },
+    "editing_style": {
+      "style_id": "style_direct_cut_v1",
+      "caption_preset": "bold_yellow_highlight",
+      "transitions": {
+        "hook_to_body": "cut"
+      },
+      "audio_mix": {
+        "speech_gain_db": 0,
+        "bg_music_gain_db": -22,
+        "ducking": true
+      }
     }
   },
-  "remainder": {
-    "approved_at": "2026-09-05T03:10:00.000Z",
-    "hook2": {
-      "heygen_video_id": "v11c3de45f",
-      "local_path": "/var/www/bali-gestor/outputs/jobs/<job_id>/hook_2.mp4",
-      "submitted_at": "2026-09-05T03:10:05.000Z",
-      "completed_at": "2026-09-05T03:11:15.000Z"
+  "timeline": [
+    {
+      "segment_index": 1,
+      "role": "hook",
+      "asset_id": "ast_hk_1_bbddf3ba",
+      "source_in_ms": 0,
+      "source_out_ms": 9450,
+      "timeline_start_ms": 0,
+      "timeline_end_ms": 9450,
+      "layer": 0
     },
-    "hook3": {
-      "heygen_video_id": "v22d4ef56a",
-      "local_path": "/var/www/bali-gestor/outputs/jobs/<job_id>/hook_3.mp4",
-      "submitted_at": "2026-09-05T03:10:10.000Z",
-      "completed_at": "2026-09-05T03:11:20.000Z"
-    },
-    "video2": {
-      "local_path": "/var/www/bali-gestor/outputs/jobs/<job_id>/video_2.mp4",
-      "authenticated_url": "/api/v2/panel/video-jobs/<job_id>/video/2",
-      "size_bytes": 4829102,
-      "duration": 58.4,
-      "concatenated_at": "2026-09-05T03:11:35.000Z"
-    },
-    "video3": {
-      "local_path": "/var/www/bali-gestor/outputs/jobs/<job_id>/video_3.mp4",
-      "authenticated_url": "/api/v2/panel/video-jobs/<job_id>/video/3",
-      "size_bytes": 4792180,
-      "duration": 57.8,
-      "concatenated_at": "2026-09-05T03:11:45.000Z"
-    },
-    "attempts": 1,
-    "completed_at": "2026-09-05T03:11:45.000Z"
+    {
+      "segment_index": 2,
+      "role": "body",
+      "asset_id": "ast_bd_bbddf3ba",
+      "source_in_ms": 0,
+      "source_out_ms": 28750,
+      "timeline_start_ms": 9450,
+      "timeline_end_ms": 38200,
+      "layer": 0
+    }
+  ],
+  "output": {
+    "rendered_asset_id": "ast_fin_pilot_bbddf3ba",
+    "filename": "pilot.mp4",
+    "status": "ready"
   }
 }
 ```
 
 ---
 
-## 5. Algoritmo de Execução do Remainder com Retry Granular
+## 5. Garantia de Retrocompatibilidade Total
 
-```javascript
-async function executeRemainderPipeline(jobId) {
-  // 1. Carrega o Job do PostgreSQL
-  const job = await getJobById(jobId);
-  const jobDir = path.resolve('/var/www/bali-gestor/outputs/jobs', jobId);
+A introdução do Asset Model e Creative Blueprint é concebida para ser **100% aditiva e não-bloqueante**:
 
-  // 2. Validação Forte do Body Existente (Anti-Symlink + Streams V/A + Duração)
-  const bodyLocalPath = job.metadata?.pilot?.body?.local_path;
-  validateStrongBody(bodyLocalPath, jobDir); // Lança erro explícito se inválido/symlink/sem áudio/sem vídeo
+1. **Camada de Adaptação (Asset Adapter / Resolver):**
+   - Os módulos `pilot_service.js`, `api_v2.js` e `video-painel.html` continuam consumindo suas rotas e payloads habituais.
+   - O `pilot_service.js` ganha um adaptador silencioso: ao gerar `hook_1.mp4`, `body.mp4`, etc., além de gravar em `metadata.pilot` e `metadata.remainder`, ele também registra o asset correspondente em `video_assets`.
+   - O `job_service.js`, ao criar o Job em `SCRIPT_READY`, gera os Blueprints iniciais em `video_jobs.metadata.blueprints` ou na coluna `creative_blueprints`.
 
-  // 3. Gerenciamento do Hook 2
-  let hook2VideoId = job.metadata?.remainder?.hook2?.heygen_video_id;
-  if (!hook2VideoId) {
-    hook2VideoId = await submitHeyGenHook2(job);
-    await persistHook2VideoId(jobId, hook2VideoId);
-  }
+2. **Preservação de Jobs Legados e Showcase:**
+   - O Job de homologação atual (`bbddf3ba-...`) e todos os jobs anteriores continuam válidos e acessíveis através de `pilot_video_url`, `video2_url`, `video3_url`.
+   - Um script de backfill sob demanda poderá analisar a pasta física `outputs/jobs/<job_id>/` de jobs passados e popular `video_assets` retroativamente sem alterar o `status` ou re-renderizar nada.
 
-  // 4. Gerenciamento do Hook 3
-  let hook3VideoId = job.metadata?.remainder?.hook3?.heygen_video_id;
-  if (!hook3VideoId) {
-    hook3VideoId = await submitHeyGenHook3(job);
-    await persistHook3VideoId(jobId, hook3VideoId);
-  }
+3. **Inviolabilidade dos Pilares de Segurança e WhatsApp:**
+   - As validações estritas anti-symlink (`fs.realpathSync()`), anti-path-traversal e integridade de streams via `ffprobe` permanecem ativas na camada de ingestão de assets.
+   - O adaptador legado do WhatsApp (`video_anuncios_engine.js`) permanece intocado e operando em paralelo.
+   - O bloqueio HTTP 403 estático em `/outputs/jobs` continua rigorosamente preservado.
 
-  await updateStatus(jobId, 'REMAINDER_RENDERING');
+---
 
-  // 5. Polling e Download Granular
-  const hook2Local = path.join(jobDir, 'hook_2.mp4');
-  if (!isValidMediaFile(hook2Local)) {
-    const url2 = await pollHeyGenUntilReady(hook2VideoId);
-    await downloadVideo(url2, hook2Local);
-    await persistHook2Downloaded(jobId, hook2Local);
-  }
+## 6. Roadmap Estratégico Pós-Fase 3A
 
-  const hook3Local = path.join(jobDir, 'hook_3.mp4');
-  if (!isValidMediaFile(hook3Local)) {
-    const url3 = await pollHeyGenUntilReady(hook3VideoId);
-    await downloadVideo(url3, hook3Local);
-    await persistHook3Downloaded(jobId, hook3Local);
-  }
+Com a fundação de Assets e Blueprints estabelecida na 3A, a evolução da Video Engine seguirá a seguinte trajetória modular:
 
-  // 6. Concatenação FFmpeg Granular (Vídeo 2 com Validação Forte de Streams)
-  const video2Local = path.join(jobDir, 'video_2.mp4');
-  if (!isValidMediaWithStreams(video2Local)) {
-    await concatVideosFFmpeg(hook2Local, bodyLocalPath, video2Local);
-    validateStrongMedia(video2Local); // Confirma vídeo + áudio + duração
-    await persistVideo2Ready(jobId, video2Local);
-  }
-
-  // 7. Concatenação FFmpeg Granular (Vídeo 3 com Validação Forte de Streams)
-  const video3Local = path.join(jobDir, 'video_3.mp4');
-  if (!isValidMediaWithStreams(video3Local)) {
-    await concatVideosFFmpeg(hook3Local, bodyLocalPath, video3Local);
-    validateStrongMedia(video3Local); // Confirma vídeo + áudio + duração
-    await persistVideo3Ready(jobId, video3Local);
-  }
-
-  // 8. Finalização Total
-  await completeCreativeSet(jobId);
-}
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│ Fase 3A (Fundação): Asset Model + Creative Blueprint                   │
+│ - Tabela video_assets, catálogo de mídia, fingerprints e contratos JSON│
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│ Fase 3B: Video Composer MVP (Timeline Engine)                          │
+│ - Renderizador determinístico FFmpeg orientado a Blueprint             │
+│ - Substituição do concat hardcoded por montagem orientada a timeline   │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│ Fase 3C: Editing Styles & Dynamic Overlays                             │
+│ - B-roll inteligente (fotos do imóvel inseridas sobre o áudio do body) │
+│ - Legendas dinâmicas com highlight de palavras e trilha com ducking    │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│ Fase 3D: Reference Library & Video DNA                                 │
+│ - Decomposição de anúncios imobiliários campeões em blueprints modelos │
+│ - Aplicação de fórmulas comprovadas de retenção nos roteiros do Marcel │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│ Fase 3E: Creative Variations & Multi-Armed Combinatorics               │
+│ - Geração de N variações de criativos combinando Assets existentes     │
+│ - Zero custo de HeyGen ao recombinar Hooks e Corpos já sintetizados    │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│ Fase 3F: Creative IDs & Meta Ads Learning Loop                         │
+│ - Integração com Meta Marketing API vinculando Creative ID ao adset    │
+│ - Retroalimentação: scripts futuros priorizam ganchos com menor CPA    │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 6. Endpoints no Backend (`api_v2.js`)
+## 7. Principais Riscos Identificados e Mitigações
 
-1. **`POST /api/v2/panel/video-jobs/:id/approve-pilot`**
-   - Autenticado com `panelAuthMiddleware`.
-   - Executa lock SQL atômico (`UPDATE ... WHERE status IN ('PILOT_READY', 'REMAINDER_FAILED')`).
-   - Se sucesso, dispara `generateRemainderVideos(jobId)` em segundo plano e retorna `HTTP 202 Accepted`.
-
-2. **`POST /api/v2/panel/video-jobs/:id/reject-pilot`**
-   - Autenticado com `panelAuthMiddleware`.
-   - Executa transição atômica para `PILOT_REJECTED` (`WHERE status = 'PILOT_READY'`).
-   - Retorna `HTTP 200 OK`. Nenhuma ação adicional é disparada.
-
-3. **`GET /api/v2/panel/video-jobs/:id/video/:index`**
-   - Autenticado com `panelAuthMiddleware`.
-   - `:index` aceita `1`, `2` ou `3`.
-   - Valida existência física dentro de `outputs/jobs/<job_id>/`.
-   - Retorna o vídeo via streaming (`res.sendFile()`).
+1. **Risco de Dessincronização entre `metadata` Legado e a Tabela `video_assets`:**
+   - *Mitigação:* Implementar um padrão **Single Point of Registration** na camada de serviço (`asset_service.js`). Nenhuma função salva arquivo no disco sem registrar no catálogo de assets na mesma transação lógica.
+2. **Risco de Degradação de Performance por Inspecionar Mídias (`ffprobe` overhead):**
+   - *Mitigação:* `ffprobe` é executado estritamente **uma única vez** no momento da conclusão do download do clip. O resultado é cacheado no campo `specs` da tabela `video_assets`, tornando leituras subsequentes instantâneas (apenas consulta SQL).
+3. **Risco de Invalidação de Cache ou Alteração de Arquivo no Disco:**
+   - *Mitigação:* O `content_hash` (SHA-256) e o tamanho do arquivo garantem que se um arquivo físico for modificado externamente, a camada de validação detecta a divergência e impede seu reuso silencioso.
+4. **Risco de Aumento de Complexidade no Painel Web:**
+   - *Mitigação:* Na Fase 3A, a interface do usuário (`video-painel.html`) permanece idêntica visualmente, com os mesmos 3 players de vídeo. A complexidade do Blueprint opera exclusivamente no backend.
 
 ---
 
-## 7. Alterações na Interface Web (`video-painel.html`)
+## 8. Conclusão e Próximos Passos
 
-1. **Quando `status === 'PILOT_READY'`:**
-   - Exibe o player do Piloto (Vídeo 1).
-   - Exibe dois botões de decisão:
-     - `✅ Aprovar Piloto & Gerar Restantes (Ganchos 2 e 3)`
-     - `❌ Reprovar Piloto`
-2. **Quando `status IN ('REMAINDER_SUBMITTED', 'REMAINDER_RENDERING')`:**
-   - Desabilita botões e exibe spinner com progresso:
-     *"⏳ Processando Ganchos 2 e 3 na HeyGen e montando coleção criativa..."*
-   - Polling automático a cada 5 segundos via `GET /api/v2/panel/video-jobs/:id`.
-3. **Quando `status === 'REMAINDER_FAILED'`:**
-   - Card vermelho de alerta com o erro reportado pelo servidor.
-   - Botão **"Tentar Novamente"** que reaciona o pipeline aproveitando os assets já concluídos.
-4. **Quando `status === 'PILOT_REJECTED'`:**
-   - Card cinza informativo: *"Vídeo piloto reprovado. O pipeline para este job foi finalizado."*
-5. **Quando `status === 'CREATIVE_SET_READY'`:**
-   - Card verde: `🎉 COLEÇÃO CRIATIVA PRONTA (3 VÍDEOS COMPLETOS)`.
-   - Grade responsiva com 3 players de vídeo independentes:
-     - **Vídeo 1 (Choque / Entrada):** Gancho 1 + Corpo Imóvel (`/video/1`).
-     - **Vídeo 2 (Aluguel vs Parcela):** Gancho 2 + Corpo Imóvel (`/video/2`).
-     - **Vídeo 3 (Renda Familiar):** Gancho 3 + Corpo Imóvel (`/video/3`).
-   - Botões de download direto para cada um dos 3 vídeos.
+A Fase 3A estabelece a separação clara entre **o que deve ser produzido** (Blueprint) e **os recursos necessários** (Assets), transformando a Video Engine V2 de um gerador sequencial de vídeos em um ecossistema componível de ativos digitais.
 
----
-
-## 8. Bateria de Testes e Homologação da Fase 2C
-
-A suíte automatizada de homologação abrangerá 24 verificações rigorosas:
-
-1. **Aprovação Nominal de `PILOT_READY`:** Submissão de `POST /approve-pilot` retorna `HTTP 202` e transita para `REMAINDER_SUBMITTED`.
-2. **Reprovação de `PILOT_READY`:** Submissão de `POST /reject-pilot` retorna `HTTP 200` e transita para `PILOT_REJECTED`.
-3. **Concorrência Atômica:** Chamadas concorrentes simultâneas de aprovação resultam em exatamente uma vitória (`HTTP 202`) e uma rejeição (`HTTP 409 Conflict`).
-4. **Reuso Estrito do Body:** Validação de que `outputs/jobs/<job_id>/body.mp4` é utilizado sem requisição de novo corpo.
-5. **Teste de Body com Tamanho Zero:** Se `body.mp4` tiver 0 bytes, a rotina falha imediatamente para `REMAINDER_FAILED` sem chamar a HeyGen.
-6. **Teste de Body com Path Traversal:** Se `local_path` contiver `../` apontando para fora de `outputs/jobs/<job_id>/`, a rotina rejeita com erro de segurança.
-7. **[OBRIGATÓRIO] Teste de Symlink Externo:** Se `body.mp4` for um link simbólico apontando para arquivo fora de `outputs/jobs/<job_id>/`, resolução física via `realpathSync` detecta e rejeita para `REMAINDER_FAILED`.
-8. **[OBRIGATÓRIO] Teste de Body Sem Stream de Áudio:** Se `body.mp4` tiver duração > 0 porém sem faixa de áudio no `ffprobe`, a validação falha para `REMAINDER_FAILED`.
-9. **[OBRIGATÓRIO] Teste de Body Sem Stream de Vídeo:** Se `body.mp4` tiver duração > 0 porém sem faixa de vídeo no `ffprobe`, a validação falha para `REMAINDER_FAILED`.
-10. **Teste de Body com Duração Zero (`ffprobe`):** Se `body.mp4` tiver duração 0, transita para `REMAINDER_FAILED`.
-11. **Smart Retry com Hook 2 Salvo:** Ao reexecutar job em falha onde Hook 2 já tem ID, o sistema NÃO reenvia Hook 2 para a HeyGen.
-12. **Smart Retry com Hook 3 Salvo:** Ao reexecutar job em falha onde Hook 3 já tem ID, o sistema NÃO reenvia Hook 3 para a HeyGen.
-13. **[OBRIGATÓRIO] Smart Retry com Vídeo 2 Inválido (Sem Áudio/Vídeo):** Se `video_2.mp4` existir no disco mas faltar stream de áudio ou vídeo, o sistema NÃO considera concluído e refaz a montagem.
-14. **Smart Retry com Vídeo 2 Concatenado e Válido:** Ao reexecutar job em falha onde Vídeo 2 possui áudio, vídeo e duração comprovados, o sistema NÃO refaz a concatenação do Vídeo 2.
-15. **Smart Retry com Ambos os Hooks Prontos:** Se ambos os clips já foram baixados, o retry executa estritamente a concatenação FFmpeg com zero chamadas à HeyGen.
-16. **Geração dos Ganchos 2 e 3:** Submissão correta dos textos de `hooks[1]` e `hooks[2]`.
-17. **Montagem dos Vídeos 2 e 3:** Concatenação FFmpeg sem perdas de áudio ou vídeo.
-18. **Smart Resume no Boot com Hook 2 Salvo e Hook 3 Faltando:** Recuperação automática no boot sem reenvio de Hook 2.
-19. **Smart Resume no Boot com Ambos os IDs Salvos:** Recuperação automática de polling/download no boot.
-20. **Resiliência a Falhas:** Registro inequívoco de `error_message` no metadata ao simular erro na HeyGen.
-21. **Streaming Autenticado dos 3 Vídeos:** `GET /video/1`, `/video/2` e `/video/3` entregam arquivos com Basic Auth e rejeitam sem credenciais (`HTTP 401`).
-22. **Bloqueio Estático Mantido:** `/outputs/jobs/<job_id>/video_2.mp4` retorna `HTTP 403 Forbidden`.
-23. **Idempotência de Consulta:** `GET /panel/video-jobs/:id` é estritamente read-only.
-24. **Saúde de Produção e Não-Regressão Total:** PM2 online, PostgreSQL active, WhatsApp V1 (`CLONE`, `OK`) 100% ONLINE e Fase 2B intacta.
+> [!IMPORTANT]
+> **Status da Entrega:** Este documento representa exclusivamente o planejamento arquitetural da Fase 3A. Nenhuma alteração de código produtivo, migration ou reinicialização de processos foi executada no VPS.
