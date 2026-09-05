@@ -1,0 +1,291 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-09-05T22:43:56.815235+00:00",
+  "audit_type": "CONTROLLED_PILOT_STAGE_D_SNAPSHOT_MANIFEST",
+  "cohort_size": 10,
+  "success_count": 10,
+  "failure_count": 0,
+  "selection_artifact_sha256": "3c03438d4d318637179b07cf408fe6fef318531dcff8cd656fcbebf7b56ab0ef",
+  "snapshots": [
+    {
+      "listing_id": "2117466",
+      "neighbourhood": "JARDIM DAS NACOES",
+      "coverage_class": "HIGH_COVERAGE",
+      "status": "SUCCESS",
+      "files": {
+        "source_url_txt": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\2117466\\source_url.txt",
+          "sha256": "17a8e5627e462027858f615da9477de31f679da0e65268849ec55b65cd25e014",
+          "bytes": 131
+        },
+        "listing_html": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\2117466\\listing.html",
+          "sha256": "36b0b9e40a3d1ff6835344946632d3b05c749447f5bac977ccb6729f8b35a95f",
+          "bytes": 382307
+        },
+        "public_clues_json": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\2117466\\public_clues.json",
+          "sha256": "f07b93c00171835a2766e96197e34b6b05fc78afd5964a4e4539f887cb1399fa",
+          "bytes": 2833
+        },
+        "snapshot_metadata_json": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\2117466\\snapshot_metadata.json",
+          "sha256": "726285db57921bbe1fbf933d18cae297c492fce94fe39daf114ca553c2ac389d",
+          "bytes": 409
+        }
+      }
+    },
+    {
+      "listing_id": "15304956",
+      "neighbourhood": "JARDIM DAS NACOES",
+      "coverage_class": "HIGH_COVERAGE",
+      "status": "SUCCESS",
+      "files": {
+        "source_url_txt": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\15304956\\source_url.txt",
+          "sha256": "97ef425caf8f84d2ad5cf57d2a7f24aab8eba6454a98fcb784c4c9f8c9d1e4b1",
+          "bytes": 121
+        },
+        "listing_html": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\15304956\\listing.html",
+          "sha256": "c797b70a4dee55496186529b7c9ddd7709ba74161a7951f92629f2e324477914",
+          "bytes": 384726
+        },
+        "public_clues_json": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\15304956\\public_clues.json",
+          "sha256": "45f746771bd5b1a57b5193a1773fa863b578ece258825b8d084a10eb23f6ee99",
+          "bytes": 2662
+        },
+        "snapshot_metadata_json": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\15304956\\snapshot_metadata.json",
+          "sha256": "ab93960b08eb4b7beb5fda6203b047a17437c688767e481df7742e80fafa1853",
+          "bytes": 400
+        }
+      }
+    },
+    {
+      "listing_id": "15563960",
+      "neighbourhood": "JARDIM DAS NACOES",
+      "coverage_class": "HIGH_COVERAGE",
+      "status": "SUCCESS",
+      "files": {
+        "source_url_txt": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\15563960\\source_url.txt",
+          "sha256": "07db844ee8b80e477f5a62e710d7bdc0b49b233207b6e04b023f1b5282331897",
+          "bytes": 132
+        },
+        "listing_html": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\15563960\\listing.html",
+          "sha256": "cac600f6b1a89dd69f59b26178585342f45efb8ccb9537efc51e017ef5eef26e",
+          "bytes": 383500
+        },
+        "public_clues_json": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\15563960\\public_clues.json",
+          "sha256": "d74d7c1ae75ce073301716ae31f2bb77085075fa71423a92ba044d5ba2914379",
+          "bytes": 2829
+        },
+        "snapshot_metadata_json": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\15563960\\snapshot_metadata.json",
+          "sha256": "ef8d15e87f87c603b4285529656c95e5eed3b35fe2955d1c5fd6f35cbd25941a",
+          "bytes": 411
+        }
+      }
+    },
+    {
+      "listing_id": "26398585",
+      "neighbourhood": "JARDIM BELA VISTA",
+      "coverage_class": "HIGH_COVERAGE",
+      "status": "SUCCESS",
+      "files": {
+        "source_url_txt": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\26398585\\source_url.txt",
+          "sha256": "8435661c1c30ceb8981ca24ae241497a401a7c49d2ca675e74675a805c836380",
+          "bytes": 131
+        },
+        "listing_html": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\26398585\\listing.html",
+          "sha256": "3067c01fd985b3a0a358a6fa605abb267ed80635686255162c627b7f23b9e2cd",
+          "bytes": 365688
+        },
+        "public_clues_json": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\26398585\\public_clues.json",
+          "sha256": "2788d7ddc18a47046f84b10e28a290640b14b1de3eb9dc605d433f79866e368b",
+          "bytes": 2944
+        },
+        "snapshot_metadata_json": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\26398585\\snapshot_metadata.json",
+          "sha256": "85d724be751b3f71b09ad22299ded14a482bdbdf90e5321b01ed2afc690495ec",
+          "bytes": 410
+        }
+      }
+    },
+    {
+      "listing_id": "35813502",
+      "neighbourhood": "CIDADE JARDIM",
+      "coverage_class": "HIGH_COVERAGE",
+      "status": "SUCCESS",
+      "files": {
+        "source_url_txt": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\35813502\\source_url.txt",
+          "sha256": "612c42971184a1e239fcd8630d1d241545a3e90de4dd40ee6cda583ff9154e62",
+          "bytes": 127
+        },
+        "listing_html": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\35813502\\listing.html",
+          "sha256": "4e55d7ad74dd5b46e9b5504c9810f1315b7b2d489786b700060747a4396c717f",
+          "bytes": 360377
+        },
+        "public_clues_json": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\35813502\\public_clues.json",
+          "sha256": "90f68733f5bc040fb2fa749c78e0f9d87326f044f7533ea7d3c385f2abe017ce",
+          "bytes": 2939
+        },
+        "snapshot_metadata_json": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\35813502\\snapshot_metadata.json",
+          "sha256": "b7d43b30067d85be2e2d43b33b31cc8f3a561bed0e1a668d5a540c2a3840de94",
+          "bytes": 402
+        }
+      }
+    },
+    {
+      "listing_id": "42047724",
+      "neighbourhood": "VILA MARLI",
+      "coverage_class": "HIGH_COVERAGE",
+      "status": "SUCCESS",
+      "files": {
+        "source_url_txt": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\42047724\\source_url.txt",
+          "sha256": "aa75e25cae5edaf9a9eca435231c98d6f977b67198d9dd78bdf050e4904807a0",
+          "bytes": 124
+        },
+        "listing_html": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\42047724\\listing.html",
+          "sha256": "598b17a9477d4eb91fb687ca541fc8db6105e7d6b88ff55417eda50db3779a4d",
+          "bytes": 532166
+        },
+        "public_clues_json": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\42047724\\public_clues.json",
+          "sha256": "1f222bc3dd79e8b4e9d4f94b95d18c2e40d6c5ba1611b7f1b8bbb08c4537e85f",
+          "bytes": 2857
+        },
+        "snapshot_metadata_json": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\42047724\\snapshot_metadata.json",
+          "sha256": "b173a7788beec23d54e99ec501826734f8e7bf646c1c0619e239f2430d4b5351",
+          "bytes": 396
+        }
+      }
+    },
+    {
+      "listing_id": "1956383",
+      "neighbourhood": "VILA NOSSA SENHORA DAS GRACAS",
+      "coverage_class": "MEDIUM_COVERAGE",
+      "status": "SUCCESS",
+      "files": {
+        "source_url_txt": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\1956383\\source_url.txt",
+          "sha256": "ebaf585fd72239052691aa9047c974067737beef3134b814cbc2ea92a3867b01",
+          "bytes": 142
+        },
+        "listing_html": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\1956383\\listing.html",
+          "sha256": "9db553087508a3a52779d4d686860381b6f4cb409741075792bd9b23f40417e8",
+          "bytes": 376642
+        },
+        "public_clues_json": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\1956383\\public_clues.json",
+          "sha256": "dd911f5bc308a8af9175508fa0fb3c6ba3ea0a8a9a90b4610b02eec3de24de7b",
+          "bytes": 3003
+        },
+        "snapshot_metadata_json": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\1956383\\snapshot_metadata.json",
+          "sha256": "a0c93f30ef4c7cf4fa5557119d26fbe9027bf6dc0dccbf159cfd459df907838c",
+          "bytes": 434
+        }
+      }
+    },
+    {
+      "listing_id": "13208319",
+      "neighbourhood": "VILA NOSSA SENHORA DAS GRACAS",
+      "coverage_class": "MEDIUM_COVERAGE",
+      "status": "SUCCESS",
+      "files": {
+        "source_url_txt": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\13208319\\source_url.txt",
+          "sha256": "309f4087b0af768746fbe637094ada6d290b1cb3243bd07fe5edc2d009722498",
+          "bytes": 142
+        },
+        "listing_html": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\13208319\\listing.html",
+          "sha256": "44eeabbffb6b571c8f661166c0a9f1e993d598c1b3dbd6719991924d85d386aa",
+          "bytes": 358126
+        },
+        "public_clues_json": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\13208319\\public_clues.json",
+          "sha256": "64c47db3ee4bcfc259fd466c74781fdea9224aa330882c83e88e245eef034900",
+          "bytes": 2975
+        },
+        "snapshot_metadata_json": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\13208319\\snapshot_metadata.json",
+          "sha256": "58328f3e5489c72487e3d3567d0547027ee0b063774c8256ddb636bc49d80e9e",
+          "bytes": 435
+        }
+      }
+    },
+    {
+      "listing_id": "14094802",
+      "neighbourhood": "VILA NOSSA SENHORA DAS GRACAS",
+      "coverage_class": "MEDIUM_COVERAGE",
+      "status": "SUCCESS",
+      "files": {
+        "source_url_txt": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\14094802\\source_url.txt",
+          "sha256": "850055c30baff40d5d888f81fdfd3aae048bdacd335d73bd654656a9c18fb0e2",
+          "bytes": 143
+        },
+        "listing_html": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\14094802\\listing.html",
+          "sha256": "ef38aad9af0883cc8727792e6756f17cdd8e7898753744bf20073dcc9ec05992",
+          "bytes": 366337
+        },
+        "public_clues_json": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\14094802\\public_clues.json",
+          "sha256": "2b842112d3850eb1539b95b602272a57f477513c2d97b1e8ec3bafe51c9e6811",
+          "bytes": 3009
+        },
+        "snapshot_metadata_json": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\14094802\\snapshot_metadata.json",
+          "sha256": "9c93ae7acf94ca34339cb3918fb128b207a1ed29826485967cb57c92cd129768",
+          "bytes": 436
+        }
+      }
+    },
+    {
+      "listing_id": "10871022",
+      "neighbourhood": "JARDIM MOURISCO",
+      "coverage_class": "MEDIUM_COVERAGE",
+      "status": "SUCCESS",
+      "files": {
+        "source_url_txt": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\10871022\\source_url.txt",
+          "sha256": "4972d5531a9b84202a993aa777cf1582c167c7162c733a312bae01daf009e763",
+          "bytes": 129
+        },
+        "listing_html": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\10871022\\listing.html",
+          "sha256": "c818e85424aea3d701ff5e0cbdf4581166ca5accfd5fea8316449068112cf974",
+          "bytes": 348553
+        },
+        "public_clues_json": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\10871022\\public_clues.json",
+          "sha256": "13a2abff73aaf196c497326da6520eb2fbca03c2045c524d46dea51fb803d524",
+          "bytes": 2591
+        },
+        "snapshot_metadata_json": {
+          "path": "data\\address_finder_controlled_pilot\\snapshots\\10871022\\snapshot_metadata.json",
+          "sha256": "53ad68f2d5d952d2cf345b60fa4bdf832a09431d6e2f9a6e7eb13e0553e73eb1",
+          "bytes": 408
+        }
+      }
+    }
+  ]
+}

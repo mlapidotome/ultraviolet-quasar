@@ -1,0 +1,189 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-09-05T22:43:29.339292+00:00",
+  "selection_metadata": {
+    "pilot_type": "CONTROLLED_COVERAGE_PILOT_V1",
+    "cohort_size": 10,
+    "discovery_pool_sha256": {
+      "total_discovered": 111,
+      "eligible_count": 87,
+      "excluded_count": 24,
+      "eligible_by_neighbourhood": {
+        "VILA NOSSA SENHORA DAS GRACAS": 36,
+        "JARDIM DAS NACOES": 35,
+        "JARDIM MOURISCO": 13,
+        "JARDIM BELA VISTA": 1,
+        "CIDADE JARDIM": 1,
+        "VILA MARLI": 1
+      },
+      "eligible_by_coverage_class": {
+        "MEDIUM_COVERAGE": 49,
+        "HIGH_COVERAGE": 38
+      },
+      "exclusions_by_reason": {
+        "DIRECT_EXACT_ADDRESS_LEAK": 21,
+        "OBVIOUS_GATED_CONDOMINIUM": 2,
+        "LAND_ONLY": 1
+      }
+    },
+    "discovery_pool_path": "brain/address_finder/controlled_pilot_discovery_pool.json",
+    "target_exact_corpus_membership_checked": false,
+    "ground_truth_accessed": false,
+    "facade_checker_invoked": false,
+    "selection_rules_applied": [
+      "1. HIGH_COVERAGE priority first, followed by MEDIUM_COVERAGE",
+      "2. Open-street residential house/sobrado only",
+      "3. Diversity cap: maximum 3 listings per normalized neighbourhood",
+      "4. Diversity target: at least 4 distinct normalized neighbourhoods (achieved 6)",
+      "5. Deterministic tie-break: numeric listing_id ascending"
+    ]
+  },
+  "cohort_summary": {
+    "total_selected": 10,
+    "high_coverage_count": 6,
+    "medium_coverage_count": 4,
+    "distinct_neighbourhoods_count": 6,
+    "neighbourhood_distribution": {
+      "JARDIM DAS NACOES": 3,
+      "JARDIM BELA VISTA": 1,
+      "CIDADE JARDIM": 1,
+      "VILA MARLI": 1,
+      "VILA NOSSA SENHORA DAS GRACAS": 3,
+      "JARDIM MOURISCO": 1
+    },
+    "selected_ids": [
+      "2117466",
+      "15304956",
+      "15563960",
+      "26398585",
+      "35813502",
+      "42047724",
+      "1956383",
+      "13208319",
+      "14094802",
+      "10871022"
+    ]
+  },
+  "selected_listings": [
+    {
+      "order": 1,
+      "listing_id": "2117466",
+      "neighbourhood": "JARDIM DAS NACOES",
+      "coverage_class": "HIGH_COVERAGE",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-4-quartos-com-garagem-sp-taubate-jardim-das-nacoes-322m2-RS1100000/id-2117466/",
+      "title": "Casa com 4 quartos no Jardim das Nações, Taubaté - SP - ID: 2117466 | Chaves na Mão",
+      "street": "Rua Engenheiro Fernando De Mattos",
+      "price": 1100000,
+      "built_area_m2": "322",
+      "selection_reason": "Deterministic priority: HIGH_COVERAGE, neighbourhood JARDIM DAS NACOES, tie-break listing_id ascending (quota 3)."
+    },
+    {
+      "order": 2,
+      "listing_id": "15304956",
+      "neighbourhood": "JARDIM DAS NACOES",
+      "coverage_class": "HIGH_COVERAGE",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-5-quartos-sp-taubate-jardim-das-nacoes-1500m2-RS3200000/id-15304956/",
+      "title": "Casa com 5 quartos no Jardim das Nações, Taubaté - SP - ID: 15304956 | Chaves na Mão",
+      "street": "Rua Equador",
+      "price": 3200000,
+      "built_area_m2": "1500",
+      "selection_reason": "Deterministic priority: HIGH_COVERAGE, neighbourhood JARDIM DAS NACOES, tie-break listing_id ascending (quota 3)."
+    },
+    {
+      "order": 3,
+      "listing_id": "15563960",
+      "neighbourhood": "JARDIM DAS NACOES",
+      "coverage_class": "HIGH_COVERAGE",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-3-quartos-com-garagem-sp-taubate-jardim-das-nacoes-480m2-RS1200000/id-15563960/",
+      "title": "Casa com 3 quartos no Jardim das Nações, Taubaté - SP - ID: 15563960 | Chaves na Mão",
+      "street": "Avenida Cidade Jardim",
+      "price": 1200000,
+      "built_area_m2": "480",
+      "selection_reason": "Deterministic priority: HIGH_COVERAGE, neighbourhood JARDIM DAS NACOES, tie-break listing_id ascending (quota 3)."
+    },
+    {
+      "order": 4,
+      "listing_id": "26398585",
+      "neighbourhood": "JARDIM BELA VISTA",
+      "coverage_class": "HIGH_COVERAGE",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-2-quartos-com-garagem-sp-taubate-jardim-bela-vista-320m2-RS405000/id-26398585/",
+      "title": "Casa com 2 quartos no Jardim Bela Vista, Taubaté - SP - ID: 26398585 | Chaves na Mão",
+      "street": "Rua Ubatuba",
+      "price": 405000,
+      "built_area_m2": "320",
+      "selection_reason": "Deterministic priority: HIGH_COVERAGE, neighbourhood JARDIM BELA VISTA, tie-break listing_id ascending (quota 1)."
+    },
+    {
+      "order": 5,
+      "listing_id": "35813502",
+      "neighbourhood": "CIDADE JARDIM",
+      "coverage_class": "HIGH_COVERAGE",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-2-quartos-com-garagem-sp-taubate-cidade-jardim-125m2-RS365000/id-35813502/",
+      "title": "Casa com 2 quartos na Cidade Jardim, Taubaté - SP - ID: 35813502 | Chaves na Mão",
+      "street": "Avenida Professor Moreira",
+      "price": 365000,
+      "built_area_m2": "125",
+      "selection_reason": "Deterministic priority: HIGH_COVERAGE, neighbourhood CIDADE JARDIM, tie-break listing_id ascending (quota 1)."
+    },
+    {
+      "order": 6,
+      "listing_id": "42047724",
+      "neighbourhood": "VILA MARLI",
+      "coverage_class": "HIGH_COVERAGE",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-4-quartos-com-garagem-sp-taubate-vila-marly-240m2-RS550000/id-42047724/",
+      "title": "Casa com 4 quartos na Rua Elias Berbare, Vila Marly, Taubaté - SP - ID: 42047724 | Chaves na Mão",
+      "street": "Rua Elias Berbare",
+      "price": 550000,
+      "built_area_m2": "240",
+      "selection_reason": "Deterministic priority: HIGH_COVERAGE, neighbourhood VILA MARLI, tie-break listing_id ascending (quota 1)."
+    },
+    {
+      "order": 7,
+      "listing_id": "1956383",
+      "neighbourhood": "VILA NOSSA SENHORA DAS GRACAS",
+      "coverage_class": "MEDIUM_COVERAGE",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-4-quartos-com-garagem-sp-taubate-vila-nossa-senhora-das-gracas-300m2-RS330000/id-1956383/",
+      "title": "Casa com 4 quartos na Vila Nossa Senhora das Graças, Taubaté - SP - ID: 1956383 | Chaves na Mão",
+      "street": "Rua Engenheiro Fernando De Mattos",
+      "price": 330000,
+      "built_area_m2": "300",
+      "selection_reason": "Deterministic priority: MEDIUM_COVERAGE, neighbourhood VILA NOSSA SENHORA DAS GRACAS, tie-break listing_id ascending (quota 3)."
+    },
+    {
+      "order": 8,
+      "listing_id": "13208319",
+      "neighbourhood": "VILA NOSSA SENHORA DAS GRACAS",
+      "coverage_class": "MEDIUM_COVERAGE",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-1-quarto-com-garagem-sp-taubate-vila-nossa-senhora-das-gracas-213m2-RS470000/id-13208319/",
+      "title": "Casa com 1 quarto na Vila Nossa Senhora das Graças, Taubaté - SP - ID: 13208319 | Chaves na Mão",
+      "street": "Rua Equador",
+      "price": 470000,
+      "built_area_m2": "213",
+      "selection_reason": "Deterministic priority: MEDIUM_COVERAGE, neighbourhood VILA NOSSA SENHORA DAS GRACAS, tie-break listing_id ascending (quota 3)."
+    },
+    {
+      "order": 9,
+      "listing_id": "14094802",
+      "neighbourhood": "VILA NOSSA SENHORA DAS GRACAS",
+      "coverage_class": "MEDIUM_COVERAGE",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-3-quartos-com-garagem-sp-taubate-vila-nossa-senhora-das-gracas-161m2-RS280000/id-14094802/",
+      "title": "Casa com 3 quartos na Vila Nossa Senhora das Graças, Taubaté - SP - ID: 14094802 | Chaves na Mão",
+      "street": "Avenida Professor Walter Thaumaturgo",
+      "price": 280000,
+      "built_area_m2": "161",
+      "selection_reason": "Deterministic priority: MEDIUM_COVERAGE, neighbourhood VILA NOSSA SENHORA DAS GRACAS, tie-break listing_id ascending (quota 3)."
+    },
+    {
+      "order": 10,
+      "listing_id": "10871022",
+      "neighbourhood": "JARDIM MOURISCO",
+      "coverage_class": "MEDIUM_COVERAGE",
+      "source_url": "https://www.chavesnamao.com.br/imovel/casa-a-venda-5-quartos-com-garagem-sp-taubate-jardim-mourisco-105m2-RS180000/id-10871022/",
+      "title": "Casa com 5 quartos no Jardim Mourisco, Taubaté - SP - ID: 10871022 | Chaves na Mão",
+      "street": "Rua Jacques Félix",
+      "price": 180000,
+      "built_area_m2": "105",
+      "selection_reason": "Deterministic priority: MEDIUM_COVERAGE, neighbourhood JARDIM MOURISCO, tie-break listing_id ascending (quota 1)."
+    }
+  ]
+}

@@ -1,0 +1,677 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-09-05T22:48:09.445213+00:00",
+  "audit_type": "CONTROLLED_PILOT_STAGE_E_PUBLIC_INPUTS",
+  "cohort_size": 10,
+  "snapshot_manifest_sha256": "84fcf47facfe609df0b617154dae903f7d89e42b00ca0f43b9456d43bda0f64d",
+  "anti_contamination_policy": {
+    "target_owned_only": true,
+    "related_listings_isolated": true,
+    "broker_metadata_isolated": true,
+    "broker_office_addresses_purged": true,
+    "reverse_geocoding_performed": false,
+    "exact_target_corpus_lookup_performed": false
+  },
+  "public_inputs_summary": {
+    "street_available_count": 1,
+    "target_image_street_slug_available_count": 6,
+    "cep_available_count": 0,
+    "coordinate_available_count": 0,
+    "built_area_available_count": 10,
+    "land_area_available_count": 2,
+    "house_number_present_unverified_count": 0,
+    "house_number_absent_count": 10
+  },
+  "listings": [
+    {
+      "listing_id": "2117466",
+      "city": "Taubaté",
+      "neighbourhood_raw": "Jardim Das Nacoes",
+      "neighbourhood_normalized": "JARDIM DAS NACOES",
+      "coverage_class": "HIGH_COVERAGE",
+      "street": null,
+      "street_available": false,
+      "target_image_street_slug": "Rua Peru Casa",
+      "cep": null,
+      "cep_available": false,
+      "property_type": "Sobrado",
+      "built_area_m2": 239.0,
+      "built_area_available": true,
+      "land_area_m2": null,
+      "land_area_available": false,
+      "bedrooms": 4,
+      "bathrooms": 3,
+      "parking": null,
+      "price": 1100000,
+      "description": "Excelente sobrado de alto padrão em ótima localização , parte superior , 4 dormitórios , sendo 1 suite com close ,3 dormitórios com armários , 1 banheiro social ,/parte terreá ,1 lavabo ,sala de estar/sala jantar, copa, cozinha , despensa , area de serviço , 1 banheiro , 1 escritório , jardim inverno ,Churrasqueira , 1 banheiro ,/garagem coberta 4 carros /3 carros descoberto .portão eletrônico , alarmes, com câmeras , cerca elétrica , aquecedor solar ,/proximidades escolas , supermercados , academias , restaurantes ,15 minutos centro da cidade.",
+      "landmarks": [],
+      "target_owned_images": [
+        {
+          "url": "https://www.chavesnamao.com.br/imn/0640x0400/N/imoveis/47199/2117466/sp-taubate-jardim-das-nacoes-rua-peru-casa-a-venda-4-quartos-614ceb44-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-jardim-das-nacoes-rua-peru-casa-a-venda-4-quartos-614ceb44-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/47199/2117466/sp-taubate-jardim-das-nacoes-rua-peru-casa-a-venda-4-quartos-614ceb44-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-jardim-das-nacoes-rua-peru-casa-a-venda-4-quartos-614ceb44-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/47199/2117466/sp-taubate-jardim-das-nacoes-rua-peru-casa-a-venda-4-quartos-614ceb44-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-jardim-das-nacoes-rua-peru-casa-a-venda-4-quartos-614ceb44-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/47199/2117466/sp-taubate-jardim-das-nacoes-rua-peru-casa-a-venda-4-quartos-614ceb44-10.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-jardim-das-nacoes-rua-peru-casa-a-venda-4-quartos-614ceb44-10.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/47199/2117466/sp-taubate-jardim-das-nacoes-rua-peru-casa-a-venda-4-quartos-614ceb44-11.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-jardim-das-nacoes-rua-peru-casa-a-venda-4-quartos-614ceb44-11.jpg"
+        }
+      ],
+      "target_owned_image_count": 32,
+      "map_latitude": null,
+      "map_longitude": null,
+      "coordinate_available": false,
+      "map_precision_class": null,
+      "house_number": null,
+      "house_number_status": "HOUSE_NUMBER_ABSENT",
+      "contamination_isolation_audit": {
+        "broker_name": "TROVARE IMOBILIÁRIA",
+        "broker_street_purged": "Rua Engenheiro Fernando De Mattos, 262",
+        "broker_cep_purged": "12010-110",
+        "broker_city_purged": "Centro",
+        "related_listing_cards_purged": true,
+        "target_ownership_verified": true
+      }
+    },
+    {
+      "listing_id": "15304956",
+      "city": "Taubaté",
+      "neighbourhood_raw": "Jardim Das Nacoes",
+      "neighbourhood_normalized": "JARDIM DAS NACOES",
+      "coverage_class": "HIGH_COVERAGE",
+      "street": null,
+      "street_available": false,
+      "target_image_street_slug": null,
+      "cep": null,
+      "cep_available": false,
+      "property_type": "Casa",
+      "built_area_m2": 770.0,
+      "built_area_available": true,
+      "land_area_m2": null,
+      "land_area_available": false,
+      "bedrooms": 5,
+      "bathrooms": 1,
+      "parking": null,
+      "price": 3200000,
+      "description": "LINDA CASA DISPONÍVEL PARA VENDA JARDIM DAS NAÇÕES | TAUBATÉ/SP  A Imobiliária Salzano Imóveis apresenta excelente casa disponível para venda, localizada no Jardim das Nações, uma das regiões mais valorizadas e desejadas de Taubaté/SP.  O imóvel possui 770 m² de área construída, com ambientes amplos e bem distribuídos. Conta com sala de TV, copa, banheiro social, cozinha planejada, 04 suítes, além de 01 dormitório externo. Dispõe ainda de lavanderia, despensa, escritório, área de lazer, canil e garagem com capacidade para até 6 veículos.  Casa ideal para quem busca conforto, espaço e excelente localização, próxima a comércios, serviços e com fácil acesso às principais vias da cidade.  Agende sua visita com um de nossos corretores.  Para mais informações: (12)      | (12) 9    ",
+      "landmarks": [],
+      "target_owned_images": [
+        {
+          "url": "https://www.chavesnamao.com.br/imn/0640x0400/N/imoveis/182040/15304956/sp-taubate-jardim-das-nacoes-casa-a-venda-5-quartos-64ab34eb-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-jardim-das-nacoes-casa-a-venda-5-quartos-64ab34eb-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/182040/15304956/sp-taubate-jardim-das-nacoes-casa-a-venda-5-quartos-64ab34eb-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-jardim-das-nacoes-casa-a-venda-5-quartos-64ab34eb-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/182040/15304956/sp-taubate-jardim-das-nacoes-casa-a-venda-5-quartos-64ab34eb-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-jardim-das-nacoes-casa-a-venda-5-quartos-64ab34eb-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/182040/15304956/sp-taubate-jardim-das-nacoes-casa-a-venda-5-quartos-64ab34eb-10.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-jardim-das-nacoes-casa-a-venda-5-quartos-64ab34eb-10.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/182040/15304956/sp-taubate-jardim-das-nacoes-casa-a-venda-5-quartos-64ab34eb-11.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-jardim-das-nacoes-casa-a-venda-5-quartos-64ab34eb-11.jpg"
+        }
+      ],
+      "target_owned_image_count": 29,
+      "map_latitude": null,
+      "map_longitude": null,
+      "coordinate_available": false,
+      "map_precision_class": null,
+      "house_number": null,
+      "house_number_status": "HOUSE_NUMBER_ABSENT",
+      "contamination_isolation_audit": {
+        "broker_name": "AMAZON IMÓVEIS",
+        "broker_street_purged": "Rua Equador, 254",
+        "broker_cep_purged": "12030-470",
+        "broker_city_purged": "Jardim das Nações",
+        "related_listing_cards_purged": true,
+        "target_ownership_verified": true
+      }
+    },
+    {
+      "listing_id": "15563960",
+      "city": "Taubaté",
+      "neighbourhood_raw": "Jardim Das Nacoes",
+      "neighbourhood_normalized": "JARDIM DAS NACOES",
+      "coverage_class": "HIGH_COVERAGE",
+      "street": null,
+      "street_available": false,
+      "target_image_street_slug": "Rua Franca Casa",
+      "cep": null,
+      "cep_available": false,
+      "property_type": "Sobrado",
+      "built_area_m2": 350.0,
+      "built_area_available": true,
+      "land_area_m2": 480.0,
+      "land_area_available": true,
+      "bedrooms": 3,
+      "bathrooms": 5,
+      "parking": 6,
+      "price": 1200000,
+      "description": "Apresentamos uma oportunidade única: um belíssimo sobrado disponível para venda e locação, que combina espaço, conforto e elegância.  Situado em uma área nobre de Taubaté, o Jardim das Nações, possui terreno de 480m² e sendo 350m² de área construída, este imóvel é ideal para quem busca qualidade de vida.  O sobrado possui 3 suítes bem dimensionadas, 5 banheiros, oferecendo privacidade e conforto para toda a família.  A edícula, que pode ser utilizada como espaço de hóspedes ou escritório, acrescenta versatilidade ao imóvel.  A ampla área gourmet, equipada com churrasqueira, é perfeita para reunir amigos e familiares em momentos de descontração. Além disso, você poderá desfrutar de uma linda piscina, ideal para os dias quentes e para relaxar.  Com 6 vagas de garagem cobertas, o imóvel garante conforto e segurança para seus veículos.   A localização é excelente, próxima a diversas comodidades e facilidades.  Não perca a chance de viver em um espaço que combina tudo o que você sempre sonhou!   Para mais informações, entre em contato com   Estamos à disposição para agendar uma visita!",
+      "landmarks": [],
+      "target_owned_images": [
+        {
+          "url": "https://www.chavesnamao.com.br/imn/0640x0400/N/imoveis/134015/15563960/sp-taubate-jardim-das-nacoes-rua-franca-casa-a-venda-3-quartos-64bc5358-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-jardim-das-nacoes-rua-franca-casa-a-venda-3-quartos-64bc5358-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/134015/15563960/sp-taubate-jardim-das-nacoes-rua-franca-casa-a-venda-3-quartos-64bc5358-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-jardim-das-nacoes-rua-franca-casa-a-venda-3-quartos-64bc5358-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/134015/15563960/sp-taubate-jardim-das-nacoes-rua-franca-casa-a-venda-3-quartos-64bc5358-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-jardim-das-nacoes-rua-franca-casa-a-venda-3-quartos-64bc5358-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/134015/15563960/sp-taubate-jardim-das-nacoes-rua-franca-casa-a-venda-3-quartos-64bc5358-10.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-jardim-das-nacoes-rua-franca-casa-a-venda-3-quartos-64bc5358-10.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/134015/15563960/sp-taubate-jardim-das-nacoes-rua-franca-casa-a-venda-3-quartos-64bc5358-11.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-jardim-das-nacoes-rua-franca-casa-a-venda-3-quartos-64bc5358-11.jpg"
+        }
+      ],
+      "target_owned_image_count": 32,
+      "map_latitude": null,
+      "map_longitude": null,
+      "coordinate_available": false,
+      "map_precision_class": null,
+      "house_number": null,
+      "house_number_status": "HOUSE_NUMBER_ABSENT",
+      "contamination_isolation_audit": {
+        "broker_name": "GROTHE & LIMA IMÓVEIS",
+        "broker_street_purged": "Avenida Cidade Jardim, 3470",
+        "broker_cep_purged": "12233-002",
+        "broker_city_purged": "Bosque dos Eucaliptos",
+        "related_listing_cards_purged": true,
+        "target_ownership_verified": true
+      }
+    },
+    {
+      "listing_id": "26398585",
+      "city": "Taubaté",
+      "neighbourhood_raw": "Jardim Bela Vista",
+      "neighbourhood_normalized": "JARDIM BELA VISTA",
+      "coverage_class": "HIGH_COVERAGE",
+      "street": null,
+      "street_available": false,
+      "target_image_street_slug": "Avenida Conego Antonio Moreira Da Costa Casa Sobrado",
+      "cep": null,
+      "cep_available": false,
+      "property_type": "Casa",
+      "built_area_m2": 201.0,
+      "built_area_available": true,
+      "land_area_m2": null,
+      "land_area_available": false,
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "parking": 2,
+      "price": 405000,
+      "description": "Bairro Jardim Bela Vista - linda casa térrea à venda, em bairro seguro de Taubaté  Marque uma visita para conhecer essa linda casa térrea, disponível para compra no bairro Jardim Bela Vista, região segura e tranquila da cidade, perfeita também para investimento.  Confiras suas medidas:  Área do terreno: 320m² Área construída: 201,70m²  Ela oferece 02 dormitórios, sala de TV, ampla cozinha, banheiro social, lavanderia, quintal com rancho incluindo churrasqueira, fogão e forno à lenha, piso antiderrapante, edícula com sala cozinha, banheiro, 01 dormitório e entrada independente, além de 02 vagas de garagem cobertas.  *As informações anunciadas junto ao imóvel e sua disponibilidade para compra ou aluguel podem sofrer alterações sem prévio aviso. Fale com a gente!",
+      "landmarks": [],
+      "target_owned_images": [
+        {
+          "url": "https://www.chavesnamao.com.br/imn/0640x0400/N/imoveis/668262/26398585/sp-taubate-jardim-bela-vista-avenida-conego-antonio-moreira-da-costa-casa-sobrado-a-venda-2-quartos-67321327-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-jardim-bela-vista-avenida-conego-antonio-moreira-da-costa-casa-sobrado-a-venda-2-quartos-67321327-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/668262/26398585/sp-taubate-jardim-bela-vista-avenida-conego-antonio-moreira-da-costa-casa-sobrado-a-venda-2-quartos-67321327-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-jardim-bela-vista-avenida-conego-antonio-moreira-da-costa-casa-sobrado-a-venda-2-quartos-67321327-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/668262/26398585/sp-taubate-jardim-bela-vista-avenida-conego-antonio-moreira-da-costa-casa-sobrado-a-venda-2-quartos-67321327-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-jardim-bela-vista-avenida-conego-antonio-moreira-da-costa-casa-sobrado-a-venda-2-quartos-67321327-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/668262/26398585/sp-taubate-jardim-bela-vista-avenida-conego-antonio-moreira-da-costa-casa-sobrado-a-venda-2-quartos-67321327-10.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-jardim-bela-vista-avenida-conego-antonio-moreira-da-costa-casa-sobrado-a-venda-2-quartos-67321327-10.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/668262/26398585/sp-taubate-jardim-bela-vista-avenida-conego-antonio-moreira-da-costa-casa-sobrado-a-venda-2-quartos-67321327-11.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-jardim-bela-vista-avenida-conego-antonio-moreira-da-costa-casa-sobrado-a-venda-2-quartos-67321327-11.jpg"
+        }
+      ],
+      "target_owned_image_count": 15,
+      "map_latitude": null,
+      "map_longitude": null,
+      "coordinate_available": false,
+      "map_precision_class": null,
+      "house_number": null,
+      "house_number_status": "HOUSE_NUMBER_ABSENT",
+      "contamination_isolation_audit": {
+        "broker_name": "FRANCO CONSULTORIA DE IMÓVEIS",
+        "broker_street_purged": "Rua Ubatuba, 154",
+        "broker_cep_purged": "12030-060",
+        "broker_city_purged": "Jardim das Nações",
+        "related_listing_cards_purged": true,
+        "target_ownership_verified": true
+      }
+    },
+    {
+      "listing_id": "35813502",
+      "city": "Taubaté",
+      "neighbourhood_raw": "Cidade Jardim",
+      "neighbourhood_normalized": "CIDADE JARDIM",
+      "coverage_class": "HIGH_COVERAGE",
+      "street": null,
+      "street_available": false,
+      "target_image_street_slug": null,
+      "cep": null,
+      "cep_available": false,
+      "property_type": "Casa",
+      "built_area_m2": 65.0,
+      "built_area_available": true,
+      "land_area_m2": null,
+      "land_area_available": false,
+      "bedrooms": 2,
+      "bathrooms": 2,
+      "parking": null,
+      "price": 365000,
+      "description": " Oportunidade Imperdível no Residencial Condomínio Vila Verde em Taubaté!  Descubra o lar dos seus sonhos neste encantador condomínio! Esta casa espaçosa oferece:  2 Dormitórios amplos, perfeitos para acomodar sua família com conforto.    Sala de Estar e Jantar integradas, criando um ambiente acolhedor e de convivência.    Cozinha Moderna com armários planejados e espaço para refeições.    Quintal Privativo, ideal para momentos de lazer e jardinagem.    Garagem para 2 carros descoberta.  O condomínio conta com área de lazer completa: piscina, churrasqueira e playground, tudo isso em um ambiente seguro e familiar!   Localização privilegiada, próximo a escolas, supermercados e com fácil acesso às principais vias da cidade.   Entre em contato e agende uma visita! (12) 9     Não perca essa chance única de viver com qualidade e conforto!  ",
+      "landmarks": [],
+      "target_owned_images": [
+        {
+          "url": "https://www.chavesnamao.com.br/imn/0640x0400/N/imoveis/198747/35813502/sp-taubate-sao-goncalo-nao-encontrado-casa-sobrado-a-venda-2-quartos-68ef770f-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-sao-goncalo-nao-encontrado-casa-sobrado-a-venda-2-quartos-68ef770f-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/198747/35813502/sp-taubate-sao-goncalo-nao-encontrado-casa-sobrado-a-venda-2-quartos-68ef770f-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-sao-goncalo-nao-encontrado-casa-sobrado-a-venda-2-quartos-68ef770f-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/198747/35813502/sp-taubate-sao-goncalo-nao-encontrado-casa-sobrado-a-venda-2-quartos-68ef770f-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-sao-goncalo-nao-encontrado-casa-sobrado-a-venda-2-quartos-68ef770f-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/198747/35813502/sp-taubate-sao-goncalo-nao-encontrado-casa-sobrado-a-venda-2-quartos-68ef770f-10.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-sao-goncalo-nao-encontrado-casa-sobrado-a-venda-2-quartos-68ef770f-10.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/198747/35813502/sp-taubate-sao-goncalo-nao-encontrado-casa-sobrado-a-venda-2-quartos-68ef770f-11.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-sao-goncalo-nao-encontrado-casa-sobrado-a-venda-2-quartos-68ef770f-11.jpg"
+        }
+      ],
+      "target_owned_image_count": 18,
+      "map_latitude": null,
+      "map_longitude": null,
+      "coordinate_available": false,
+      "map_precision_class": null,
+      "house_number": null,
+      "house_number_status": "HOUSE_NUMBER_ABSENT",
+      "contamination_isolation_audit": {
+        "broker_name": "TRISKEL IMÓVEIS",
+        "broker_street_purged": "Avenida Professor Moreira, 267",
+        "broker_cep_purged": "12030-070",
+        "broker_city_purged": "Jardim das Nações",
+        "related_listing_cards_purged": true,
+        "target_ownership_verified": true
+      }
+    },
+    {
+      "listing_id": "42047724",
+      "city": "Taubaté",
+      "neighbourhood_raw": "Vila Marli",
+      "neighbourhood_normalized": "VILA MARLI",
+      "coverage_class": "HIGH_COVERAGE",
+      "street": "Rua Elias Berbare",
+      "street_available": true,
+      "target_image_street_slug": "Rua Elias Berbare Casa Sobrado",
+      "cep": null,
+      "cep_available": false,
+      "property_type": "Casa",
+      "built_area_m2": 120.0,
+      "built_area_available": true,
+      "land_area_m2": null,
+      "land_area_available": false,
+      "bedrooms": 4,
+      "bathrooms": 3,
+      "parking": 2,
+      "price": 550000,
+      "description": "Casa de 4 Dormitórios, 1 com Suíte, Box Blindex e Banheira de Hidro, Área Privativa de 120m², Área do Terreno com 240m².Área de Serviço, Banheiro Social cBox Blindex, Cozinha com Planejados, Sala de Estar e Jantar, Piscina, Quintal, Rancho cChurrasqueira e Acabamento com Pedra de Mármore, 2 Vagas de Garagem, à Venda no Bairro Vila Marly em Taubaté SP.     Valor do Imóvel R$ 550.000,00.     Proximidades com Bares e Restaurantes, Escola, Farmácia, Supermercado, Padaria, Posto de Combustível.     Agende já, faça uma visita e confira! Cód. 3196-C.       - Características: Banheira com Hidro, Piscina, Quintal, Rancho cChurrasqueira,     - Cômodos: Área de Serviço, Banheiro cBox Blindex, Cozinha com Planejados, Sala de Jantar, Suíte cBox Blindex,     - Proximidades: Bares e Restaurantes, Escola, Farmácia, Supermercado, Padaria, Posto de Combustível,",
+      "landmarks": [],
+      "target_owned_images": [
+        {
+          "url": "https://www.chavesnamao.com.br/imn/0640x0400/N/imoveis/140942/42047724/sp-taubate-vila-marly-rua-elias-berbare-casa-sobrado-a-venda-4-quartos-69f25d1a-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-vila-marly-rua-elias-berbare-casa-sobrado-a-venda-4-quartos-69f25d1a-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/140942/42047724/sp-taubate-vila-marly-rua-elias-berbare-casa-sobrado-a-venda-4-quartos-69f25d1a-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-vila-marly-rua-elias-berbare-casa-sobrado-a-venda-4-quartos-69f25d1a-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/140942/42047724/sp-taubate-vila-marly-rua-elias-berbare-casa-sobrado-a-venda-4-quartos-69f25d1a-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-vila-marly-rua-elias-berbare-casa-sobrado-a-venda-4-quartos-69f25d1a-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/140942/42047724/sp-taubate-vila-marly-rua-elias-berbare-casa-sobrado-a-venda-4-quartos-69f25d1a-10.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-vila-marly-rua-elias-berbare-casa-sobrado-a-venda-4-quartos-69f25d1a-10.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/140942/42047724/sp-taubate-vila-marly-rua-elias-berbare-casa-sobrado-a-venda-4-quartos-69f25d1a-11.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-vila-marly-rua-elias-berbare-casa-sobrado-a-venda-4-quartos-69f25d1a-11.jpg"
+        }
+      ],
+      "target_owned_image_count": 17,
+      "map_latitude": null,
+      "map_longitude": null,
+      "coordinate_available": false,
+      "map_precision_class": null,
+      "house_number": null,
+      "house_number_status": "HOUSE_NUMBER_ABSENT",
+      "contamination_isolation_audit": {
+        "broker_name": "GLOBAL IMÓVEIS E AUTOS",
+        "broker_street_purged": "Rua Coronel Marcondes De Mattos, 20",
+        "broker_cep_purged": "12010-100",
+        "broker_city_purged": "Centro",
+        "related_listing_cards_purged": true,
+        "target_ownership_verified": true
+      }
+    },
+    {
+      "listing_id": "1956383",
+      "city": "Taubaté",
+      "neighbourhood_raw": "Vila Nossa Senhora Das Gracas",
+      "neighbourhood_normalized": "VILA NOSSA SENHORA DAS GRACAS",
+      "coverage_class": "MEDIUM_COVERAGE",
+      "street": null,
+      "street_available": false,
+      "target_image_street_slug": "Rua Sao Vicente De Paula Casa",
+      "cep": null,
+      "cep_available": false,
+      "property_type": "Sobrado",
+      "built_area_m2": 170.0,
+      "built_area_available": true,
+      "land_area_m2": 300.0,
+      "land_area_available": true,
+      "bedrooms": 4,
+      "bathrooms": 2,
+      "parking": null,
+      "price": 330000,
+      "description": "Vendo Casa/sobrado,grande area livre na frente ,com 4 quartos ,2 salas ,2 banheiros , area de serviço , suite,sacada no andar superior , garagem para 6 carros , canil p/ 2 cachorros , próximo a Faculdade Anhanguera , Escola Idesa ,supermercados e farmácia , a 10 minutos a pé do centro da cidade de Taubaté , excelente oportunidade terreno 300 m2 area construída 170 m2 , aceita financiamento.",
+      "landmarks": [],
+      "target_owned_images": [
+        {
+          "url": "https://www.chavesnamao.com.br/imn/0640x0400/N/imoveis/47199/1956383/sp-taubate-vila-nossa-senhora-das-gracas-rua-sao-vicente-de-paula-casa-a-venda-4-quartos-614ce6eb-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-vila-nossa-senhora-das-gracas-rua-sao-vicente-de-paula-casa-a-venda-4-quartos-614ce6eb-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/47199/1956383/sp-taubate-vila-nossa-senhora-das-gracas-rua-sao-vicente-de-paula-casa-a-venda-4-quartos-614ce6eb-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-vila-nossa-senhora-das-gracas-rua-sao-vicente-de-paula-casa-a-venda-4-quartos-614ce6eb-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/47199/1956383/sp-taubate-vila-nossa-senhora-das-gracas-rua-sao-vicente-de-paula-casa-a-venda-4-quartos-614ce6eb-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-vila-nossa-senhora-das-gracas-rua-sao-vicente-de-paula-casa-a-venda-4-quartos-614ce6eb-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/47199/1956383/sp-taubate-vila-nossa-senhora-das-gracas-rua-sao-vicente-de-paula-casa-a-venda-4-quartos-614ce6eb-10.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-vila-nossa-senhora-das-gracas-rua-sao-vicente-de-paula-casa-a-venda-4-quartos-614ce6eb-10.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/47199/1956383/sp-taubate-vila-nossa-senhora-das-gracas-rua-sao-vicente-de-paula-casa-a-venda-4-quartos-614ce6eb-11.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-vila-nossa-senhora-das-gracas-rua-sao-vicente-de-paula-casa-a-venda-4-quartos-614ce6eb-11.jpg"
+        }
+      ],
+      "target_owned_image_count": 29,
+      "map_latitude": null,
+      "map_longitude": null,
+      "coordinate_available": false,
+      "map_precision_class": null,
+      "house_number": null,
+      "house_number_status": "HOUSE_NUMBER_ABSENT",
+      "contamination_isolation_audit": {
+        "broker_name": "TROVARE IMOBILIÁRIA",
+        "broker_street_purged": "Rua Engenheiro Fernando De Mattos, 262",
+        "broker_cep_purged": "12010-110",
+        "broker_city_purged": "Centro",
+        "related_listing_cards_purged": true,
+        "target_ownership_verified": true
+      }
+    },
+    {
+      "listing_id": "13208319",
+      "city": "Taubaté",
+      "neighbourhood_raw": "Vila Nossa Senhora Das Gracas",
+      "neighbourhood_normalized": "VILA NOSSA SENHORA DAS GRACAS",
+      "coverage_class": "MEDIUM_COVERAGE",
+      "street": null,
+      "street_available": false,
+      "target_image_street_slug": null,
+      "cep": null,
+      "cep_available": false,
+      "property_type": "Casa",
+      "built_area_m2": 119.0,
+      "built_area_available": true,
+      "land_area_m2": null,
+      "land_area_available": false,
+      "bedrooms": 1,
+      "bathrooms": 1,
+      "parking": 1,
+      "price": 470000,
+      "description": "ÓTIMA OPORTUNIDADE DE ADQUIRIR SUA CASA COM PONTO COMERCIAL!  A imobiliária Amazon Imóveis disponibiliza para nossos clientes este imóvel na região de Taubaté.  * 213,53m²  Contendo uma casa com 01 dormitório, banheiro, sala, cozinha, vaga para 04 carros sendo 01 vaga coberta.  O imóvel possui 2 pontos comerciais bem na esquina com ótima visualização .   Agende já sua visita com um de nossos corretores.  VALOR SUJEITO À ALTERAÇÃO SEM AVISO PRÉVIO  Para maiores informações ligue: (12)      ou (12)      Amazon Imóveis",
+      "landmarks": [],
+      "target_owned_images": [
+        {
+          "url": "https://www.chavesnamao.com.br/imn/0640x0400/N/imoveis/182040/13208319/sp-taubate-vila-nossa-senhora-das-gracas-casa-a-venda-1-quarto-640fb70a-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-vila-nossa-senhora-das-gracas-casa-a-venda-1-quarto-640fb70a-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/182040/13208319/sp-taubate-vila-nossa-senhora-das-gracas-casa-a-venda-1-quarto-640fb70a-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-vila-nossa-senhora-das-gracas-casa-a-venda-1-quarto-640fb70a-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/182040/13208319/sp-taubate-vila-nossa-senhora-das-gracas-casa-a-venda-1-quarto-640fb70a-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-vila-nossa-senhora-das-gracas-casa-a-venda-1-quarto-640fb70a-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/182040/13208319/sp-taubate-vila-nossa-senhora-das-gracas-casa-a-venda-1-quarto-640fb70a-2.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-vila-nossa-senhora-das-gracas-casa-a-venda-1-quarto-640fb70a-2.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/182040/13208319/sp-taubate-vila-nossa-senhora-das-gracas-casa-a-venda-1-quarto-640fb70a-3.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-vila-nossa-senhora-das-gracas-casa-a-venda-1-quarto-640fb70a-3.jpg"
+        }
+      ],
+      "target_owned_image_count": 10,
+      "map_latitude": null,
+      "map_longitude": null,
+      "coordinate_available": false,
+      "map_precision_class": null,
+      "house_number": null,
+      "house_number_status": "HOUSE_NUMBER_ABSENT",
+      "contamination_isolation_audit": {
+        "broker_name": "AMAZON IMÓVEIS",
+        "broker_street_purged": "Rua Equador, 254",
+        "broker_cep_purged": "12030-470",
+        "broker_city_purged": "Jardim das Nações",
+        "related_listing_cards_purged": true,
+        "target_ownership_verified": true
+      }
+    },
+    {
+      "listing_id": "14094802",
+      "city": "Taubaté",
+      "neighbourhood_raw": "Vila Nossa Senhora Das Gracas",
+      "neighbourhood_normalized": "VILA NOSSA SENHORA DAS GRACAS",
+      "coverage_class": "MEDIUM_COVERAGE",
+      "street": null,
+      "street_available": false,
+      "target_image_street_slug": "Rua Benedito Barbosa Casa",
+      "cep": null,
+      "cep_available": false,
+      "property_type": "Casa",
+      "built_area_m2": 91.0,
+      "built_area_available": true,
+      "land_area_m2": null,
+      "land_area_available": false,
+      "bedrooms": 3,
+      "bathrooms": 1,
+      "parking": null,
+      "price": 280000,
+      "description": "CASA À VENDA EM TAUBATÉ !!!  Ótima casa com 3 dormitórios, ampla sala, copa e cozinha. Excelente localização, próximo à Igrejas, supermercados, escolas, transporte público.  Imóvel alugado no momento !  Venha conhecer!  Neusa Silva (12)9     - Creci 222.530  Valores podem sofrer alteração sem prévio aviso",
+      "landmarks": [],
+      "target_owned_images": [
+        {
+          "url": "https://www.chavesnamao.com.br/imn/0640x0400/N/imoveis/281442/14094802/sp-taubate-vila-nossa-senhora-das-gracas-rua-benedito-barbosa-casa-a-venda-3-quartos-64605f5d-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-vila-nossa-senhora-das-gracas-rua-benedito-barbosa-casa-a-venda-3-quartos-64605f5d-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/281442/14094802/sp-taubate-vila-nossa-senhora-das-gracas-rua-benedito-barbosa-casa-a-venda-3-quartos-64605f5d-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-vila-nossa-senhora-das-gracas-rua-benedito-barbosa-casa-a-venda-3-quartos-64605f5d-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/281442/14094802/sp-taubate-vila-nossa-senhora-das-gracas-rua-benedito-barbosa-casa-a-venda-3-quartos-64605f5d-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-vila-nossa-senhora-das-gracas-rua-benedito-barbosa-casa-a-venda-3-quartos-64605f5d-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/281442/14094802/sp-taubate-vila-nossa-senhora-das-gracas-rua-benedito-barbosa-casa-a-venda-3-quartos-64605f5d-10.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-vila-nossa-senhora-das-gracas-rua-benedito-barbosa-casa-a-venda-3-quartos-64605f5d-10.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/281442/14094802/sp-taubate-vila-nossa-senhora-das-gracas-rua-benedito-barbosa-casa-a-venda-3-quartos-64605f5d-11.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-vila-nossa-senhora-das-gracas-rua-benedito-barbosa-casa-a-venda-3-quartos-64605f5d-11.jpg"
+        }
+      ],
+      "target_owned_image_count": 19,
+      "map_latitude": null,
+      "map_longitude": null,
+      "coordinate_available": false,
+      "map_precision_class": null,
+      "house_number": null,
+      "house_number_status": "HOUSE_NUMBER_ABSENT",
+      "contamination_isolation_audit": {
+        "broker_name": "MAX GOLD IMOBILIÁRIA",
+        "broker_street_purged": "Avenida Professor Walter Thaumaturgo, 408",
+        "broker_cep_purged": "12030-040",
+        "broker_city_purged": "Jardim das Nações",
+        "related_listing_cards_purged": true,
+        "target_ownership_verified": true
+      }
+    },
+    {
+      "listing_id": "10871022",
+      "city": "Taubaté",
+      "neighbourhood_raw": "Jardim Mourisco",
+      "neighbourhood_normalized": "JARDIM MOURISCO",
+      "coverage_class": "MEDIUM_COVERAGE",
+      "street": null,
+      "street_available": false,
+      "target_image_street_slug": null,
+      "cep": null,
+      "cep_available": false,
+      "property_type": "Casa",
+      "built_area_m2": 105.0,
+      "built_area_available": true,
+      "land_area_m2": null,
+      "land_area_available": false,
+      "bedrooms": 5,
+      "bathrooms": 2,
+      "parking": null,
+      "price": 180000,
+      "description": "A Márcio Oliveira Imóveis disponibiliza essa oportunidade para venda, localizado no Parque Santo Antonio, próximo a igreja da Vila Aparecida.  O imóvel é composto de cinco quartos, duas salas, cozinha, dois banheiros, sacada, quintal, rancho nos fundos e vaga de garagem coberta para dois carros.  Aceita ouvir permuta por casa em Pinda nos bairros do Pazim ou Mantiqueira. Imóvel não da financiamento, devendo realizar desmembramento que ficara por conta do comprador.   Agende sua visita, já!   O imóvel pode ter sido vendido ou seu valor alterado sem aviso prévio. Consulte-nos!",
+      "landmarks": [],
+      "target_owned_images": [
+        {
+          "url": "https://www.chavesnamao.com.br/imn/0640x0400/N/imoveis/204013/10871022/sp-taubate-parque-santo-antonio-casa-a-venda-5-quartos-636fbb5a-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-parque-santo-antonio-casa-a-venda-5-quartos-636fbb5a-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/0850x0450/N/60/imoveis/204013/10871022/sp-taubate-parque-santo-antonio-casa-a-venda-5-quartos-636fbb5a-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-parque-santo-antonio-casa-a-venda-5-quartos-636fbb5a-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/204013/10871022/sp-taubate-parque-santo-antonio-casa-a-venda-5-quartos-636fbb5a-1.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-parque-santo-antonio-casa-a-venda-5-quartos-636fbb5a-1.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/204013/10871022/sp-taubate-parque-santo-antonio-casa-a-venda-5-quartos-63d132b4-10.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-parque-santo-antonio-casa-a-venda-5-quartos-63d132b4-10.jpg"
+        },
+        {
+          "url": "https://www.chavesnamao.com.br/imn/1200x0800/N/70/imoveis/204013/10871022/sp-taubate-parque-santo-antonio-casa-a-venda-5-quartos-63d132b4-11.jpg",
+          "ownership": "TARGET_OWNED",
+          "slug": "sp-taubate-parque-santo-antonio-casa-a-venda-5-quartos-63d132b4-11.jpg"
+        }
+      ],
+      "target_owned_image_count": 31,
+      "map_latitude": null,
+      "map_longitude": null,
+      "coordinate_available": false,
+      "map_precision_class": null,
+      "house_number": null,
+      "house_number_status": "HOUSE_NUMBER_ABSENT",
+      "contamination_isolation_audit": {
+        "broker_name": "MARCIO OLIVEIRA IMÓVEIS",
+        "broker_street_purged": "Rua Jacques Félix, 493",
+        "broker_cep_purged": "12020-060",
+        "broker_city_purged": "Centro",
+        "related_listing_cards_purged": true,
+        "target_ownership_verified": true
+      }
+    }
+  ]
+}
