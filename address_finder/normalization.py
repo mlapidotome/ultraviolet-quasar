@@ -3,14 +3,18 @@ address_finder.normalization
 
 Normalization, parsing, and extraction utilities for streets, addresses, bairros, and cadastral BCs.
 Extracts only production-visible public listing clues.
-Includes exact-address leakage classification (CEP alone or street alone is NOT leakage).
+Includes:
+- Robust Chaves na Mão listing URL parsing (/id-<number>/) and original canonical URL preservation
+- Condominium property detection & exclusion
+- Target-listing-owned exact-address leakage classification (ignores whole-page ads/related cards)
 """
 
 from __future__ import annotations
 
 import re
 import unicodedata
-from typing import Any, Dict, List, Optional, Tuple
+import urllib.parse
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 
 def strip_accents(text: str) -> str:
@@ -72,7 +76,6 @@ def normalize_bairro_name(bairro_str: str) -> str:
     if not bairro_str:
         return ""
     s = strip_accents(bairro_str)
-    # Strip leading code e.g. '181 - '
     s = re.sub(r"^\d+\s*-\s*", "", s)
     s = re.sub(r"[^A-Z0-9\s]", " ", s)
     tokens = s.split()
@@ -96,7 +99,6 @@ def parse_raw_address(end_str: str) -> Dict[str, Any]:
         }
     s = end_str.strip()
     parts = [p.strip() for p in s.split(",")]
-    # Pattern: 'STREET, TYPE_ABBR, NUMBER' (standard municipal cadastral format)
     if len(parts) >= 2 and any(parts[1].upper() == t for t in ["R", "AV", "AL", "TV", "PCA", "EST", "ROD", "PC", "TR"]):
         street_raw = parts[0]
         num_str = parts[2] if len(parts) >= 3 else ""
@@ -110,7 +112,6 @@ def parse_raw_address(end_str: str) -> Dict[str, Any]:
             "house_number": house_num,
         }
 
-    # Alternative standard format: 'Rua Nome, 123'
     if len(parts) >= 2:
         m_num = re.search(r"\b(\d+)\b", parts[1])
         if m_num and int(m_num.group(1)) > 0:
@@ -121,7 +122,6 @@ def parse_raw_address(end_str: str) -> Dict[str, Any]:
                 "house_number": int(m_num.group(1)),
             }
 
-    # Street without number
     if any(s.upper().startswith(p) for p in ["RUA ", "AVENIDA ", "ALAMEDA ", "TRAVESSA ", "PRACA ", "ESTRADA ", "RODOVIA "]):
         return {
             "category": "STREET_WITHOUT_HOUSE_NUMBER",
@@ -130,7 +130,6 @@ def parse_raw_address(end_str: str) -> Dict[str, Any]:
             "house_number": None,
         }
 
-    # Descriptive / lot text
     return {
         "category": "DOCUMENTARY_TEXT_VACANT_LOT",
         "street_raw": s,
@@ -181,12 +180,118 @@ def token_jaccard(s1: str, s2: str) -> float:
 
 
 # ---------------------------------------------------------------------------
-# Direct Exact Address Leakage Classification
+# Chaves na Mão URL Extraction & Canonical Normalization
 # ---------------------------------------------------------------------------
-# Strict rule: DIRECT_EXACT_ADDRESS_LEAK requires an explicit exact-address signal:
-# Street name + exact door number presented as property location.
-# CEP alone is NOT exact physical address leakage.
-# Street alone (without number) is NOT exact physical address leakage.
+_CNM_ID_URL_RE = re.compile(
+    r"/imovel/(?:[A-Za-z0-9\-_]+/)?id-([0-9]+)/?",
+    re.IGNORECASE,
+)
+_CNM_LEGACY_URL_RE = re.compile(
+    r"/imovel/([0-9]+)/?",
+    re.IGNORECASE,
+)
+
+
+def parse_cnm_listing_url(
+    url_or_href: str,
+    base_url: str = "https://www.chavesnamao.com.br",
+) -> Optional[Tuple[str, str]]:
+    """
+    Extract (listing_id, normalized_canonical_url) from a Chaves na Mão listing link.
+    Handles current format:
+        https://www.chavesnamao.com.br/imovel/casa-a-venda-taubate/id-45635914/
+    and relative hrefs:
+        /imovel/casa-a-venda-taubate/id-45635914/
+    Returns None if href is not a listing page.
+    Preserves the original discovered path/slug in canonical URL.
+    """
+    if not url_or_href or not isinstance(url_or_href, str):
+        return None
+
+    # Strip query parameters and fragment
+    clean_href = url_or_href.strip().split("?")[0].split("#")[0]
+
+    # Try current /id-<number>/ format
+    m = _CNM_ID_URL_RE.search(clean_href)
+    if m:
+        listing_id = m.group(1)
+    else:
+        # Fallback to legacy numeric ID
+        m_leg = _CNM_LEGACY_URL_RE.search(clean_href)
+        if m_leg:
+            listing_id = m_leg.group(1)
+        else:
+            return None
+
+    # Build canonical absolute URL
+    if clean_href.startswith("http://") or clean_href.startswith("https://"):
+        full_url = clean_href
+    else:
+        full_url = urllib.parse.urljoin(base_url, clean_href)
+
+    # Ensure trailing slash
+    if not full_url.endswith("/"):
+        full_url += "/"
+
+    return listing_id, full_url
+
+
+def extract_cnm_search_listings(
+    html: str,
+    base_url: str = "https://www.chavesnamao.com.br",
+) -> List[Tuple[str, str]]:
+    """
+    Extract and deduplicate all listing links from a Chaves na Mão search results page.
+    Returns list of (listing_id, canonical_url) in order of appearance.
+    """
+    results: List[Tuple[str, str]] = []
+    seen_ids: Set[str] = set()
+
+    # Search for all hrefs matching /imovel/
+    pattern = re.compile(r'href=["\'](/imovel/[^"\'\s]+|https?://(?:www\.)?chavesnamao\.com\.br/imovel/[^"\'\s]+)["\']', re.IGNORECASE)
+    for m in pattern.finditer(html):
+        href = m.group(1)
+        parsed = parse_cnm_listing_url(href, base_url)
+        if parsed:
+            lid, can_url = parsed
+            if lid not in seen_ids:
+                seen_ids.add(lid)
+                results.append((lid, can_url))
+
+    return results
+
+
+# ---------------------------------------------------------------------------
+# Condominium Property Detection
+# ---------------------------------------------------------------------------
+_CONDO_KEYWORDS = [
+    r"em\s+condom[ií]nio",
+    r"condom[ií]nio\s+fechado",
+    r"casa\s+em\s+condom[ií]nio",
+    r"sobrado\s+em\s+condom[ií]nio",
+    r"condom[ií]nio\s+residencial",
+    r"casa\s*/\s*sobrado\s+em\s+condom[ií]nio",
+]
+_CONDO_RE = re.compile(r"|".join(_CONDO_KEYWORDS), re.IGNORECASE)
+
+
+def is_condominium_listing(text_or_html: str) -> Tuple[bool, Optional[str]]:
+    """
+    Check if property text or HTML explicitly identifies it as a condominium.
+    Main pilot cohort is OPEN-STREET houses/sobrados only.
+    Returns (is_condo: bool, reason: str | None).
+    """
+    if not text_or_html:
+        return False, None
+    m = _CONDO_RE.search(text_or_html)
+    if m:
+        return True, "CONDOMINIUM_EXCLUDED_MAIN_COHORT"
+    return False, None
+
+
+# ---------------------------------------------------------------------------
+# Direct Exact Address Leakage Classification (Target Fields Only)
+# ---------------------------------------------------------------------------
 _STREET_TYPES_REGEX = r"(?:rua|avenida|av\.|alameda|travessa|estrada|rodovia|rod\.|pra[çc]a)"
 _EXACT_ADDRESS_LEAK_RE = re.compile(
     rf"\b{_STREET_TYPES_REGEX}\s+[A-Za-z0-9\xc0-\xff\s\.\-]{{2,60}}[,\s]+(?:n[°º]?|n[ºo]\.?|n[uú]mero\s*)?(\d{{1,5}})\b",
@@ -196,27 +301,119 @@ _EXACT_ADDRESS_LEAK_RE = re.compile(
 
 def classify_direct_address_leakage(text: str) -> Tuple[bool, List[str]]:
     """
-    Classify whether text contains an exact physical address leak (Street + door number).
-    Returns (is_leak: bool, evidence: list[str]).
+    Classify whether raw text contains an exact physical address leak (Street + door number).
     - CEP alone: NOT a leak.
-    - Street name alone: NOT a leak.
-    - Street name + door number: LEAK.
+    - Street alone: NOT a leak.
+    - Street + door number: LEAK.
     """
     if not text:
         return False, []
 
     evidence: List[str] = []
-    # Check for street + door number match
     for m in _EXACT_ADDRESS_LEAK_RE.finditer(text):
-        matched_str = m.group(0).strip()
         num_str = m.group(1)
-        # Avoid false positives where the number is e.g. year 2024 or CEP part
-        if num_str and int(num_str) > 0 and int(num_str) < 99999:
-            # Verify it is not just 'Rua X, Taubaté' followed by a CEP or phone
-            evidence.append(matched_str)
+        if num_str and 0 < int(num_str) < 99999:
+            evidence.append(m.group(0).strip())
 
-    is_leak = len(evidence) > 0
-    return is_leak, evidence
+    return len(evidence) > 0, evidence
+
+
+def classify_target_listing_leakage(html: str) -> Tuple[bool, List[Dict[str, Any]]]:
+    """
+    Classify direct exact address leakage on TARGET-LISTING-owned fields only.
+    Does NOT inspect whole page ads, unrelated recommendation cards, or footer agency info.
+
+    Target-owned fields checked:
+    - Target <title>
+    - Target <meta name="description"> or og:description
+    - Target <h1> tag
+    - Target schema.org address (streetAddress, addressLocality)
+    - Target main property details container (e.g. .property-info, .specs, .main-content)
+
+    Returns: (is_leak: bool, evidence_list: list[dict])
+    Each evidence entry contains:
+      leak_field: str
+      leak_evidence: str
+      leak_field_owner: "TARGET_LISTING"
+    """
+    if not html:
+        return False, []
+
+    # Strip unrelated sections (recommendations, footer ads, other listings)
+    clean_target_html = re.sub(
+        r'<div[^>]+class=["\'][^"\']*(?:recomendad|outros-imoveis|relacionad|veja-tambem|footer|anuncio|publicidade)[^"\']*["\'][^>]*>.*?</div>',
+        "",
+        html,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+
+    evidence_records: List[Dict[str, Any]] = []
+
+    # 1. Target Title
+    m_title = re.search(r"<title[^>]*>(.*?)</title>", clean_target_html, re.IGNORECASE | re.DOTALL)
+    if m_title:
+        title_text = m_title.group(1)
+        is_l, evs = classify_direct_address_leakage(title_text)
+        for ev in evs:
+            evidence_records.append({
+                "leak_field": "title",
+                "leak_evidence": ev,
+                "leak_field_owner": "TARGET_LISTING",
+            })
+
+    # 2. Target Meta Description
+    m_desc = re.search(
+        r'<meta\s+(?:name|property)=["\'](?:description|og:description)["\']\s+content=["\'](.*?)["\']',
+        clean_target_html,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if m_desc:
+        desc_text = m_desc.group(1)
+        is_l, evs = classify_direct_address_leakage(desc_text)
+        for ev in evs:
+            evidence_records.append({
+                "leak_field": "meta_description",
+                "leak_evidence": ev,
+                "leak_field_owner": "TARGET_LISTING",
+            })
+
+    # 3. Target H1
+    m_h1 = re.search(r"<h1[^>]*>(.*?)</h1>", clean_target_html, re.IGNORECASE | re.DOTALL)
+    if m_h1:
+        h1_text = re.sub(r"<[^>]+>", "", m_h1.group(1))
+        is_l, evs = classify_direct_address_leakage(h1_text)
+        for ev in evs:
+            evidence_records.append({
+                "leak_field": "h1",
+                "leak_evidence": ev,
+                "leak_field_owner": "TARGET_LISTING",
+            })
+
+    # 4. Target Schema.org streetAddress
+    m_st_prop = re.search(r'itemprop=["\']streetAddress["\'][^>]*>(.*?)<', clean_target_html, re.IGNORECASE)
+    if m_st_prop:
+        st_val = m_st_prop.group(1)
+        is_l, evs = classify_direct_address_leakage(st_val)
+        for ev in evs:
+            evidence_records.append({
+                "leak_field": "schema_org_streetAddress",
+                "leak_evidence": ev,
+                "leak_field_owner": "TARGET_LISTING",
+            })
+
+    # 5. Target Location Block (if explicitly labeled Endereço / Localização)
+    for m_loc in re.finditer(r"(?:endere[çc]o|localiza[çc][ãa]o)[:\s]+([^<\n]{5,100})", clean_target_html, re.IGNORECASE):
+        loc_text = m_loc.group(1)
+        is_l, evs = classify_direct_address_leakage(loc_text)
+        for ev in evs:
+            evidence_records.append({
+                "leak_field": "location_field",
+                "leak_evidence": ev,
+                "leak_field_owner": "TARGET_LISTING",
+            })
+
+    is_leak = len(evidence_records) > 0
+    return is_leak, evidence_records
 
 
 # ---------------------------------------------------------------------------
@@ -244,9 +441,6 @@ def extract_public_clues_from_html(html: str) -> List[Dict[str, Any]]:
     - floors
     - image_alt_geo
     - image_url (CDN / public photo metadata)
-
-    CRITICAL INVARIANT:
-    Does NOT use corpus data or infer listing street from cadastral records.
     """
     clues: List[Dict[str, Any]] = []
 
@@ -273,7 +467,6 @@ def extract_public_clues_from_html(html: str) -> List[Dict[str, Any]]:
         clues.append({"type": "description", "value": desc_text, "source": "meta_description"})
 
     # 3. Neighbourhood
-    # Check explicit field or itemprop
     m_bairro_prop = re.search(
         r'itemprop=["\']addressLocality["\'][^>]*>(.*?)<', html, re.IGNORECASE
     )
@@ -288,7 +481,6 @@ def extract_public_clues_from_html(html: str) -> List[Dict[str, Any]]:
                 break
 
     # 4. Street name
-    # Check schema.org streetAddress
     m_street_prop = re.search(
         r'itemprop=["\']streetAddress["\'][^>]*>(.*?)<', html, re.IGNORECASE
     )
@@ -296,11 +488,9 @@ def extract_public_clues_from_html(html: str) -> List[Dict[str, Any]]:
         s_val = re.sub(r"<[^>]+>", "", m_street_prop.group(1)).strip()
         clues.append({"type": "street", "value": s_val, "source": "schema_org_streetAddress"})
     else:
-        # Check standard street regex in page content
         m_st = _STREET_EXTRACT_RE.search(html)
         if m_st:
             s_val = m_st.group(1).strip()
-            # Verify street token contains more than just the type prefix
             if len(s_val.split()) >= 2:
                 clues.append({"type": "street", "value": s_val, "source": "page_text_street_pattern"})
 
@@ -317,7 +507,7 @@ def extract_public_clues_from_html(html: str) -> List[Dict[str, Any]]:
     )
     if m_num:
         door_num = int(m_num.group(1))
-        if door_num > 0 and door_num < 99999:
+        if 0 < door_num < 99999:
             clues.append({"type": "house_number", "value": door_num, "source": "page_unverified_door_number"})
 
     # 7. Property type
@@ -351,6 +541,6 @@ def extract_public_clues_from_html(html: str) -> List[Dict[str, Any]]:
     for m in re.finditer(r'<img[^>]+src=["\'](https?://[^"\'\s]+\.(?:jpg|jpeg|png|webp)[^"\'\s]*)["\']', html, re.IGNORECASE):
         src_url = m.group(1).strip()
         clues.append({"type": "image_url", "value": src_url, "source": "public_image_cdn"})
-        break  # Keep first public photo metadata
+        break
 
     return clues

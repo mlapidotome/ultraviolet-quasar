@@ -6,11 +6,11 @@ CLI usage:
     python scratch/run_blinded_real_listing_pilot.py --validate-only [--repo-root <PATH>]
 
 Stages (run in order):
-    discovery          Freeze deterministic CHAVES NA MAO discovery pool (Taubate/SP only)
-    snapshots          Capture public listing page HTML snapshots for selected listings
+    discovery          Freeze deterministic CHAVES NA MAO discovery pool (Taubate/SP open-street only)
+    snapshots          Capture public listing snapshots & complete file-hash manifests
     inputs             Extract public-visible clues from frozen snapshots
-    classify-leakage   Classify direct address leakage per listing; DQ leakers
-    predict            Run frozen production model -> TOP-20 candidates (no training)
+    classify-leakage   Classify direct address leakage on target-listing fields; DQ leakers
+    predict            Run frozen production model -> TOP-20 candidates (Model F primary, Model G secondary)
     ingest-gt          Ingest operator-collected ground truth (post-freeze ONLY)
     evaluate           Score predictions vs GT; classify post-GT corpus membership; failure analysis
     facade-guard       Apply Facade Checker TOP-3 real guard on eligible resolved candidate images
@@ -20,10 +20,13 @@ CONSTRAINTS (enforced at runtime):
     - GT cannot be ingested before frozen_predictions artifact is locked.
     - Model F (TARGET_STREET_ONLY) is the primary scientific ranking.
     - Model G (LOW_NUMBER_WEIGHT) is secondary/noisy-number-assisted.
-    - facade-guard requires explicit --stage invocation and operator confirmation.
+    - Candidate URLs preserve original canonical href (/id-<number>/).
+    - Condominiums are excluded with CONDOMINIUM_EXCLUDED_MAIN_COHORT.
+    - Minimum eligible count gate: stops if eligible_count < 10 with INSUFFICIENT_ELIGIBLE_LISTINGS.
+    - Leakage classification uses TARGET-LISTING-owned fields only (ignores whole-page ads/related cards).
+    - Snapshot manifest records complete per-file hash & byte-size manifests.
     - Facade eligibility strictly requires: rank <= 3 AND is_real == True AND resolution_status in {OBSERVED_REAL, STRUCTURAL_RESOLVED}.
     - Structural hypothetical BCs are strictly forbidden from Facade Checker.
-    - CEP alone or street alone is NOT direct exact address leakage.
     - --validate-only performs zero network I/O and zero artifact writes.
     - This driver NEVER commits or pushes git artifacts automatically.
     - Without --stage or --validate-only this script prints help and exits 2.
@@ -38,11 +41,12 @@ import json
 import re
 import sys
 import tempfile
+import time
 import unicodedata
 import urllib.parse
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 # Ensure repo root is on sys.path for address_finder module resolution
 _REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -67,7 +71,6 @@ CNM_SEARCH_URL_TEMPLATE = (
     "https://www.chavesnamao.com.br/imoveis-para-venda/sp-taubate/"
     "?tipo={type_slug}&finalidade=residencial&pagina={page}"
 )
-CNM_LISTING_ID_RE = re.compile(r"/imovel/([0-9]+)/")
 
 # Pre-registered failure taxonomy codes
 TAXONOMY_CODES: frozenset[str] = frozenset({
@@ -193,111 +196,127 @@ def _confirm(prompt: str) -> bool:
 
 
 # ---------------------------------------------------------------------------
-# Eligibility + extraction helpers
+# Eligibility helpers
 # ---------------------------------------------------------------------------
-def _is_eligible(lid: str, url: str) -> tuple[bool, dict, bool]:
+def _is_eligible_listing(lid: str, url: str) -> tuple[bool, dict, str | None]:
     """
     Check listing eligibility on live crawl.
-    Returns: (is_eligible, meta_dict, is_direct_leak)
+    Returns: (is_eligible, meta_dict, exclusion_reason)
     """
     import urllib.request
     meta: dict = {"property_type": None, "municipality": None, "state": None, "has_facade_image": False}
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"})
     try:
-        with urllib.request.urlopen(url, timeout=20) as resp:
+        with urllib.request.urlopen(req, timeout=20) as resp:
             lhtml = resp.read().decode("utf-8", errors="replace")
     except Exception as exc:
         info(f"  Skip {lid}: {exc}")
-        return False, meta, False
+        return False, meta, f"HTTP_FETCH_ERROR:{exc}"
+
     ll = lhtml.lower()
     if "taubat" not in ll:
-        return False, meta, False
+        return False, meta, "NON_TAUBATE"
     meta["municipality"] = TARGET_MUNICIPALITY
     meta["state"] = TARGET_STATE
+
     prop_type = next((t for t in ("sobrado", "casa") if t in ll), None)
     if prop_type is None:
-        return False, meta, False
+        return False, meta, "INELIGIBLE_PROPERTY_TYPE"
     meta["property_type"] = prop_type
+
     if "residencial" not in ll:
-        return False, meta, False
+        return False, meta, "NON_RESIDENTIAL"
+
+    # Check condominium exclusion
+    is_condo, condo_reason = address_finder.is_condominium_listing(lhtml)
+    if is_condo:
+        info(f"  Auditing: {lid} excluded (condominium property)")
+        return False, meta, condo_reason
+
     has_img = bool(re.search(r"<img[^>]+(fachada|facade|exterior|frente)", ll))
     if not has_img:
         has_img = bool(re.search(r"<img[^>]+imovel", ll))
     meta["has_facade_image"] = has_img
     if not has_img:
-        return False, meta, False
+        return False, meta, "NO_FACADE_IMAGE"
 
-    # Check direct exact address leakage (street + door number).
-    # CEP alone or street alone is NOT direct exact leakage.
-    is_direct_leak, _ = address_finder.classify_direct_address_leakage(lhtml)
+    # Check direct exact address leakage on target-listing-owned fields only
+    is_direct_leak, _ = address_finder.classify_target_listing_leakage(lhtml)
     if is_direct_leak:
-        info(f"  Auditing: {lid} rejected due to exact street + door number leak")
-        return False, meta, True
+        info(f"  Auditing: {lid} rejected due to exact street + door number leak on target listing")
+        return False, meta, "DIRECT_EXACT_ADDRESS_LEAK"
 
-    return True, meta, False
-
-
-def _extract_clues(html: str) -> list[dict]:
-    """Extract production-visible clues from HTML listing."""
-    return address_finder.extract_public_clues_from_html(html)
+    return True, meta, None
 
 
 # ---------------------------------------------------------------------------
 # STAGE 1 -- Discovery Pool Freeze
 # ---------------------------------------------------------------------------
 def stage_discovery(paths: dict[str, Path]) -> None:
-    """Crawl CHAVES NA MAO for Taubate casa/sobrado residencial listings.
-    Ordering: numeric listing_id ascending. Eligibility filters applied live.
-    Maintains discovery audit statistics for disqualified direct-address leakers.
+    """Crawl CHAVES NA MAO for Taubate casa/sobrado residencial open-street listings.
+    Extracts /id-<number>/ and preserves original discovered canonical URL.
+    Ordering: numeric listing_id ascending. Excludes condominiums.
+    Maintains discovery audit statistics for disqualified listings.
     Requires explicit --stage discovery and operator confirmation.
     """
     _abort_if_frozen(paths, "discovery_pool", "Discovery pool already frozen.")
     if not _confirm("Crawl chavesnamao.com.br? [yes/no] "):
         sys.exit("[ABORTED]")
     import urllib.request
-    seen: set[str] = set()
+    seen_ids: set[str] = set()
     eligible: list[dict] = []
-    direct_leaks_rejected: list[dict] = []
+    audit_exclusions: list[dict] = []
+
+    req_headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
 
     for type_slug in ("casa", "sobrado"):
         page = 1
-        while len(seen) < DISCOVERY_MAX:
-            url = CNM_SEARCH_URL_TEMPLATE.format(type_slug=type_slug, page=page)
-            info(f"Crawling: {url}")
+        while len(seen_ids) < DISCOVERY_MAX:
+            search_url = CNM_SEARCH_URL_TEMPLATE.format(type_slug=type_slug, page=page)
+            info(f"Crawling: {search_url}")
             try:
-                with urllib.request.urlopen(url, timeout=20) as resp:
+                req = urllib.request.Request(search_url, headers=req_headers)
+                with urllib.request.urlopen(req, timeout=20) as resp:
                     html = resp.read().decode("utf-8", errors="replace")
             except Exception as exc:
                 info(f"Stop page {page}: {exc}")
                 break
-            found = CNM_LISTING_ID_RE.findall(html)
-            if not found:
+
+            # Robust extraction of /id-<number>/ links preserving canonical URL
+            page_listings = address_finder.extract_cnm_search_listings(html)
+            if not page_listings:
                 break
-            for raw_id in found:
-                lid = raw_id.strip()
-                if not lid.isdigit() or lid in seen:
+
+            for lid, canon_url in page_listings:
+                if lid in seen_ids:
                     continue
-                seen.add(lid)
-                listing_url = f"https://www.chavesnamao.com.br/imovel/{lid}/"
-                ok, meta, is_leak = _is_eligible(lid, listing_url)
+                seen_ids.add(lid)
+
+                # Public crawl safety: conservative pacing
+                time.sleep(1.0)
+
+                ok, meta, excl_reason = _is_eligible_listing(lid, canon_url)
                 if ok:
                     eligible.append({
                         "listing_id": lid,
-                        "source_url": listing_url,
+                        "source_url": canon_url,  # Original discovered canonical URL preserved
                         "property_type": meta["property_type"],
                         "municipality": TARGET_MUNICIPALITY,
                         "state": TARGET_STATE,
                         "has_facade_image": True,
                         "direct_address_leaked": False,
                     })
-                elif is_leak:
-                    direct_leaks_rejected.append({
+                else:
+                    audit_exclusions.append({
                         "listing_id": lid,
-                        "source_url": listing_url,
-                        "reason": "DIRECT_EXACT_ADDRESS_LEAK",
+                        "source_url": canon_url,
+                        "reason": excl_reason,
                     })
             page += 1
 
+    # Deterministic sorting: numeric listing_id ascending, fallback URL
     eligible.sort(key=lambda r: (int(r["listing_id"]), r["source_url"]))
+
     digest = write_json(paths["discovery_pool"], {
         "schema_version": SCHEMA_VERSION,
         "generated_at": now_utc(),
@@ -305,54 +324,115 @@ def stage_discovery(paths: dict[str, Path]) -> None:
         "municipality": TARGET_MUNICIPALITY,
         "state": TARGET_STATE,
         "eligible_count": len(eligible),
-        "direct_leaks_rejected_count": len(direct_leaks_rejected),
-        "direct_leaks_rejected": direct_leaks_rejected,
+        "audit_exclusions_count": len(audit_exclusions),
+        "audit_exclusions": audit_exclusions,
         "listings": eligible,
     })
-    info(f"Discovery pool frozen: {len(eligible)} eligible listings, {len(direct_leaks_rejected)} leaks rejected. SHA-256: {digest}")
+    info(f"Discovery pool frozen: {len(eligible)} eligible open-street listings, {len(audit_exclusions)} excluded. SHA-256: {digest}")
 
 
 # ---------------------------------------------------------------------------
-# STAGE 2 -- Snapshot Capture + Pilot Manifest
+# STAGE 2 -- Snapshot Capture + Pilot Manifest (Complete File Hash Manifests)
 # ---------------------------------------------------------------------------
 def stage_snapshots(paths: dict[str, Path]) -> None:
-    """Select exactly PILOT_N (10) listings; capture full public HTML snapshots. No binary download."""
+    """Select exactly PILOT_N (10) listings; capture HTML snapshots and complete file-hash manifests.
+    Enforces minimum eligible count gate: stops if eligible_count < 10 with INSUFFICIENT_ELIGIBLE_LISTINGS.
+    """
     _gate(paths, "discovery_pool")
     _abort_if_frozen(paths, "snapshot_manifest", "Snapshot manifest already frozen.")
+
+    pool = load_json(paths["discovery_pool"])
+    eligible_count = len(pool.get("listings", []))
+
+    # Minimum eligible count gate
+    if eligible_count < PILOT_N:
+        sys.exit(
+            f"[GATE] INSUFFICIENT_ELIGIBLE_LISTINGS: found {eligible_count} eligible listings, "
+            f"expected at least {PILOT_N}. Expand crawl depth within Taubaté only."
+        )
+
     if not _confirm(f"Fetch listing pages for {PILOT_N} listings? [yes/no] "):
         sys.exit("[ABORTED]")
+
     import urllib.request
-    pool = load_json(paths["discovery_pool"])
     selected = pool["listings"][:PILOT_N]
     snap_root = paths["snapshot_root"]
     snap_root.mkdir(parents=True, exist_ok=True)
+    repo_root = paths["snapshot_root"].parent.parent.parent
+
     entries: list[dict] = []
+    req_headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+
     for entry in selected:
         lid = entry["listing_id"]
         url = entry["source_url"]
         ld = snap_root / lid
         ld.mkdir(parents=True, exist_ok=True)
-        (ld / "source_url.txt").write_text(url + "\n", encoding="utf-8")
-        html_path = ld / "listing.html"
+
+        # 1. source_url.txt
+        url_file = ld / "source_url.txt"
+        url_file.write_text(url + "\n", encoding="utf-8")
+
+        # 2. listing.html
+        html_file = ld / "listing.html"
+        ok = False
+        raw = b""
         try:
-            with urllib.request.urlopen(url, timeout=20) as resp:
+            req = urllib.request.Request(url, headers=req_headers)
+            with urllib.request.urlopen(req, timeout=20) as resp:
                 raw = resp.read()
-            html_path.write_bytes(raw)
-            ok, sha = True, hashlib.sha256(raw).hexdigest()
+            html_file.write_bytes(raw)
+            ok = True
             info(f"  Snapshot: {lid} ({len(raw)} bytes)")
         except Exception as exc:
-            ok, sha = False, ""
+            html_file.write_bytes(b"")
             info(f"  Snapshot FAILED {lid}: {exc}")
-        rel = str(html_path.relative_to(snap_root.parent.parent))
+
+        # Conservative pacing
+        time.sleep(1.0)
+
+        # 3. snapshot_metadata.json
+        meta_file = ld / "snapshot_metadata.json"
+        meta_data = {
+            "listing_id": lid,
+            "source_url": url,
+            "property_type": entry.get("property_type"),
+            "municipality": TARGET_MUNICIPALITY,
+            "state": TARGET_STATE,
+            "captured_at": now_utc(),
+            "http_fetch_ok": ok,
+        }
+        meta_file.write_text(json.dumps(meta_data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+        # 4. public_clues.json
+        html_text = raw.decode("utf-8", errors="replace") if ok else ""
+        extracted_clues = address_finder.extract_public_clues_from_html(html_text) if ok else []
+        clues_file = ld / "public_clues.json"
+        clues_file.write_text(json.dumps(extracted_clues, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+        # Complete per-listing file hash manifest
+        listing_files: list[dict] = []
+        for fpath in sorted(ld.glob("*")):
+            if fpath.is_file() and not fpath.name.endswith(".sha256"):
+                f_bytes = fpath.read_bytes()
+                f_sha = hashlib.sha256(f_bytes).hexdigest()
+                rel_p = str(fpath.relative_to(repo_root)).replace("\\", "/")
+                listing_files.append({
+                    "file": fpath.name,
+                    "relative_path": rel_p,
+                    "byte_size": len(f_bytes),
+                    "sha256": f_sha,
+                })
+
         entries.append({
             "listing_id": lid,
             "source_url": url,
             "property_type": entry.get("property_type"),
-            "snapshot_html": rel,
-            "snapshot_sha256": sha,
             "snapshot_ok": ok,
             "captured_at": now_utc(),
+            "files": listing_files,
         })
+
     write_json(paths["pilot_manifest"], {
         "schema_version": SCHEMA_VERSION,
         "generated_at": now_utc(),
@@ -364,7 +444,7 @@ def stage_snapshots(paths: dict[str, Path]) -> None:
         "generated_at": now_utc(),
         "snapshots": entries,
     })
-    info(f"Snapshot manifest frozen: {len(entries)} entries (PILOT_N={PILOT_N}). SHA-256: {digest}")
+    info(f"Snapshot manifest frozen: {len(entries)} entries with complete file manifests. SHA-256: {digest}")
 
 
 # ---------------------------------------------------------------------------
@@ -377,19 +457,28 @@ def stage_inputs(paths: dict[str, Path]) -> None:
     snap_manifest = load_json(paths["snapshot_manifest"])
     repo_root = paths["snapshot_root"].parent.parent.parent
     listings: list[dict] = []
+
     for snap in snap_manifest["snapshots"]:
         lid = snap["listing_id"]
         if not snap["snapshot_ok"]:
             listings.append({"listing_id": lid, "clues": [], "extraction_ok": False})
             continue
-        hp = repo_root / snap["snapshot_html"]
+
+        html_rel = next((f["relative_path"] for f in snap.get("files", []) if f["file"] == "listing.html"), None)
+        if not html_rel:
+            listings.append({"listing_id": lid, "clues": [], "extraction_ok": False})
+            continue
+
+        hp = repo_root / html_rel
         if not hp.is_file():
             listings.append({"listing_id": lid, "clues": [], "extraction_ok": False})
             continue
+
         html = hp.read_text(encoding="utf-8", errors="replace")
-        clues = _extract_clues(html)
+        clues = address_finder.extract_public_clues_from_html(html)
         listings.append({"listing_id": lid, "clues": clues, "extraction_ok": True})
         info(f"  {lid}: {len(clues)} clues extracted with provenance")
+
     digest = write_json(paths["public_inputs"], {
         "schema_version": SCHEMA_VERSION,
         "generated_at": now_utc(),
@@ -399,11 +488,11 @@ def stage_inputs(paths: dict[str, Path]) -> None:
 
 
 # ---------------------------------------------------------------------------
-# STAGE 4 -- Direct Leakage Classification
+# STAGE 4 -- Direct Leakage Classification (Target Listing Fields Only)
 # ---------------------------------------------------------------------------
 def stage_classify_leakage(paths: dict[str, Path]) -> None:
-    """Classify each listing for direct exact-address leakage (street + door number).
-    CEP alone or street alone is NOT direct exact leakage.
+    """Classify direct exact-address leakage on TARGET-LISTING-owned fields only.
+    Ignores whole-page ads, unrelated recommendation cards, and footer info.
     """
     _gate(paths, "public_inputs")
     _abort_if_frozen(paths, "leakage_report", "Leakage report already frozen.")
@@ -414,36 +503,32 @@ def stage_classify_leakage(paths: dict[str, Path]) -> None:
         else {"snapshots": []}
     )
     repo_root = paths["snapshot_root"].parent.parent.parent
-    snap_html: dict[str, Path] = {
-        snap["listing_id"]: repo_root / snap["snapshot_html"]
-        for snap in snap_manifest.get("snapshots", [])
-        if (repo_root / snap["snapshot_html"]).is_file()
-    }
+
+    snap_html: dict[str, Path] = {}
+    for snap in snap_manifest.get("snapshots", []):
+        html_rel = next((f["relative_path"] for f in snap.get("files", []) if f["file"] == "listing.html"), None)
+        if html_rel and (repo_root / html_rel).is_file():
+            snap_html[snap["listing_id"]] = repo_root / html_rel
+
     reports: list[dict] = []
     for entry in public_inputs["listings"]:
         lid = entry["listing_id"]
-        leaked, evidence = False, []
-        # Check raw HTML snapshot
+        leaked = False
+        evidence_list: list[dict] = []
+
+        # Check target-listing-owned fields in HTML snapshot
         if lid in snap_html:
             ht = snap_html[lid].read_text(encoding="utf-8", errors="replace")
-            is_leak, ev = address_finder.classify_direct_address_leakage(ht)
-            if is_leak:
+            is_l, ev_recs = address_finder.classify_target_listing_leakage(ht)
+            if is_l:
                 leaked = True
-                evidence.extend(ev)
-
-        # Also check clues for any exact address leak text
-        for clue in entry.get("clues", []):
-            v = str(clue.get("value", ""))
-            is_clue_leak, c_ev = address_finder.classify_direct_address_leakage(v)
-            if is_clue_leak:
-                leaked = True
-                evidence.extend(c_ev)
+                evidence_list.extend(ev_recs)
 
         reports.append({
             "listing_id": lid,
             "direct_exact_address_leaked": leaked,
             "taxonomy_code": "DIRECT_EXACT_ADDRESS_LEAK" if leaked else None,
-            "evidence": evidence,
+            "evidence": evidence_list,
         })
         info(f"  [{'DQ' if leaked else 'OK'}] {lid}")
 
@@ -467,10 +552,6 @@ def _call_address_finder_model(
     frozen_rules: Optional[dict] = None,
     street_bindings: Optional[dict] = None,
 ) -> dict:
-    """
-    Call the production-wired Address Finder inference module.
-    Returns prediction dict with primary_model_f_ranking and secondary_model_g_ranking.
-    """
     return address_finder.predict_from_listing(
         public_listing_clues=clues,
         corpus=corpus,
@@ -487,21 +568,18 @@ def stage_predict(paths: dict[str, Path]) -> None:
     if not _confirm("Run Address Finder inference pipeline on public inputs? [yes/no] "):
         sys.exit("[ABORTED]")
 
-    # Load frozen corpus (acervo_casas_taubate.json)
     if not paths["corpus"].is_file():
         sys.exit(f"[ERROR] Cadastral corpus not found at {paths['corpus']}")
     info(f"Loading cadastral corpus: {paths['corpus']}")
     corpus = address_finder.load_corpus(paths["corpus"])
     info(f"Corpus loaded: {len(corpus.parcels)} parcels. SHA-256: {corpus.corpus_sha256}")
 
-    # Load frozen rules artifact if present
     frozen_rules = None
     if paths["frozen_rules"].is_file():
         frozen_rules = load_json(paths["frozen_rules"])
         frozen_rules["sha256"] = sha256_of_file(paths["frozen_rules"])
         info(f"Loaded frozen rules from {paths['frozen_rules'].name} (SHA: {frozen_rules['sha256'][:12]}...)")
 
-    # Load street bindings if present
     street_bindings = None
     if paths["street_bindings"].is_file():
         b_data = load_json(paths["street_bindings"])
@@ -549,7 +627,7 @@ def stage_predict(paths: dict[str, Path]) -> None:
             "taxonomy_code": taxonomy_code,
             "primary_model_f_ranking": primary_f,
             "secondary_model_g_ranking": secondary_g,
-            "candidates": primary_f,  # Default candidates alias is Model F primary
+            "candidates": primary_f,
             "provenance": pred_res.get("provenance", {}),
             "predicted_at": now_utc(),
         })
@@ -572,12 +650,7 @@ def stage_predict(paths: dict[str, Path]) -> None:
 # STAGE 6 -- Ground Truth Ingestion
 # ---------------------------------------------------------------------------
 def stage_ingest_gt(paths: dict[str, Path]) -> None:
-    """Ingest operator-collected GT only after frozen_predictions are locked (hard blinding gate).
-
-    GT input: data/address_finder_real_listing_pilot/ground_truth_input.json
-    Schema:   {entries: [{listing_id, true_physical_address, true_bc,
-                          provenance, verified_by, verified_at}]}
-    """
+    """Ingest operator-collected GT only after frozen_predictions are locked (hard blinding gate)."""
     _gate(paths, "frozen_predictions")
     _abort_if_frozen(paths, "ground_truth", "Ground truth already frozen.")
     gt_input_path = paths["snapshot_root"].parent / "ground_truth_input.json"
@@ -614,7 +687,6 @@ def stage_ingest_gt(paths: dict[str, Path]) -> None:
 # STAGE 7 -- Evaluation (Model F Primary, Model G Secondary, Post-GT Membership)
 # ---------------------------------------------------------------------------
 def _assign_failure_code(pred: dict) -> str:
-    """Preserve specific inference failure code if present, else fallback."""
     if pred.get("taxonomy_code"):
         return pred["taxonomy_code"]
     return "LLL_GENERATION_MISS" if not pred.get("candidates") else "CANDIDATE_RESOLUTION_FAILURE"
@@ -629,10 +701,6 @@ def _count_codes(failures: list[dict]) -> dict[str, int]:
 
 
 def _classify_post_gt_corpus_membership(true_bc: Optional[str], corpus: Any) -> str:
-    """
-    POST-GT ONLY: Classify whether the true property exists in the cadastral corpus.
-    Never run during prediction!
-    """
     if not true_bc or not corpus:
         return "NOT_PRESENT_IN_CORPUS"
     parts = true_bc.strip().split(".")
@@ -662,24 +730,17 @@ def _classify_post_gt_corpus_membership(true_bc: Optional[str], corpus: Any) -> 
 
 
 def stage_evaluate(paths: dict[str, Path]) -> None:
-    """Score frozen predictions vs GT by normalised address matching.
-    Primary scientific pilot metrics use Model F (TARGET_STREET_ONLY).
-    Secondary metrics evaluate Model G (LOW_NUMBER_WEIGHT).
-    Post-GT only: classify target property corpus membership.
-    """
     _gate(paths, "frozen_predictions", "ground_truth")
     _abort_if_frozen(paths, "evaluation", "Evaluation already frozen.")
     predictions = load_json(paths["frozen_predictions"])
     gt_data = load_json(paths["ground_truth"])
 
-    # Load corpus for post-GT membership audit
     corpus = None
     if paths["corpus"].is_file():
         corpus = address_finder.load_corpus(paths["corpus"])
 
     gt_map: dict[str, dict] = {e["listing_id"]: e for e in gt_data["entries"]}
 
-    # Counters for Primary (Model F) and Secondary (Model G)
     counters_f = {"TOP1": 0, "TOP3": 0, "TOP5": 0, "TOP10": 0, "TOP20": 0}
     counters_g = {"TOP1": 0, "TOP3": 0, "TOP5": 0, "TOP10": 0, "TOP20": 0}
 
@@ -721,7 +782,6 @@ def stage_evaluate(paths: dict[str, Path]) -> None:
         gt_addr = _normalise_address(gt_entry["true_physical_address"])
         gt_bc = gt_entry.get("true_bc")
 
-        # Post-GT corpus membership classification
         membership = _classify_post_gt_corpus_membership(gt_bc, corpus)
         membership_counts[membership] = membership_counts.get(membership, 0) + 1
 
@@ -792,7 +852,6 @@ def stage_evaluate(paths: dict[str, Path]) -> None:
     info(f"Evaluation: {evaluated} listings.")
     info(f"  Primary Model F: TOP1={rates_f['TOP1']:.2%} TOP5={rates_f['TOP5']:.2%}")
     info(f"  Secondary Model G: TOP1={rates_g['TOP1']:.2%} TOP5={rates_g['TOP5']:.2%}")
-    info(f"Corpus membership breakdown: {membership_counts}")
     info(f"Evaluation SHA-256: {de}")
 
 
@@ -800,11 +859,6 @@ def stage_evaluate(paths: dict[str, Path]) -> None:
 # STAGE 8 -- Facade Guard (Strict TOP-3 Real Guard, Fail-Closed)
 # ---------------------------------------------------------------------------
 def stage_facade_guard(paths: dict[str, Path]) -> None:
-    """Apply Facade Checker TOP-3 real guard on eligible resolved candidate images.
-    Strict eligibility: rank <= 3 AND is_real == True AND resolution_status in {OBSERVED_REAL, STRUCTURAL_RESOLVED}.
-    Structural unresolved hypotheses are strictly forbidden from Facade Checker.
-    Keeps execution fail-closed if verified source/API cannot be found.
-    """
     _gate(paths, "frozen_predictions", "snapshot_manifest")
     _abort_if_frozen(paths, "facade_report", "Facade report already frozen.")
     if not _confirm("Run Facade Checker Guard? [yes/no] "):
@@ -814,14 +868,6 @@ def stage_facade_guard(paths: dict[str, Path]) -> None:
     info("[FAIL-CLOSED] Facade Checker execution remains fail-closed; guarding candidate eligibility.")
 
     predictions = load_json(paths["frozen_predictions"])
-    snap_manifest = load_json(paths["snapshot_manifest"])
-    repo_root = paths["snapshot_root"].parent.parent.parent
-    snap_by_id: dict[str, Path] = {
-        s["listing_id"]: repo_root / s["snapshot_html"]
-        for s in snap_manifest["snapshots"]
-        if (repo_root / s["snapshot_html"]).is_file()
-    }
-
     results: list[dict] = []
     for pred in predictions["predictions"]:
         lid = pred["listing_id"]
@@ -829,7 +875,6 @@ def stage_facade_guard(paths: dict[str, Path]) -> None:
             results.append({"listing_id": lid, "skipped": True, "reason": "DISQUALIFIED_OR_NO_CANDIDATES"})
             continue
 
-        # Strict candidate eligibility filter (using Model F primary rank)
         eligible_top3 = [
             c for c in pred["candidates"]
             if (c.get("rank_model_f") or c.get("rank", 99)) <= 3
@@ -872,28 +917,12 @@ def stage_facade_guard(paths: dict[str, Path]) -> None:
 # VALIDATE-ONLY
 # ---------------------------------------------------------------------------
 def validate_only(paths: dict[str, Path]) -> None:
-    """Offline static validation. Zero network I/O. Zero artifact writes.
-
-    Checks:
-      1. Required stdlib and address_finder modules importable
-      2. PILOT_N constant == 10
-      3. Cadastral corpus exists and SHA-256 verifies
-      4. Cadastral corpus excludes contribuinte/owner
-      5. Taxonomy JSON schema valid; all pre-registered codes present
-      6. SHA-256 helper produces correct output on known input
-      7. State-gate raises SystemExit on missing artifact
-      8. GT rejection before freeze: ground_truth must not exist before frozen_predictions
-      9. facade_checker NOT auto-imported at module level
-      10. urllib.request NOT imported at module level (no-network invariant)
-      11. _abort_if_frozen is callable (frozen-artifact mutation guard)
-      12. Model F & Model G inference test executes with zero GT input
-      13. Leakage semantics: CEP alone is NOT leakage; street alone is NOT leakage; street+number is leakage
-    """
+    """Offline static validation. Zero network I/O. Zero artifact writes."""
     import sys as _sys
     failures: list[str] = []
 
     # 1. Stdlib & local imports
-    for mod in ("argparse", "hashlib", "importlib", "json", "re",
+    for mod in ("argparse", "hashlib", "importlib", "json", "re", "time",
                 "unicodedata", "urllib.parse", "datetime", "pathlib", "tempfile", "address_finder"):
         try:
             importlib.import_module(mod)
@@ -996,6 +1025,27 @@ def validate_only(paths: dict[str, Path]) -> None:
     if not leak_num:
         failures.append("street_plus_number_not_classified_as_leak")
 
+    # 14. Target-owned leakage vs related card leakage
+    html_target_safe_related_leak = """<html>
+    <head><title>Casa no Jardim das Nações, Taubaté</title></head>
+    <body>
+        <div class="property-info"><span itemprop="streetAddress">Rua das Flores</span></div>
+        <div class="recomendados"><div class="card">Casa na Rua Example, 123 - Taubaté</div></div>
+    </body></html>"""
+    is_t_leak, _ = address_finder.classify_target_listing_leakage(html_target_safe_related_leak)
+    if is_t_leak:
+        failures.append("related_card_address_incorrectly_leaked_target")
+
+    # 15. URL parser check
+    p_res = address_finder.parse_cnm_listing_url("/imovel/casa-a-venda-taubate/id-45635914/")
+    if not p_res or p_res[0] != "45635914":
+        failures.append(f"url_parser_failed:{p_res}")
+
+    # 16. Condo detection check
+    is_c, _ = address_finder.is_condominium_listing("Casa em condomínio fechado em Taubaté")
+    if not is_c:
+        failures.append("condo_detection_failed")
+
     if failures:
         _sys.stderr.write("[VALIDATE] FAILED\n")
         for f in failures:
@@ -1017,6 +1067,9 @@ def validate_only(paths: dict[str, Path]) -> None:
         "11. frozen_artifact_guard         OK",
         "12. model_inference_without_gt    OK",
         "13. leakage_semantics_cep_street  OK",
+        "14. target_leakage_isolation      OK",
+        "15. cnm_url_id_parsing            OK",
+        "16. condo_property_exclusion      OK",
     ):
         info(f"  {label}")
 

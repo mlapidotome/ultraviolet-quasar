@@ -20,10 +20,14 @@ from address_finder.models import (
 )
 from address_finder.normalization import (
     classify_direct_address_leakage,
+    classify_target_listing_leakage,
+    extract_cnm_search_listings,
     extract_public_clues_from_html,
+    is_condominium_listing,
     normalize_bairro_name,
     normalize_street_name,
     parse_bc,
+    parse_cnm_listing_url,
     parse_raw_address,
     token_jaccard,
 )
@@ -35,6 +39,10 @@ __all__ = [
     "predict_from_listing",
     "extract_public_clues_from_html",
     "classify_direct_address_leakage",
+    "classify_target_listing_leakage",
+    "parse_cnm_listing_url",
+    "extract_cnm_search_listings",
+    "is_condominium_listing",
     "normalize_street_name",
     "normalize_bairro_name",
     "parse_raw_address",
