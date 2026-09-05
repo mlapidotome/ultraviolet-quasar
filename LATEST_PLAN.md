@@ -1,17 +1,17 @@
-# Proposta Arquitetural & Plano de Implementação — Fase 2C
+# Proposta Arquitetural & Plano de Implementação — Fase 2C (Revisado)
 ## Aprovação do Piloto e Geração dos Vídeos Restantes (Ganchos 2 e 3)
 
 **Projeto:** Video Engine V2 — Bali Imóveis  
 **Fase:** 2C (Aprovação / Reprovação do Piloto e Conclusão do Creative Set)  
-**Status do Documento:** AGUARDANDO REVISÃO E APROVAÇÃO  
+**Status do Documento:** AGUARDANDO REVISÃO E APROVAÇÃO FINAL  
 **Objetivo Estratégico:** Após o Job atingir o estado `PILOT_READY` na Fase 2B, permitir que Marcel avalie o vídeo piloto no painel e decida entre **APROVAR** ou **REPROVAR**.  
-Se aprovado, o sistema reaproveita o `body.mp4` **já existente e vinculado ao Job**, gera exclusivamente os Ganchos 2 e 3 na HeyGen, monta os Vídeos 2 e 3 via FFmpeg e entrega a coleção criativa completa (3 vídeos), **sem regenerar o corpo, sem gastar créditos duplicados na HeyGen, com concorrência atômica, Smart Resume parcial e entrega 100% autenticada**.
+Se aprovado, o sistema reaproveita o `body.mp4` **já existente e validado de forma forte e inequívoca no Job**, gera exclusivamente os Ganchos 2 e 3 na HeyGen, monta os Vídeos 2 e 3 via FFmpeg e entrega a coleção criativa completa (3 vídeos), **sem regenerar o corpo, sem gastar créditos duplicados na HeyGen, com concorrência atômica, Smart Resume granular no boot e em retry, e entrega 100% autenticada**.
 
 ---
 
 ## 1. Diagnóstico do Fluxo Legado (`OK / GERAR RESTANTE` no WhatsApp)
 
-A inspeção em `/var/www/bali-gestor/video_anuncios_engine.js` (linhas 580 a 635) evidenciou os seguintes acoplamentos no fluxo legado:
+A inspeção em `/var/www/bali-gestor/video_anuncios_engine.js` (linhas 580 a 635) evidenciou os seguintes acoplamentos e fragilidades no fluxo legado:
 
 1. **Dependência Volátil e Fallback Arbitrário:**
    - O gatilho de aprovação (`OK`, `GERAR RESTANTE`) pesquisa a sessão em `activeVideoSessions[sessionKey]`.
@@ -33,45 +33,74 @@ A inspeção em `/var/www/bali-gestor/video_anuncios_engine.js` (linhas 580 a 63
 
 ## 2. Regras Arquiteturais Absolutas da Fase 2C
 
-1. **O `body.mp4` é um Asset Exclusivo e Inequívoco do `job_id`:**  
-   O arquivo de corpo utilizado na concatenação dos Vídeos 2 e 3 é **estritamente aquele gerado na Fase 2B**, localizado em:
-   `/var/www/bali-gestor/outputs/jobs/<job_id>/body.mp4`
-   e referenciado em `video_jobs.metadata.pilot.body.local_path`.  
-   **É expressamente proibido:**
-   * Procurar arquivos por nome genérico em `outputs/`;
-   * Executar `readdirSync` para encontrar "o último body";
-   * Regenerar o corpo automaticamente (desperdiçando créditos);
-   * Utilizar body de outro Job;
-   * Utilizar body de outro imóvel apenas porque `property_ref` coincide.  
-   *Se o arquivo físico do body não existir ou não for validado, a operação é interrompida imediatamente com falha explícita (`REMAINDER_FAILED`).*
+### 2.1. Validação Forte do `body.mp4` Reutilizado
+O arquivo de corpo utilizado na concatenação dos Vídeos 2 e 3 **não é considerado válido apenas porque o arquivo existe**. Ele deve cumprir obrigatoriamente e cumulativamente todas as seguintes condições:
+1. `metadata.pilot.body.local_path` existe e está preenchido no banco de dados;
+2. **Isolamento de Diretório & Anti-Path-Traversal:**
+   - `path.resolve(localPath)` deve residir estritamente dentro de `path.resolve('/var/www/bali-gestor/outputs/jobs/' + jobId)`;
+   - `path.basename(localPath) === 'body.mp4'`;
+   - Nenhuma possibilidade de caracteres relativos (`..`, `~`) ou symlinks para fora da pasta do job;
+3. **Existência Física & Integridade de Conteúdo:**
+   - `fs.existsSync(localPath) === true`;
+   - `fs.statSync(localPath).size > 0` (tamanho estritamente maior que zero bytes);
+4. **Validação Estrutural de Mídia via `ffprobe`:**
+   - Execução síncrona/assíncrona de:
+     `ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 <localPath>`
+   - `parseFloat(duration) > 0` (comprova que o container MP4 possui stream de áudio/vídeo legível e não é arquivo truncado ou corrompido).
 
-2. **Transição Atômica de Concorrência no PostgreSQL:**  
-   A ação de aprovação e início da renderização dos restantes deve ser **100% atômica no banco de dados**:
-   ```sql
-   UPDATE video_jobs
-   SET status = 'REMAINDER_SUBMITTED', updated_at = NOW()
-   WHERE id = $1
-     AND status IN ('PILOT_READY', 'REMAINDER_FAILED')
-   RETURNING *;
-   ```
-   - **Somente a requisição que obtiver linha no `RETURNING`** inicia as chamadas à HeyGen.
-   - Chamadas concorrentes simultâneas recebem `HTTP 409 Conflict` se já em andamento (`REMAINDER_SUBMITTED` ou `REMAINDER_RENDERING`), ou `HTTP 200 OK` se o conjunto já estiver pronto (`CREATIVE_SET_READY`).
+> [!CAUTION]
+> **Ação em Caso de Falha de Validação do Body:**
+> Se qualquer uma dessas validações falhar:
+> - **NÃO** regenerar Body automaticamente;
+> - **NÃO** procurar outro Body por nome em `outputs/`;
+> - **NÃO** usar Body de outro Job ou de sessões legadas;
+> - Transitar o Job imediatamente para `REMAINDER_FAILED` com mensagem de erro explícita no banco (`metadata.remainder.error_message = 'INVALID_OR_CORRUPT_PILOT_BODY'`).
 
-3. **Entrega de Vídeos 100% Autenticada:**  
-   - O diretório `/outputs/jobs/` permanece **estritamente bloqueado contra acesso estático público (`HTTP 403 Forbidden`)**.
-   - Os 3 vídeos são servidos por rotas autenticadas com HTTP Basic Auth:
-     - Vídeo 1 (Piloto): `GET /api/v2/panel/video-jobs/:id/pilot` (ou `/video/1`)
-     - Vídeo 2 (Gancho 2 + Body): `GET /api/v2/panel/video-jobs/:id/video/2`
-     - Vídeo 3 (Gancho 3 + Body): `GET /api/v2/panel/video-jobs/:id/video/3`
-   - Validação anti-path-traversal e streaming nativo via `res.sendFile()`.
+---
 
-4. **Smart Resume no Boot para Qualquer Combinação Parcial:**  
-   O recovery de inicialização do servidor (`initStartupRecovery()`) deve cobrir todos os estados parciais:
-   - Se Hook 2 já tem ID e Hook 3 não: submete apenas Hook 3.
-   - Se Hook 3 já tem ID e Hook 2 não: submete apenas Hook 2.
-   - Se ambos os IDs existem: reassume polling sem reenviar nada à HeyGen.
-   - Se os clips foram baixados mas a concatenação do Vídeo 3 falhou: executa apenas a concatenação pendente.
-   - **Nunca refaz um asset já gerado e validado.**
+### 2.2. Smart Retry Granular (Nunca Refazer o que já Foi Concluído)
+Quando o Job estiver em `REMAINDER_FAILED` e Marcel clicar em **"Tentar Novamente"**, ou quando o servidor reiniciar (Smart Resume), o sistema inspeciona o estado exato dos assets e **apenas executa o delta pendente**:
+
+| Asset / Etapa | Condição Encontrada | Ação do Sistema |
+|---|---|---|
+| **Body Original** | Validado pelo item 2.1 | Reutiliza diretamente o `body.mp4` sem nenhuma chamada à HeyGen. |
+| **Hook 2 (HeyGen)** | `metadata.remainder.hook2.heygen_video_id` existe e é válido | **NÃO** submete à HeyGen. Apenas consulta status na API da HeyGen. |
+| **Hook 2 (HeyGen)** | ID ausente ou inválido | Submete apenas Hook 2 à HeyGen e persiste imediatamente o novo `heygen_video_id`. |
+| **Hook 3 (HeyGen)** | `metadata.remainder.hook3.heygen_video_id` existe e é válido | **NÃO** submete à HeyGen. Apenas consulta status na API da HeyGen. |
+| **Hook 3 (HeyGen)** | ID ausente ou inválido | Submete apenas Hook 3 à HeyGen e persiste imediatamente o novo `heygen_video_id`. |
+| **Download Hook 2** | `hook_2.mp4` existe fisicamente com `size > 0` | **NÃO** faz download novamente. Usa o arquivo local. |
+| **Download Hook 3** | `hook_3.mp4` existe fisicamente com `size > 0` | **NÃO** faz download novamente. Usa o arquivo local. |
+| **Vídeo 2 (FFmpeg)** | `video_2.mp4` existe com `size > 0` e `ffprobe duration > 0` | **NÃO** concatena novamente. Preserva o Vídeo 2 intacto. |
+| **Vídeo 3 (FFmpeg)** | `video_3.mp4` existe com `size > 0` e `ffprobe duration > 0` | **NÃO** concatena novamente. Preserva o Vídeo 3 intacto. |
+
+Se ambos os Hooks já estiverem prontos e o Vídeo 2 já estiver montado, a tentativa de retry executará **exclusivamente a concatenação do Vídeo 3**, sem gerar chamadas à HeyGen, sem novo download e sem reprocessar o Vídeo 2.
+
+---
+
+### 2.3. Transição Atômica de Concorrência no PostgreSQL
+A transição de estado para início da produção restante é 100% atômica no banco:
+```sql
+UPDATE video_jobs
+SET status = 'REMAINDER_SUBMITTED', updated_at = NOW()
+WHERE id = $1
+  AND status IN ('PILOT_READY', 'REMAINDER_FAILED')
+RETURNING *;
+```
+- **Somente a requisição que obtiver linha no `RETURNING`** dispara a rotina assíncrona.
+- Requisições concorrentes recebem:
+  - `HTTP 409 Conflict` se `status IN ('REMAINDER_SUBMITTED', 'REMAINDER_RENDERING')`;
+  - `HTTP 200 OK` se `status = 'CREATIVE_SET_READY'`;
+  - `HTTP 400 Bad Request` em qualquer outro estado.
+
+---
+
+### 2.4. Entrega de Vídeos 100% Autenticada
+- O diretório `/outputs/jobs/` permanece **estritamente bloqueado contra acesso estático público (`HTTP 403 Forbidden`)**.
+- A entrega dos vídeos finais ocorre exclusivamente por endpoints autenticados:
+  - Vídeo 1 (Piloto): `GET /api/v2/panel/video-jobs/:id/pilot` ou `/video/1`
+  - Vídeo 2 (Gancho 2 + Body): `GET /api/v2/panel/video-jobs/:id/video/2`
+  - Vídeo 3 (Gancho 3 + Body): `GET /api/v2/panel/video-jobs/:id/video/3`
+- Validação anti-path-traversal e streaming nativo via `res.sendFile()`.
 
 ---
 
@@ -88,28 +117,28 @@ A inspeção em `/var/www/bali-gestor/video_anuncios_engine.js` (linhas 580 a 63
          ┌──────────────────┐   ┌───────────────────────┐
          │  PILOT_REJECTED  │   │  REMAINDER_SUBMITTED  │
          └──────────────────┘   └───────────┬───────────┘
-                                            │ Submete Hook 2 & 3
+                                            │ Submete / Retoma Hooks 2 & 3
                                             ▼
                                 ┌───────────────────────┐
                                 │  REMAINDER_RENDERING  │
                                 └─────┬───────────┬─────┘
-                     Sucesso Total    │           │ Falha (HeyGen/FFmpeg)
+                     Sucesso Total    │           │ Falha (Validação/HeyGen/FFmpeg)
                                       ▼           ▼
                          ┌────────────────────┐ ┌────────────────────┐
                          │ CREATIVE_SET_READY │ │  REMAINDER_FAILED  │
                          └────────────────────┘ └─────────┬──────────┘
-                                                          │ Retry
+                                                          │ Retry (Granular / Smart)
                                                           └───────────► REMAINDER_SUBMITTED
 ```
 
 | Estado | Significado | Ações Permitidas |
 |---|---|---|
 | `PILOT_READY` | Vídeo Piloto gerado e disponível para avaliação. | Marcel pode clicar em **"Aprovar Piloto"** ou **"Reprovar Piloto"**. |
-| `PILOT_REJECTED` | Piloto reprovado por Marcel. Pipeline paralisado. | Exibe aviso no painel; não gera assets adicionais. Permite arquivamento ou reinício futuro. |
-| `REMAINDER_SUBMITTED` | Aprovação registrada via lock atômico; clips 2 e 3 sendo despachados. | Painel desabilita botões e exibe spinner de processamento. |
-| `REMAINDER_RENDERING` | HeyGen processando Ganchos 2 e 3; polling ativo. | Painel realiza polling read-only (`GET /api/v2/panel/video-jobs/:id`). |
+| `PILOT_REJECTED` | Piloto reprovado por Marcel. Pipeline paralisado. | Exibe aviso no painel; não gera assets adicionais. Permite arquivamento. |
+| `REMAINDER_SUBMITTED` | Aprovação registrada via lock atômico; clips 2 e 3 sendo despachados ou retomados. | Painel desabilita botões e exibe spinner de processamento. |
+| `REMAINDER_RENDERING` | HeyGen processando Ganchos 2 e/ou 3; polling ativo. | Painel realiza polling read-only (`GET /api/v2/panel/video-jobs/:id`). |
 | `CREATIVE_SET_READY` | Ganchos 2 e 3 baixados e concatenados com o mesmo `body.mp4`. Os 3 vídeos estão prontos. | Painel exibe os 3 players de vídeo e botões de download. |
-| `REMAINDER_FAILED` | Erro na HeyGen, download ou FFmpeg para Ganchos 2 ou 3. | Painel exibe mensagem de erro e botão **"Tentar Novamente"**. |
+| `REMAINDER_FAILED` | Erro na validação do body, HeyGen, download ou FFmpeg. | Painel exibe mensagem descritiva de erro e botão **"Tentar Novamente"**. |
 
 ---
 
@@ -127,8 +156,6 @@ CREATE INDEX IF NOT EXISTS idx_video_jobs_creative_status ON video_jobs (status,
 ```
 
 ### 4.2. Estrutura em `metadata` (JSONB)
-O campo `metadata` passa a armazenar o histórico completo do Creative Set:
-
 ```json
 {
   "pilot": {
@@ -166,12 +193,14 @@ O campo `metadata` passa a armazenar o histórico completo do Creative Set:
       "local_path": "/var/www/bali-gestor/outputs/jobs/<job_id>/video_2.mp4",
       "authenticated_url": "/api/v2/panel/video-jobs/<job_id>/video/2",
       "size_bytes": 4829102,
+      "duration": 58.4,
       "concatenated_at": "2026-09-05T03:11:35.000Z"
     },
     "video3": {
       "local_path": "/var/www/bali-gestor/outputs/jobs/<job_id>/video_3.mp4",
       "authenticated_url": "/api/v2/panel/video-jobs/<job_id>/video/3",
       "size_bytes": 4792180,
+      "duration": 57.8,
       "concatenated_at": "2026-09-05T03:11:45.000Z"
     },
     "attempts": 1,
@@ -182,161 +211,137 @@ O campo `metadata` passa a armazenar o histórico completo do Creative Set:
 
 ---
 
-## 5. Orquestração do Smart Resume Parcial (Fase 2C)
+## 5. Algoritmo de Execução do Remainder com Retry Granular
 
-A função `initStartupRecovery()` é expandida para inspecionar Jobs com `status IN ('PILOT_SUBMITTED', 'PILOT_RENDERING', 'REMAINDER_SUBMITTED', 'REMAINDER_RENDERING')`:
+```javascript
+async function executeRemainderPipeline(jobId) {
+  // 1. Carrega o Job do PostgreSQL
+  const job = await getJobById(jobId);
+  const jobDir = path.resolve('/var/www/bali-gestor/outputs/jobs', jobId);
 
-1. **Para Jobs em `REMAINDER_SUBMITTED` ou `REMAINDER_RENDERING`:**
-   - Verifica se `updated_at > 30 min`: marca `REMAINDER_FAILED` com mensagem de timeout.
-   - Se dentro da janela de tempo:
-     - **Passo A (Garantia do Body):** Valida a existência física de `outputs/jobs/<job_id>/body.mp4`. Se ausente, interrompe com `REMAINDER_FAILED`.
-     - **Passo B (Hook 2):** Se `metadata.remainder.hook2.heygen_video_id` existir, **NUNCA ressubmete**. Se não existir, submete apenas Hook 2 à HeyGen e grava o ID.
-     - **Passo C (Hook 3):** Se `metadata.remainder.hook3.heygen_video_id` existir, **NUNCA ressubmete**. Se não existir, submete apenas Hook 3 à HeyGen e grava o ID.
-     - **Passo D (Downloads):** Baixa apenas os clips cujos arquivos locais `hook_2.mp4` ou `hook_3.mp4` ainda não existirem no disco.
-     - **Passo E (Concatenações FFmpeg):**
-       - Se `video_2.mp4` já existir e tiver tamanho válido, pula para o Vídeo 3.
-       - Se `video_2.mp4` estiver pendente, concatena `hook_2.mp4 + body.mp4`.
-       - Se `video_3.mp4` estiver pendente, concatena `hook_3.mp4 + body.mp4`.
-     - Ao concluir com sucesso, atualiza para `CREATIVE_SET_READY`.
+  // 2. Validação Forte do Body Existente
+  const bodyLocalPath = job.metadata?.pilot?.body?.local_path;
+  validateStrongBody(bodyLocalPath, jobDir); // Lança erro se inválido/inexistente/zerado/ffprobe duration 0
 
----
+  // 3. Gerenciamento do Hook 2
+  let hook2VideoId = job.metadata?.remainder?.hook2?.heygen_video_id;
+  if (!hook2VideoId) {
+    hook2VideoId = await submitHeyGenHook2(job);
+    await persistHook2VideoId(jobId, hook2VideoId);
+  }
 
-## 6. Fluxos de Aprovação e Reprovação no Backend
+  // 4. Gerenciamento do Hook 3
+  let hook3VideoId = job.metadata?.remainder?.hook3?.heygen_video_id;
+  if (!hook3VideoId) {
+    hook3VideoId = await submitHeyGenHook3(job);
+    await persistHook3VideoId(jobId, hook3VideoId);
+  }
 
-### 6.1. Rota de Aprovação: `POST /api/v2/panel/video-jobs/:id/approve-pilot`
-* **Proteção:** `panelAuthMiddleware`.
-* **Fluxo:**
-  1. Executa lock atômico SQL:
-     `UPDATE video_jobs SET status = 'REMAINDER_SUBMITTED' WHERE id = $1 AND status IN ('PILOT_READY', 'REMAINDER_FAILED') RETURNING *;`
-  2. Se 0 linhas:
-     - Se `REMAINDER_SUBMITTED` ou `RENDERING`: retorna `HTTP 409 Conflict`.
-     - Se `CREATIVE_SET_READY`: retorna `HTTP 200 OK` informando que os 3 vídeos já estão prontos.
-     - Outro status: retorna `HTTP 400 Bad Request`.
-  3. Se 1 linha atualizada:
-     - Inicia processamento assíncrono em `pilotService.generateRemainderVideos(jobId)`.
-     - Retorna imediatamente `HTTP 202 Accepted { success: true, status: 'REMAINDER_SUBMITTED' }`.
+  await updateStatus(jobId, 'REMAINDER_RENDERING');
 
-### 6.2. Rota de Reprovação: `POST /api/v2/panel/video-jobs/:id/reject-pilot`
-* **Proteção:** `panelAuthMiddleware`.
-* **Fluxo:**
-  1. Executa transição atômica:
-     ```sql
-     UPDATE video_jobs
-     SET status = 'PILOT_REJECTED', 
-         metadata = jsonb_set(COALESCE(metadata, '{}'::jsonb), '{pilot,rejected_at}', to_jsonb(NOW()::text)),
-         updated_at = NOW()
-     WHERE id = $1 AND status = 'PILOT_READY'
-     RETURNING *;
-     ```
-  2. Se 0 linhas: retorna `HTTP 400 Bad Request` ou `HTTP 404`.
-  3. Se 1 linha: retorna `HTTP 200 OK { success: true, status: 'PILOT_REJECTED' }`.
-  4. Nenhum vídeo adicional é gerado.
+  // 5. Polling e Download Granular
+  const hook2Local = path.join(jobDir, 'hook_2.mp4');
+  if (!isValidMediaFile(hook2Local)) {
+    const url2 = await pollHeyGenUntilReady(hook2VideoId);
+    await downloadVideo(url2, hook2Local);
+    await persistHook2Downloaded(jobId, hook2Local);
+  }
 
----
+  const hook3Local = path.join(jobDir, 'hook_3.mp4');
+  if (!isValidMediaFile(hook3Local)) {
+    const url3 = await pollHeyGenUntilReady(hook3VideoId);
+    await downloadVideo(url3, hook3Local);
+    await persistHook3Downloaded(jobId, hook3Local);
+  }
 
-## 7. Rota Autenticada de Entrega dos Vídeos (1, 2 e 3)
+  // 6. Concatenação FFmpeg Granular (Vídeo 2)
+  const video2Local = path.join(jobDir, 'video_2.mp4');
+  if (!isValidMediaFileWithDuration(video2Local)) {
+    await concatVideosFFmpeg(hook2Local, bodyLocalPath, video2Local);
+    await persistVideo2Ready(jobId, video2Local);
+  }
 
-### Endpoint Unificado: `GET /api/v2/panel/video-jobs/:id/video/:index`
-* **Parâmetros:** `:id` (UUID), `:index` (`1`, `2` ou `3`).
-* *(Para retrocompatibilidade: `GET /api/v2/panel/video-jobs/:id/pilot` continua funcionando como alias para o Vídeo 1).*
-* **Segurança:**
-  1. Protegido por `panelAuthMiddleware`.
-  2. Valida UUID do `:id` e índice numérico (`1`, `2` ou `3`).
-  3. Consulta o Job no PostgreSQL.
-  4. Se índice `1`: requer status `PILOT_READY` ou `CREATIVE_SET_READY`.
-  5. Se índices `2` ou `3`: requer status `CREATIVE_SET_READY`.
-  6. Valida que o arquivo físico reside estritamente em `outputs/jobs/<job_id>/` (anti-path-traversal).
-  7. Serve o arquivo com `res.sendFile()` (suporte a *HTTP 206 Partial Content* para player).
+  // 7. Concatenação FFmpeg Granular (Vídeo 3)
+  const video3Local = path.join(jobDir, 'video_3.mp4');
+  if (!isValidMediaFileWithDuration(video3Local)) {
+    await concatVideosFFmpeg(hook3Local, bodyLocalPath, video3Local);
+    await persistVideo3Ready(jobId, video3Local);
+  }
+
+  // 8. Finalização Total
+  await completeCreativeSet(jobId);
+}
+```
 
 ---
 
-## 8. Alterações na Interface Web (`video-painel.html`)
+## 6. Endpoints no Backend (`api_v2.js`)
 
-A interface ganha os seguintes recursos:
+1. **`POST /api/v2/panel/video-jobs/:id/approve-pilot`**
+   - Autenticado com `panelAuthMiddleware`.
+   - Executa lock SQL atômico (`UPDATE ... WHERE status IN ('PILOT_READY', 'REMAINDER_FAILED')`).
+   - Se sucesso, dispara `generateRemainderVideos(jobId)` em segundo plano e retorna `HTTP 202 Accepted`.
 
-1. **Card de Decisão do Piloto (quando `status === 'PILOT_READY'`):**
-   - Dois botões lado a lado:
+2. **`POST /api/v2/panel/video-jobs/:id/reject-pilot`**
+   - Autenticado com `panelAuthMiddleware`.
+   - Executa transição atômica para `PILOT_REJECTED` (`WHERE status = 'PILOT_READY'`).
+   - Retorna `HTTP 200 OK`. Nenhuma ação adicional é disparada.
+
+3. **`GET /api/v2/panel/video-jobs/:id/video/:index`**
+   - Autenticado com `panelAuthMiddleware`.
+   - `:index` aceita `1`, `2` ou `3`.
+   - Valida existência física dentro de `outputs/jobs/<job_id>/`.
+   - Retorna o vídeo via streaming (`res.sendFile()`).
+
+---
+
+## 7. Alterações na Interface Web (`video-painel.html`)
+
+1. **Quando `status === 'PILOT_READY'`:**
+   - Exibe o player do Piloto (Vídeo 1).
+   - Exibe dois botões de decisão:
      - `✅ Aprovar Piloto & Gerar Restantes (Ganchos 2 e 3)`
      - `❌ Reprovar Piloto`
-2. **Estado de Processamento dos Restantes (quando `REMAINDER_SUBMITTED` ou `RENDERING`):**
-   - Spinner ativo e badge roxo/amarelo:
-     *"⏳ Renderizando Ganchos 2 e 3 na HeyGen e montando com o corpo original..."*
+2. **Quando `status IN ('REMAINDER_SUBMITTED', 'REMAINDER_RENDERING')`:**
+   - Desabilita botões e exibe spinner com progresso:
+     *"⏳ Processando Ganchos 2 e 3 na HeyGen e montando coleção criativa..."*
    - Polling automático a cada 5 segundos via `GET /api/v2/panel/video-jobs/:id`.
-3. **Exibição da Coleção Completa (quando `status === 'CREATIVE_SET_READY'`):**
+3. **Quando `status === 'REMAINDER_FAILED'`:**
+   - Card vermelho de alerta com o erro reportado pelo servidor.
+   - Botão **"Tentar Novamente"** que reaciona o pipeline aproveitando os assets já concluídos.
+4. **Quando `status === 'PILOT_REJECTED'`:**
+   - Card cinza informativo: *"Vídeo piloto reprovado. O pipeline para este job foi finalizado."*
+5. **Quando `status === 'CREATIVE_SET_READY'`:**
    - Card verde: `🎉 COLEÇÃO CRIATIVA PRONTA (3 VÍDEOS COMPLETOS)`.
-   - Grade responsiva com 3 players de vídeo individuais:
-     - **Vídeo 1 (Choque / Entrada):** Look Terno + Gancho 1 + Corpo Imóvel (`/video/1`).
-     - **Vídeo 2 (Aluguel vs Parcela):** Look Podcaster + Gancho 2 + Corpo Imóvel (`/video/2`).
-     - **Vídeo 3 (Renda Familiar):** Look Casual + Gancho 3 + Corpo Imóvel (`/video/3`).
-   - Botões de download direto autenticado para cada um dos 3 vídeos.
-4. **Estado de Reprovação (quando `status === 'PILOT_REJECTED'`):**
-   - Badge cinza/vermelho `PILOT_REJECTED`.
-   - Mensagem: *"Vídeo piloto reprovado. Nenhuma produção adicional foi disparada."*
+   - Grade responsiva com 3 players de vídeo independentes:
+     - **Vídeo 1 (Choque / Entrada):** Gancho 1 + Corpo Imóvel (`/video/1`).
+     - **Vídeo 2 (Aluguel vs Parcela):** Gancho 2 + Corpo Imóvel (`/video/2`).
+     - **Vídeo 3 (Renda Familiar):** Gancho 3 + Corpo Imóvel (`/video/3`).
+   - Botões de download direto para cada um dos 3 vídeos.
 
 ---
 
-## 9. Arquivos a Criar e Modificar
+## 8. Bateria de Testes e Homologação da Fase 2C
 
-1. **`migrations/003_add_creative_set_fields.sql` [NOVO]:**
-   - Adiciona `video2_url` e `video3_url` à tabela `video_jobs`.
+A suíte automatizada de homologação abrangerá 20 verificações rigorosas:
 
-2. **`video_engine/pilot_service.js` [MODIFICAR]:**
-   - Adicionar funções:
-     - `lockAndSubmitRemainder(jobId)`: transição atômica SQL para aprovação;
-     - `rejectPilot(jobId)`: transição atômica SQL para reprovação;
-     - `generateRemainderVideos(jobId)`: orquestra geração dos Ganchos 2 e 3, reuso do body existente e FFmpeg;
-     - Atualizar `initStartupRecovery()` para cobrir os novos estados e casos parciais da Fase 2C.
-
-3. **`video_engine/api_v2.js` [MODIFICAR]:**
-   - `POST /api/v2/panel/video-jobs/:id/approve-pilot`: aciona lock e geração dos restantes.
-   - `POST /api/v2/panel/video-jobs/:id/reject-pilot`: registra reprovação limpa do piloto.
-   - `GET /api/v2/panel/video-jobs/:id/video/:index`: rota autenticada para streaming dos vídeos 1, 2 e 3.
-
-4. **`video-painel.html` [MODIFICAR]:**
-   - Adicionar botões de Aprovar e Reprovar piloto.
-   - Polling de estado para `CREATIVE_SET_READY`.
-   - Renderização da grade dos 3 players de vídeo e botões de download.
-
----
-
-## 10. O Que Permanece Rigorosamente Intocado
-
-* ❌ **WhatsApp V1 Intacto:** Fluxo `#REF`, `CLONE`, `OK` e `activeVideoSessions` permanecem 100% inalterados.
-* ❌ **Sem BullMQ / Redis:** Processamento assíncrono controlado localmente com lock no PostgreSQL e recovery no boot.
-* ❌ **Sem ferramentas de edição de timeline ou troca de avatars**.
-* ❌ **Sem integração externa com Meta Ads / Facebook**.
-
----
-
-## 11. Bateria de Testes e Homologação da Fase 2C
-
-1. **Aprovação Nominal de `PILOT_READY`:**  
-   Submissão de `POST /approve-pilot` para Job em `PILOT_READY`. Valida retorno `HTTP 202 Accepted` e transição para `REMAINDER_SUBMITTED`.
-2. **Reprovação de `PILOT_READY`:**  
-   Submissão de `POST /reject-pilot` para Job em `PILOT_READY`. Valida retorno `HTTP 200 OK`, transição para `PILOT_REJECTED` e interrupção do pipeline.
-3. **Concorrência Atômica na Aprovação:**  
-   Duas chamadas simultâneas de aprovação: exatamente uma recebe `HTTP 202 Accepted`; a segunda recebe `HTTP 409 Conflict`.
-4. **Reaproveitamento Estrito do Body Existente:**  
-   Comprovar que `outputs/jobs/<job_id>/body.mp4` é lido diretamente do disco; zero chamadas à HeyGen para renderização de novo corpo.
-5. **Geração dos Ganchos 2 e 3:**  
-   Validação da submissão dos textos e looks de `hooks[1]` e `hooks[2]`, com persistência imediata dos `heygen_video_id`.
-6. **Montagem dos Vídeos 2 e 3:**  
-   Comprovar que o FFmpeg monta:
-   - `video_2.mp4` = `hook_2.mp4 + body.mp4`
-   - `video_3.mp4` = `hook_3.mp4 + body.mp4`
-7. **Smart Resume no Boot com Hook 2 Salvo e Hook 3 Faltando:**  
-   Simular boot; comprovar que o Hook 2 não é reenviado e apenas o Hook 3 é despachado.
-8. **Smart Resume no Boot com Ambos os IDs Salvos:**  
-   Comprovar que o sistema retoma apenas polling/download/FFmpeg sem reenviar nenhum clip.
-9. **Smart Resume com Vídeo 2 Pronto e Vídeo 3 Faltando:**  
-   Comprovar que o Vídeo 2 não é reconcatenado, finalizando apenas o Vídeo 3.
-10. **Resiliência a Falhas:**  
-    Simular falha em Hook 2, Hook 3 ou FFmpeg; comprovar transição para `REMAINDER_FAILED` com gravação de `error_message` e possibilidade de retry.
-11. **Streaming Autenticado dos 3 Vídeos:**  
-    Validar que `GET /video/1`, `GET /video/2` e `GET /video/3` entregam os respectivos arquivos com Basic Auth e rejeitam sem credenciais.
-12. **Bloqueio Estático Mantido:**  
-    Acesso direto a `/outputs/jobs/<job_id>/video_2.mp4` e `/video_3.mp4` retorna `HTTP 403 Forbidden`.
-13. **Idempotência do GET de Consulta:**  
-    `GET /api/v2/panel/video-jobs/:id` retorna os metadados dos 3 vídeos sem qualquer alteração de estado.
-14. **Saúde de Produção e Não-Regressão Total:**  
-    PM2 online, PostgreSQL active, WhatsApp V1 100% ONLINE e Fase 2B intacta.
+1. **Aprovação Nominal de `PILOT_READY`:** Submissão de `POST /approve-pilot` retorna `HTTP 202` e transita para `REMAINDER_SUBMITTED`.
+2. **Reprovação de `PILOT_READY`:** Submissão de `POST /reject-pilot` retorna `HTTP 200` e transita para `PILOT_REJECTED`.
+3. **Concorrência Atômica:** Chamadas concorrentes simultâneas de aprovação resultam em exatamente uma vitória (`HTTP 202`) e uma rejeição (`HTTP 409 Conflict`).
+4. **Reuso Estrito do Body:** Validação de que `outputs/jobs/<job_id>/body.mp4` é utilizado sem requisição de novo corpo.
+5. **[NOVO] Teste de Body com Tamanho Zero:** Se `body.mp4` tiver 0 bytes, a rotina falha imediatamente para `REMAINDER_FAILED` sem chamar a HeyGen.
+6. **[NOVO] Teste de Body com Path Traversal:** Se `local_path` apontar para fora de `outputs/jobs/<job_id>/`, a rotina rejeita com erro de segurança.
+7. **[NOVO] Teste de Body com Duração Zero (`ffprobe`):** Se `body.mp4` for inválido ou tiver duração 0, transita para `REMAINDER_FAILED`.
+8. **[NOVO] Smart Retry com Hook 2 Salvo:** Ao reexecutar job em falha onde Hook 2 já tem ID, o sistema NÃO reenvia Hook 2 para a HeyGen.
+9. **[NOVO] Smart Retry com Hook 3 Salvo:** Ao reexecutar job em falha onde Hook 3 já tem ID, o sistema NÃO reenvia Hook 3 para a HeyGen.
+10. **[NOVO] Smart Retry com Vídeo 2 Concatenado:** Ao reexecutar job em falha onde Vídeo 2 já está pronto e validado por `ffprobe`, o sistema NÃO refaz a concatenação do Vídeo 2.
+11. **[NOVO] Smart Retry com Ambos os Hooks Prontos:** Se ambos os clips já foram baixados, o retry executa estritamente a concatenação FFmpeg com zero chamadas à HeyGen.
+12. **Geração dos Ganchos 2 e 3:** Submissão correta dos textos de `hooks[1]` e `hooks[2]`.
+13. **Montagem dos Vídeos 2 e 3:** Concatenação FFmpeg sem perdas de áudio ou vídeo.
+14. **Smart Resume no Boot com Hook 2 Salvo e Hook 3 Faltando:** Recuperação automática no boot sem reenvio de Hook 2.
+15. **Smart Resume no Boot com Ambos os IDs Salvos:** Recuperação automática de polling/download no boot.
+16. **Resiliência a Falhas:** Registro inequívoco de `error_message` no metadata ao simular erro na HeyGen.
+17. **Streaming Autenticado dos 3 Vídeos:** `GET /video/1`, `/video/2` e `/video/3` entregam arquivos com Basic Auth e rejeitam sem credenciais (`HTTP 401`).
+18. **Bloqueio Estático Mantido:** `/outputs/jobs/<job_id>/video_2.mp4` retorna `HTTP 403 Forbidden`.
+19. **Idempotência de Consulta:** `GET /panel/video-jobs/:id` é estritamente read-only.
+20. **Saúde de Produção e Não-Regressão Total:** PM2 online, PostgreSQL active, WhatsApp V1 (`CLONE`, `OK`) 100% ONLINE e Fase 2B intacta.
