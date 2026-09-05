@@ -1,0 +1,153 @@
+{
+  "schema_version": "2.0.0",
+  "generated_at": "2026-09-05T22:22:19.945938+00:00",
+  "evaluation_type": "REAL_PILOT_BLIND_V1_VS_V2_EVALUATION_CORRECTED",
+  "methodological_policy": {
+    "evaluation_rule": "Top-K metrics MUST use only cases with GT_EXACT_CONFIRMED or GT_ADDRESS_CONFIRMED_BC_UNKNOWN.",
+    "unresolved_handling": "Do NOT convert GT_UNRESOLVED into a Top-K miss. Do not manufacture 0% accuracy.",
+    "state_when_zero_resolved": "NO_VALID_TOPK_EVALUATION_POSSIBLE_YET"
+  },
+  "upstream_manifests": {
+    "ground_truth_corrected_sha256": "53c8678755957ef53656126a6f2905a382e9ea1cbe92e7eaf9c78cdb86a811db",
+    "prediction_v1_sha256": "a6ba9cfad39e864586e65f04486a0367ca088baa42242ea1e95d20e9cce72266",
+    "prediction_v2_sha256": "70d7afc19277e2d257e9c3b1e02440c5c94b7d3a02c93abf9fb3f6c946424255",
+    "candidate_corpus_sha256": "42e9816f81a7acd37e4e8d610faed225d5b71d889eb0bcea5da4d31397952a7b"
+  },
+  "gt_resolution_summary": {
+    "resolved_gt_denominator": 0,
+    "unresolved_gt_count": 10,
+    "exact_gt_coverage": "0 / 10 (0.0%)",
+    "status": "NO_VALID_TOPK_EVALUATION_POSSIBLE_YET"
+  },
+  "candidate_count_integrity_audit": {
+    "reconciliation_notes": "In the rejected evaluation attempt, listing 30744879 and others were tabulated with 50 candidates because an evaluation window cap of 50 had been referenced. The actual frozen predictions contain up to 119 candidates. Below is the exact raw candidate count audit from both immutable artifacts.",
+    "per_listing_reconciliation": [
+      {
+        "listing_id": "26230879",
+        "v1_real_resolved_candidates": 0,
+        "v2_real_resolved_candidates": 0,
+        "evaluation_window_cap": 50,
+        "notes": "Both V1 and V2 produced 0 candidates (no coordinates, bairro not in corpus)"
+      },
+      {
+        "listing_id": "30744879",
+        "v1_real_resolved_candidates": 0,
+        "v2_real_resolved_candidates": 85,
+        "evaluation_window_cap": 50,
+        "notes": "V2 contains exactly 85 real resolved candidates (previously misreported as 50 in summary text)"
+      },
+      {
+        "listing_id": "32738189",
+        "v1_real_resolved_candidates": 0,
+        "v2_real_resolved_candidates": 0,
+        "evaluation_window_cap": 50,
+        "notes": "Both V1 and V2 produced 0 candidates (no coordinates, condo, bairro not in corpus)"
+      },
+      {
+        "listing_id": "37154734",
+        "v1_real_resolved_candidates": 0,
+        "v2_real_resolved_candidates": 119,
+        "evaluation_window_cap": 50,
+        "notes": "V2 contains exactly 119 real resolved candidates (previously misreported as 50 in summary text)"
+      },
+      {
+        "listing_id": "38732282",
+        "v1_real_resolved_candidates": 49,
+        "v2_real_resolved_candidates": 49,
+        "evaluation_window_cap": 50,
+        "notes": "Both V1 and V2 contain exactly 49 real resolved candidates (Jardim Mourisco sector 5.2 in corpus)"
+      },
+      {
+        "listing_id": "38813993",
+        "v1_real_resolved_candidates": 0,
+        "v2_real_resolved_candidates": 3,
+        "evaluation_window_cap": 50,
+        "notes": "V2 contains exactly 3 real resolved candidates (previously misreported as 50 in summary text)"
+      },
+      {
+        "listing_id": "40591449",
+        "v1_real_resolved_candidates": 0,
+        "v2_real_resolved_candidates": 38,
+        "evaluation_window_cap": 50,
+        "notes": "V2 contains exactly 38 real resolved candidates (previously misreported as 50 in summary text)"
+      },
+      {
+        "listing_id": "40712114",
+        "v1_real_resolved_candidates": 0,
+        "v2_real_resolved_candidates": 0,
+        "evaluation_window_cap": 50,
+        "notes": "Both V1 and V2 produced 0 candidates (no coordinates, bairro not in corpus)"
+      },
+      {
+        "listing_id": "42910754",
+        "v1_real_resolved_candidates": 0,
+        "v2_real_resolved_candidates": 109,
+        "evaluation_window_cap": 50,
+        "notes": "V2 contains exactly 109 real resolved candidates (previously misreported as 50 in summary text)"
+      },
+      {
+        "listing_id": "44628622",
+        "v1_real_resolved_candidates": 0,
+        "v2_real_resolved_candidates": 0,
+        "evaluation_window_cap": 50,
+        "notes": "Both V1 and V2 produced 0 candidates (no coordinates, bairro not in corpus)"
+      }
+    ],
+    "totals": {
+      "v1_total_candidates_all_listings": 49,
+      "v2_total_candidates_all_listings": 403,
+      "v1_listings_with_candidates": 1,
+      "v2_listings_with_candidates": 6
+    }
+  },
+  "prediction_v1_evaluation_over_resolved_gt": {
+    "status": "NO_VALID_TOPK_EVALUATION_POSSIBLE_YET",
+    "resolved_gt_denominator": 0,
+    "top_1": null,
+    "top_3": null,
+    "top_5": null,
+    "top_10": null,
+    "top_20": null,
+    "mrr": null
+  },
+  "prediction_v2_evaluation_over_resolved_gt": {
+    "status": "NO_VALID_TOPK_EVALUATION_POSSIBLE_YET",
+    "resolved_gt_denominator": 0,
+    "top_1": null,
+    "top_3": null,
+    "top_5": null,
+    "top_10": null,
+    "top_20": null,
+    "mrr": null
+  },
+  "map_value_analysis": {
+    "status": "MAP_EFFECT_ON_ACCURACY_UNTESTABLE_WITHOUT_EXACT_GT",
+    "observed_retrieval_impact": "Map coordinates enabled spatial proximity candidate generation for 5/5 coordinate cases (producing 85, 119, 3, 38, and 109 candidates respectively, total 354 candidates), compared to 0 candidates in V1 for all 5 cases. However, because exact ground truth addresses are unresolved and the true neighbourhoods are largely absent from the candidate corpus, spatial accuracy against true property identity cannot be legitimately evaluated."
+  },
+  "measured_corpus_coverage_diagnostics": {
+    "corpus_parcels_total": 3002,
+    "corpus_bairros_total": 31,
+    "cohort_neighbourhoods_represented_in_corpus": 1,
+    "cohort_neighbourhoods_absent_from_corpus": 7,
+    "cohort_neighbourhoods_absent_list": [
+      "Jardim Continental III",
+      "Jardim Oasis",
+      "Jardim Gurilândia",
+      "Jardim Eulália",
+      "Campos Elíseos",
+      "Vila Santa Isabel",
+      "Jardim Santa Tereza"
+    ],
+    "measured_finding": "Candidate corpus coverage is a demonstrated structural barrier to retrieval: 9 of 10 sampled listings belong to neighbourhoods completely absent from acervo_casas_taubate.json."
+  },
+  "pre_registered_benchmark_assessment": {
+    "thresholds": {
+      "strong": ">= 8/10",
+      "useful": ">= 6/10",
+      "bottleneck": "< 5/10"
+    },
+    "exact_gt_resolved": 0,
+    "evaluation_verdict": "NO_VALID_TOPK_EVALUATION_POSSIBLE_YET",
+    "methodological_conclusion": "No exact independent ground truth (street + house number) is available for any of the 10 real-world listings in public records. Exact Top-K scoring cannot be performed without manufacturing false misses. Both candidate generation and ground truth resolution identify public number withholding and corpus geographic boundary truncation as the primary operational hurdles."
+  }
+}

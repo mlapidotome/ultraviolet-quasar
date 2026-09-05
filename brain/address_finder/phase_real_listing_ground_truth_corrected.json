@@ -1,0 +1,322 @@
+{
+  "schema_version": "2.0.0",
+  "generated_at": "2026-09-05T22:22:19.925547+00:00",
+  "audit_type": "REAL_PILOT_GROUND_TRUTH_CORRECTED",
+  "methodological_policy": {
+    "status_options_permitted": [
+      "GT_EXACT_CONFIRMED",
+      "GT_ADDRESS_CONFIRMED_BC_UNKNOWN",
+      "GT_UNRESOLVED"
+    ],
+    "exact_gt_definition": "Independently defensible physical property identity: exact street + house number (+ city/BC where available).",
+    "unresolved_definition": "Street only, neighbourhood only, condominium only, coordinates only, or listing CDN slug without house number = GT_UNRESOLVED.",
+    "independence_rule": "Chaves na Mão listing and prediction candidates are NOT independent GT. Only independent broker listings or public/legal documents can serve as evidence."
+  },
+  "upstream_manifests": {
+    "blind_predictions_v1_sha256": "a6ba9cfad39e864586e65f04486a0367ca088baa42242ea1e95d20e9cce72266",
+    "blind_predictions_v2_sha256": "70d7afc19277e2d257e9c3b1e02440c5c94b7d3a02c93abf9fb3f6c946424255",
+    "public_inputs_target_owned_sha256": "6968654618d489431d46831668ed47bad5f16bc97bde250baca415db01d04f46",
+    "map_location_audit_sha256": "cfdc947e8e1b1a7281634412e7adc3eb3511d0300a621fb9988af7d85a25d4a9",
+    "candidate_corpus_sha256": "42e9816f81a7acd37e4e8d610faed225d5b71d889eb0bcea5da4d31397952a7b"
+  },
+  "cohort_gt_summary": {
+    "total_frozen_listings": 10,
+    "exact_gt_resolved_count": 0,
+    "unresolved_gt_count": 10,
+    "unresolved_gt_ids": [
+      "26230879",
+      "30744879",
+      "32738189",
+      "37154734",
+      "38732282",
+      "38813993",
+      "40591449",
+      "40712114",
+      "42910754",
+      "44628622"
+    ],
+    "coverage_ratio": "0 / 10 (0.0%)",
+    "evaluation_state": "NO_VALID_TOPK_EVALUATION_POSSIBLE_YET"
+  },
+  "listings": [
+    {
+      "listing_id": "26230879",
+      "gt_status": "GT_UNRESOLVED",
+      "exact_street": null,
+      "exact_house_number": null,
+      "exact_normalized_address": null,
+      "exact_bc": null,
+      "independent_source": "Public broker search across Bonfim Imóveis and regional portals",
+      "independent_evidence": "Ad Ref SB00079 describes a 170m² house with 2 commercial spaces on front in Jardim Gurilândia, but no public source discloses the street name or house number.",
+      "partial_clues_discovered": {
+        "neighbourhood": "Jardim Gurilândia",
+        "advertised_price": "R$ 649.000 (offer mentions R$ 400.000)",
+        "property_type": "Casa / Sobrado",
+        "built_area_m2": 170.0
+      },
+      "reason_exact_gt_defensible_or_not": "NOT_DEFENSIBLE: Neither street name nor house number is disclosed in any lawful public source.",
+      "corpus_coverage_diagnostic": {
+        "corpus_membership": "CORPUS_MEMBERSHIP_UNRESOLVED",
+        "neighbourhood_corpus_status": "TARGET_NEIGHBOURHOOD_ABSENT_FROM_CORPUS",
+        "parcels_in_neighbourhood_in_corpus": 0
+      },
+      "v1_total_real_resolved_candidates": 0,
+      "v2_total_real_resolved_candidates": 0,
+      "true_rank_v1": null,
+      "true_rank_v2": null
+    },
+    {
+      "listing_id": "30744879",
+      "gt_status": "GT_UNRESOLVED",
+      "exact_street": "Rua Doutor Cyro Lemos de Oliveira",
+      "exact_house_number": null,
+      "exact_normalized_address": null,
+      "exact_bc": null,
+      "independent_source": "Murilo Becker Imóveis (CRECI 25324J) and VivaReal / ZAP portal listings for Ref CA3009",
+      "independent_evidence": "Multiple public listings confirm property is on Rua Doutor Cyro Lemos de Oliveira in Jardim Continental III (CEP 12093-720, 70m² built, 125m² land, R$ 320.000), but every public listing withholds the exact house number (listed as '--' or omitted).",
+      "partial_clues_discovered": {
+        "street": "Rua Doutor Cyro Lemos de Oliveira",
+        "neighbourhood": "Jardim Continental III",
+        "cep": "12093-720",
+        "coordinates": [
+          -23.0644368,
+          -45.5775586
+        ],
+        "area_m2": 70.0
+      },
+      "reason_exact_gt_defensible_or_not": "NOT_DEFENSIBLE: Street name is verified, but exact house number is withheld in all independent listings. Street-only does not distinguish target property from other properties on the street.",
+      "corpus_coverage_diagnostic": {
+        "corpus_membership": "CORPUS_MEMBERSHIP_UNRESOLVED",
+        "neighbourhood_corpus_status": "TARGET_NEIGHBOURHOOD_ABSENT_FROM_CORPUS",
+        "parcels_in_neighbourhood_in_corpus": 0
+      },
+      "v1_total_real_resolved_candidates": 0,
+      "v2_total_real_resolved_candidates": 85,
+      "true_rank_v1": null,
+      "true_rank_v2": null
+    },
+    {
+      "listing_id": "32738189",
+      "gt_status": "GT_UNRESOLVED",
+      "exact_street": null,
+      "exact_house_number": null,
+      "exact_normalized_address": null,
+      "exact_bc": null,
+      "independent_source": "Pirâmide Imóveis Ref SO0140_PIRQ and portal listings",
+      "independent_evidence": "Ad confirms sobrado 310m² with 4 suites in Condomínio Ouro Ville, Jardim Santa Tereza (R$ 1.500.000). Preselection eligibility audit confirmed this is a gated condominium. Exact internal street and lot number are undisclosed.",
+      "partial_clues_discovered": {
+        "condominium": "Condomínio Ouro Ville",
+        "neighbourhood": "Jardim Santa Tereza",
+        "built_area_m2": 310.0,
+        "preselection_error": "CONDOMINIUM_EVIDENCE"
+      },
+      "reason_exact_gt_defensible_or_not": "NOT_DEFENSIBLE: Condominium name alone without internal street/lot number is insufficient for physical address identification.",
+      "corpus_coverage_diagnostic": {
+        "corpus_membership": "CORPUS_MEMBERSHIP_UNRESOLVED",
+        "neighbourhood_corpus_status": "TARGET_NEIGHBOURHOOD_ABSENT_FROM_CORPUS",
+        "parcels_in_neighbourhood_in_corpus": 0
+      },
+      "v1_total_real_resolved_candidates": 0,
+      "v2_total_real_resolved_candidates": 0,
+      "true_rank_v1": null,
+      "true_rank_v2": null
+    },
+    {
+      "listing_id": "37154734",
+      "gt_status": "GT_UNRESOLVED",
+      "exact_street": null,
+      "exact_house_number": null,
+      "exact_normalized_address": null,
+      "exact_bc": null,
+      "independent_source": "Franco Consultoria de Imóveis (francoimoveis.net) Ref CA2233 / CA2233-FRCX",
+      "independent_evidence": "Independent agency website confirms house of 170m² on 360m² lot with independent edícula in Jardim Eulália (R$ 380.000). While target-owned CDN image slug mentions 'travessa-sao-benedito', the independent website specifically withholds street and number (provided only upon scheduling visit).",
+      "partial_clues_discovered": {
+        "neighbourhood": "Jardim Eulália",
+        "target_image_slug_street": "Travessa São Benedito",
+        "coordinates": [
+          -23.01943,
+          -45.56438
+        ],
+        "built_area_m2": 170.0,
+        "lot_area_m2": 360.0
+      },
+      "reason_exact_gt_defensible_or_not": "NOT_DEFENSIBLE: Image slug street name is not sufficient without house number; independent broker website withholds street and number.",
+      "corpus_coverage_diagnostic": {
+        "corpus_membership": "CORPUS_MEMBERSHIP_UNRESOLVED",
+        "neighbourhood_corpus_status": "TARGET_NEIGHBOURHOOD_ABSENT_FROM_CORPUS",
+        "parcels_in_neighbourhood_in_corpus": 0
+      },
+      "v1_total_real_resolved_candidates": 0,
+      "v2_total_real_resolved_candidates": 119,
+      "true_rank_v1": null,
+      "true_rank_v2": null
+    },
+    {
+      "listing_id": "38732282",
+      "gt_status": "GT_UNRESOLVED",
+      "exact_street": null,
+      "exact_house_number": null,
+      "exact_normalized_address": null,
+      "exact_bc": null,
+      "independent_source": "Meta Negócios Imobiliários (metanegociosimobiliarios.com.br) Ref CA0355 / CA0355-METH (CRECI J9093)",
+      "independent_evidence": "Independent agency website confirms house of 160m² built, 248.28m² lot, 3 bedrooms (1 suite), 4 garages in Jardim Mourisco (R$ 520.000), but street name and house number are omitted from the ad.",
+      "partial_clues_discovered": {
+        "neighbourhood": "Jardim Mourisco",
+        "lot_area_m2": 248.28,
+        "built_area_m2": 160.0
+      },
+      "reason_exact_gt_defensible_or_not": "NOT_DEFENSIBLE: Neither street name nor house number is disclosed in public broker records.",
+      "corpus_coverage_diagnostic": {
+        "corpus_membership": "CORPUS_MEMBERSHIP_UNRESOLVED",
+        "neighbourhood_corpus_status": "NEIGHBOURHOOD_PARTIALLY_PRESENT_IN_CORPUS",
+        "parcels_in_neighbourhood_in_corpus": 48
+      },
+      "v1_total_real_resolved_candidates": 49,
+      "v2_total_real_resolved_candidates": 49,
+      "true_rank_v1": null,
+      "true_rank_v2": null
+    },
+    {
+      "listing_id": "38813993",
+      "gt_status": "GT_UNRESOLVED",
+      "exact_street": null,
+      "exact_house_number": null,
+      "exact_normalized_address": null,
+      "exact_bc": null,
+      "independent_source": "Davale Negócios Imobiliários (davalenegociosimobiliarios.com.br) Ref CA0843 / CA0843-VASF",
+      "independent_evidence": "Agency catalog lists house of 185m² with 4 bedrooms and 4 garages in Campos Elíseos (R$ 890.000). CDN slug contains 'rua-das-estrelizeas', but independent agency ad withholds exact house number.",
+      "partial_clues_discovered": {
+        "neighbourhood": "Campos Elíseos",
+        "target_image_slug_street": "Rua das Estrelízias",
+        "coordinates": [
+          -23.01684,
+          -45.56454
+        ],
+        "built_area_m2": 185.0
+      },
+      "reason_exact_gt_defensible_or_not": "NOT_DEFENSIBLE: Street clue without exact house number cannot distinguish property on the street.",
+      "corpus_coverage_diagnostic": {
+        "corpus_membership": "CORPUS_MEMBERSHIP_UNRESOLVED",
+        "neighbourhood_corpus_status": "TARGET_NEIGHBOURHOOD_ABSENT_FROM_CORPUS",
+        "parcels_in_neighbourhood_in_corpus": 0
+      },
+      "v1_total_real_resolved_candidates": 0,
+      "v2_total_real_resolved_candidates": 3,
+      "true_rank_v1": null,
+      "true_rank_v2": null
+    },
+    {
+      "listing_id": "40591449",
+      "gt_status": "GT_UNRESOLVED",
+      "exact_street": "Avenida Carlos Pedroso da Silveira",
+      "exact_house_number": null,
+      "exact_normalized_address": null,
+      "exact_bc": null,
+      "independent_source": "Jeremias Rodrigues Imóveis de Alto Padrão Ref IMOV-22043",
+      "independent_evidence": "Agency ad confirms house in Condomínio Jardim Oásis, located on Avenida Carlos Pedroso da Silveira (CEP 12043-000, 271m² built, 500m² lot, R$ 990.000). Preselection eligibility audit confirmed this is a gated condominium. Internal lot and house number are omitted.",
+      "partial_clues_discovered": {
+        "street": "Avenida Carlos Pedroso da Silveira",
+        "condominium": "Condomínio Jardim Oásis",
+        "neighbourhood": "Jardim Oasis",
+        "cep": "12043-000",
+        "coordinates": [
+          -23.02648,
+          -45.59912
+        ],
+        "built_area_m2": 271.0,
+        "preselection_error": "CONDOMINIUM_EVIDENCE"
+      },
+      "reason_exact_gt_defensible_or_not": "NOT_DEFENSIBLE: Avenue name and condominium name are public, but exact lot/house number is not disclosed.",
+      "corpus_coverage_diagnostic": {
+        "corpus_membership": "CORPUS_MEMBERSHIP_UNRESOLVED",
+        "neighbourhood_corpus_status": "TARGET_NEIGHBOURHOOD_ABSENT_FROM_CORPUS",
+        "parcels_in_neighbourhood_in_corpus": 0
+      },
+      "v1_total_real_resolved_candidates": 0,
+      "v2_total_real_resolved_candidates": 38,
+      "true_rank_v1": null,
+      "true_rank_v2": null
+    },
+    {
+      "listing_id": "40712114",
+      "gt_status": "GT_UNRESOLVED",
+      "exact_street": null,
+      "exact_house_number": null,
+      "exact_normalized_address": null,
+      "exact_bc": null,
+      "independent_source": "Celtemae Imóveis Consultoria Imobiliária Ref V1222",
+      "independent_evidence": "Agency ad describes single-story house in Vila Santa Isabel, 219m², 4 bedrooms, pool, 'próximo da Avenida Vila Rica, na Estiva, em rua sem saída'. Street name and house number are withheld.",
+      "partial_clues_discovered": {
+        "neighbourhood": "Vila Santa Isabel",
+        "landmark": "Próximo da Avenida Vila Rica, rua sem saída",
+        "built_area_m2": 219.0
+      },
+      "reason_exact_gt_defensible_or_not": "NOT_DEFENSIBLE: Street name and house number are withheld by the broker.",
+      "corpus_coverage_diagnostic": {
+        "corpus_membership": "CORPUS_MEMBERSHIP_UNRESOLVED",
+        "neighbourhood_corpus_status": "TARGET_NEIGHBOURHOOD_ABSENT_FROM_CORPUS",
+        "parcels_in_neighbourhood_in_corpus": 0
+      },
+      "v1_total_real_resolved_candidates": 0,
+      "v2_total_real_resolved_candidates": 0,
+      "true_rank_v1": null,
+      "true_rank_v2": null
+    },
+    {
+      "listing_id": "42910754",
+      "gt_status": "GT_UNRESOLVED",
+      "exact_street": "Rua Edu Mattos Ortiz",
+      "exact_house_number": null,
+      "exact_normalized_address": null,
+      "exact_bc": null,
+      "independent_source": "Brasil Corretores Associados (brasilcorretoresassociados.com.br) Ref SCMV53 (Corretor Sebastião Moura CRECI 154501)",
+      "independent_evidence": "Independent agency website confirms house of 70m² on 150m² lot in Jardim Oásis, 2 bedrooms (1 suite), R$ 360.000. Public listing identifies Rua Edu Mattos Ortiz (CEP 12042-247), but withholds the exact house number.",
+      "partial_clues_discovered": {
+        "street": "Rua Edu Mattos Ortiz",
+        "neighbourhood": "Jardim Oasis",
+        "cep": "12042-247",
+        "coordinates": [
+          -23.03653,
+          -45.58457
+        ],
+        "built_area_m2": 70.0
+      },
+      "reason_exact_gt_defensible_or_not": "NOT_DEFENSIBLE: Street name is known, but exact house number is omitted from all public records.",
+      "corpus_coverage_diagnostic": {
+        "corpus_membership": "CORPUS_MEMBERSHIP_UNRESOLVED",
+        "neighbourhood_corpus_status": "TARGET_NEIGHBOURHOOD_ABSENT_FROM_CORPUS",
+        "parcels_in_neighbourhood_in_corpus": 0
+      },
+      "v1_total_real_resolved_candidates": 0,
+      "v2_total_real_resolved_candidates": 109,
+      "true_rank_v1": null,
+      "true_rank_v2": null
+    },
+    {
+      "listing_id": "44628622",
+      "gt_status": "GT_UNRESOLVED",
+      "exact_street": null,
+      "exact_house_number": null,
+      "exact_normalized_address": null,
+      "exact_bc": null,
+      "independent_source": "Valley Gold Imóveis Ref CA2581 MP",
+      "independent_evidence": "Broker listing describes single-story house in Jardim Continental III, 70m² construction, 125m² land, 2 bedrooms, R$ 340.000. CDN image slug mentions 'rua-doutor-cyro-lemos-de-oliveira', but independent agency ad withholds exact street and house number.",
+      "partial_clues_discovered": {
+        "neighbourhood": "Jardim Continental III",
+        "target_image_slug_street": "Rua Doutor Cyro Lemos de Oliveira",
+        "built_area_m2": 70.0,
+        "lot_area_m2": 125.0
+      },
+      "reason_exact_gt_defensible_or_not": "NOT_DEFENSIBLE: Street clue without house number is insufficient; broker ad withholds exact address.",
+      "corpus_coverage_diagnostic": {
+        "corpus_membership": "CORPUS_MEMBERSHIP_UNRESOLVED",
+        "neighbourhood_corpus_status": "TARGET_NEIGHBOURHOOD_ABSENT_FROM_CORPUS",
+        "parcels_in_neighbourhood_in_corpus": 0
+      },
+      "v1_total_real_resolved_candidates": 0,
+      "v2_total_real_resolved_candidates": 0,
+      "true_rank_v1": null,
+      "true_rank_v2": null
+    }
+  ]
+}
