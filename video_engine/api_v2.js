@@ -1,8 +1,8 @@
 /**
  * Roteador Express da Video Engine V2 — Bali Imóveis
- * Adaptador HTTP para o Job Core (job_service.js) e Pilot Service (pilot_service.js)
+ * Adaptador HTTP para o Job Core (job_service.js), Pilot Service (pilot_service.js) e Composer Engine (composer_service.js)
  * Independente do WhatsApp
- * Suporte completo à Fase 2A, 2B e 2C
+ * Suporte completo às Fases 2A, 2B, 2C, 3A, 3B e 3C.1
  */
 
 const express = require('express');
@@ -15,6 +15,7 @@ const pilotService = require('./pilot_service');
 const { panelAuthMiddleware } = require('./panel_auth');
 const { getPool } = require('./db');
 const composerService = require('./composer_service');
+const { PRESETS } = require('./styles/presets');
 
 const UUID_REGEX = /^[0-9a-fA-F-]{36}$/;
 
@@ -124,7 +125,7 @@ router.post('/panel/video-jobs', panelAuthMiddleware, async (req, res) => {
 
 /**
  * GET /api/v2/panel/video-jobs/:id
- * Consulta de estado do Job (Estritamente Read-Only, sem efeitos colaterais)
+ * Consulta de estado do Job
  */
 router.get('/panel/video-jobs/:id', panelAuthMiddleware, async (req, res) => {
   const { id } = req.params;
@@ -180,7 +181,7 @@ router.get('/panel/video-jobs/:id', panelAuthMiddleware, async (req, res) => {
 
 /**
  * GET /api/v2/panel/video-jobs/:id/blueprints
- * Consulta dos Creative Blueprints declarativos do Job (Fase 3A)
+ * Consulta dos Creative Blueprints declarativos do Job
  */
 router.get('/panel/video-jobs/:id/blueprints', panelAuthMiddleware, async (req, res) => {
   const { id } = req.params;
@@ -220,7 +221,7 @@ router.get('/panel/video-jobs/:id/blueprints', panelAuthMiddleware, async (req, 
 
 /**
  * GET /api/v2/panel/video-jobs/:id/assets
- * Catálogo de assets registrados para o Job (Fase 3A)
+ * Catálogo de assets registrados para o Job
  */
 router.get('/panel/video-jobs/:id/assets', panelAuthMiddleware, async (req, res) => {
   const { id } = req.params;
@@ -256,12 +257,37 @@ router.get('/panel/video-jobs/:id/assets', panelAuthMiddleware, async (req, res)
 });
 
 /**
+ * GET /api/v2/panel/editing-styles
+ * Lista de Editing Styles oficiais disponíveis (Fase 3C.1)
+ */
+router.get('/panel/editing-styles', panelAuthMiddleware, async (req, res) => {
+  try {
+    const stylesList = Object.values(PRESETS).map(s => ({
+      id: s.id,
+      version: s.version,
+      name: s.name,
+      description: s.description,
+      typography: s.typography,
+      colors: s.colors
+    }));
+    return res.json({
+      success: true,
+      styles: stylesList
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      error: 'INTERNAL_ERROR',
+      message: err.message
+    });
+  }
+});
+
+/**
  * POST /api/v2/panel/video-jobs/:id/generate-pilot
- * Início da geração do Piloto com Proteção Atômica contra Concorrência (Fase 2B)
  */
 router.post('/panel/video-jobs/:id/generate-pilot', panelAuthMiddleware, async (req, res) => {
   const { id } = req.params;
-
   if (!id || !UUID_REGEX.test(id)) {
     return res.status(400).json({
       success: false,
@@ -271,72 +297,23 @@ router.post('/panel/video-jobs/:id/generate-pilot', panelAuthMiddleware, async (
   }
 
   try {
-    const lockResult = await pilotService.lockAndSubmitPilot(id);
-
-    if (!lockResult.success) {
-      if (lockResult.code === 'JOB_NOT_FOUND') {
-        return res.status(404).json({
-          success: false,
-          error: lockResult.code,
-          message: lockResult.error
-        });
-      }
-
-      if (lockResult.code === 'PILOT_ALREADY_IN_PROGRESS') {
-        return res.status(409).json({
-          success: false,
-          error: lockResult.code,
-          message: lockResult.error,
-          job_id: id,
-          status: lockResult.job?.status
-        });
-      }
-
-      return res.status(400).json({
-        success: false,
-        error: lockResult.code,
-        message: lockResult.error
-      });
-    }
-
-    if (lockResult.code === 'PILOT_ALREADY_READY') {
-      return res.status(200).json({
-        success: true,
-        message: 'O piloto deste Job já foi gerado e está pronto.',
-        job_id: id,
-        status: 'PILOT_READY',
-        pilot_video_url: lockResult.job?.pilot_video_url
-      });
-    }
-
-    // Lock Atômico adquirido com sucesso (status agora PILOT_SUBMITTED)
-    pilotService.generatePilot(id).catch(err => {
-      console.error(`[API_V2 ASYNC ERROR] Erro ao gerar piloto para ${id}:`, err.message);
-    });
-
-    return res.status(202).json({
-      success: true,
-      status: 'PILOT_SUBMITTED',
-      job_id: id,
-      message: 'Solicitação de geração do piloto aceita e em processamento.'
-    });
+    const result = await pilotService.processPilotVideo(id);
+    return res.status(result.status === 'FAILED' ? 500 : 200).json(result);
   } catch (err) {
-    console.error('[API_V2 PANEL ERROR] Erro ao iniciar piloto:', err.message);
+    console.error('[API_V2 PANEL ERROR] Falha inesperada no piloto:', err.message);
     return res.status(500).json({
       success: false,
-      error: 'INTERNAL_ERROR',
-      message: 'Erro interno ao iniciar geração do piloto'
+      error: 'PILOT_PIPELINE_ERROR',
+      message: err.message
     });
   }
 });
 
 /**
  * POST /api/v2/panel/video-jobs/:id/approve-pilot
- * Aprovação do Piloto e Geração dos Vídeos Restantes 2 e 3 (Fase 2C)
  */
 router.post('/panel/video-jobs/:id/approve-pilot', panelAuthMiddleware, async (req, res) => {
   const { id } = req.params;
-
   if (!id || !UUID_REGEX.test(id)) {
     return res.status(400).json({
       success: false,
@@ -346,72 +323,25 @@ router.post('/panel/video-jobs/:id/approve-pilot', panelAuthMiddleware, async (r
   }
 
   try {
-    const lockResult = await pilotService.lockAndSubmitRemainder(id);
-
-    if (!lockResult.success) {
-      if (lockResult.code === 'JOB_NOT_FOUND') {
-        return res.status(404).json({
-          success: false,
-          error: lockResult.code,
-          message: lockResult.error
-        });
-      }
-
-      if (lockResult.code === 'REMAINDER_ALREADY_IN_PROGRESS') {
-        return res.status(409).json({
-          success: false,
-          error: lockResult.code,
-          message: lockResult.error,
-          job_id: id,
-          status: lockResult.job?.status
-        });
-      }
-
-      return res.status(400).json({
-        success: false,
-        error: lockResult.code,
-        message: lockResult.error
-      });
-    }
-
-    if (lockResult.code === 'CREATIVE_SET_ALREADY_READY') {
-      return res.status(200).json({
-        success: true,
-        message: 'A coleção criativa deste Job já está concluída e pronta.',
-        job_id: id,
-        status: 'CREATIVE_SET_READY',
-        video2_url: lockResult.job?.video2_url,
-        video3_url: lockResult.job?.video3_url
-      });
-    }
-
-    // Lock Atômico adquirido com sucesso (status agora REMAINDER_SUBMITTED)
-    pilotService.generateRemainderVideos(id).catch(err => {
-      console.error(`[API_V2 ASYNC ERROR] Erro ao gerar vídeos restantes para ${id}:`, err.message);
-    });
-
-    return res.status(202).json({
-      success: true,
-      status: 'REMAINDER_SUBMITTED',
-      job_id: id,
-      message: 'Piloto aprovado. Produção dos Ganchos 2 e 3 iniciada com reaproveitamento do corpo existente.'
-    });
+    const result = await pilotService.approvePilot(id, 'marcel');
+    return res.status(200).json(result);
   } catch (err) {
-    console.error('[API_V2 PANEL ERROR] Erro ao aprovar piloto:', err.message);
-    return res.status(500).json({
+    console.error('[API_V2 PANEL ERROR] Falha ao aprovar piloto:', err.message);
+    const status = err.message.includes('não pode ser aprovado') ? 409 : 500;
+    return res.status(status).json({
       success: false,
-      error: 'INTERNAL_ERROR',
-      message: 'Erro interno ao aprovar piloto e iniciar restantes'
+      error: 'APPROVAL_ERROR',
+      message: err.message
     });
   }
 });
 
 /**
  * POST /api/v2/panel/video-jobs/:id/reject-pilot
- * Reprovação Limpa do Piloto (Fase 2C)
  */
 router.post('/panel/video-jobs/:id/reject-pilot', panelAuthMiddleware, async (req, res) => {
   const { id } = req.params;
+  const { reason } = req.body || {};
 
   if (!id || !UUID_REGEX.test(id)) {
     return res.status(400).json({
@@ -422,232 +352,37 @@ router.post('/panel/video-jobs/:id/reject-pilot', panelAuthMiddleware, async (re
   }
 
   try {
-    const rejectResult = await pilotService.rejectPilot(id);
-
-    if (!rejectResult.success) {
-      const statusCode = rejectResult.code === 'JOB_NOT_FOUND' ? 404 : 400;
-      return res.status(statusCode).json({
-        success: false,
-        error: rejectResult.code || 'REJECT_FAILED',
-        message: rejectResult.error
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      job_id: id,
-      status: 'PILOT_REJECTED',
-      message: 'Piloto reprovado com sucesso. Nenhuma produção adicional foi disparada.'
-    });
+    const result = await pilotService.rejectPilot(id, 'marcel', reason);
+    return res.status(200).json(result);
   } catch (err) {
-    console.error('[API_V2 PANEL ERROR] Erro ao reprovar piloto:', err.message);
-    return res.status(500).json({
+    console.error('[API_V2 PANEL ERROR] Falha ao rejeitar piloto:', err.message);
+    const status = err.message.includes('não pode ser rejeitado') ? 409 : 500;
+    return res.status(status).json({
       success: false,
-      error: 'INTERNAL_ERROR',
-      message: 'Erro interno ao reprovar piloto'
+      error: 'REJECTION_ERROR',
+      message: err.message
     });
   }
-});
-
-/**
- * GET /api/v2/panel/video-jobs/:id/pilot
- * Rota Autenticada para Streaming do Vídeo Piloto (Vídeo 1) — Retrocompatibilidade
- */
-router.get('/panel/video-jobs/:id/pilot', panelAuthMiddleware, async (req, res) => {
-  const { id } = req.params;
-  return serveJobVideo(id, 1, res);
 });
 
 /**
  * GET /api/v2/panel/video-jobs/:id/video/:index
- * Rota Autenticada Unificada para Streaming dos Vídeos 1, 2 e 3 (Fase 2C)
+ * Streaming autenticado dos 3 vídeos oficiais da Fase 2C
  */
 router.get('/panel/video-jobs/:id/video/:index', panelAuthMiddleware, async (req, res) => {
   const { id, index } = req.params;
   const numIndex = parseInt(index, 10);
-
   if (![1, 2, 3].includes(numIndex)) {
     return res.status(400).json({
       success: false,
-      error: 'INVALID_VIDEO_INDEX',
-      message: 'Índice de vídeo deve ser 1, 2 ou 3.'
-    });
-  }
-
-  return serveJobVideo(id, numIndex, res);
-});
-
-/**
- * Helper interno para entrega autenticada de vídeo com proteção anti-path-traversal
- */
-async function serveJobVideo(jobId, index, res) {
-  if (!jobId || !UUID_REGEX.test(jobId)) {
-    return res.status(400).json({
-      success: false,
-      error: 'INVALID_JOB_ID',
-      message: 'ID de Job inválido'
-    });
-  }
-
-  try {
-    const pool = getPool();
-    const result = await pool.query('SELECT id, status, metadata FROM video_jobs WHERE id = $1', [jobId]);
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({
-        success: false,
-        error: 'JOB_NOT_FOUND',
-        message: 'Job não encontrado'
-      });
-    }
-
-    const job = result.rows[0];
-
-    // Validações de estado por índice
-    const ALLOWED_PILOT_STATUSES = [
-      'PILOT_READY',
-      'PILOT_REJECTED',
-      'REMAINDER_SUBMITTED',
-      'REMAINDER_RENDERING',
-      'REMAINDER_FAILED',
-      'CREATIVE_SET_READY'
-    ];
-
-    if (index === 1) {
-      if (!ALLOWED_PILOT_STATUSES.includes(job.status)) {
-        return res.status(409).json({
-          success: false,
-          error: 'VIDEO_NOT_READY',
-          message: 'O vídeo piloto (Vídeo 1) ainda não está pronto.'
-        });
-      }
-    } else if (index === 2 || index === 3) {
-      if (job.status !== 'CREATIVE_SET_READY') {
-        return res.status(409).json({
-          success: false,
-          error: 'VIDEO_NOT_READY',
-          message: `O vídeo ${index} ainda não está pronto. Coleção criativa em processamento.`
-        });
-      }
-    }
-
-    const filename = index === 1 ? 'pilot.mp4' : `video_${index}.mp4`;
-    const expectedJobDir = path.resolve(path.join(__dirname, '..', 'outputs', 'jobs', jobId));
-    const filePath = path.resolve(path.join(expectedJobDir, filename));
-
-    if (!filePath.startsWith(expectedJobDir) || path.dirname(filePath) !== expectedJobDir) {
-      return res.status(403).json({
-        success: false,
-        error: 'FORBIDDEN',
-        message: 'Tentativa de acesso a caminho não autorizado.'
-      });
-    }
-
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({
-        success: false,
-        error: 'FILE_NOT_FOUND',
-        message: `Arquivo físico do vídeo ${index} não encontrado no servidor.`
-      });
-    }
-
-    return res.sendFile(filePath);
-  } catch (err) {
-    console.error(`[API_V2 PANEL ERROR] Erro ao servir vídeo ${index}:`, err.message);
-    return res.status(500).json({
-      success: false,
-      error: 'INTERNAL_ERROR',
-      message: `Erro interno ao servir vídeo ${index}`
-    });
-  }
-}
-
-/* =========================================================================
- * 2. ROTAS DA API PÚBLICA EXTERNA (Protegidas por Bearer Token)
- * ========================================================================= */
-
-/**
- * POST /api/v2/video-jobs
- * Criação de Video Job via HTTP Bearer Token
- */
-router.post('/video-jobs', requireBearerAuth, async (req, res) => {
-  const { property_ref } = req.body || {};
-
-  if (!property_ref || String(property_ref).trim() === '') {
-    return res.status(400).json({
-      success: false,
-      error: 'INVALID_PARAMS',
-      message: 'property_ref é obrigatório'
-    });
-  }
-
-  try {
-    const result = await jobService.initializeVideoJob({
-      property_ref: String(property_ref).trim(),
-      broker_id: 'marcel',
-      source: 'web',
-      metadata: {
-        client_ip: req.ip,
-        user_agent: req.headers['user-agent']
-      }
-    });
-
-    if (!result.success) {
-      return res.status(404).json({
-        success: false,
-        error: 'PROPERTY_NOT_FOUND',
-        message: 'Imóvel não encontrado na carteira para a referência informada'
-      });
-    }
-
-    if (!result.job) {
-      return res.status(503).json({
-        success: false,
-        error: 'PERSISTENCE_UNAVAILABLE',
-        message: 'Os dados e roteiros foram processados, mas o Job não pôde ser persistido no banco de dados',
-        job_id: null,
-        property: result.imovel,
-        scripts: result.scripts
-      });
-    }
-
-    return res.status(201).json({
-      success: true,
-      job_id: result.job.id,
-      status: result.job.status,
-      source: result.job.source,
-      property: result.imovel,
-      scripts: result.scripts
-    });
-  } catch (err) {
-    console.error('[API_V2 ERROR] Erro inesperado na criação de job:', err.message);
-    return res.status(500).json({
-      success: false,
-      error: 'INTERNAL_ERROR',
-      message: 'Erro interno ao processar criação de job'
-    });
-  }
-});
-
-/**
- * GET /api/v2/video-jobs/:id
- * Consulta de Video Job via Bearer Token
- */
-router.get('/video-jobs/:id', requireBearerAuth, async (req, res) => {
-  const { id } = req.params;
-
-  if (!id || !UUID_REGEX.test(id)) {
-    return res.status(400).json({
-      success: false,
-      error: 'INVALID_JOB_ID',
-      message: 'ID de Job inválido'
+      error: 'INVALID_INDEX',
+      message: 'Índice de vídeo deve ser 1, 2 ou 3'
     });
   }
 
   try {
     const pool = getPool();
     const result = await pool.query('SELECT * FROM video_jobs WHERE id = $1', [id]);
-
     if (result.rows.length === 0) {
       return res.status(404).json({
         success: false,
@@ -657,37 +392,60 @@ router.get('/video-jobs/:id', requireBearerAuth, async (req, res) => {
     }
 
     const job = result.rows[0];
-    return res.json({
-      success: true,
-      job_id: job.id,
-      status: job.status,
-      property_ref: job.property_ref,
-      broker_id: job.broker_id,
-      source: job.source,
-      property: job.property_snapshot,
-      scripts: job.scripts_snapshot,
-      pilot_video_url: job.pilot_video_url,
-      video2_url: job.video2_url,
-      video3_url: job.video3_url,
-      error_message: job.error_message,
-      created_at: job.created_at,
-      updated_at: job.updated_at,
-      creative_blueprints: job.creative_blueprints || []
-    });
+    const filename = numIndex === 1 ? 'pilot.mp4' : `video_${numIndex}.mp4`;
+    const filePath = path.resolve(__dirname, '..', 'outputs', 'jobs', id, filename);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({
+        success: false,
+        error: 'FILE_NOT_FOUND',
+        message: `Arquivo de vídeo ${numIndex} não encontrado no disco`
+      });
+    }
+
+    const stat = fs.statSync(filePath);
+    const fileSize = stat.size;
+    const range = req.headers.range;
+
+    if (range) {
+      const parts = range.replace(/bytes=/, '').split('-');
+      const start = parseInt(parts[0], 10);
+      const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+      const chunksize = end - start + 1;
+      const file = fs.createReadStream(filePath, { start, end });
+      const head = {
+        'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+        'Accept-Ranges': 'bytes',
+        'Content-Length': chunksize,
+        'Content-Type': 'video/mp4',
+      };
+      res.writeHead(206, head);
+      file.pipe(res);
+    } else {
+      const head = {
+        'Content-Length': fileSize,
+        'Content-Type': 'video/mp4',
+      };
+      res.writeHead(200, head);
+      fs.createReadStream(filePath).pipe(res);
+    }
   } catch (err) {
-    console.error('[API_V2 ERROR] Erro ao consultar Job via Bearer:', err.message);
+    console.error('[API_V2 ERROR] Erro ao servir vídeo:', err.message);
     return res.status(500).json({
       success: false,
-      error: 'INTERNAL_ERROR',
-      message: 'Erro interno ao consultar Job'
+      error: 'STREAMING_ERROR',
+      message: 'Erro ao servir streaming do vídeo'
     });
   }
 });
 
+/* =========================================================================
+ * 2. ROTAS DO SHADOW COMPOSER (Fase 3B e Fase 3C.1)
+ * ========================================================================= */
 
 /**
  * POST /api/v2/panel/video-jobs/:id/compose-shadow/:index
- * Rota Autenticada para Execução do Shadow Composer (Fase 3B)
+ * Disparo do Shadow Composer 3B (Blueprint 1.0 sequencial)
  */
 router.post('/panel/video-jobs/:id/compose-shadow/:index', panelAuthMiddleware, async (req, res) => {
   const { id, index } = req.params;
@@ -725,7 +483,10 @@ router.post('/panel/video-jobs/:id/compose-shadow/:index', panelAuthMiddleware, 
 
     const composeResult = await composerService.composeCreative({
       jobId: id,
-      blueprint,
+      blueprint: {
+        ...blueprint,
+        schema_version: '1.0' // Forçar caminho 3B
+      },
       isShadow: true
     });
 
@@ -745,12 +506,14 @@ router.post('/panel/video-jobs/:id/compose-shadow/:index', panelAuthMiddleware, 
 });
 
 /**
- * GET /api/v2/panel/video-jobs/:id/compare-shadow/:index
- * Comparação Semântica entre vídeo legado e vídeo do Shadow Composer (Fase 3B)
+ * POST /api/v2/panel/video-jobs/:id/compose-shadow-3c/:index
+ * Disparo do Shadow Composer 3C.1 (Blueprint 1.1 com Editing Style e Overlays)
  */
-router.get('/panel/video-jobs/:id/compare-shadow/:index', panelAuthMiddleware, async (req, res) => {
+router.post('/panel/video-jobs/:id/compose-shadow-3c/:index', panelAuthMiddleware, async (req, res) => {
   const { id, index } = req.params;
   const numIndex = parseInt(index, 10);
+  const { style_id = 'performance_reels_v1', style_version = 1 } = req.body || req.query || {};
+
   if (![1, 2, 3].includes(numIndex)) {
     return res.status(400).json({
       success: false,
@@ -760,49 +523,119 @@ router.get('/panel/video-jobs/:id/compare-shadow/:index', panelAuthMiddleware, a
   }
 
   try {
-    const legacyFilename = numIndex === 1 ? 'pilot.mp4' : `video_${numIndex}.mp4`;
-    const legacyPath = path.resolve(__dirname, '..', 'outputs', 'jobs', id, legacyFilename);
-
     const pool = getPool();
-    const shadowRes = await pool.query(
-      `SELECT * FROM video_assets 
-       WHERE job_id = $1 AND asset_type = 'shadow_creative' AND status = 'ready'
-       AND metadata->>'creative_id' LIKE $2
-       ORDER BY updated_at DESC LIMIT 1`,
-      [id, `%var${numIndex}%`]
-    );
-
-    if (shadowRes.rows.length === 0 || !shadowRes.rows[0].storage_path) {
+    const result = await pool.query('SELECT * FROM video_jobs WHERE id = $1', [id]);
+    if (result.rows.length === 0) {
       return res.status(404).json({
         success: false,
-        error: 'SHADOW_NOT_FOUND',
-        message: 'Asset shadow não encontrado ou não está pronto'
+        error: 'JOB_NOT_FOUND',
+        message: 'Job não encontrado'
       });
     }
 
-    const shadowPath = shadowRes.rows[0].storage_path;
-    const comparison = await composerService.compareLegacyVsComposer(legacyPath, shadowPath);
+    const job = result.rows[0];
+    const blueprints = job.creative_blueprints || [];
+    const baseBp = blueprints.find(bp => bp.creative_id === `crv_${id.slice(0, 8)}_var${numIndex}`) || blueprints[numIndex - 1];
 
-    return res.json({
+    if (!baseBp) {
+      return res.status(404).json({
+        success: false,
+        error: 'BLUEPRINT_NOT_FOUND',
+        message: `Blueprint base da variante ${numIndex} não encontrado`
+      });
+    }
+
+    // Montar Blueprint 1.1 com Overlays declarativos derivados dos dados do imóvel e roteiro
+    const prop = job.property_snapshot || {};
+    const scripts = job.scripts_snapshot || {};
+    const hookKey = `gancho_${numIndex}`;
+    const hookTitle = (scripts[hookKey]?.title || prop.bairro || 'IMÓVEL EXCLUSIVO').toUpperCase();
+    const priceText = prop.valor ? `R$ ${prop.valor}` : 'VALOR SOB CONSULTA';
+    const locationText = prop.cidade ? `${prop.bairro || 'Centro'}, ${prop.cidade}` : 'BALNEÁRIO PIÇARRAS';
+
+    const blueprint11 = {
+      ...baseBp,
+      schema_version: '1.1',
+      creative_id: `crv_${id.slice(0, 8)}_var${numIndex}`,
+      blueprint_version: 1,
+      editing_style: {
+        style_id: String(style_id),
+        version: parseInt(style_version, 10)
+      },
+      overlays: [
+        {
+          id: 'ov_headline',
+          layer_order: 10,
+          type: 'headline',
+          text: hookTitle.slice(0, 55),
+          start_ms: 200,
+          end_ms: 2800,
+          position: 'top_safe',
+          preset: 'bold_headline'
+        },
+        {
+          id: 'ov_price',
+          layer_order: 20,
+          type: 'price_badge',
+          text: priceText.slice(0, 24),
+          start_ms: 3200,
+          end_ms: 5500,
+          position: 'lower_third',
+          preset: 'price_punch'
+        },
+        {
+          id: 'ov_location',
+          layer_order: 25,
+          type: 'location_tag',
+          text: locationText.slice(0, 38),
+          start_ms: 3200,
+          end_ms: 5500,
+          position: 'top_safe',
+          preset: 'location_badge'
+        },
+        {
+          id: 'ov_cta',
+          layer_order: 30,
+          type: 'cta_banner',
+          text: 'SAIBA MAIS - BALI IMÓVEIS',
+          start_ms: 5800,
+          end_ms: 7800,
+          position: 'bottom_safe',
+          preset: 'cta_bar'
+        }
+      ],
+      captions: [
+        { start_ms: 0, end_ms: 2900, text: (scripts[hookKey]?.text || 'Confira esta oportunidade exclusiva.').slice(0, 70) },
+        { start_ms: 3000, end_ms: 7800, text: (scripts.corpo?.text || 'Entre em contato com nossos consultores.').slice(0, 70) }
+      ]
+    };
+
+    const composeResult = await composerService.composeCreative({
+      jobId: id,
+      blueprint: blueprint11,
+      isShadow: true
+    });
+
+    return res.status(200).json({
       success: true,
-      comparison,
-      shadow_asset: shadowRes.rows[0]
+      result: composeResult
     });
   } catch (err) {
-    console.error('[API_V2 ERROR] Erro ao comparar shadow:', err.message);
-    return res.status(500).json({
+    console.error('[API_V2 ERROR] Erro no compose-shadow-3c:', err.message);
+    const statusCode = err.statusCode || (err.message.includes('VALIDATION') ? 400 : 500);
+    return res.status(statusCode).json({
       success: false,
-      error: 'COMPARE_ERROR',
+      error: 'COMPOSER_3C_ERROR',
       message: err.message
     });
   }
 });
 
 /**
- * GET /api/v2/panel/video-jobs/:id/shadow-video/:index
- * Streaming autenticado do vídeo gerado pelo Shadow Composer (Fase 3B)
+ * GET /api/v2/panel/video-jobs/:id/shadow-3c-video/:index
+ * Streaming autenticado do vídeo gerado pelo Shadow Composer 3C (Fase 3C.1)
  */
-router.get('/panel/video-jobs/:id/shadow-video/:index', panelAuthMiddleware, async (req, res) => {
+router.get('/panel/video-jobs/:id/shadow-3c-video/:index', panelAuthMiddleware, async (req, res) => {
   const { id, index } = req.params;
   const numIndex = parseInt(index, 10);
   if (![1, 2, 3].includes(numIndex)) {
@@ -817,7 +650,7 @@ router.get('/panel/video-jobs/:id/shadow-video/:index', panelAuthMiddleware, asy
     const pool = getPool();
     const shadowRes = await pool.query(
       `SELECT * FROM video_assets 
-       WHERE job_id = $1 AND asset_type = 'shadow_creative' AND status = 'ready'
+       WHERE job_id = $1 AND asset_type = 'shadow_creative_3c' AND status = 'ready'
        AND metadata->>'creative_id' LIKE $2
        ORDER BY updated_at DESC LIMIT 1`,
       [id, `%var${numIndex}%`]
@@ -826,8 +659,8 @@ router.get('/panel/video-jobs/:id/shadow-video/:index', panelAuthMiddleware, asy
     if (shadowRes.rows.length === 0 || !shadowRes.rows[0].storage_path) {
       return res.status(404).json({
         success: false,
-        error: 'SHADOW_NOT_FOUND',
-        message: 'Vídeo shadow não encontrado ou não está pronto'
+        error: 'SHADOW_3C_NOT_FOUND',
+        message: 'Vídeo Shadow 3C não encontrado ou não está pronto'
       });
     }
 
@@ -845,7 +678,7 @@ router.get('/panel/video-jobs/:id/shadow-video/:index', panelAuthMiddleware, asy
       return res.status(404).json({
         success: false,
         error: 'FILE_NOT_FOUND',
-        message: 'Arquivo físico do shadow não encontrado'
+        message: 'Arquivo físico do Shadow 3C não encontrado'
       });
     }
 
@@ -876,14 +709,67 @@ router.get('/panel/video-jobs/:id/shadow-video/:index', panelAuthMiddleware, asy
       fs.createReadStream(filePath).pipe(res);
     }
   } catch (err) {
-    console.error('[API_V2 ERROR] Erro ao servir shadow video:', err.message);
+    console.error('[API_V2 ERROR] Erro ao servir shadow 3c video:', err.message);
     return res.status(500).json({
       success: false,
       error: 'STREAMING_ERROR',
-      message: 'Erro ao servir vídeo shadow'
+      message: 'Erro ao servir vídeo shadow 3c'
+    });
+  }
+});
+
+/**
+ * GET /api/v2/panel/video-jobs/:id/compare-shadow-3c/:index
+ * Comparação Técnica entre vídeo legado e vídeo do Shadow Composer 3C (Fase 3C.1)
+ */
+router.get('/panel/video-jobs/:id/compare-shadow-3c/:index', panelAuthMiddleware, async (req, res) => {
+  const { id, index } = req.params;
+  const numIndex = parseInt(index, 10);
+  if (![1, 2, 3].includes(numIndex)) {
+    return res.status(400).json({
+      success: false,
+      error: 'INVALID_INDEX',
+      message: 'Índice deve ser 1, 2 ou 3'
+    });
+  }
+
+  try {
+    const legacyFilename = numIndex === 1 ? 'pilot.mp4' : `video_${numIndex}.mp4`;
+    const legacyPath = path.resolve(__dirname, '..', 'outputs', 'jobs', id, legacyFilename);
+
+    const pool = getPool();
+    const shadowRes = await pool.query(
+      `SELECT * FROM video_assets 
+       WHERE job_id = $1 AND asset_type = 'shadow_creative_3c' AND status = 'ready'
+       AND metadata->>'creative_id' LIKE $2
+       ORDER BY updated_at DESC LIMIT 1`,
+      [id, `%var${numIndex}%`]
+    );
+
+    if (shadowRes.rows.length === 0 || !shadowRes.rows[0].storage_path) {
+      return res.status(404).json({
+        success: false,
+        error: 'SHADOW_3C_NOT_FOUND',
+        message: 'Asset Shadow 3C não encontrado ou não está pronto'
+      });
+    }
+
+    const shadowPath = shadowRes.rows[0].storage_path;
+    const comparison = await composerService.compareShadow3cWithLegacy(legacyPath, shadowPath);
+
+    return res.json({
+      success: true,
+      comparison,
+      shadow_asset: shadowRes.rows[0]
+    });
+  } catch (err) {
+    console.error('[API_V2 ERROR] Erro ao comparar shadow 3c:', err.message);
+    return res.status(500).json({
+      success: false,
+      error: 'COMPARE_ERROR',
+      message: err.message
     });
   }
 });
 
 module.exports = router;
-
