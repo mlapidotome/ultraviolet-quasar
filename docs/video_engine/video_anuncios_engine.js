@@ -10,6 +10,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 const { MessageMedia } = require('whatsapp-web.js');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { createVideoJob } = require('./video_engine/db');
 
 // 1. Secrets e Credenciais Autenticadas (Obrigatórias - Fail Fast)
 const HEYGEN_API_KEY = process.env.HEYGEN_API_KEY;
@@ -34,6 +35,17 @@ const S3_REGION = process.env.S3_REGION || 'auto';
 const S3_ENDPOINT = process.env.S3_ENDPOINT || 'https://27414adaa46eae739436f24a1f4f90b3.r2.cloudflarestorage.com';
 const S3_BUCKET = process.env.S3_BUCKET || 'bali-cards';
 const S3_PUBLIC_PREFIX = process.env.S3_PUBLIC_URL_PREFIX || 'https://pub-3ea8f719e24f4099b810e22aae627d8c.r2.dev';
+
+// Looks oficiais do Marcel para alternar nos ganchos
+const MARCEL_LOOKS = [
+  { id: 'a2cfb3ad10054e6f87c5ce6ca8ab483b', nome: 'Terno Executivo Escuro', emoji: '👔' },
+  { id: 'dc74498f5f5c45619fd7cb6a9ff905a8', nome: 'Estúdio / Podcaster no Microfone', emoji: '🎙️' },
+  { id: '14f2350c0a6f4e2c8b6669b3a255782e', nome: 'Casual / Ao Ar Livre', emoji: '🌿' }
+];
+
+// Look padrão para o Desenvolvimento do Imóvel
+const MARCEL_BODY_LOOK = { id: 'a2cfb3ad10054e6f87c5ce6ca8ab483b', nome: 'Terno Executivo' };
+const MARCEL_VOICE_CLONE_ID = process.env.MARCEL_VOICE_CLONE_ID || 'dccd1a85e6b1450facf9ec953b648df2';
 
 // Sessões ativas de geração por remetente
 const activeVideoSessions = {};
@@ -302,7 +314,7 @@ async function downloadToFile(url, destPath) {
  * 7. Processador de Mensagens do WhatsApp para Marcel
  * Trata referências de imóveis, escolha de looks, comando CLONE, os 4 áudios e Copiloto Executivo
  */
-async function handleIncomingMessage(client, msg, brokerId = 'marcel_teste') {
+async function handleIncomingMessage(client, msg, brokerId = 'marcel') {
   console.log('[VIDEO_ENGINE] Incoming:', {
     fromMe: msg.fromMe,
     from: msg.from,
@@ -592,13 +604,39 @@ async function handleIncomingMessage(client, msg, brokerId = 'marcel_teste') {
     }
 
     const scripts = generateCompleteScripts(imovel);
-    activeVideoSessions[sessionKey] = {
+    const session = {
       imovelRef: ref,
       imovelData: imovel,
       scripts: scripts,
       waitingAudios: true,
       audiosReceived: []
     };
+    activeVideoSessions[sessionKey] = session;
+
+    // Persistência paralela / shadow no PostgreSQL (Fase 1B)
+    try {
+      const canonicalBrokerId = (brokerId === 'marcel_teste' || !brokerId) ? 'marcel' : brokerId;
+      const job = await createVideoJob({
+        property_ref: ref,
+        broker_id: canonicalBrokerId,
+        status: 'SCRIPT_READY',
+        source: 'whatsapp',
+        script_version: 1,
+        property_snapshot: imovel,
+        scripts_snapshot: scripts,
+        metadata: {
+          session_key: sessionKey,
+          from: msg.from,
+          to: msg.to,
+          created_via: 'whatsapp_ref_command'
+        }
+      });
+      session.videoJobId = job.id;
+      console.log(`[VIDEO_ENGINE] Shadow VideoJob criado com sucesso no PostgreSQL: ${job.id} (broker: ${canonicalBrokerId}, status: ${job.status})`);
+    } catch (dbErr) {
+      console.error(`[VIDEO_ENGINE ERROR] Falha ao criar shadow VideoJob no PostgreSQL para ref ${ref}:`, dbErr.message);
+      // V1 continua 100% funcional (degradação graciosa garantida)
+    }
 
     const fin = scripts.financeiro;
     const replyText = '🏠 *IMÓVEL ENCONTRADO: ' + (imovel.titulo || 'Referência ' + ref) + '*\n' +
