@@ -1,6 +1,6 @@
 /**
  * Módulo Video Composer MVP — Video Engine V2
- * Bali Imóveis (Fase 3B)
+ * Bali Imóveis (Fase 3B — Final Hardening)
  * 
  * Responsabilidades:
  * 1. Execução determinística e pura orientada por Creative Blueprint
@@ -8,11 +8,13 @@
  * 3. Claim atômico persistente de renderização no PostgreSQL com lease e stale recovery
  * 4. Resolução rigorosa de assets via Asset Resolver com validação de ownership físico do Job
  * 5. Determinação da duração física real (specs.duration) descartando placeholders
- * 6. Pipeline canônico único de re-encode FFmpeg (H.264 1080x1920@30fps + AAC)
+ * 6. Pipeline canônico único de re-encode FFmpeg (H.264 1080x1920@30fps + AAC) com trims bilaterais reais
  * 7. Escrita atômica via arquivo temporário único (.tmp.<uuid>.mp4) e rename atômico pós-ffprobe
  * 8. Saída física imutável (assets ready nunca são sobrescritos)
  * 9. Modo Shadow com isolamento absoluto do pipeline oficial da Fase 2C
  * 10. Validação semântica e tolerância configurável de duração (COMPOSER_DURATION_TOLERANCE_MS)
+ * 11. Proteção estrita contra path traversal em creative_id e diretórios de output
+ * 12. Invariante estrito: FFmpeg NUNCA executa sem claim.acquired === true (com recuperação controlada para READY quebrado)
  */
 
 const fs = require('fs');
@@ -30,6 +32,7 @@ const COMPOSER_CONTRACT_VERSION = 'composer_v1';
 const COMPOSER_DURATION_TOLERANCE_MS = parseInt(process.env.COMPOSER_DURATION_TOLERANCE_MS || '250', 10);
 const STALE_RENDER_TIMEOUT_MINUTES = 5;
 const FFMPEG_TIMEOUT_MS = 120000; // 2 minutos
+const CREATIVE_ID_REGEX = /^[a-zA-Z0-9_-]{1,64}$/;
 
 /**
  * 1. Validação do Contrato do Blueprint (Fail-Fast Pré-FFmpeg)
@@ -44,8 +47,8 @@ function validateBlueprintContract(blueprint) {
     throw new Error(`[COMPOSER VALIDATION ERROR] schema_version '${blueprint.schema_version}' não suportada pelo Composer MVP (esperado '1.0')`);
   }
 
-  if (!blueprint.creative_id || typeof blueprint.creative_id !== 'string') {
-    throw new Error('[COMPOSER VALIDATION ERROR] creative_id é obrigatório no Blueprint');
+  if (!blueprint.creative_id || typeof blueprint.creative_id !== 'string' || !CREATIVE_ID_REGEX.test(blueprint.creative_id)) {
+    throw new Error(`[COMPOSER VALIDATION ERROR] creative_id inválido (${blueprint.creative_id}). Deve conter apenas letras, números, hífen e underscore (1-64 caracteres)`);
   }
 
   if (!blueprint.format || typeof blueprint.format !== 'object') {
@@ -70,10 +73,20 @@ function validateBlueprintContract(blueprint) {
     if (seg.layer !== undefined && seg.layer !== 0) {
       throw new Error(`[COMPOSER VALIDATION ERROR] layer ${seg.layer} não suportada no MVP (suporte apenas a layer 0)`);
     }
-    if (seg.source_in_ms !== null && seg.source_in_ms !== undefined &&
-        seg.source_out_ms !== null && seg.source_out_ms !== undefined) {
-      if (Number(seg.source_in_ms) >= Number(seg.source_out_ms)) {
-        throw new Error(`[COMPOSER VALIDATION ERROR] Segmento ${i + 1} possui trim inválido: source_in (${seg.source_in_ms}) >= source_out (${seg.source_out_ms})`);
+
+    const hasIn = seg.source_in_ms !== null && seg.source_in_ms !== undefined;
+    const hasOut = seg.source_out_ms !== null && seg.source_out_ms !== undefined;
+
+    // Contrato B: Exigência bilateral rigorosa de trims
+    if (hasIn !== hasOut) {
+      throw new Error(`[COMPOSER VALIDATION ERROR] Segmento ${i + 1} possui trim unilateral inválido: source_in_ms e source_out_ms devem ser fornecidos juntos ou omitidos`);
+    }
+
+    if (hasIn && hasOut) {
+      const inMs = Number(seg.source_in_ms);
+      const outMs = Number(seg.source_out_ms);
+      if (isNaN(inMs) || isNaN(outMs) || inMs < 0 || inMs >= outMs) {
+        throw new Error(`[COMPOSER VALIDATION ERROR] Segmento ${i + 1} possui trim inválido: 0 <= source_in_ms (${seg.source_in_ms}) < source_out_ms (${seg.source_out_ms}) obrigatório`);
       }
     }
   }
@@ -140,8 +153,8 @@ function computeRenderKey(blueprint, resolvedAssets) {
     role: seg.role,
     asset_id: seg.asset_id,
     layer: seg.layer || 0,
-    source_in_ms: seg.source_in_ms || null,
-    source_out_ms: seg.source_out_ms || null
+    source_in_ms: seg.source_in_ms !== undefined ? seg.source_in_ms : null,
+    source_out_ms: seg.source_out_ms !== undefined ? seg.source_out_ms : null
   }));
 
   const renderSpec = {
@@ -177,7 +190,7 @@ function buildExecutionPlan(blueprint, resolvedAssets) {
   for (const item of resolvedAssets) {
     let segmentDurationMs = item.duration_ms;
 
-    // Se houver trims válidos explícitos
+    // Se houver trims bilaterais explícitos
     if (item.source_in_ms !== null && item.source_out_ms !== null) {
       if (item.source_out_ms > item.duration_ms) {
         throw new Error(`[COMPOSER ERROR] source_out_ms (${item.source_out_ms}) excede a duração física do clipe (${item.duration_ms}ms)`);
@@ -233,6 +246,7 @@ async function claimRenderLock({
     )
     ON CONFLICT (id) DO UPDATE SET
       status = 'processing',
+      generation_key = $5,
       updated_at = NOW(),
       metadata = video_assets.metadata || $6::jsonb
     WHERE video_assets.status IN ('pending', 'failed')
@@ -288,7 +302,7 @@ function renderTimelineFFmpeg({ executionPlan, tempOutputPath }) {
       args.push('-i', seg.storage_path);
     }
 
-    // Construção do filtro complexo com suporte a trims reais para vídeo e áudio
+    // Construção do filtro complexo com suporte a trims bilaterais reais para vídeo e áudio
     const filterParts = [];
     let concatInputs = '';
 
@@ -300,16 +314,11 @@ function renderTimelineFFmpeg({ executionPlan, tempOutputPath }) {
       let vFilter = '';
       let aFilter = '';
 
-      if (hasIn || hasOut) {
-        const inSec = hasIn ? (Number(seg.source_in_ms) / 1000).toFixed(3) : '0';
-        if (hasOut) {
-          const outSec = (Number(seg.source_out_ms) / 1000).toFixed(3);
-          vFilter = `[${i}:v]trim=start=${inSec}:end=${outSec},setpts=PTS-STARTPTS[v${i}]`;
-          aFilter = `[${i}:a]atrim=start=${inSec}:end=${outSec},asetpts=PTS-STARTPTS[a${i}]`;
-        } else {
-          vFilter = `[${i}:v]trim=start=${inSec},setpts=PTS-STARTPTS[v${i}]`;
-          aFilter = `[${i}:a]atrim=start=${inSec},asetpts=PTS-STARTPTS[a${i}]`;
-        }
+      if (hasIn && hasOut) {
+        const inSec = (Number(seg.source_in_ms) / 1000).toFixed(3);
+        const outSec = (Number(seg.source_out_ms) / 1000).toFixed(3);
+        vFilter = `[${i}:v]trim=start=${inSec}:end=${outSec},setpts=PTS-STARTPTS[v${i}]`;
+        aFilter = `[${i}:a]atrim=start=${inSec}:end=${outSec},asetpts=PTS-STARTPTS[a${i}]`;
       } else {
         // Sem trims: consome 100% do asset com normalização de PTS
         vFilter = `[${i}:v]setpts=PTS-STARTPTS[v${i}]`;
@@ -492,6 +501,7 @@ function verifyAndPromoteOutput({ tempPath, finalPath, expectedDurationMs, toler
  * @param {string} params.jobId
  * @param {Object} params.blueprint
  * @param {boolean} [params.isShadow=true]
+ * @param {Object} [params.options={}]
  * @returns {Promise<Object>} Resultado da composição
  */
 async function composeCreative({
@@ -519,8 +529,14 @@ async function composeCreative({
   if (!fs.existsSync(jobDir)) {
     fs.mkdirSync(jobDir, { recursive: true });
   }
-  const finalOutputPath = path.join(jobDir, targetFilename);
+  const finalOutputPath = path.resolve(jobDir, targetFilename);
   const outputAssetId = `ast_${prefix}${creativeId}_${shortRenderKey}`;
+
+  // Validação estrita de contenção de diretório (Path Traversal Protection)
+  const relFinal = path.relative(jobDir, finalOutputPath);
+  if (relFinal.startsWith('..') || path.isAbsolute(relFinal) || path.dirname(finalOutputPath) !== jobDir) {
+    throw new Error(`[COMPOSER SECURITY ERROR] Caminho final escapa do diretório do job: ${finalOutputPath}`);
+  }
 
   // 4. Construção do Plano de Execução
   const executionPlan = buildExecutionPlan(blueprint, resolvedAssets);
@@ -528,9 +544,14 @@ async function composeCreative({
   // 5. Idempotência e Claim Atômico SQL
   const tempUuid = crypto.randomBytes(6).toString('hex');
   const tempFilename = `${prefix}${creativeId}_${shortRenderKey}.tmp.${tempUuid}.mp4`;
-  const tempOutputPath = path.join(jobDir, tempFilename);
+  const tempOutputPath = path.resolve(jobDir, tempFilename);
 
-  const claim = await claimRenderLock({
+  const relTemp = path.relative(jobDir, tempOutputPath);
+  if (relTemp.startsWith('..') || path.isAbsolute(relTemp) || path.dirname(tempOutputPath) !== jobDir) {
+    throw new Error(`[COMPOSER SECURITY ERROR] Caminho temporário escapa do diretório do job: ${tempOutputPath}`);
+  }
+
+  let claim = await claimRenderLock({
     outputAssetId,
     jobId,
     propertyRef: blueprint.property_ref,
@@ -547,10 +568,23 @@ async function composeCreative({
   // Se o claim não foi adquirido
   if (!claim.acquired) {
     const existing = claim.asset;
-    if (existing && existing.status === 'ready' && existing.storage_path && fs.existsSync(existing.storage_path)) {
-      // Validar integridade física do asset pronto existente
-      const currentHash = assetService.computeFileHash(existing.storage_path);
-      if (currentHash === existing.file_hash) {
+    if (!existing) {
+      const err = new Error(`[COMPOSER ERROR] Asset ${outputAssetId} não encontrado no catálogo após falha de claim`);
+      err.statusCode = 500;
+      throw err;
+    }
+
+    if (existing.status === 'ready') {
+      // Verificar integridade física e render_key
+      const hasValidPath = existing.storage_path && fs.existsSync(existing.storage_path);
+      let isValidHash = false;
+      if (hasValidPath) {
+        const currentHash = assetService.computeFileHash(existing.storage_path);
+        isValidHash = (currentHash === existing.file_hash);
+      }
+
+      // Caso A: READY íntegro com arquivo válido, hash coincidente e mesma render_key -> Retorno Idempotente
+      if (hasValidPath && isValidHash && existing.generation_key === renderKey) {
         console.log(`[COMPOSER IDEMPOTENCY] Output para render_key ${renderKey} já existe e está READY. Retornando existente.`);
         return {
           success: true,
@@ -561,14 +595,48 @@ async function composeCreative({
           specs: existing.specs
         };
       }
-    }
 
-    // Se outro processo está ativamente executando (dentro da lease de 5 min)
-    if (existing && existing.status === 'processing') {
+      // Caso C: READY corrompido ou arquivo ausente ou key divergente -> Recuperação controlada
+      console.warn(`[COMPOSER RECOVERY] Asset ${outputAssetId} marcado como READY porém com integridade violada (file: ${hasValidPath}, hash: ${isValidHash}). Invalidando e tentando novo claim...`);
+      await assetService.markAssetFailed(outputAssetId, 'CORRUPTED_OR_MISSING_PHYSICAL_FILE');
+      
+      // Tentar novo claim atômico após invalidação
+      claim = await claimRenderLock({
+        outputAssetId,
+        jobId,
+        propertyRef: blueprint.property_ref,
+        renderKey,
+        isShadow,
+        metadata: {
+          creative_id: creativeId,
+          blueprint_version: blueprint.blueprint_version,
+          render_key: renderKey,
+          temp_filename: tempFilename,
+          recovered_from_broken_ready: true
+        }
+      });
+
+      if (!claim.acquired) {
+        const err = new Error(`[COMPOSER CONCURRENCY] Não foi possível adquirir claim para recuperação do asset ${outputAssetId}`);
+        err.statusCode = 409;
+        throw err;
+      }
+    } else if (existing.status === 'processing') {
+      // Caso B: Processamento concorrente ativo
       const err = new Error(`[COMPOSER CONCURRENCY] Render para criativo ${creativeId} já está em andamento por outro processo`);
       err.statusCode = 409;
       throw err;
+    } else {
+      // Caso D: Qualquer outro estado inesperado
+      const err = new Error(`[COMPOSER ERROR] Estado inesperado do asset ${outputAssetId} (${existing.status}) sem aquisição de claim`);
+      err.statusCode = 409;
+      throw err;
     }
+  }
+
+  // Invariante absoluto: NUNCA prosseguir para FFmpeg sem claim ativo adquirido
+  if (!claim || !claim.acquired) {
+    throw new Error(`[COMPOSER INVARIANT ERROR] Tentativa de renderização sem claim adquirido para ${outputAssetId}`);
   }
 
   // 6. Execução da Renderização FFmpeg
@@ -582,7 +650,7 @@ async function composeCreative({
       tempPath: tempOutputPath,
       finalPath: finalOutputPath,
       expectedDurationMs: executionPlan.total_duration_ms,
-      toleranceMs: options.toleranceMs || COMPOSER_DURATION_TOLERANCE_MS
+      toleranceMs: options.toleranceMs !== undefined ? options.toleranceMs : COMPOSER_DURATION_TOLERANCE_MS
     });
 
     // 8. Marcar Asset como READY no Catálogo
