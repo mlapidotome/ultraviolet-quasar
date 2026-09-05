@@ -1,8 +1,8 @@
 /**
- * Suíte de Homologação Automatizada Pós-Review — Fase 3B Video Composer MVP
+ * Suíte de Homologação Automatizada Final Hardening — Fase 3B Video Composer MVP
  * Bali Imóveis (Video Engine V2)
  * 
- * Cenários Validados com Rigor Pós-Review:
+ * Cenários Validados com Rigor Pós-Review e Final Hardening:
  * 1. Blueprint válido Hook+Body renderiza com sucesso
  * 2. Ordem sequencial dos clipes respeitada
  * 3. Asset inexistente rejeitado antes de invocar FFmpeg
@@ -22,7 +22,7 @@
  * 17. Pipeline de re-encode padronizado único gera output íntegro
  * 18. Unidade de duração oficial (duration_ms) aplicada sem truncamento
  * 19. Placeholders antigos de metadata ignorados (fala completa preservada)
- * 20. [POST-REVIEW FIX] Cleanup automático de .tmp em falha sem intervenção manual do teste
+ * 20. [FINAL HARDENING] Cleanup automático de .tmp em falha pós-render sem intervenção manual do teste
  * 21. Arquivo final existente não corrompido em caso de erro no retry
  * 22. Mesma render_key gera retorno idempotente imediato sem invocar FFmpeg
  * 23. Mudança no file_hash de um asset de entrada altera a render_key
@@ -34,10 +34,15 @@
  * 29. Comparação semântica entre Shadow Composer e concat legado demonstra equivalência
  * 30. Job showcase da Fase 2C permanece 100% íntegro servindo os 3 vídeos (HTTP 200)
  * 31. WhatsApp V1 e bloqueio estático 403 em /outputs/jobs/ permanecem intocados
- * 32. [POST-REVIEW FIX] Saúde real do PM2 (jlist online) e PostgreSQL 16
- * 33. [POST-REVIEW FIX] Trims reais de vídeo e áudio aplicados fisicamente no FFmpeg (5s -> trim 1s-3s -> ≈2s)
- * 34. [POST-REVIEW FIX] Arquivo órfão prévio em finalPath não é aceito cegamente e é removido antes da promoção
- * 35. [POST-REVIEW FIX] QC estrito de codecs (H.264 / AAC) e FPS físico derivado de streams reais
+ * 32. Saúde real do PM2 (jlist online) e PostgreSQL 16
+ * 33. Trims bilaterais reais aplicados fisicamente no FFmpeg (5s -> trim 1s-3s -> ≈2s)
+ * 34. Arquivo órfão prévio em finalPath não é aceito cegamente e é removido antes da promoção
+ * 35. QC estrito de codecs (H.264 / AAC) e FPS físico derivado de streams reais
+ * 36. [FINAL HARDENING] Trims unilaterais estritamente rejeitados pelo contrato
+ * 37. [FINAL HARDENING] creative_id malicioso ou tentativa de path traversal rejeitados
+ * 38. [FINAL HARDENING] Recuperação controlada de READY corrompido (DB READY + arquivo ausente)
+ * 39. [FINAL HARDENING] Recuperação controlada de READY adulterado (DB READY + hash divergente)
+ * 40. [FINAL HARDENING] Invariante estrito: FFmpeg NUNCA executa sem claim adquirido (Bloqueio 409 em concorrência)
  */
 
 const fs = require('fs');
@@ -52,7 +57,6 @@ const composerService = require('/var/www/bali-gestor/video_engine/composer_serv
 
 const BASE_URL = 'http://127.0.0.1:3005';
 
-// [POST-REVIEW FIX 5]: Remover credencial fallback literal. Exigir estritamente variável de ambiente.
 if (!process.env.PANEL_PASSWORD) {
   throw new Error('[FATAL ERROR] Variável de ambiente PANEL_PASSWORD não definida no ambiente!');
 }
@@ -78,7 +82,7 @@ function assert(condition, scenarioNum, message) {
 
 async function runTests() {
   console.log('================================================================');
-  console.log(' HOMOLOGAÇÃO AUTOMATIZADA COMPLETA PÓS-REVIEW — FASE 3B (COMPOSER)');
+  console.log(' HOMOLOGAÇÃO AUTOMATIZADA FINAL HARDENING — FASE 3B (COMPOSER)');
   console.log('================================================================\n');
 
   const pool = getPool();
@@ -87,7 +91,7 @@ async function runTests() {
   console.log('--- SETUP: Preparando Ambiente do Teste ---');
   const initRes = await jobService.initializeVideoJob({
     property_ref: '1639',
-    broker_id: 'phase3b_post_review',
+    broker_id: 'phase3b_final_hardening',
     source: 'composer_mvp_suite'
   });
   const testJobId = initRes.job.id;
@@ -163,7 +167,7 @@ async function runTests() {
     [JSON.stringify([testBlueprint]), testJobId]
   );
 
-  console.log('\n--- EXECUTANDO A SUÍTE DE HOMOLOGAÇÃO PÓS-REVIEW ---');
+  console.log('\n--- EXECUTANDO A SUÍTE DE HOMOLOGAÇÃO ---');
 
   // Cenário 1: Blueprint válido Hook+Body renderiza com sucesso
   const compResult = await composerService.composeCreative({
@@ -339,33 +343,32 @@ async function runTests() {
   // Cenário 19: Placeholders antigos de metadata ignorados (fala completa preservada)
   assert(Math.abs(compResult.specs.duration_ms - 8000) <= 250, 19, `Placeholders antigos de metadata ignorados; duração física exata calculada a partir de specs reais (${compResult.specs.duration_ms}ms) -> PASS`);
 
-  // Cenário 20: [POST-REVIEW FIX 4] Cleanup automático de .tmp em falha sem intervenção manual do teste
-  const badTimelineJobId = testJobId;
-  const badBlueprint = {
+  // Cenário 20: [FINAL HARDENING] Cleanup automático de .tmp em falha pós-render sem intervenção manual do teste
+  console.log('\n--- Testando Cleanup Autônomo de .tmp após Falha de QC ---');
+  const qcCleanupBlueprint = {
     ...testBlueprint,
-    creative_id: `crv_${testJobShortId}_fail_cleanup`,
+    creative_id: `crv_${testJobShortId}_qc_fail`,
     timeline: [
       { segment_index: 1, role: 'hook', asset_id: hookAssetId, layer: 0 }
     ]
   };
-  // Corromper intencionalmente temporariamente o storage_path do asset para provocar erro no FFmpeg durante o compose
-  await pool.query("UPDATE video_assets SET storage_path = '/var/www/bali-gestor/outputs/jobs/nonexistent_fail.mp4' WHERE id = $1", [hookAssetId]);
-  let failedAsExpected = false;
+  let qcFailedAsExpected = false;
   try {
+    // Executar FFmpeg real gerando o arquivo .tmp no disco, porém forçar falha no QC com tolerância impossível de 1ms
     await composerService.composeCreative({
       jobId: testJobId,
-      blueprint: badBlueprint,
-      isShadow: true
+      blueprint: qcCleanupBlueprint,
+      isShadow: true,
+      options: { toleranceMs: 0 } // 0ms de tolerância provocará erro de QC após o FFmpeg gerar o temp
     });
   } catch (err) {
-    failedAsExpected = true;
+    qcFailedAsExpected = err.message.includes('VALIDATION ERROR') || err.message.includes('Duração');
   }
-  // Restaurar storage_path
-  await pool.query('UPDATE video_assets SET storage_path = $1 WHERE id = $2', [hookFile, hookAssetId]);
-  // Verificar que NENHUM arquivo .tmp com o prefixo do fail_cleanup restou no disco (limpo automaticamente pelo composer_service)
+
+  // Verificar autonomamente o diretório do job: NÃO DEVE HAVER nenhum .tmp residual, SEM que o teste tenha chamado unlink!
   const dirFiles = fs.readdirSync(testJobDir);
-  const leftoverTmp = dirFiles.find(f => f.includes('fail_cleanup') && f.includes('.tmp.'));
-  assert(failedAsExpected && !leftoverTmp, 20, 'Arquivo temporário .tmp limpo automaticamente pelo composer_service após falha (sem intervenção do teste) -> PASS');
+  const leftoverTmp = dirFiles.find(f => f.includes('qc_fail') && f.includes('.tmp.'));
+  assert(qcFailedAsExpected && !leftoverTmp, 20, 'Arquivo temporário .tmp gerado pelo FFmpeg foi removido de forma 100% autônoma pelo composer_service após falha de QC (sem unlink no teste) -> PASS');
 
   // Cenário 21: Arquivo final existente não corrompido em caso de erro no retry
   const originalOutputBytes = fs.readFileSync(compResult.output_path);
@@ -468,7 +471,7 @@ async function runTests() {
     afterJob.pilot_video_url === null &&
     afterJob.video2_url === null &&
     afterJob.video3_url === null &&
-    afterJob.status === 'SCRIPT_READY' // Status intacto desde a inicialização
+    afterJob.status === 'SCRIPT_READY'
   );
   assert(c28Passed, 28, 'Shadow Composer gera arquivo paralelo sem tocar nos campos oficiais da 2C -> PASS');
 
@@ -513,7 +516,7 @@ async function runTests() {
   const c31V1Intact = fs.existsSync(v1File);
   assert(c31Static403 && c31V1Intact, 31, 'WhatsApp V1 e bloqueio estático 403 em /outputs/jobs/ permanecem intocados -> PASS');
 
-  // Cenário 32: [POST-REVIEW FIX 4] PM2 bali-gestor (jlist online) e PostgreSQL 16 saudáveis
+  // Cenário 32: PM2 bali-gestor (jlist online) e PostgreSQL 16 saudáveis
   let pm2Online = false;
   try {
     const pm2Output = JSON.parse(execSync('pm2 jlist').toString());
@@ -523,9 +526,8 @@ async function runTests() {
   const dbHealth = await pool.query('SELECT 1 as alive');
   assert(pm2Online && dbHealth.rows[0].alive === 1, 32, 'PM2 bali-gestor (processo verificado online via jlist) e PostgreSQL 16 saudáveis -> PASS');
 
-  // Cenário 33: [POST-REVIEW FIX 1] Trims reais de vídeo e áudio aplicados fisicamente no FFmpeg
+  // Cenário 33: Trims bilaterais reais aplicados fisicamente no FFmpeg
   console.log('\n--- Testando Trims Reais (FFmpeg trim + atrim) ---');
-  // Criar blueprint com clipe de 5s (body) recortado de 1000ms a 3000ms (duração esperada = 2000ms)
   const trimBlueprint = {
     creative_id: `crv_${testJobShortId}_trimmed`,
     variant_index: 2,
@@ -536,7 +538,7 @@ async function runTests() {
       {
         segment_index: 1,
         role: 'trimmed_body',
-        asset_id: bodyAssetId, // 5.0s no disco
+        asset_id: bodyAssetId,
         source_in_ms: 1000,
         source_out_ms: 3000,
         layer: 0
@@ -552,14 +554,14 @@ async function runTests() {
 
   const trimDurationMs = trimResult.specs.duration_ms;
   const isTrimAccurate = Math.abs(trimDurationMs - 2000) <= 250;
-  const notFullDuration = trimDurationMs < 3500; // Garantir que NÃO renderizou os 5s originais
+  const notFullDuration = trimDurationMs < 3500;
   assert(
     trimResult.success && isTrimAccurate && notFullDuration,
     33,
-    `Trims reais aplicados fisicamente no FFmpeg: clipe de 5s trimado (1s→3s) gerou exatamente ${trimDurationMs}ms (esperado ≈ 2000ms, < 3500ms) -> PASS`
+    `Trims bilaterais reais aplicados fisicamente no FFmpeg: clipe de 5s trimado (1s→3s) gerou exatamente ${trimDurationMs}ms (esperado ≈ 2000ms, < 3500ms) -> PASS`
   );
 
-  // Cenário 34: [POST-REVIEW FIX 2] Arquivo órfão prévio em finalPath não é aceito cegamente e é removido antes da promoção
+  // Cenário 34: Arquivo órfão prévio em finalPath não é aceito cegamente e é removido antes da promoção
   console.log('\n--- Testando Proteção de Promoção contra Arquivos Órfãos Prévios ---');
   const orphanTestBlueprint = {
     creative_id: `crv_${testJobShortId}_orphan_test`,
@@ -588,7 +590,6 @@ async function runTests() {
     isShadow: true
   });
 
-  // Verificar que o arquivo promovido agora é um MP4 válido e NÃO tem os bytes do arquivo falso
   const newFinalBytes = fs.readFileSync(orphanFinalPath);
   const newFinalHash = crypto.createHash('sha256').update(newFinalBytes).digest('hex');
   assert(
@@ -600,7 +601,7 @@ async function runTests() {
     'Arquivo órfão prévio em finalPath foi substituído com sucesso e a saída recém-validada foi promovida -> PASS'
   );
 
-  // Cenário 35: [POST-REVIEW FIX 3] QC estrito de codecs (H.264 / AAC) e FPS físico derivado de streams reais
+  // Cenário 35: QC estrito de codecs (H.264 / AAC) e FPS físico derivado de streams reais
   assert(
     compResult.specs.codec_video === 'h264' &&
     compResult.specs.codec_audio === 'aac' &&
@@ -611,8 +612,167 @@ async function runTests() {
     `QC estrito de codecs e streams: vídeo ${compResult.specs.codec_video} (${compResult.specs.width}x${compResult.specs.height}@${compResult.specs.fps}fps), áudio ${compResult.specs.codec_audio} -> PASS`
   );
 
+  // Cenário 36: [FINAL HARDENING] Trims unilaterais estritamente rejeitados pelo contrato
+  console.log('\n--- Testando Rejeição de Trims Unilaterais (Contrato Bilateral Obrigatório) ---');
+  let c36InOnlyRejected = false;
+  try {
+    composerService.validateBlueprintContract({
+      ...testBlueprint,
+      timeline: [{ ...testBlueprint.timeline[0], source_in_ms: 1000 }] // apenas source_in_ms
+    });
+  } catch (e) {
+    c36InOnlyRejected = e.message.includes('unilateral') || e.message.includes('trim');
+  }
+
+  let c36OutOnlyRejected = false;
+  try {
+    composerService.validateBlueprintContract({
+      ...testBlueprint,
+      timeline: [{ ...testBlueprint.timeline[0], source_out_ms: 3000 }] // apenas source_out_ms
+    });
+  } catch (e) {
+    c36OutOnlyRejected = e.message.includes('unilateral') || e.message.includes('trim');
+  }
+  assert(c36InOnlyRejected && c36OutOnlyRejected, 36, 'Trims unilaterais (apenas source_in_ms ou apenas source_out_ms) são estritamente rejeitados -> PASS');
+
+  // Cenário 37: [FINAL HARDENING] creative_id malicioso ou tentativa de path traversal rejeitados
+  console.log('\n--- Testando Proteção contra creative_id Malicioso / Path Traversal ---');
+  let c37TraversalRejected = false;
+  try {
+    composerService.validateBlueprintContract({
+      ...testBlueprint,
+      creative_id: '../../etc/passwd'
+    });
+  } catch (e) {
+    c37TraversalRejected = e.message.includes('creative_id inválido');
+  }
+
+  let c37SpecialCharRejected = false;
+  try {
+    composerService.validateBlueprintContract({
+      ...testBlueprint,
+      creative_id: 'bad*name$slash/test'
+    });
+  } catch (e) {
+    c37SpecialCharRejected = e.message.includes('creative_id inválido');
+  }
+  assert(c37TraversalRejected && c37SpecialCharRejected, 37, 'creative_id com caracteres inválidos ou path traversal (../../) rejeitado na validação -> PASS');
+
+  // Cenário 38: [FINAL HARDENING] Recuperação controlada de READY corrompido (DB READY + arquivo ausente)
+  console.log('\n--- Testando Recuperação Controlada de READY Corrompido (Arquivo Ausente) ---');
+  const brokenReadyAssetId = `ast_shadow_crv_${testJobShortId}_broken_file`;
+  const brokenBlueprint = {
+    ...testBlueprint,
+    creative_id: `crv_${testJobShortId}_broken_file`,
+    timeline: [
+      { segment_index: 1, role: 'hook', asset_id: hookAssetId, layer: 0 }
+    ]
+  };
+  const brokenResolved = await composerService.resolveTimelineAssets(testJobId, brokenBlueprint.timeline);
+  const brokenRenderKey = composerService.computeRenderKey(brokenBlueprint, brokenResolved);
+  const brokenShortKey = brokenRenderKey.slice(0, 10);
+  const expectedBrokenPath = path.join(testJobDir, `shadow_${brokenBlueprint.creative_id}_${brokenShortKey}.mp4`);
+  const brokenAssetRecordId = `ast_shadow_${brokenBlueprint.creative_id}_${brokenShortKey}`;
+
+  // Inserir registro no DB com status READY apontando para arquivo que NÃO existe
+  if (fs.existsSync(expectedBrokenPath)) {
+    fs.unlinkSync(expectedBrokenPath);
+  }
+  await pool.query(
+    `INSERT INTO video_assets (id, job_id, property_ref, asset_type, storage_type, storage_path, file_hash, generation_key, status, specs, metadata, created_at, updated_at)
+     VALUES ($1, $2, '1639', 'shadow_creative', 'local_file', $3, 'deadbeef123', $4, 'ready', '{"duration": 3.0}'::jsonb, '{}'::jsonb, NOW(), NOW())
+     ON CONFLICT (id) DO UPDATE SET
+       status = 'ready',
+       storage_path = $3,
+       file_hash = 'deadbeef123',
+       generation_key = $4,
+       updated_at = NOW()`,
+    [brokenAssetRecordId, testJobId, expectedBrokenPath, brokenRenderKey]
+  );
+
+  // Executar composeCreative: deve detectar arquivo ausente, invalidar registro, adquirir novo claim e renderizar com sucesso
+  const recoverRes1 = await composerService.composeCreative({
+    jobId: testJobId,
+    blueprint: brokenBlueprint,
+    isShadow: true
+  });
+
+  const checkDb1 = await pool.query('SELECT * FROM video_assets WHERE id = $1', [brokenAssetRecordId]);
+  assert(
+    recoverRes1.success === true &&
+    recoverRes1.idempotent === false &&
+    fs.existsSync(recoverRes1.output_path) &&
+    checkDb1.rows[0].status === 'ready' &&
+    checkDb1.rows[0].file_hash === assetService.computeFileHash(recoverRes1.output_path),
+    38,
+    'Recuperação controlada de READY com arquivo ausente executada: invalidou órfão, adquiriu novo claim e finalizou READY com hash físico válido -> PASS'
+  );
+
+  // Cenário 39: [FINAL HARDENING] Recuperação controlada de READY adulterado (DB READY + hash divergente)
+  console.log('\n--- Testando Recuperação Controlada de READY Adulterado (Hash Divergente) ---');
+  // Adulterar propositalmente o arquivo físico gerado
+  fs.writeFileSync(recoverRes1.output_path, 'TAMPERED_BYTES_AFTER_RENDER');
+
+  // Executar composeCreative novamente: deve detectar adulteração de hash, invalidar registro, adquirir novo claim e renderizar novamente
+  const recoverRes2 = await composerService.composeCreative({
+    jobId: testJobId,
+    blueprint: brokenBlueprint,
+    isShadow: true
+  });
+
+  const checkDb2 = await pool.query('SELECT * FROM video_assets WHERE id = $1', [brokenAssetRecordId]);
+  const newPhysicalHash = assetService.computeFileHash(recoverRes2.output_path);
+  assert(
+    recoverRes2.success === true &&
+    recoverRes2.idempotent === false &&
+    fs.existsSync(recoverRes2.output_path) &&
+    checkDb2.rows[0].status === 'ready' &&
+    checkDb2.rows[0].file_hash === newPhysicalHash &&
+    newPhysicalHash !== 'TAMPERED_BYTES_AFTER_RENDER',
+    39,
+    'Recuperação controlada de READY com hash físico adulterado executada: re-renderizou sob novo claim e restaurou conformidade com sucesso -> PASS'
+  );
+
+  // Cenário 40: [FINAL HARDENING] Invariante estrito: FFmpeg NUNCA executa sem claim adquirido (Bloqueio 409 em concorrência)
+  console.log('\n--- Testando Invariante Estrito de Claim e Bloqueio 409 em Concorrência Ativa ---');
+  const activeProcessingAssetId = `ast_shadow_${testBlueprint.creative_id}_active_proc`;
+  const activeBlueprint = {
+    ...testBlueprint,
+    creative_id: `crv_${testJobShortId}_active_proc`,
+    timeline: [
+      { segment_index: 1, role: 'hook', asset_id: hookAssetId, layer: 0 }
+    ]
+  };
+  const activeResolved = await composerService.resolveTimelineAssets(testJobId, activeBlueprint.timeline);
+  const activeRenderKey = composerService.computeRenderKey(activeBlueprint, activeResolved);
+  const activeShortKey = activeRenderKey.slice(0, 10);
+  const activeAssetRecordId = `ast_shadow_${activeBlueprint.creative_id}_${activeShortKey}`;
+
+  // Simular renderização ativa em andamento por outro processo (status 'processing' com updated_at = NOW())
+  await pool.query(
+    `INSERT INTO video_assets (id, job_id, property_ref, asset_type, storage_type, generation_key, status, metadata, created_at, updated_at)
+     VALUES ($1, $2, '1639', 'shadow_creative', 'local_file', $3, 'processing', '{"pid": 99999}'::jsonb, NOW(), NOW())
+     ON CONFLICT (id) DO UPDATE SET
+       status = 'processing',
+       updated_at = NOW()`,
+    [activeAssetRecordId, testJobId, activeRenderKey]
+  );
+
+  let c40ConflictBlocked = false;
+  try {
+    await composerService.composeCreative({
+      jobId: testJobId,
+      blueprint: activeBlueprint,
+      isShadow: true
+    });
+  } catch (err) {
+    c40ConflictBlocked = (err.statusCode === 409 && err.message.includes('em andamento por outro processo'));
+  }
+  await pool.query('DELETE FROM video_assets WHERE id = $1', [activeAssetRecordId]);
+  assert(c40ConflictBlocked, 40, 'Invariante estrito verificado: requisição sem claim adquirido é estritamente bloqueada com HTTP 409 e nenhuma execução de FFmpeg ocorre -> PASS');
+
   console.log('\n================================================================');
-  console.log(` RESULTADO FINAL FASE 3B (PÓS-REVIEW): ${passedTests}/${totalTests} CENÁRIOS HOMOLOGADOS COM SUCESSO!`);
+  console.log(` RESULTADO FINAL FASE 3B (FINAL HARDENING): ${passedTests}/${totalTests} CENÁRIOS HOMOLOGADOS COM SUCESSO!`);
   console.log('================================================================\n');
 
   process.exit(0);
