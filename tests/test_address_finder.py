@@ -2,34 +2,40 @@
 tests/test_address_finder.py
 
 Comprehensive offline unit test suite for Address Finder pipeline.
-Uses mocks, fixtures, and synthetic test cohorts (never uses real pilot listings as fixtures).
+Uses realistic HTML fixtures and synthetic cohorts (never uses real pilot listings as fixtures).
 Validates:
 1. BC parsing
 2. Address parsing
-3. Street normalization
-4. Corpus loading
-5. Owner / contribuinte exclusion (strict privacy gate)
-6. Model F ranking
-7. Model G soft-number behavior
-8. Corrupted number never hard-discards true candidate
-9. Observed vs structural distinction
-10. Structural hypothesis cannot become real without resolution
-11. Prediction without GT (anti-leakage)
-12. PILOT_N == 10
-13. Deterministic selection from frozen pool
-14. Frozen prediction overwrite rejection
-15. GT rejection before freeze gate
-16. Post-GT corpus-membership classification
-17. Facade TOP-3 REAL RESOLVED guard
-18. Validate-only zero-network / zero-artifact mutation
+3. Street and Bairro normalization
+4. Corpus loading and Contribuinte/owner exclusion (strict privacy gate)
+5. Leakage classification:
+   - CEP_ONLY -> NOT_DIRECT_EXACT
+   - STREET_ONLY -> NOT_DIRECT_EXACT
+   - STREET_PLUS_EXACT_NUMBER -> DIRECT_EXACT_ADDRESS_LEAK
+6. Clue extraction from realistic HTML fixtures (A, B, C, D, E)
+7. Model F primary ranking (TARGET_STREET_ONLY)
+8. Model G secondary ranking (LOW_NUMBER_WEIGHT)
+9. Soft-number behavior: corrupted number never hard-discards true candidate
+10. Observed vs structural distinction
+11. Structural hypotheses remain STRUCTURAL_UNRESOLVED (is_real=False)
+12. Failure taxonomy: emits STREET_NOT_AVAILABLE when target street cannot be extracted
+13. Prediction without GT (anti-leakage invariant)
+14. No corpus lookup used to manufacture missing listing street
+15. PILOT_N == 10
+16. Deterministic selection from frozen pool
+17. Frozen prediction overwrite rejection
+18. GT rejection before freeze gate
+19. Post-GT corpus-membership classification
+20. Facade TOP-3 REAL RESOLVED guard
+21. Validate-only zero-network / zero-artifact mutation
 """
 
 import json
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
 
+import address_finder
 from address_finder.corpus import Corpus, NormalizedParcel, load_corpus
 from address_finder.inference import predict_from_listing
 from address_finder.models import (
@@ -42,6 +48,8 @@ from address_finder.models import (
     score_number_compatibility,
 )
 from address_finder.normalization import (
+    classify_direct_address_leakage,
+    extract_public_clues_from_html,
     normalize_bairro_name,
     normalize_street_name,
     parse_bc,
@@ -50,10 +58,96 @@ from address_finder.normalization import (
 )
 
 
+# ---------------------------------------------------------------------------
+# Realistic HTML Fixtures (Production-like Public Listing Pages)
+# ---------------------------------------------------------------------------
+FIXTURE_A_STREET_NO_NUMBER = """<!DOCTYPE html>
+<html>
+<head>
+    <title>Linda Casa à Venda em Taubaté, Jardim das Nações, Rua Abissínia - Imóveis</title>
+    <meta name="description" content="Casa ampla com 3 dormitórios, localizada na Rua Abissínia, bairro Jardim das Nações em Taubaté. Excelente oportunidade residencial.">
+</head>
+<body>
+    <h1>Casa Residencial à Venda</h1>
+    <div class="property-info">
+        <span itemprop="addressLocality">Jardim das Nações</span>
+        <span itemprop="streetAddress">Rua Abissínia</span>
+        <span class="area">180 m²</span>
+        <span class="tipo">Casa</span>
+    </div>
+    <img src="https://cdn.imoveis.com/fotos/fachada_principal.jpg" alt="Fachada da casa na Rua Abissínia em Taubaté">
+</body>
+</html>"""
+
+FIXTURE_B_STREET_WITH_UNVERIFIED_NUMBER = """<!DOCTYPE html>
+<html>
+<head>
+    <title>Sobrado Moderno no Bosque Flamboyant, Taubaté - Ref 4092</title>
+    <meta name="description" content="Sobrado residencial com piscina, situado na Rua das Flores, 20, no bairro Bosque Flamboyant.">
+</head>
+<body>
+    <h1>Sobrado 3 Suítes</h1>
+    <div class="specs">
+        <p>Bairro: Bosque Flamboyant, Taubaté - SP</p>
+        <p>Endereço: Rua das Flores, 20</p>
+        <p>Área construída: 220 m²</p>
+        <p>2 pavimentos</p>
+    </div>
+    <img src="https://cdn.imoveis.com/fotos/foto_exterior.jpg" alt="Fachada moderna do sobrado">
+</body>
+</html>"""
+
+FIXTURE_C_CEP_ONLY_NO_STREET = """<!DOCTYPE html>
+<html>
+<head>
+    <title>Casa térrea em Taubaté - Bairro Jardim Bela Vista</title>
+    <meta property="og:description" content="Casa térrea à venda no bairro Jardim Bela Vista, Taubaté. CEP 12030-000. Próxima ao centro e supermercados.">
+</head>
+<body>
+    <h1>Oportunidade no Jardim Bela Vista</h1>
+    <div class="details">
+        <p>Localização: Bairro Jardim Bela Vista, Taubaté - SP</p>
+        <p>CEP: 12030-000</p>
+        <p>Área: 150 m²</p>
+    </div>
+    <img src="https://cdn.imoveis.com/fotos/imovel_frente.png" alt="Frente do imóvel em Taubaté">
+</body>
+</html>"""
+
+FIXTURE_D_NO_STREET_NO_CEP = """<!DOCTYPE html>
+<html>
+<head>
+    <title>Excelente Imóvel na Vila Marli - Taubaté</title>
+    <meta name="description" content="Casa residencial espaçosa no bairro Vila Marli. 3 quartos, quintal grande.">
+</head>
+<body>
+    <h1>Casa Residencial Vila Marli</h1>
+    <div>
+        <p>Bairro: Vila Marli</p>
+        <p>Finalidade: Residencial</p>
+        <p>Área total: 200 m²</p>
+    </div>
+</body>
+</html>"""
+
+FIXTURE_E_EXACT_STREET_PLUS_NUMBER_LEAK = """<!DOCTYPE html>
+<html>
+<head>
+    <title>Casa à Venda - Rua das Flores, 142, Jardim das Nações</title>
+</head>
+<body>
+    <h1>Casa Térrea</h1>
+    <div class="address-box">
+        <p>Visite-nos em: Rua das Flores, 142, Jardim das Nações, Taubaté - SP</p>
+    </div>
+</body>
+</html>"""
+
+
 class TestAddressFinderUnit(unittest.TestCase):
 
     def setUp(self):
-        # Build a small synthetic mock corpus for deterministic test evaluation
+        # Build synthetic mock corpus for deterministic test evaluation
         self.mock_parcels = [
             NormalizedParcel(
                 bc="4.4.206.001.001", d=4, s=4, qqq=206, lll=1, sss=1,
@@ -123,19 +217,16 @@ class TestAddressFinderUnit(unittest.TestCase):
 
     # 2. Address parsing
     def test_address_parsing(self):
-        # Standard municipal cadastral format: 'STREET, TYPE_ABBR, NUMBER'
         res1 = parse_raw_address("ANTONIO DELGADO DA VEIGA, R, 00020")
         self.assertEqual(res1["category"], "STREET_WITH_HOUSE_NUMBER")
         self.assertEqual(res1["street_norm"], "antonio delgado veiga")
         self.assertEqual(res1["house_number"], 20)
 
-        # Standard street name with number
         res2 = parse_raw_address("Rua das Flores, 123")
         self.assertEqual(res2["category"], "STREET_WITH_HOUSE_NUMBER")
         self.assertEqual(res2["street_norm"], "flores")
         self.assertEqual(res2["house_number"], 123)
 
-        # Empty / documentary address
         res3 = parse_raw_address("Lote.: UP/04 Requerente.:")
         self.assertEqual(res3["category"], "DOCUMENTARY_TEXT_VACANT_LOT")
         self.assertIsNone(res3["house_number"])
@@ -151,7 +242,7 @@ class TestAddressFinderUnit(unittest.TestCase):
         self.assertEqual(normalize_bairro_name("Jardim das Nações"), "jardim nacoes")
         self.assertEqual(normalize_bairro_name("302 - BOSQUE FLAMBOYANT"), "bosque flamboyant")
 
-    # 4. Corpus loading and 5. Owner / contribuinte exclusion
+    # 4. Corpus loading and Contribuinte/owner exclusion
     def test_corpus_loading_and_contribuinte_exclusion(self):
         mock_raw = [
             {
@@ -174,52 +265,66 @@ class TestAddressFinderUnit(unittest.TestCase):
             corpus = load_corpus(tf_path)
             self.assertEqual(len(corpus.parcels), 1)
             p = corpus.parcels[0]
-            # Strict safety check: contribuinte must NOT be an attribute
             self.assertFalse(hasattr(p, "contribuinte"))
-            # Must not appear in __dict__
             self.assertNotIn("contribuinte", p.__dict__)
             self.assertNotIn("SUPER_SECRET_OWNER_NAME_12345", json.dumps(p.__dict__))
         finally:
             tf_path.unlink(missing_ok=True)
 
-    # 6. Model F ranking
-    def test_model_f_ranking(self):
-        # Target street match should significantly outscore non-target street
-        score_target = score_candidate_model_f(
-            delta_lll=1, cand_street="flores", target_street="flores", anchor_street="flores"
-        )
-        score_other = score_candidate_model_f(
-            delta_lll=1, cand_street="palmeiras", target_street="flores", anchor_street="flores"
-        )
-        self.assertGreater(score_target, score_other)
-        # Invariant: Model F score is strictly non-negative
-        self.assertGreater(score_target, 0.0)
+    # 5. Leakage tests (Mandatory distinct assertions)
+    def test_leakage_cep_only_not_leak(self):
+        text = "Imóvel à venda no Jardim Bela Vista, Taubaté. CEP 12030-000. Próximo ao centro."
+        is_leak, evidence = classify_direct_address_leakage(text)
+        self.assertFalse(is_leak, "CEP alone must NOT be classified as direct exact address leak!")
+        self.assertEqual(evidence, [])
 
-    # 7. Model G soft-number behavior & 8. Corrupted number never hard-discards
-    def test_model_g_soft_number_behavior(self):
-        cand_num = 10
-        # Exact match boost
-        boost_exact = score_number_compatibility(cand_num, 10, "LOW_NUMBER_WEIGHT")
-        # Offset 5 boost
-        boost_close = score_number_compatibility(cand_num, 15, "LOW_NUMBER_WEIGHT")
-        # Extreme conflict (offset > 150)
-        boost_conflict = score_number_compatibility(cand_num, 500, "LOW_NUMBER_WEIGHT")
+    def test_leakage_street_only_not_leak(self):
+        text = "Linda casa na Rua das Flores, Bosque Flamboyant, Taubaté - SP. Sem número informado."
+        is_leak, evidence = classify_direct_address_leakage(text)
+        self.assertFalse(is_leak, "Street alone must NOT be classified as direct exact address leak!")
+        self.assertEqual(evidence, [])
 
-        self.assertGreater(boost_exact, boost_close)
-        self.assertGreater(boost_close, boost_conflict)
-        # CRITICAL SAFETY INVARIANT: boost on conflict must be >= 0.0 (never negative, never discards)
-        self.assertGreaterEqual(boost_conflict, 0.0)
+    def test_leakage_street_plus_number_is_leak(self):
+        text = "Visite o imóvel na Rua das Flores, 142, Jardim das Nações, Taubaté."
+        is_leak, evidence = classify_direct_address_leakage(text)
+        self.assertTrue(is_leak, "Street + door number MUST be classified as direct exact address leak!")
+        self.assertTrue(len(evidence) > 0)
 
-        # Test Model G composite
-        base_f = 2.0
-        score_g_exact = score_candidate_model_g(base_f, cand_num, 10, "LOW_NUMBER_WEIGHT")
-        score_g_conflict = score_candidate_model_g(base_f, cand_num, 500, "LOW_NUMBER_WEIGHT")
-        self.assertGreater(score_g_exact, score_g_conflict)
-        # Even with large conflict, score_g_conflict must NOT be below base_f
-        self.assertGreaterEqual(score_g_conflict, base_f)
+    # 6. HTML Clue Extraction from Fixtures
+    def test_street_extraction_from_html_fixtures(self):
+        # Fixture A: Extracts title, description, neighbourhood, street, no number
+        clues_a = extract_public_clues_from_html(FIXTURE_A_STREET_NO_NUMBER)
+        types_a = {c["type"] for c in clues_a}
+        self.assertIn("title", types_a)
+        self.assertIn("description", types_a)
+        self.assertIn("neighbourhood", types_a)
+        self.assertIn("street", types_a)
+        self.assertNotIn("house_number", types_a)
+        # Verify provenance is recorded
+        for c in clues_a:
+            self.assertIn("source", c)
 
-    # 9. Observed vs structural distinction & 10. Structural cannot become real without resolution
-    def test_observed_vs_structural_distinction(self):
+        # Fixture B: Extracts street AND unverified number
+        clues_b = extract_public_clues_from_html(FIXTURE_B_STREET_WITH_UNVERIFIED_NUMBER)
+        types_b = {c["type"] for c in clues_b}
+        self.assertIn("street", types_b)
+        self.assertIn("house_number", types_b)
+        num_clue = next(c for c in clues_b if c["type"] == "house_number")
+        self.assertEqual(num_clue["value"], 20)
+
+        # Fixture C: Extracts CEP, neighbourhood, NO street
+        clues_c = extract_public_clues_from_html(FIXTURE_C_CEP_ONLY_NO_STREET)
+        types_c = {c["type"] for c in clues_c}
+        self.assertIn("cep", types_c)
+        self.assertIn("neighbourhood", types_c)
+        self.assertNotIn("street", types_c)
+
+        # Fixture E: Leakage detected on exact street + number
+        is_leak_e, _ = classify_direct_address_leakage(FIXTURE_E_EXACT_STREET_PLUS_NUMBER_LEAK)
+        self.assertTrue(is_leak_e)
+
+    # 7. Model F Primary Ranking
+    def test_model_f_primary_ranking(self):
         clues = [
             {"type": "neighbourhood", "value": "Bosque Flamboyant"},
             {"type": "street", "value": "Rua das Flores"},
@@ -228,44 +333,129 @@ class TestAddressFinderUnit(unittest.TestCase):
         result = predict_from_listing(clues, self.mock_corpus)
         self.assertEqual(result["status"], "SUCCESS")
 
-        candidates = result["candidates"]
-        observed = [c for c in candidates if c["candidate_mode"] == "OBSERVED_CANDIDATE_RETRIEVAL"]
-        structural = [c for c in candidates if c["candidate_mode"] == "STRUCTURAL_DISCOVERY"]
+        primary = result["primary_model_f_ranking"]
+        self.assertTrue(len(primary) > 0)
+        # Model F scores must be strictly descending
+        scores = [c["score_model_f"] for c in primary]
+        self.assertEqual(scores, sorted(scores, reverse=True))
+        # Top candidate on target street must have rank 1
+        top_cand = primary[0]
+        self.assertEqual(top_cand["rank_model_f"], 1)
+        self.assertEqual(top_cand["street_norm"], "flores")
 
-        self.assertTrue(len(observed) > 0)
-        # All observed must be real
-        for c in observed:
-            self.assertTrue(c["is_real"])
-            self.assertEqual(c["resolution_status"], "OBSERVED_REAL")
+    # 8. Model G Secondary Ranking
+    def test_model_g_secondary_ranking(self):
+        # Listing specifies number 20
+        clues = [
+            {"type": "neighbourhood", "value": "Bosque Flamboyant"},
+            {"type": "street", "value": "Rua das Flores"},
+            {"type": "house_number", "value": 20},
+        ]
+        result = predict_from_listing(clues, self.mock_corpus)
+        self.assertEqual(result["status"], "SUCCESS")
 
-        # Structural hypotheses:
-        # If not present in mock corpus (e.g. LLL=4,5,6), MUST have is_real=False and STRUCTURAL_UNRESOLVED
-        for c in structural:
-            if c["candidate_dsqlll"] not in self.mock_corpus.by_dsqlll:
-                self.assertFalse(c["is_real"], f"Unresolved hypothesis {c['candidate_bc']} received is_real=True!")
-                self.assertEqual(c["resolution_status"], "STRUCTURAL_UNRESOLVED")
+        secondary = result["secondary_model_g_ranking"]
+        self.assertTrue(len(secondary) > 0)
+        # Model G scores must be descending
+        scores_g = [c["score_model_g"] for c in secondary]
+        self.assertEqual(scores_g, sorted(scores_g, reverse=True))
+        # Each candidate must have rank_model_g matching its 1-based position
+        for expected_rank, c in enumerate(secondary, start=1):
+            self.assertEqual(c["rank_model_g"], expected_rank)
 
-    # 11. Prediction without GT (anti-leakage invariant)
-    def test_prediction_without_gt(self):
-        # Pass ONLY public signals; ensure function signature and internal logic require NO GT
+        # In Model G, candidate with house_number=20 receives larger number boost than candidate with 10
+        cand_20 = next(c for c in secondary if c["house_number"] == 20)
+        cand_10 = next(c for c in secondary if c["house_number"] == 10)
+        boost_20 = cand_20["score_model_g"] - cand_20["score_model_f"]
+        boost_10 = cand_10["score_model_g"] - cand_10["score_model_f"]
+        self.assertGreater(boost_20, boost_10)
+
+    # 9. Corrupted number never hard-discards true candidate
+    def test_zero_hard_discard_from_corrupted_number(self):
+        cand_num = 10
+        boost_conflict = score_number_compatibility(cand_num, 500, "LOW_NUMBER_WEIGHT")
+        # Soft boost is non-negative, never negative, never discards
+        self.assertGreaterEqual(boost_conflict, 0.0)
+
+        # In full inference, pass extreme conflict door number 9999
+        clues = [
+            {"type": "neighbourhood", "value": "Bosque Flamboyant"},
+            {"type": "street", "value": "Rua das Flores"},
+            {"type": "house_number", "value": 9999},
+        ]
+        result = predict_from_listing(clues, self.mock_corpus)
+        self.assertEqual(result["status"], "SUCCESS")
+        # All observed parcels must still be present in rankings (zero hard discards)
+        cand_bc_set = {c["candidate_bc"] for c in result["candidates"]}
+        for p in self.mock_parcels:
+            self.assertIn(p.bc, cand_bc_set, f"Parcel {p.bc} was improperly hard-discarded by number conflict!")
+
+    # 10. Observed vs structural distinction & 11. Structural hypotheses remain STRUCTURAL_UNRESOLVED
+    def test_structural_unresolved_semantics(self):
         clues = [
             {"type": "neighbourhood", "value": "Bosque Flamboyant"},
             {"type": "street", "value": "Rua das Flores"},
         ]
         result = predict_from_listing(clues, self.mock_corpus)
         self.assertEqual(result["status"], "SUCCESS")
-        # Verify provenance records no ground truth
+
+        candidates = result["primary_model_f_ranking"]
+        observed = [c for c in candidates if c["candidate_mode"] == "OBSERVED_CANDIDATE_RETRIEVAL"]
+        structural = [c for c in candidates if c["candidate_mode"] == "STRUCTURAL_DISCOVERY"]
+
+        self.assertTrue(len(observed) > 0)
+        self.assertTrue(len(structural) > 0)
+
+        # All observed must be real
+        for c in observed:
+            self.assertTrue(c["is_real"])
+            self.assertEqual(c["resolution_status"], "OBSERVED_REAL")
+
+        # All new structural hypotheses MUST remain STRUCTURAL_UNRESOLVED and is_real=False
+        for c in structural:
+            self.assertFalse(c["is_real"], f"Hypothesis {c['candidate_bc']} illegally marked real!")
+            self.assertEqual(c["resolution_status"], "STRUCTURAL_UNRESOLVED")
+            self.assertTrue(c["candidate_address"].startswith("[Structural Hypothesis]"))
+
+    # 12. Failure taxonomy: STREET_NOT_AVAILABLE
+    def test_street_not_available_taxonomy(self):
+        # Bairro given, but no street given (Fixture D)
+        clues_d = extract_public_clues_from_html(FIXTURE_D_NO_STREET_NO_CEP)
+        # Mock corpus has neighbourhood 'Bosque Flamboyant', pass clues with only bairro
+        clues_bairro_only = [{"type": "neighbourhood", "value": "Bosque Flamboyant"}]
+        result = predict_from_listing(clues_bairro_only, self.mock_corpus)
+        # Provenance must record street_available = False
+        self.assertFalse(result["provenance"]["street_available"])
+        # Taxonomy flag must be STREET_NOT_AVAILABLE
+        self.assertEqual(result["taxonomy_code"], "STREET_NOT_AVAILABLE")
+
+    # 13. Prediction without GT (anti-leakage invariant)
+    def test_prediction_without_gt(self):
+        clues = [
+            {"type": "neighbourhood", "value": "Bosque Flamboyant"},
+            {"type": "street", "value": "Rua das Flores"},
+        ]
+        result = predict_from_listing(clues, self.mock_corpus)
+        self.assertEqual(result["status"], "SUCCESS")
         prov = result["provenance"]
         self.assertNotIn("gt", prov)
         self.assertNotIn("target_bc", prov)
         self.assertNotIn("true_physical_address", prov)
 
-    # 12. PILOT_N == 10
+    # 14. No corpus lookup used to manufacture missing listing street
+    def test_no_corpus_lookup_used_to_manufacture_missing_street(self):
+        # When street is absent from clues, predict_from_listing must NOT fill it from corpus
+        clues_no_street = [{"type": "neighbourhood", "value": "Bosque Flamboyant"}]
+        result = predict_from_listing(clues_no_street, self.mock_corpus)
+        self.assertEqual(result["provenance"]["target_street_norm"], "")
+        self.assertFalse(result["provenance"]["street_available"])
+
+    # 15. PILOT_N == 10
     def test_pilot_n_equals_ten(self):
         from scratch.run_blinded_real_listing_pilot import PILOT_N
         self.assertEqual(PILOT_N, 10, f"PILOT_N must be 10, got {PILOT_N}")
 
-    # 13. Deterministic selection from frozen pool
+    # 16. Deterministic selection from frozen pool
     def test_deterministic_selection_from_frozen_pool(self):
         mock_pool = {
             "listings": [
@@ -274,11 +464,10 @@ class TestAddressFinderUnit(unittest.TestCase):
                 {"listing_id": "1003", "source_url": "https://cnm/imovel/1003/"},
             ]
         }
-        # Sort rule: int(listing_id) ascending
         sorted_listings = sorted(mock_pool["listings"], key=lambda r: (int(r["listing_id"]), r["source_url"]))
         self.assertEqual([r["listing_id"] for r in sorted_listings], ["1001", "1002", "1003"])
 
-    # 14. Frozen prediction overwrite rejection
+    # 17. Frozen prediction overwrite rejection
     def test_frozen_prediction_overwrite_rejection(self):
         from scratch.run_blinded_real_listing_pilot import _abort_if_frozen
         with tempfile.TemporaryDirectory() as td:
@@ -292,59 +481,45 @@ class TestAddressFinderUnit(unittest.TestCase):
             with self.assertRaises(SystemExit):
                 _abort_if_frozen(paths, "test_art", "Already frozen artifact test")
 
-    # 15. GT gate (GT rejection before freeze)
+    # 18. GT gate (GT rejection before freeze)
     def test_gt_rejection_before_freeze(self):
         with tempfile.TemporaryDirectory() as td:
             tdp = Path(td)
             gt_p = tdp / "ground_truth.json"
             pred_p = tdp / "frozen_predictions.json"
 
-            # If ground_truth exists but frozen_predictions does not, gate must fail
             gt_p.write_text('{"entries": []}\n', encoding="utf-8")
             self.assertTrue(gt_p.is_file())
             self.assertFalse(pred_p.is_file())
-            # Invariant: this state is illegal
             is_illegal_state = gt_p.is_file() and not pred_p.is_file()
             self.assertTrue(is_illegal_state)
 
-    # 16. Post-GT corpus-membership classification
+    # 19. Post-GT corpus-membership classification
     def test_post_gt_corpus_membership_classification(self):
-        # Classify helper logic
-        def classify_corpus_membership(true_bc: str, corpus: Corpus) -> str:
-            if true_bc in [p.bc for p in corpus.parcels]:
-                return "KNOWN_FULL_BC_IN_CORPUS"
-            parts = true_bc.split(".")
-            dsqlll = f"{parts[0]}.{parts[1]}.{int(parts[2]):03d}.{int(parts[3]):03d}"
-            dsq = f"{parts[0]}.{parts[1]}.{int(parts[2]):03d}"
-            if dsqlll in corpus.by_dsqlll:
-                return "KNOWN_DSQLLL_IN_CORPUS"
-            if dsq in corpus.by_dsq:
-                return "SAME_DSQ_ONLY_IN_CORPUS"
-            return "NOT_PRESENT_IN_CORPUS"
-
-        # 1. Exact full BC
-        self.assertEqual(classify_corpus_membership("4.4.206.001.001", self.mock_corpus), "KNOWN_FULL_BC_IN_CORPUS")
-        # 2. Same DSQLLL but different sublot (e.g. sss=2)
-        self.assertEqual(classify_corpus_membership("4.4.206.001.002", self.mock_corpus), "KNOWN_DSQLLL_IN_CORPUS")
-        # 3. Same DSQ but novel LLL (e.g. lll=99)
-        self.assertEqual(classify_corpus_membership("4.4.206.099.001", self.mock_corpus), "SAME_DSQ_ONLY_IN_CORPUS")
+        from scratch.run_blinded_real_listing_pilot import _classify_post_gt_corpus_membership
+        # 1. Full exact BC
+        self.assertEqual(_classify_post_gt_corpus_membership("4.4.206.001.001", self.mock_corpus), "KNOWN_FULL_BC_IN_CORPUS")
+        # 2. Same DSQLLL, different sublot
+        self.assertEqual(_classify_post_gt_corpus_membership("4.4.206.001.002", self.mock_corpus), "KNOWN_DSQLLL_IN_CORPUS")
+        # 3. Same DSQ, novel LLL
+        self.assertEqual(_classify_post_gt_corpus_membership("4.4.206.099.001", self.mock_corpus), "SAME_DSQ_ONLY_IN_CORPUS")
         # 4. Unknown DSQ
-        self.assertEqual(classify_corpus_membership("1.1.001.001.001", self.mock_corpus), "NOT_PRESENT_IN_CORPUS")
+        self.assertEqual(_classify_post_gt_corpus_membership("1.1.001.001.001", self.mock_corpus), "NOT_PRESENT_IN_CORPUS")
 
-    # 17. Facade TOP-3 REAL RESOLVED guard
+    # 20. Facade TOP-3 REAL RESOLVED guard
     def test_facade_top3_real_guard(self):
         candidates = [
-            {"rank": 1, "is_real": True, "resolution_status": "OBSERVED_REAL", "candidate_address": "Rua 1"},
-            {"rank": 2, "is_real": False, "resolution_status": "STRUCTURAL_UNRESOLVED", "candidate_address": "Hypo 2"},
-            {"rank": 3, "is_real": True, "resolution_status": "STRUCTURAL_RESOLVED", "candidate_address": "Rua 3"},
-            {"rank": 4, "is_real": True, "resolution_status": "OBSERVED_REAL", "candidate_address": "Rua 4"},
+            {"rank": 1, "rank_model_f": 1, "is_real": True, "resolution_status": "OBSERVED_REAL", "candidate_address": "Rua 1"},
+            {"rank": 2, "rank_model_f": 2, "is_real": False, "resolution_status": "STRUCTURAL_UNRESOLVED", "candidate_address": "Hypo 2"},
+            {"rank": 3, "rank_model_f": 3, "is_real": True, "resolution_status": "STRUCTURAL_RESOLVED", "candidate_address": "Rua 3"},
+            {"rank": 4, "rank_model_f": 4, "is_real": True, "resolution_status": "OBSERVED_REAL", "candidate_address": "Rua 4"},
         ]
 
         def filter_for_facade(cands):
             eligible = []
             for c in cands:
                 if (
-                    c.get("rank", 99) <= 3
+                    (c.get("rank_model_f") or c.get("rank", 99)) <= 3
                     and c.get("is_real") is True
                     and c.get("resolution_status") in ("OBSERVED_REAL", "STRUCTURAL_RESOLVED")
                 ):
@@ -352,20 +527,16 @@ class TestAddressFinderUnit(unittest.TestCase):
             return eligible
 
         eligible = filter_for_facade(candidates)
-        # Must only include rank 1 and rank 3
         self.assertEqual([c["rank"] for c in eligible], [1, 3])
-        # Rank 2 (structural unresolved) must be rejected
         self.assertNotIn(2, [c["rank"] for c in eligible])
-        # Rank 4 (rank > 3) must be rejected
         self.assertNotIn(4, [c["rank"] for c in eligible])
 
-    # 18. Validate-only zero-network / zero-artifact mutation
+    # 21. Validate-only zero-network / zero-artifact mutation
     def test_validate_only_no_mutation(self):
         from scratch.run_blinded_real_listing_pilot import validate_only, _paths
         repo_root = Path(r"C:\Users\Marcel\.gemini\antigravity\playground\ultraviolet-quasar")
         paths = _paths(repo_root)
 
-        # Snapshot mtimes before
         before_mtimes = {k: p.stat().st_mtime for k, p in paths.items() if p.exists()}
         validate_only(paths)
         after_mtimes = {k: p.stat().st_mtime for k, p in paths.items() if p.exists()}

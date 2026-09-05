@@ -3,7 +3,8 @@ address_finder
 
 Production Address Finder inference package for Blinded Real-Listing Pilot.
 Implements non-GT candidate generation, cadastral corpus indexing,
-Model F (TARGET_STREET_ONLY), Model G (LOW_NUMBER_WEIGHT), and structural LLL discovery.
+Model F (TARGET_STREET_ONLY) primary ranking, Model G (LOW_NUMBER_WEIGHT) secondary ranking,
+HTML public clue extraction, and exact-address leakage classification.
 """
 
 from address_finder.corpus import Corpus, NormalizedParcel, load_corpus
@@ -18,6 +19,8 @@ from address_finder.models import (
     score_number_compatibility,
 )
 from address_finder.normalization import (
+    classify_direct_address_leakage,
+    extract_public_clues_from_html,
     normalize_bairro_name,
     normalize_street_name,
     parse_bc,
@@ -30,6 +33,8 @@ __all__ = [
     "NormalizedParcel",
     "load_corpus",
     "predict_from_listing",
+    "extract_public_clues_from_html",
+    "classify_direct_address_leakage",
     "normalize_street_name",
     "normalize_bairro_name",
     "parse_raw_address",

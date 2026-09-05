@@ -18,9 +18,12 @@ Stages (run in order):
 CONSTRAINTS (enforced at runtime):
     - No stage executes unless all upstream artifacts exist and SHA-256 verify.
     - GT cannot be ingested before frozen_predictions artifact is locked.
+    - Model F (TARGET_STREET_ONLY) is the primary scientific ranking.
+    - Model G (LOW_NUMBER_WEIGHT) is secondary/noisy-number-assisted.
     - facade-guard requires explicit --stage invocation and operator confirmation.
     - Facade eligibility strictly requires: rank <= 3 AND is_real == True AND resolution_status in {OBSERVED_REAL, STRUCTURAL_RESOLVED}.
     - Structural hypothetical BCs are strictly forbidden from Facade Checker.
+    - CEP alone or street alone is NOT direct exact address leakage.
     - --validate-only performs zero network I/O and zero artifact writes.
     - This driver NEVER commits or pushes git artifacts automatically.
     - Without --stage or --validate-only this script prints help and exits 2.
@@ -45,6 +48,8 @@ from typing import Any, Dict, List, Optional, Set
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
+
+import address_finder
 
 SCHEMA_VERSION = "1.0"
 
@@ -190,13 +195,6 @@ def _confirm(prompt: str) -> bool:
 # ---------------------------------------------------------------------------
 # Eligibility + extraction helpers
 # ---------------------------------------------------------------------------
-_ADDRESS_RE = re.compile(
-    r"(rua|avenida|av\.|alameda|travessa|estrada|rod\.)\s+\w[\w\s,]+,?\s*n[°º]?\s*\d+",
-    re.IGNORECASE,
-)
-_CEP_RE = re.compile(r"\b\d{5}-\d{3}\b")
-
-
 def _is_eligible(lid: str, url: str) -> tuple[bool, dict, bool]:
     """
     Check listing eligibility on live crawl.
@@ -228,37 +226,19 @@ def _is_eligible(lid: str, url: str) -> tuple[bool, dict, bool]:
     if not has_img:
         return False, meta, False
 
-    # Check direct address leakage
-    is_direct_leak = bool(_ADDRESS_RE.search(lhtml) or _CEP_RE.search(lhtml))
+    # Check direct exact address leakage (street + door number).
+    # CEP alone or street alone is NOT direct exact leakage.
+    is_direct_leak, _ = address_finder.classify_direct_address_leakage(lhtml)
     if is_direct_leak:
-        info(f"  Auditing: {lid} rejected due to direct address leak")
+        info(f"  Auditing: {lid} rejected due to exact street + door number leak")
         return False, meta, True
 
     return True, meta, False
 
 
 def _extract_clues(html: str) -> list[dict]:
-    clues: list[dict] = []
-    for m in re.finditer(r"bairro[:\s]+([A-Z\xc0-\xda][A-Za-z\xc0-\xff\s\-]+?)[\s,<]", html, re.IGNORECASE):
-        clues.append({"type": "neighbourhood", "value": m.group(1).strip(), "source": "bairro_field"})
-    for t in ("sobrado", "casa"):
-        if re.search(rf"\b{t}\b", html, re.IGNORECASE):
-            clues.append({"type": "property_type", "value": t, "source": "page_text"})
-            break
-    for m in re.finditer(r"(\d[\d.,]+)\s*m[²2]", html, re.IGNORECASE):
-        val = m.group(1).replace(".", "").replace(",", ".")
-        try:
-            float(val)
-            clues.append({"type": "area_m2", "value": val, "source": "area_field"})
-        except ValueError:
-            pass
-    for m in re.finditer(r"(\d)\s*(?:pav[ie]|andar)", html, re.IGNORECASE):
-        clues.append({"type": "floors", "value": m.group(1), "source": "floor_field"})
-    for m in re.finditer(r'<img[^>]+alt=["\']((?!\s)[^"\'"]{5,80})["\']', html, re.IGNORECASE):
-        alt = m.group(1)
-        if any(kw in alt.lower() for kw in ("taubat", "bairro", "fachada", "frente", "exterior")):
-            clues.append({"type": "image_alt_geo", "value": alt.strip(), "source": "img_alt"})
-    return clues
+    """Extract production-visible clues from HTML listing."""
+    return address_finder.extract_public_clues_from_html(html)
 
 
 # ---------------------------------------------------------------------------
@@ -391,7 +371,7 @@ def stage_snapshots(paths: dict[str, Path]) -> None:
 # STAGE 3 -- Public Input Extraction
 # ---------------------------------------------------------------------------
 def stage_inputs(paths: dict[str, Path]) -> None:
-    """Extract real public clues from frozen HTML. No address fields used."""
+    """Extract real public clues from frozen HTML. Persists source provenance."""
     _gate(paths, "snapshot_manifest")
     _abort_if_frozen(paths, "public_inputs", "Public inputs already frozen.")
     snap_manifest = load_json(paths["snapshot_manifest"])
@@ -409,7 +389,7 @@ def stage_inputs(paths: dict[str, Path]) -> None:
         html = hp.read_text(encoding="utf-8", errors="replace")
         clues = _extract_clues(html)
         listings.append({"listing_id": lid, "clues": clues, "extraction_ok": True})
-        info(f"  {lid}: {len(clues)} clues")
+        info(f"  {lid}: {len(clues)} clues extracted with provenance")
     digest = write_json(paths["public_inputs"], {
         "schema_version": SCHEMA_VERSION,
         "generated_at": now_utc(),
@@ -422,7 +402,9 @@ def stage_inputs(paths: dict[str, Path]) -> None:
 # STAGE 4 -- Direct Leakage Classification
 # ---------------------------------------------------------------------------
 def stage_classify_leakage(paths: dict[str, Path]) -> None:
-    """Classify each listing for direct exact-address leakage; DQ leakers."""
+    """Classify each listing for direct exact-address leakage (street + door number).
+    CEP alone or street alone is NOT direct exact leakage.
+    """
     _gate(paths, "public_inputs")
     _abort_if_frozen(paths, "leakage_report", "Leakage report already frozen.")
     public_inputs = load_json(paths["public_inputs"])
@@ -441,16 +423,22 @@ def stage_classify_leakage(paths: dict[str, Path]) -> None:
     for entry in public_inputs["listings"]:
         lid = entry["listing_id"]
         leaked, evidence = False, []
-        for clue in entry.get("clues", []):
-            v = clue.get("value", "")
-            if _ADDRESS_RE.search(v) or _CEP_RE.search(v):
-                leaked = True
-                evidence.append(f"clue:{clue['type']}:{v[:80]}")
-        if lid in snap_html and not leaked:
+        # Check raw HTML snapshot
+        if lid in snap_html:
             ht = snap_html[lid].read_text(encoding="utf-8", errors="replace")
-            if _ADDRESS_RE.search(ht) or _CEP_RE.search(ht):
+            is_leak, ev = address_finder.classify_direct_address_leakage(ht)
+            if is_leak:
                 leaked = True
-                evidence.append("raw_html:address_pattern")
+                evidence.extend(ev)
+
+        # Also check clues for any exact address leak text
+        for clue in entry.get("clues", []):
+            v = str(clue.get("value", ""))
+            is_clue_leak, c_ev = address_finder.classify_direct_address_leakage(v)
+            if is_clue_leak:
+                leaked = True
+                evidence.extend(c_ev)
+
         reports.append({
             "listing_id": lid,
             "direct_exact_address_leaked": leaked,
@@ -458,6 +446,7 @@ def stage_classify_leakage(paths: dict[str, Path]) -> None:
             "evidence": evidence,
         })
         info(f"  [{'DQ' if leaked else 'OK'}] {lid}")
+
     dq = sum(1 for r in reports if r["direct_exact_address_leaked"])
     digest = write_json(paths["leakage_report"], {
         "schema_version": SCHEMA_VERSION,
@@ -469,7 +458,7 @@ def stage_classify_leakage(paths: dict[str, Path]) -> None:
 
 
 # ---------------------------------------------------------------------------
-# STAGE 5 -- Frozen Predictions (Real Production Non-GT Inference)
+# STAGE 5 -- Frozen Predictions (Dual Rankings: Model F Primary, Model G Secondary)
 # ---------------------------------------------------------------------------
 def _call_address_finder_model(
     listing_id: str,
@@ -480,9 +469,8 @@ def _call_address_finder_model(
 ) -> dict:
     """
     Call the production-wired Address Finder inference module.
-    Returns the complete prediction dictionary for this listing.
+    Returns prediction dict with primary_model_f_ranking and secondary_model_g_ranking.
     """
-    import address_finder
     return address_finder.predict_from_listing(
         public_listing_clues=clues,
         corpus=corpus,
@@ -498,8 +486,6 @@ def stage_predict(paths: dict[str, Path]) -> None:
     _abort_if_frozen(paths, "frozen_predictions", "Frozen predictions already locked.")
     if not _confirm("Run Address Finder inference pipeline on public inputs? [yes/no] "):
         sys.exit("[ABORTED]")
-
-    import address_finder
 
     # Load frozen corpus (acervo_casas_taubate.json)
     if not paths["corpus"].is_file():
@@ -536,6 +522,8 @@ def stage_predict(paths: dict[str, Path]) -> None:
                 "listing_id": lid,
                 "disqualified": True,
                 "taxonomy_code": "DIRECT_EXACT_ADDRESS_LEAK",
+                "primary_model_f_ranking": [],
+                "secondary_model_g_ranking": [],
                 "candidates": [],
                 "provenance": {"reason": "DIRECT_EXACT_ADDRESS_LEAK"},
                 "predicted_at": now_utc(),
@@ -551,27 +539,33 @@ def stage_predict(paths: dict[str, Path]) -> None:
         )
 
         candidates = pred_res.get("candidates", [])
+        primary_f = pred_res.get("primary_model_f_ranking", candidates)
+        secondary_g = pred_res.get("secondary_model_g_ranking", [])
         taxonomy_code = pred_res.get("taxonomy_code")
 
         predictions.append({
             "listing_id": lid,
             "disqualified": False,
             "taxonomy_code": taxonomy_code,
-            "candidates": candidates,
+            "primary_model_f_ranking": primary_f,
+            "secondary_model_g_ranking": secondary_g,
+            "candidates": primary_f,  # Default candidates alias is Model F primary
             "provenance": pred_res.get("provenance", {}),
             "predicted_at": now_utc(),
         })
-        info(f"  {lid}: {len(candidates)} candidates generated (taxonomy: {taxonomy_code or 'OK'})")
+        info(f"  {lid}: {len(primary_f)} candidates (Model F primary, taxonomy: {taxonomy_code or 'OK'})")
 
     digest = write_json(paths["frozen_predictions"], {
         "schema_version": SCHEMA_VERSION,
         "frozen_at": now_utc(),
+        "primary_ranking": "TARGET_STREET_ONLY",
+        "secondary_ranking": "LOW_NUMBER_WEIGHT",
         "corpus_sha256": corpus.corpus_sha256,
         "rules_sha256": (frozen_rules.get("sha256") if frozen_rules else "FROZEN_DEFAULTS"),
         "prediction_count": len([p for p in predictions if not p["disqualified"]]),
         "predictions": predictions,
     })
-    info(f"Frozen predictions locked. SHA-256: {digest}")
+    info(f"Frozen predictions locked (Model F primary). SHA-256: {digest}")
 
 
 # ---------------------------------------------------------------------------
@@ -617,7 +611,7 @@ def stage_ingest_gt(paths: dict[str, Path]) -> None:
 
 
 # ---------------------------------------------------------------------------
-# STAGE 7 -- Evaluation (with Post-GT Corpus Membership Classification)
+# STAGE 7 -- Evaluation (Model F Primary, Model G Secondary, Post-GT Membership)
 # ---------------------------------------------------------------------------
 def _assign_failure_code(pred: dict) -> str:
     """Preserve specific inference failure code if present, else fallback."""
@@ -669,6 +663,8 @@ def _classify_post_gt_corpus_membership(true_bc: Optional[str], corpus: Any) -> 
 
 def stage_evaluate(paths: dict[str, Path]) -> None:
     """Score frozen predictions vs GT by normalised address matching.
+    Primary scientific pilot metrics use Model F (TARGET_STREET_ONLY).
+    Secondary metrics evaluate Model G (LOW_NUMBER_WEIGHT).
     Post-GT only: classify target property corpus membership.
     """
     _gate(paths, "frozen_predictions", "ground_truth")
@@ -679,12 +675,14 @@ def stage_evaluate(paths: dict[str, Path]) -> None:
     # Load corpus for post-GT membership audit
     corpus = None
     if paths["corpus"].is_file():
-        import address_finder
         corpus = address_finder.load_corpus(paths["corpus"])
 
     gt_map: dict[str, dict] = {e["listing_id"]: e for e in gt_data["entries"]}
 
-    counters = {"TOP1": 0, "TOP3": 0, "TOP5": 0, "TOP10": 0, "TOP20": 0}
+    # Counters for Primary (Model F) and Secondary (Model G)
+    counters_f = {"TOP1": 0, "TOP3": 0, "TOP5": 0, "TOP10": 0, "TOP20": 0}
+    counters_g = {"TOP1": 0, "TOP3": 0, "TOP5": 0, "TOP10": 0, "TOP20": 0}
+
     membership_counts = {
         "KNOWN_FULL_BC_IN_CORPUS": 0,
         "KNOWN_DSQLLL_IN_CORPUS": 0,
@@ -701,7 +699,8 @@ def stage_evaluate(paths: dict[str, Path]) -> None:
                 "listing_id": lid,
                 "evaluated": False,
                 "taxonomy_code": pred.get("taxonomy_code") or "DIRECT_EXACT_ADDRESS_LEAK",
-                "hit_rank": None,
+                "hit_rank_model_f": None,
+                "hit_rank_model_g": None,
                 "corpus_membership": None,
             })
             continue
@@ -711,7 +710,8 @@ def stage_evaluate(paths: dict[str, Path]) -> None:
                 "listing_id": lid,
                 "evaluated": False,
                 "taxonomy_code": "GT_UNRESOLVED",
-                "hit_rank": None,
+                "hit_rank_model_f": None,
+                "hit_rank_model_g": None,
                 "corpus_membership": None,
             })
             continue
@@ -725,35 +725,54 @@ def stage_evaluate(paths: dict[str, Path]) -> None:
         membership = _classify_post_gt_corpus_membership(gt_bc, corpus)
         membership_counts[membership] = membership_counts.get(membership, 0) + 1
 
-        hit_rank: int | None = None
-        for cand in pred.get("candidates", []):
+        # Evaluate Model F (Primary)
+        hit_rank_f: int | None = None
+        cand_list_f = pred.get("primary_model_f_ranking") or pred.get("candidates", [])
+        for cand in cand_list_f:
             if _normalise_address(cand.get("candidate_address", "")) == gt_addr:
-                hit_rank = cand["rank"]
+                hit_rank_f = cand.get("rank_model_f") or cand.get("rank")
+                break
+
+        # Evaluate Model G (Secondary)
+        hit_rank_g: int | None = None
+        cand_list_g = pred.get("secondary_model_g_ranking") or []
+        for cand in cand_list_g:
+            if _normalise_address(cand.get("candidate_address", "")) == gt_addr:
+                hit_rank_g = cand.get("rank_model_g") or cand.get("rank")
                 break
 
         for k, thr in (("TOP1", 1), ("TOP3", 3), ("TOP5", 5), ("TOP10", 10), ("TOP20", 20)):
-            if hit_rank is not None and hit_rank <= thr:
-                counters[k] += 1
+            if hit_rank_f is not None and hit_rank_f <= thr:
+                counters_f[k] += 1
+            if hit_rank_g is not None and hit_rank_g <= thr:
+                counters_g[k] += 1
 
-        tc = None if hit_rank is not None else _assign_failure_code(pred)
+        tc = None if hit_rank_f is not None else _assign_failure_code(pred)
         per_listing.append({
             "listing_id": lid,
             "evaluated": True,
-            "hit_rank": hit_rank,
+            "hit_rank_model_f": hit_rank_f,
+            "hit_rank_model_g": hit_rank_g,
             "taxonomy_code": tc,
             "corpus_membership": membership,
         })
 
-    rates = {k: (counters[k] / evaluated if evaluated else 0.0) for k in counters}
+    rates_f = {k: (counters_f[k] / evaluated if evaluated else 0.0) for k in counters_f}
+    rates_g = {k: (counters_g[k] / evaluated if evaluated else 0.0) for k in counters_g}
+
     summary = {
         "evaluated": evaluated,
-        "rates": rates,
-        "raw_counts": counters,
+        "primary_model_f_rates": rates_f,
+        "primary_model_f_counts": counters_f,
+        "secondary_model_g_rates": rates_g,
+        "secondary_model_g_counts": counters_g,
         "post_gt_corpus_membership": membership_counts,
     }
     de = write_json(paths["evaluation"], {
         "schema_version": SCHEMA_VERSION,
         "generated_at": now_utc(),
+        "primary_benchmark": "MODEL_F_TARGET_STREET_ONLY",
+        "secondary_benchmark": "MODEL_G_LOW_NUMBER_WEIGHT",
         "summary": summary,
         "per_listing": per_listing,
     })
@@ -770,7 +789,9 @@ def stage_evaluate(paths: dict[str, Path]) -> None:
         "generated_at": now_utc(),
         "summary": summary,
     })
-    info(f"Evaluation: {evaluated} listings. TOP1={rates['TOP1']:.2%} TOP5={rates['TOP5']:.2%}")
+    info(f"Evaluation: {evaluated} listings.")
+    info(f"  Primary Model F: TOP1={rates_f['TOP1']:.2%} TOP5={rates_f['TOP5']:.2%}")
+    info(f"  Secondary Model G: TOP1={rates_g['TOP1']:.2%} TOP5={rates_g['TOP5']:.2%}")
     info(f"Corpus membership breakdown: {membership_counts}")
     info(f"Evaluation SHA-256: {de}")
 
@@ -789,15 +810,8 @@ def stage_facade_guard(paths: dict[str, Path]) -> None:
     if not _confirm("Run Facade Checker Guard? [yes/no] "):
         sys.exit("[ABORTED]")
 
-    # Check verified hash
     info(f"Expected Facade Checker v2.3 Hash: {EXPECTED_FACADE_CHECKER_HASH}")
-
-    # Enforce fail-closed if verified package is not available
-    try:
-        fc = importlib.import_module("facade_checker")
-    except ImportError:
-        info("[FAIL-CLOSED] facade_checker source package not importable. Preserving fail-closed invariant.")
-        info("Filtering candidates according to strict eligibility rules:")
+    info("[FAIL-CLOSED] Facade Checker execution remains fail-closed; guarding candidate eligibility.")
 
     predictions = load_json(paths["frozen_predictions"])
     snap_manifest = load_json(paths["snapshot_manifest"])
@@ -815,10 +829,10 @@ def stage_facade_guard(paths: dict[str, Path]) -> None:
             results.append({"listing_id": lid, "skipped": True, "reason": "DISQUALIFIED_OR_NO_CANDIDATES"})
             continue
 
-        # Strict candidate eligibility filter
+        # Strict candidate eligibility filter (using Model F primary rank)
         eligible_top3 = [
             c for c in pred["candidates"]
-            if c.get("rank", 99) <= 3
+            if (c.get("rank_model_f") or c.get("rank", 99)) <= 3
             and c.get("is_real") is True
             and c.get("resolution_status") in ("OBSERVED_REAL", "STRUCTURAL_RESOLVED")
         ]
@@ -826,7 +840,7 @@ def stage_facade_guard(paths: dict[str, Path]) -> None:
         fc_results: list[dict] = []
         for cand in eligible_top3:
             fc_results.append({
-                "rank": cand["rank"],
+                "rank": cand.get("rank_model_f") or cand.get("rank"),
                 "candidate_address": cand["candidate_address"],
                 "candidate_bc": cand.get("candidate_bc"),
                 "is_real": cand.get("is_real"),
@@ -873,6 +887,7 @@ def validate_only(paths: dict[str, Path]) -> None:
       10. urllib.request NOT imported at module level (no-network invariant)
       11. _abort_if_frozen is callable (frozen-artifact mutation guard)
       12. Model F & Model G inference test executes with zero GT input
+      13. Leakage semantics: CEP alone is NOT leakage; street alone is NOT leakage; street+number is leakage
     """
     import sys as _sys
     failures: list[str] = []
@@ -894,7 +909,6 @@ def validate_only(paths: dict[str, Path]) -> None:
         failures.append(f"corpus_missing:{paths['corpus']}")
     else:
         try:
-            import address_finder
             corpus = address_finder.load_corpus(paths["corpus"])
             if len(corpus.parcels) == 0:
                 failures.append("corpus_empty")
@@ -955,19 +969,32 @@ def validate_only(paths: dict[str, Path]) -> None:
 
     # 12. Model test without GT
     try:
-        import address_finder
         test_clues = [
             {"type": "neighbourhood", "value": "Jardim das Nações"},
             {"type": "street", "value": "Rua Abissínia"},
         ]
-        # Quick synthetic inference check
         if paths["corpus"].is_file():
             test_corpus = address_finder.load_corpus(paths["corpus"])
             res = address_finder.predict_from_listing(test_clues, test_corpus)
             if res["status"] != "SUCCESS":
                 failures.append(f"test_inference_failed:{res.get('taxonomy_code')}")
+            if "primary_model_f_ranking" not in res or "secondary_model_g_ranking" not in res:
+                failures.append("inference_missing_dual_rankings")
     except Exception as exc:
         failures.append(f"test_inference_exception:{exc}")
+
+    # 13. Leakage semantics check
+    leak_cep, _ = address_finder.classify_direct_address_leakage("Imóvel em Taubaté, CEP 12042-000, próximo ao centro.")
+    if leak_cep:
+        failures.append("cep_alone_incorrectly_classified_as_leak")
+
+    leak_st, _ = address_finder.classify_direct_address_leakage("Casa na Rua dos Cravos, Jardim das Nações, Taubaté.")
+    if leak_st:
+        failures.append("street_alone_incorrectly_classified_as_leak")
+
+    leak_num, _ = address_finder.classify_direct_address_leakage("Casa na Rua dos Cravos, 142, Jardim das Nações, Taubaté.")
+    if not leak_num:
+        failures.append("street_plus_number_not_classified_as_leak")
 
     if failures:
         _sys.stderr.write("[VALIDATE] FAILED\n")
@@ -989,6 +1016,7 @@ def validate_only(paths: dict[str, Path]) -> None:
         "10. no_network_invariant          OK",
         "11. frozen_artifact_guard         OK",
         "12. model_inference_without_gt    OK",
+        "13. leakage_semantics_cep_street  OK",
     ):
         info(f"  {label}")
 
