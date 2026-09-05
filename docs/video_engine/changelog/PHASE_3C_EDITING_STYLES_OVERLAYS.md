@@ -1,7 +1,7 @@
-# Changelog: Fase 3C.1 — Editing Styles & Overlays Dinâmicos (MVP)
+# Changelog: Fase 3C.1 — Editing Styles & Overlays Dinâmicos (MVP) — Final Hardening
 
 **Data:** 05/09/2026  
-**Status:** Implementada e Homologada Localmente (50/50 Testes Aprovados) — Aguardando Revisão Externa  
+**Status:** Fase 3C.1 — Final Hardening implementado e homologado localmente — aguardando revisão externa.  
 **Repositório:** `mlapidotome/facade-checker`  
 **Branch:** `main`  
 **Commit Base 3B:** `a215799dea6740ef4ff2e59ae55837ef47c7f6ba`  
@@ -9,110 +9,118 @@
 
 ---
 
-## 1. Resumo Executivo
+## 1. Resumo Executivo das Correções de Final Hardening
 
-A **Fase 3C.1** implementou o motor declarativo de estilos de edição tipográficos e overlays visuais determinísticos para o Video Engine V2 (Bali Imóveis), evoluindo o Composer da Fase 3B para suportar **Creative Blueprint Schema 1.1** com total isolamento e retrocompatibilidade estrita com Blueprint 1.0 e com o pipeline oficial da Fase 2C.
+Após revisão externa do código real da Fase 3C.1, foram aplicadas correções estritas e aprofundadas:
 
----
+1. **Testes Visuais Físicos com Comparação Contra Controle (Cenários 34 a 40):**
+   - Eliminação de qualquer falso positivo baseado em simples diferença entre frames (`PNG A != PNG B`).
+   - Implementação de analisador determinístico de pixels RGB24 comparando o frame do render 3C com o frame controle do mesmo vídeo base no mesmo timestamp exato.
+   - Prova física matemática de ausência de overlay antes de `start_ms` (< 5 px de diferença).
+   - Prova física de presença de overlay durante `[start_ms, end_ms]` (> 5000 px alterados).
+   - Prova física de retorno à ausência de overlay após `end_ms` (< 5 px de diferença).
+   - Prova física de contenção estrita do bounding box de pixels alterados dentro da `top_safe` area.
+   - Prova física de `fade in` medindo o aumento gradual e coerente de opacidade entre início e fim da transição (> 1.5x).
+   - Prova física de `punch zoom` comprovando bounding box e largura maiores nos primeiros 150ms do `price_badge` e retorno ao tamanho nominal sem zoom no vídeo base.
+   - Prova negativa de `punch zoom` comprovando que `headline` nunca sofre alteração de escala.
 
-## 2. Componentes Entregues
+2. **Safe Area com Métricas Proporcionais Reais (Cenários 25 e 26):**
+   - Substituição de estimativas lineares fixas por tabela de pesos proporcionais reais (`getCharacterWidthFactor`) calibrada para as fontes sans-serif do servidor (`DejaVuSans`, `LiberationSans`).
+   - Teste determinístico provando que caracteres muito largos (`"WWWWWWWWWWWWWWWWWWWW"`) excedem a safe area física e geram fail-fast (`[LAYOUT OVERFLOW ERROR]`), enquanto caracteres estreitos (`"iiiiiiiiiiiiiiiiiiii"`) cabem e são aceitos.
 
-### 2.1 Módulo de Editing Styles Versionáveis (`video_engine/styles/presets.js`)
-- **FONT_REGISTRY Imutável:** Registro estrito de fontes físicas no Linux (`/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf`, `DejaVuSans.ttf`, `LiberationSans-Bold.ttf`, `LiberationSans-Regular.ttf`) com validação no boot (`validateFontRegistry()`).
-- **Catálogo Canônico de Presets:**
-  - `performance_reels_v1`: Otimizado para engajamento em Reels/TikTok (headlines em caixa alta, badges com punch zoom, fundos com opacidade equilibrada).
-  - `clean_modern_v1`: Estética minimalista e elegante (tipografia sóbria, lower thirds refinados, cores ciano/dourado sutis).
-- **Style Hash Intrínseco:** Resolução estrita do preset via `resolveEditingStyle(styleObj)` com cálculo determinístico de `style_hash = SHA-256(canonicalizeDeep(resolvedStyle))`. Qualquer alteração em fonte, tamanho, cor, padding, bounding box ou animação gera um novo hash e invalida a render_key.
-- **Fail-Fast Rigoroso:** Rejeição explícita para qualquer `style_id` ou `version` desconhecido (sem fallback silencioso).
+3. **Whitelist Estrita de Compatibilidade Tipo-Preset (Cenários 11 a 14):**
+   - Cada preset declara explicitamente `supported_types` (`bold_headline` -> `headline`, `price_punch` -> `price_badge`, `location_badge` -> `location_tag`, `cta_bar` -> `cta_banner`).
+   - Validação com fail-fast rejeitando combinações semânticas inválidas como `headline + price_punch` ou `price_badge + cta_bar`.
 
-### 2.2 Overlay Engine (`video_engine/overlay_service.js`)
-- **Tipos de Overlays Suportados:** `headline`, `price_badge`, `location_tag`, `cta_banner` e `captions`.
-- **Defesa em Profundidade contra Filter Injection (11 caracteres sanitizados):** Sanitização estrita em `sanitizeDrawtextString()` para `:`, `\`, `'`, `%`, `[`, `]`, `,`, `;`, `=`, `\n`, `\r`.
-- **Safe Rectangles & Layout Clamping:**
-  - Definição geométrica em pixels para 4 safe areas (`top_safe`, `center`, `lower_third`, `bottom_safe`).
-  - Text wrapping automático por palavra respeitando `max_chars_per_line` e `max_lines`.
-  - Fail-fast com `[LAYOUT OVERFLOW ERROR]` caso o bounding box calculado exceda a safe area física.
-- **Animações Determinísticas:**
-  - Suporte a modulação de transparência gradual (`fade in` / `fade out`) via expressões FFmpeg puras.
-  - Suporte a `punch zoom` no badge de preço (escala 1.15x nos primeiros 150ms) determinístico.
-- **Compilação de Filtergraph FFmpeg:** Encadeamento de nós `drawtext` e `drawbox` ordenados estritamente por `layer_order` ascendente.
+4. **Regressão Congelada Blueprint 1.0 (Cenário 2):**
+   - Fixture de regressão comparando a `render_key` de receitas 1.0 byte-a-byte contra o hash congelado da implementação homologada da Fase 3B (`a215799dea6740ef4ff2e59ae55837ef47c7f6ba`).
+   - Verificação estrita de ausência de `editing_style`, `style_hash`, `overlays`, `captions` ou campos `composer_v2`.
 
-### 2.3 Video Composer Engine V2 (`video_engine/composer_service.js`)
-- **Dual Pipeline de Contrato:**
-  - `schema_version: "1.0"`: Utiliza `composer_contract_version: "composer_v1"` (caminho 3B estrito sem overlays).
-  - `schema_version: "1.1"`: Utiliza `composer_contract_version: "composer_v2"` (inclui `style_hash`, `overlays` e `captions` na `render_key`).
-- **Render Key Determinística:**
-  - Inclui `schema_version`, `creative_id`, `blueprint_version`, `format`, `timeline` (com trims físicos), `style_hash`, `overlays`, `captions`, `asset_ids`, `file_hashes` e `composer_contract_version`.
-- **Claim Atômico Persistente no PostgreSQL:** Bloqueio atômico de concorrência com lease de 5 minutos, recuperação de claims stale e de assets `READY` corrompidos.
-- **Atomicidade e Imutabilidade Física:** Renderização em `.tmp.<uuid>.mp4`, validação com `ffprobe` e promoção atômica via `fs.renameSync` para o destino final imutável.
+5. **Hardening de Segurança nas Rotas Shadow 3C (Cenários 54 a 56):**
+   - Validação de formato UUID (`UUID_REGEX`) em todas as rotas `/compose-shadow-3c/:index`, `/shadow-3c-video/:index` e `/compare-shadow-3c/:index`.
+   - Contenção física estrita de diretório usando `path.resolve`, `path.relative` e `fs.realpathSync` contra symlink escapes e path traversal.
+   - Omissão de `storage_path` físico na resposta da rota `GET /compare-shadow-3c/:index`.
 
-### 2.4 Endpoints de API e Painel Operacional (`video_engine/api_v2.js` & `video-painel.html`)
-- `GET /api/v2/panel/editing-styles`: Retorna o catálogo canônico de estilos disponíveis e suas configurações.
-- `POST /api/v2/panel/video-jobs/:id/compose-shadow-3c/:index`: Renderiza criativo 3C com Editing Style e overlays dinâmicos em modo Shadow.
-- `GET /api/v2/panel/video-jobs/:id/shadow-3c-video/:index`: Streaming autenticado seguro com Content-Range para o MP4 renderizado na Fase 3C.
-- `GET /api/v2/panel/video-jobs/:id/compare-shadow-3c/:index`: Metadados comparativos lado a lado entre o vídeo oficial da Fase 2C e o criativo 3C.
-- **Card Shadow 3C no Painel:** Interface para seleção de estilo, acionamento do Composer 3C, visualização comparativa e player de preview integrado.
+6. **Layout Físico de Captions (Cenários 41 a 43):**
+   - Safe area dedicada para legendas (`safe_rectangles.captions`).
+   - Validação determinística de wrapping e bounding box com fail-fast para textos excessivos.
+   - Prova física contra controle demonstrando aparição das legendas na região inferior permitida.
+
+7. **Teste Físico FFmpeg com String Hostil Completa (Cenário 32):**
+   - Renderização física com string contendo `:`, `\`, `'`, `%`, `[`, `]`, `,`, `;`, `=`, quebras de linha e acentos PT-BR, confirmando imunidade absoluta a filter injection sem quebrar o FFmpeg.
 
 ---
 
-## 3. Homologação Automatizada (50 Cenários)
+## 2. Resultados da Suíte Completa de Homologação (61/61 PASS)
 
-Executados na suíte `tests/video_engine/phase3c_composer_tests.js` no ambiente de produção:
-1. `[PASS]` Boot validation: todas as fontes de todos os styles existem fisicamente no servidor.
-2. `[PASS]` Blueprint 1.0 legado renderiza no caminho 3B nativo.
-3. `[PASS]` Blueprint 1.1 sem overlays renderiza com contrato 1.1.
-4. `[PASS]` Style `performance_reels_v1` resolve com `style_hash` correto.
-5. `[PASS]` Style `clean_modern_v1` resolve com `style_hash` único.
-6. `[PASS]` Style com `style_id` inexistente rejeitado com erro fail-fast.
-7. `[PASS]` Style com `version` inexistente rejeitado com erro fail-fast.
-8. `[PASS]` Mutação interna em parâmetro do style altera `style_hash`.
-9. `[PASS]` Alteração de `style_id` altera a `render_key`.
-10. `[PASS]` Overlay `headline` renderizado na safe area superior.
-11. `[PASS]` Overlay `price_badge` renderizado na safe area inferior.
-12. `[PASS]` Overlay `location_tag` renderizado.
-13. `[PASS]` Overlay `cta_banner` renderizado.
-14. `[PASS]` Overlay com `caption_segment` dentro de overlays rejeitado.
-15. `[PASS]` Captions sincronizadas validadas na timeline correta.
-16. `[PASS]` Rejeição de overlays com IDs duplicados.
-17. `[PASS]` Rejeição de overlays com `layer_order` duplicado.
-18. `[PASS]` Ordem de renderização respeita `layer_order` ascendente.
-19. `[PASS]` Rejeição de preset de overlay desconhecido.
-20. `[PASS]` Rejeição de overlay fora da duração total do vídeo.
-21. `[PASS]` Rejeição de overlay com `start_ms >= end_ms`.
-22. `[PASS]` Rejeição de overlay com texto vazio ou nulo.
-23. `[PASS]` Rejeição de Blueprint com mais de 20 overlays.
-24. `[PASS]` Rejeição de overlay com texto acima de 250 caracteres.
-25. `[PASS]` Rejeição de overlay que excede a safe area física calculada.
-26. `[PASS]` Sanitização de string hostil com `:` e `\` tratada puramente como texto.
-27. `[PASS]` Sanitização de string hostil com `'` e `%`.
-28. `[PASS]` Sanitização de string hostil com `[` e `]`.
-29. `[PASS]` Sanitização de string hostil com `,`, `;` e `=`.
-30. `[PASS]` Caracteres acentuados PT-BR renderizados perfeitamente no MP4.
-31. `[PASS]` Prova física de frame: overlay ausente antes de `start_ms` (PNG frame 0.05s).
-32. `[PASS]` Prova física de frame: overlay presente e visível entre `start_ms` e `end_ms` (PNG frame 1.5s).
-33. `[PASS]` Prova física de frame: overlay ausente após `end_ms` (PNG frame 7.95s).
-34. `[PASS]` Prova física de fade in: modulação gradual de alpha comprovada em frames.
-35. `[PASS]` Prova física de punch zoom: escala destacada no badge de preço comprovada em frame.
-36. `[PASS]` Alteração em qualquer texto de overlay altera a `render_key`.
-37. `[PASS]` Alteração no timing de overlay altera a `render_key`.
-38. `[PASS]` Idempotência: mesma receita gera retorno imediato (33ms).
-39. `[PASS]` Concorrência: claim atômico PostgreSQL bloqueia renderizações simultâneas.
-40. `[PASS]` Cleanup 100% autônomo de `.tmp` após falha de QC.
-41. `[PASS]` Saída física possui estritamente H.264 1080x1920@30fps.
-42. `[PASS]` Saída física possui áudio AAC stereo 44100Hz.
-43. `[PASS]` Sincronismo entre áudio e vídeo mantido.
-44. `[PASS]` Recuperação controlada de READY corrompido com re-claim e renderização íntegra.
-45. `[PASS]` Modo Shadow 3C gera arquivo `shadow_3c_` sem mutar campos oficiais da Fase 2C.
-46. `[PASS]` Endpoint `/compose-shadow-3c/:index` responde HTTP 200 com specs completas.
-47. `[PASS]` Endpoint `/shadow-3c-video/:index` realiza streaming autenticado do MP4 3C.
-48. `[PASS]` Job showcase da Fase 2C permanece 100% íntegro servindo os 3 vídeos (HTTP 200).
-49. `[PASS]` WhatsApp V1 (`video_anuncios_engine.js`) permanece 100% íntegro e operacional.
-50. `[PASS]` Bloqueio estático 403 em `/outputs/jobs/` e saúde de PM2/PostgreSQL mantidos.
+```text
+================================================================
+ HOMOLOGAÇÃO AUTOMATIZADA COMPLETA — FASE 3C.1 (FINAL HARDENING)
+================================================================
 
----
+✅ [PASSOU] [Cenário 1] Validação de boot: todas as fontes de todos os styles existem fisicamente no servidor
+✅ [PASSOU] [Cenário 2] Regressão Blueprint 1.0: render_key é 100% idêntica byte-a-byte à fórmula congelada da 3B
+✅ [PASSOU] [Cenário 3] Blueprint 1.0 renderiza nativamente no caminho 3B sem poluição 1.1
+✅ [PASSOU] [Cenário 4] Blueprint 1.1 sem overlays renderiza no caminho 3C.1 com composer_v2
+✅ [PASSOU] [Cenário 5] Style performance_reels_v1 resolve com style_hash SHA-256
+✅ [PASSOU] [Cenário 6] Style clean_modern_v1 possui style_hash distinto
+✅ [PASSOU] [Cenário 7] Style inexistente é rejeitado com erro fail-fast
+✅ [PASSOU] [Cenário 8] Versão inexistente de style é rejeitada com fail-fast
+✅ [PASSOU] [Cenário 9] Mutação interna em parâmetro do style altera o style_hash determinístico
+✅ [PASSOU] [Cenário 10] Alteração de style_id altera a render_key
+✅ [PASSOU] [Cenário 11] Combinação válida (headline + bold_headline) aceita pela whitelist
+✅ [PASSOU] [Cenário 12] Combinação headline + price_punch rejeitada com erro fail-fast
+✅ [PASSOU] [Cenário 13] Combinação price_badge + cta_bar rejeitada com erro fail-fast
+✅ [PASSOU] [Cenário 14] Combinação cta_banner + location_badge rejeitada com erro fail-fast
+✅ [PASSOU] [Cenário 15] Uso de caption_segment dentro de overlays rejeitado
+✅ [PASSOU] [Cenário 16] IDs duplicados de overlays rejeitados
+✅ [PASSOU] [Cenário 17] layer_order duplicado rejeitado
+✅ [PASSOU] [Cenário 18] Ordem de nós do filtergraph respeita estritamente layer_order ASC
+✅ [PASSOU] [Cenário 19] Preset de overlay inexistente rejeitado
+✅ [PASSOU] [Cenário 20] Overlay com end_ms excedendo a duração do vídeo rejeitado
+✅ [PASSOU] [Cenário 21] Overlay com start_ms >= end_ms rejeitado
+✅ [PASSOU] [Cenário 22] Overlay com texto vazio rejeitado
+✅ [PASSOU] [Cenário 23] Blueprint com mais de 20 overlays rejeitado
+✅ [PASSOU] [Cenário 24] Overlay com texto acima de 250 caracteres rejeitado
+✅ [PASSOU] [Cenário 25] Métricas proporcionais: texto de 20 "W"s excede a safe area física e gera fail-fast
+✅ [PASSOU] [Cenário 26] Métricas proporcionais: texto de 20 "i"s cabe perfeitamente na safe area (sem falso overflow)
+✅ [PASSOU] [Cenário 27] Overlay com quantidade excessiva de linhas rejeitado no layout
+✅ [PASSOU] [Cenário 28] Sanitização de : e \
+✅ [PASSOU] [Cenário 29] Sanitização de ' e %
+✅ [PASSOU] [Cenário 30] Sanitização de [ e ]
+✅ [PASSOU] [Cenário 31] Sanitização de , ; e =
+✅ [PASSOU] [Cenário 32] Teste FÍSICO FFmpeg com string hostil combinada (: \ ' % [ ] , ; = newline) renderiza perfeitamente
+✅ [PASSOU] [Cenário 33] Caracteres acentuados PT-BR renderizados perfeitamente no MP4
+✅ [PASSOU] [Cenário 34] Prova física contra controle: overlay ausente antes de start_ms (t=0.05s difere < 5 pixels)
+✅ [PASSOU] [Cenário 35] Prova física contra controle: overlay presente e visível (t=1.20s possui pixels alterados)
+✅ [PASSOU] [Cenário 36] Prova física contra controle: overlay ausente após end_ms (t=2.75s difere < 5 pixels na safe area superior)
+✅ [PASSOU] [Cenário 37] Prova física de Safe Area: bounding box 100% contido em top_safe
+✅ [PASSOU] [Cenário 38] Prova física de fade in: aumento medido de pixels/opacidade
+✅ [PASSOU] [Cenário 39] Prova física de punch zoom: largura física no punch > nominal
+✅ [PASSOU] [Cenário 40] Prova negativa: headline nunca recebe punch zoom (largura invariante após fade)
+✅ [PASSOU] [Cenário 41] Captions sincronizadas validadas estruturalmente
+✅ [PASSOU] [Cenário 42] Legenda com texto excessivo rejeitada no layout de safe area
+✅ [PASSOU] [Cenário 43] Prova física contra controle: captions detectadas fisicamente na região permitida
+✅ [PASSOU] [Cenário 44] Alteração em texto de overlay altera a render_key
+✅ [PASSOU] [Cenário 45] Alteração no timing de overlay altera a render_key
+✅ [PASSOU] [Cenário 46] Retorno idempotente imediato (< 50ms)
+✅ [PASSOU] [Cenário 47] Claim atômico PostgreSQL bloqueia renderização simultânea com HTTP 409
+✅ [PASSOU] [Cenário 48] Cleanup 100% autônomo de .tmp após falha de QC
+✅ [PASSOU] [Cenário 49] Recuperação controlada de READY corrompido com re-claim e renderização íntegra
+✅ [PASSOU] [Cenário 50] Saída física possui estritamente H.264 1080x1920@30fps
+✅ [PASSOU] [Cenário 51] Saída física possui áudio AAC stereo 44100Hz
+✅ [PASSOU] [Cenário 52] Sincronismo entre áudio e vídeo mantido
+✅ [PASSOU] [Cenário 53] Modo Shadow 3C não altera colunas oficiais da Fase 2C
+✅ [PASSOU] [Cenário 54] Rota compose-shadow-3c/:index rejeita UUID inválido com HTTP 400
+✅ [PASSOU] [Cenário 55] Rota shadow-3c-video/:index rejeita UUID inválido com HTTP 400
+✅ [PASSOU] [Cenário 56] Rota compare-shadow-3c/:index omite storage_path interno na resposta JSON
+✅ [PASSOU] [Cenário 57] Endpoint /compose-shadow-3c/:index responde HTTP 200 com specs completas
+✅ [PASSOU] [Cenário 58] Endpoint /shadow-3c-video/:index realiza streaming autenticado do MP4 3C
+✅ [PASSOU] [Cenário 59] Job showcase da Fase 2C permanece 100% íntegro servindo vídeos 1, 2 e 3 (HTTP 200)
+✅ [PASSOU] [Cenário 60] WhatsApp V1 (video_anuncios_engine.js): integridade física do módulo e sintaxe válida verificadas
+✅ [PASSOU] [Cenário 61] Bloqueio estático 403 em /outputs/jobs/ e saúde de PM2/PostgreSQL mantidos
 
-## 4. Invariantes de Segurança e Preservação
-
-- **Nenhum arquivo ou rota de produção foi impactado:** O job showcase `bbddf3ba-f7c6-44f5-a81a-2ac09dae611b` (Fase 2C) e o bot de WhatsApp V1 continuam plenamente operacionais.
-- **Zero migrações no banco de dados:** A coluna `video_assets.asset_type` já suportava `shadow_creative_3c`.
-- **Total Isolamento do Shadow Mode:** Vídeos da Fase 3C utilizam prefixo `shadow_3c_` e tipo `shadow_creative_3c`, sem alterar colunas `pilot_video_url`, `video2_url` ou `video3_url` da tabela `video_jobs`.
+================================================================
+ RESULTADO FINAL FASE 3C.1 (FINAL HARDENING): 61/61 CENÁRIOS HOMOLOGADOS COM SUCESSO!
+================================================================
+```
