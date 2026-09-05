@@ -1,0 +1,1024 @@
+{
+  "cohort_summary": {
+    "cases_with_at_least_10_real_resolved": 1,
+    "cases_with_at_least_1_real_resolved": 1,
+    "prediction_failed_count": 9,
+    "prediction_success_count": 1,
+    "preselection_eligibility_error_count": 2,
+    "protocol_compliant_cases_count": 8,
+    "total_cohort_size": 10
+  },
+  "generated_at": "2026-09-05T21:33:07Z",
+  "pipeline_metadata": {
+    "candidate_corpus_file": "acervo_casas_taubate.json",
+    "candidate_corpus_records": 3002,
+    "candidate_corpus_sha256": "42e9816f81a7acd37e4e8d610faed225d5b71d889eb0bcea5da4d31397952a7b",
+    "evaluation_executed": false,
+    "facade_checker_invoked": false,
+    "frozen_rules_sha256": "083db257ebf3e407eddc7cc8d72d4a5e5a19f5c6e7717373c3b06e84e9e50b7a",
+    "ground_truth_accessed": false,
+    "model_f_weights": {
+      "w_anchor_street_match": 0.5,
+      "w_delta_lll": 1.0,
+      "w_graph_intersection": 0.8,
+      "w_target_street_match": 2.5
+    },
+    "pipeline_version": "2.3",
+    "primary_model": "MODEL_F_TARGET_STREET_ONLY",
+    "secondary_model": "MODEL_G_LOW_NUMBER_WEIGHT",
+    "source_public_inputs_artifact": "brain/address_finder/phase_real_listing_public_inputs_target_owned.json",
+    "source_public_inputs_sha256": "6968654618d489431d46831668ed47bad5f16bc97bde250baca415db01d04f46"
+  },
+  "predictions": [
+    {
+      "anchor_count": 0,
+      "anchor_evidence_used": [],
+      "candidate_burden": {
+        "real_resolved_candidate_count": 0,
+        "structural_unresolved_count": 0,
+        "total_candidate_count": 0
+      },
+      "cep_used": null,
+      "cohort_eligibility": "PROTOCOL_COMPLIANT",
+      "ds_candidates": [],
+      "dsq_candidates": [],
+      "failure_code": "STREET_NOT_AVAILABLE",
+      "house_number_policy": "HOUSE_NUMBER_ABSENT",
+      "listing_id": "26230879",
+      "neighbourhood_used": "Jardim Gurilândia",
+      "prediction_status": "FAILED",
+      "real_resolved_candidates": [],
+      "street_available": false,
+      "street_used": null,
+      "structural_unresolved_hypotheses": []
+    },
+    {
+      "anchor_count": 0,
+      "anchor_evidence_used": [],
+      "candidate_burden": {
+        "real_resolved_candidate_count": 0,
+        "structural_unresolved_count": 0,
+        "total_candidate_count": 0
+      },
+      "cep_used": "12093-720",
+      "cohort_eligibility": "PROTOCOL_COMPLIANT",
+      "ds_candidates": [],
+      "dsq_candidates": [],
+      "failure_code": "DS_FAILURE",
+      "house_number_policy": "HOUSE_NUMBER_ABSENT",
+      "listing_id": "30744879",
+      "neighbourhood_used": "Jardim Continental III",
+      "prediction_status": "FAILED",
+      "real_resolved_candidates": [],
+      "street_available": true,
+      "street_used": "Rua Doutor Cyro Lemos de Oliveira",
+      "structural_unresolved_hypotheses": []
+    },
+    {
+      "anchor_count": 0,
+      "anchor_evidence_used": [],
+      "candidate_burden": {
+        "real_resolved_candidate_count": 0,
+        "structural_unresolved_count": 0,
+        "total_candidate_count": 0
+      },
+      "cep_used": null,
+      "cohort_eligibility": "PRESELECTION_ELIGIBILITY_ERROR",
+      "ds_candidates": [],
+      "dsq_candidates": [],
+      "failure_code": "STREET_NOT_AVAILABLE",
+      "house_number_policy": "HOUSE_NUMBER_ABSENT",
+      "listing_id": "32738189",
+      "neighbourhood_used": "Jardim Santa Tereza",
+      "prediction_status": "FAILED",
+      "real_resolved_candidates": [],
+      "street_available": false,
+      "street_used": null,
+      "structural_unresolved_hypotheses": []
+    },
+    {
+      "anchor_count": 0,
+      "anchor_evidence_used": [],
+      "candidate_burden": {
+        "real_resolved_candidate_count": 0,
+        "structural_unresolved_count": 0,
+        "total_candidate_count": 0
+      },
+      "cep_used": null,
+      "cohort_eligibility": "PROTOCOL_COMPLIANT",
+      "ds_candidates": [],
+      "dsq_candidates": [],
+      "failure_code": "STREET_NOT_AVAILABLE",
+      "house_number_policy": "HOUSE_NUMBER_ABSENT",
+      "listing_id": "37154734",
+      "neighbourhood_used": "Jardim Eulália",
+      "prediction_status": "FAILED",
+      "real_resolved_candidates": [],
+      "street_available": false,
+      "street_used": null,
+      "structural_unresolved_hypotheses": []
+    },
+    {
+      "anchor_count": 7,
+      "anchor_evidence_used": [
+        "Corpus reference parcel 5.2.048.003",
+        "Corpus reference parcel 5.2.049.023",
+        "Corpus reference parcel 5.2.050.008"
+      ],
+      "candidate_burden": {
+        "real_resolved_candidate_count": 49,
+        "structural_unresolved_count": 35,
+        "total_candidate_count": 84
+      },
+      "cep_used": null,
+      "cohort_eligibility": "PROTOCOL_COMPLIANT",
+      "ds_candidates": [
+        {
+          "ds": "5.2",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        }
+      ],
+      "dsq_candidates": [
+        {
+          "dsq": "5.2.048",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        },
+        {
+          "dsq": "5.2.049",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        },
+        {
+          "dsq": "5.2.050",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        },
+        {
+          "dsq": "5.2.051",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        },
+        {
+          "dsq": "5.2.053",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        },
+        {
+          "dsq": "5.2.054",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        },
+        {
+          "dsq": "5.2.058",
+          "evidence": "Cadastral matching from neighbourhood 'jardim mourisco'",
+          "score": 1.0
+        }
+      ],
+      "failure_code": null,
+      "house_number_policy": "HOUSE_NUMBER_ABSENT",
+      "listing_id": "38732282",
+      "neighbourhood_used": "Jardim Mourisco",
+      "prediction_status": "SUCCESS",
+      "real_resolved_candidates": [
+        {
+          "candidate_bc": "5.2.048.003.001",
+          "candidate_dsqlll": "5.2.048.003",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.048 (reference 5.2.048.003)",
+          "normalized_address": "CLODOMIRO AMAZONAS, R, 00264",
+          "rank": 1,
+          "score": 1.5
+        },
+        {
+          "candidate_bc": "5.2.049.023.001",
+          "candidate_dsqlll": "5.2.049.023",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "VICENTE CELESTINO, R, 00037",
+          "rank": 2,
+          "score": 1.5
+        },
+        {
+          "candidate_bc": "5.2.050.008.001",
+          "candidate_dsqlll": "5.2.050.008",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.050 (reference 5.2.050.008)",
+          "normalized_address": "ELPIDIO DOS SANTOS, R, 00205",
+          "rank": 3,
+          "score": 1.5
+        },
+        {
+          "candidate_bc": "5.2.051.006.001",
+          "candidate_dsqlll": "5.2.051.006",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.051 (reference 5.2.051.006)",
+          "normalized_address": "TAVARES FILHO, R, 00073",
+          "rank": 4,
+          "score": 1.5
+        },
+        {
+          "candidate_bc": "5.2.053.004.001",
+          "candidate_dsqlll": "5.2.053.004",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.053 (reference 5.2.053.004)",
+          "normalized_address": "VICENTE CELESTINO, R, 00202",
+          "rank": 5,
+          "score": 1.5
+        },
+        {
+          "candidate_bc": "5.2.054.005.001",
+          "candidate_dsqlll": "5.2.054.005",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.054 (reference 5.2.054.005)",
+          "normalized_address": "CLODOMIRO AMAZONAS, R, 00130",
+          "rank": 6,
+          "score": 1.5
+        },
+        {
+          "candidate_bc": "5.2.058.005.001",
+          "candidate_dsqlll": "5.2.058.005",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.058 (reference 5.2.058.005)",
+          "normalized_address": "WILLY AURELI, R, 00233",
+          "rank": 7,
+          "score": 1.5
+        },
+        {
+          "candidate_bc": "5.2.049.022.001",
+          "candidate_dsqlll": "5.2.049.022",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "VICENTE CELESTINO, R, 00041",
+          "rank": 8,
+          "score": 1.0
+        },
+        {
+          "candidate_bc": "5.2.050.009.001",
+          "candidate_dsqlll": "5.2.050.009",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.050 (reference 5.2.050.008)",
+          "normalized_address": "ELPIDIO DOS SANTOS, R, 00195",
+          "rank": 9,
+          "score": 1.0
+        },
+        {
+          "candidate_bc": "5.2.051.005.001",
+          "candidate_dsqlll": "5.2.051.005",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.051 (reference 5.2.051.006)",
+          "normalized_address": "TAVARES FILHO, R, 00081",
+          "rank": 10,
+          "score": 1.0
+        },
+        {
+          "candidate_bc": "5.2.051.007.001",
+          "candidate_dsqlll": "5.2.051.007",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.051 (reference 5.2.051.006)",
+          "normalized_address": "TAVARES FILHO, R, 00063",
+          "rank": 11,
+          "score": 1.0
+        },
+        {
+          "candidate_bc": "5.2.053.005.001",
+          "candidate_dsqlll": "5.2.053.005",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.053 (reference 5.2.053.004)",
+          "normalized_address": "VICENTE CELESTINO, R, 00212",
+          "rank": 12,
+          "score": 1.0
+        },
+        {
+          "candidate_bc": "5.2.058.004.001",
+          "candidate_dsqlll": "5.2.058.004",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.058 (reference 5.2.058.005)",
+          "normalized_address": "WILLY AURELI, R, 00243",
+          "rank": 13,
+          "score": 1.0
+        },
+        {
+          "candidate_bc": "5.2.058.006.001",
+          "candidate_dsqlll": "5.2.058.006",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.058 (reference 5.2.058.005)",
+          "normalized_address": "WILLY AURELI, R, 00223",
+          "rank": 14,
+          "score": 1.0
+        },
+        {
+          "candidate_bc": "5.2.049.025.001",
+          "candidate_dsqlll": "5.2.049.025",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "VICENTE CELESTINO, R, 00007",
+          "rank": 15,
+          "score": 0.8333333333333333
+        },
+        {
+          "candidate_bc": "5.2.051.008.001",
+          "candidate_dsqlll": "5.2.051.008",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.051 (reference 5.2.051.006)",
+          "normalized_address": "TAVARES FILHO, R, 00049",
+          "rank": 16,
+          "score": 0.8333333333333333
+        },
+        {
+          "candidate_bc": "5.2.054.007.001",
+          "candidate_dsqlll": "5.2.054.007",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.054 (reference 5.2.054.005)",
+          "normalized_address": "CLODOMIRO AMAZONAS, R, 00150",
+          "rank": 17,
+          "score": 0.8333333333333333
+        },
+        {
+          "candidate_bc": "5.2.058.003.001",
+          "candidate_dsqlll": "5.2.058.003",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.058 (reference 5.2.058.005)",
+          "normalized_address": "WILLY AURELI, R, 00249",
+          "rank": 18,
+          "score": 0.8333333333333333
+        },
+        {
+          "candidate_bc": "5.2.049.020.001",
+          "candidate_dsqlll": "5.2.049.020",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "VICENTE CELESTINO, R, 00057",
+          "rank": 19,
+          "score": 0.75
+        },
+        {
+          "candidate_bc": "5.2.051.009.001",
+          "candidate_dsqlll": "5.2.051.009",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.051 (reference 5.2.051.006)",
+          "normalized_address": "TAVARES FILHO, R, 00041",
+          "rank": 20,
+          "score": 0.75
+        },
+        {
+          "candidate_bc": "5.2.053.001.001",
+          "candidate_dsqlll": "5.2.053.001",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.053 (reference 5.2.053.004)",
+          "normalized_address": "VICENTE CELESTINO, R, 00162",
+          "rank": 21,
+          "score": 0.75
+        },
+        {
+          "candidate_bc": "5.2.050.004.001",
+          "candidate_dsqlll": "5.2.050.004",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.050 (reference 5.2.050.008)",
+          "normalized_address": "ELPIDIO DOS SANTOS, R, 00237",
+          "rank": 22,
+          "score": 0.7
+        },
+        {
+          "candidate_bc": "5.2.054.009.001",
+          "candidate_dsqlll": "5.2.054.009",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.054 (reference 5.2.054.005)",
+          "normalized_address": "CLODOMIRO AMAZONAS, R, 00168",
+          "rank": 23,
+          "score": 0.7
+        },
+        {
+          "candidate_bc": "5.2.049.018.001",
+          "candidate_dsqlll": "5.2.049.018",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "VICENTE CELESTINO, R, 00077",
+          "rank": 24,
+          "score": 0.6666666666666666
+        },
+        {
+          "candidate_bc": "5.2.054.010.001",
+          "candidate_dsqlll": "5.2.054.010",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.054 (reference 5.2.054.005)",
+          "normalized_address": "CLODOMIRO AMAZONAS, R, 00174",
+          "rank": 25,
+          "score": 0.6666666666666666
+        },
+        {
+          "candidate_bc": "5.2.049.017.001",
+          "candidate_dsqlll": "5.2.049.017",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "VICENTE CELESTINO, R, 00087",
+          "rank": 26,
+          "score": 0.6428571428571428
+        },
+        {
+          "candidate_bc": "5.2.054.011.001",
+          "candidate_dsqlll": "5.2.054.011",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.054 (reference 5.2.054.005)",
+          "normalized_address": "CLODOMIRO AMAZONAS, R, 00188",
+          "rank": 27,
+          "score": 0.6428571428571428
+        },
+        {
+          "candidate_bc": "5.2.049.016.001",
+          "candidate_dsqlll": "5.2.049.016",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "VICENTE CELESTINO, R, 00097",
+          "rank": 28,
+          "score": 0.625
+        },
+        {
+          "candidate_bc": "5.2.054.012.001",
+          "candidate_dsqlll": "5.2.054.012",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.054 (reference 5.2.054.005)",
+          "normalized_address": "CLODOMIRO AMAZONAS, R, 00198",
+          "rank": 29,
+          "score": 0.625
+        },
+        {
+          "candidate_bc": "5.2.049.013.001",
+          "candidate_dsqlll": "5.2.049.013",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "VICENTE CELESTINO, R, 00131",
+          "rank": 30,
+          "score": 0.5909090909090909
+        },
+        {
+          "candidate_bc": "5.2.049.012.001",
+          "candidate_dsqlll": "5.2.049.012",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "VICENTE CELESTINO, R, 00141",
+          "rank": 31,
+          "score": 0.5833333333333334
+        },
+        {
+          "candidate_bc": "5.2.049.008.001",
+          "candidate_dsqlll": "5.2.049.008",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "VICENTE CELESTINO, R, 00179",
+          "rank": 32,
+          "score": 0.5625
+        },
+        {
+          "candidate_bc": "5.2.054.004.001",
+          "candidate_dsqlll": "5.2.054.004",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.054 (reference 5.2.054.005)",
+          "normalized_address": "EUCLIDES DA CUNHA, R, 00000",
+          "rank": 33,
+          "score": 0.5
+        },
+        {
+          "candidate_bc": "5.2.051.004.001",
+          "candidate_dsqlll": "5.2.051.004",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.051 (reference 5.2.051.006)",
+          "normalized_address": "IVAN COSTA, R, 00060",
+          "rank": 34,
+          "score": 0.3333333333333333
+        },
+        {
+          "candidate_bc": "5.2.054.003.001",
+          "candidate_dsqlll": "5.2.054.003",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.054 (reference 5.2.054.005)",
+          "normalized_address": "EUCLIDES DA CUNHA, R, 00640",
+          "rank": 35,
+          "score": 0.3333333333333333
+        },
+        {
+          "candidate_bc": "5.2.051.003.001",
+          "candidate_dsqlll": "5.2.051.003",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.051 (reference 5.2.051.006)",
+          "normalized_address": "IVAN COSTA, R, 00050",
+          "rank": 36,
+          "score": 0.25
+        },
+        {
+          "candidate_bc": "5.2.054.002.001",
+          "candidate_dsqlll": "5.2.054.002",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.054 (reference 5.2.054.005)",
+          "normalized_address": "EUCLIDES DA CUNHA, R, 00632",
+          "rank": 37,
+          "score": 0.25
+        },
+        {
+          "candidate_bc": "5.2.049.027.001",
+          "candidate_dsqlll": "5.2.049.027",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "ELPIDIO DOS SANTOS, R, 00030",
+          "rank": 38,
+          "score": 0.2
+        },
+        {
+          "candidate_bc": "5.2.051.002.001",
+          "candidate_dsqlll": "5.2.051.002",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.051 (reference 5.2.051.006)",
+          "normalized_address": "IVAN COSTA, R, 00040",
+          "rank": 39,
+          "score": 0.2
+        },
+        {
+          "candidate_bc": "5.2.054.001.001",
+          "candidate_dsqlll": "5.2.054.001",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.054 (reference 5.2.054.005)",
+          "normalized_address": "EUCLIDES DA CUNHA, R, 00564",
+          "rank": 40,
+          "score": 0.2
+        },
+        {
+          "candidate_bc": "5.2.049.028.001",
+          "candidate_dsqlll": "5.2.049.028",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "ELPIDIO DOS SANTOS, R, 00040",
+          "rank": 41,
+          "score": 0.16666666666666666
+        },
+        {
+          "candidate_bc": "5.2.051.001.001",
+          "candidate_dsqlll": "5.2.051.001",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.051 (reference 5.2.051.006)",
+          "normalized_address": "IVAN COSTA, R, 00030",
+          "rank": 42,
+          "score": 0.16666666666666666
+        },
+        {
+          "candidate_bc": "5.2.049.030.001",
+          "candidate_dsqlll": "5.2.049.030",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "ELPIDIO DOS SANTOS, R, 00068",
+          "rank": 43,
+          "score": 0.125
+        },
+        {
+          "candidate_bc": "5.2.051.013.001",
+          "candidate_dsqlll": "5.2.051.013",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.051 (reference 5.2.051.006)",
+          "normalized_address": "VICENTE CELESTINO, R, 00078",
+          "rank": 44,
+          "score": 0.125
+        },
+        {
+          "candidate_bc": "5.2.051.016.001",
+          "candidate_dsqlll": "5.2.051.016",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.051 (reference 5.2.051.006)",
+          "normalized_address": "VICENTE CELESTINO, R, 00105",
+          "rank": 45,
+          "score": 0.09090909090909091
+        },
+        {
+          "candidate_bc": "5.2.049.034.001",
+          "candidate_dsqlll": "5.2.049.034",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "ELPIDIO DOS SANTOS, R, 00102",
+          "rank": 46,
+          "score": 0.08333333333333333
+        },
+        {
+          "candidate_bc": "5.2.049.035.001",
+          "candidate_dsqlll": "5.2.049.035",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "ELPIDIO DOS SANTOS, R, 00112",
+          "rank": 47,
+          "score": 0.07692307692307693
+        },
+        {
+          "candidate_bc": "5.2.049.037.001",
+          "candidate_dsqlll": "5.2.049.037",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "ELPIDIO DOS SANTOS, R, 00128",
+          "rank": 48,
+          "score": 0.06666666666666667
+        },
+        {
+          "candidate_bc": "5.2.049.039.001",
+          "candidate_dsqlll": "5.2.049.039",
+          "candidate_type": "OBSERVED_REAL_RESOLVED",
+          "evidence": "Corpus observed parcel in DSQ 5.2.049 (reference 5.2.049.023)",
+          "normalized_address": "ELPIDIO DOS SANTOS, R, 00148",
+          "rank": 49,
+          "score": 0.058823529411764705
+        }
+      ],
+      "street_available": false,
+      "street_used": null,
+      "structural_unresolved_hypotheses": [
+        {
+          "evidence": "Structural search interval around reference 5.2.048.003",
+          "hypothesis_bc": "5.2.048.002.001",
+          "hypothesis_dsqlll": "5.2.048.002",
+          "score": 0.4,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 1
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.048.003",
+          "hypothesis_bc": "5.2.048.004.001",
+          "hypothesis_dsqlll": "5.2.048.004",
+          "score": 0.4,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 2
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.049.023",
+          "hypothesis_bc": "5.2.049.024.001",
+          "hypothesis_dsqlll": "5.2.049.024",
+          "score": 0.4,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 3
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.050.008",
+          "hypothesis_bc": "5.2.050.007.001",
+          "hypothesis_dsqlll": "5.2.050.007",
+          "score": 0.4,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 4
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.053.004",
+          "hypothesis_bc": "5.2.053.003.001",
+          "hypothesis_dsqlll": "5.2.053.003",
+          "score": 0.4,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 5
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.054.005",
+          "hypothesis_bc": "5.2.054.006.001",
+          "hypothesis_dsqlll": "5.2.054.006",
+          "score": 0.4,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 6
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.048.003",
+          "hypothesis_bc": "5.2.048.001.001",
+          "hypothesis_dsqlll": "5.2.048.001",
+          "score": 0.26666666666666666,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 7
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.048.003",
+          "hypothesis_bc": "5.2.048.005.001",
+          "hypothesis_dsqlll": "5.2.048.005",
+          "score": 0.26666666666666666,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 8
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.049.023",
+          "hypothesis_bc": "5.2.049.021.001",
+          "hypothesis_dsqlll": "5.2.049.021",
+          "score": 0.26666666666666666,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 9
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.050.008",
+          "hypothesis_bc": "5.2.050.006.001",
+          "hypothesis_dsqlll": "5.2.050.006",
+          "score": 0.26666666666666666,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 10
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.050.008",
+          "hypothesis_bc": "5.2.050.010.001",
+          "hypothesis_dsqlll": "5.2.050.010",
+          "score": 0.26666666666666666,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 11
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.053.004",
+          "hypothesis_bc": "5.2.053.002.001",
+          "hypothesis_dsqlll": "5.2.053.002",
+          "score": 0.26666666666666666,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 12
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.053.004",
+          "hypothesis_bc": "5.2.053.006.001",
+          "hypothesis_dsqlll": "5.2.053.006",
+          "score": 0.26666666666666666,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 13
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.058.005",
+          "hypothesis_bc": "5.2.058.007.001",
+          "hypothesis_dsqlll": "5.2.058.007",
+          "score": 0.26666666666666666,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 14
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.048.003",
+          "hypothesis_bc": "5.2.048.006.001",
+          "hypothesis_dsqlll": "5.2.048.006",
+          "score": 0.2,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 15
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.049.023",
+          "hypothesis_bc": "5.2.049.026.001",
+          "hypothesis_dsqlll": "5.2.049.026",
+          "score": 0.2,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 16
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.050.008",
+          "hypothesis_bc": "5.2.050.005.001",
+          "hypothesis_dsqlll": "5.2.050.005",
+          "score": 0.2,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 17
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.050.008",
+          "hypothesis_bc": "5.2.050.011.001",
+          "hypothesis_dsqlll": "5.2.050.011",
+          "score": 0.2,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 18
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.053.004",
+          "hypothesis_bc": "5.2.053.007.001",
+          "hypothesis_dsqlll": "5.2.053.007",
+          "score": 0.2,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 19
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.054.005",
+          "hypothesis_bc": "5.2.054.008.001",
+          "hypothesis_dsqlll": "5.2.054.008",
+          "score": 0.2,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 20
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.058.005",
+          "hypothesis_bc": "5.2.058.002.001",
+          "hypothesis_dsqlll": "5.2.058.002",
+          "score": 0.2,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 21
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.058.005",
+          "hypothesis_bc": "5.2.058.008.001",
+          "hypothesis_dsqlll": "5.2.058.008",
+          "score": 0.2,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 22
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.048.003",
+          "hypothesis_bc": "5.2.048.007.001",
+          "hypothesis_dsqlll": "5.2.048.007",
+          "score": 0.16000000000000003,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 23
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.049.023",
+          "hypothesis_bc": "5.2.049.019.001",
+          "hypothesis_dsqlll": "5.2.049.019",
+          "score": 0.16000000000000003,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 24
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.050.008",
+          "hypothesis_bc": "5.2.050.012.001",
+          "hypothesis_dsqlll": "5.2.050.012",
+          "score": 0.16000000000000003,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 25
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.051.006",
+          "hypothesis_bc": "5.2.051.010.001",
+          "hypothesis_dsqlll": "5.2.051.010",
+          "score": 0.16000000000000003,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 26
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.053.004",
+          "hypothesis_bc": "5.2.053.008.001",
+          "hypothesis_dsqlll": "5.2.053.008",
+          "score": 0.16000000000000003,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 27
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.058.005",
+          "hypothesis_bc": "5.2.058.001.001",
+          "hypothesis_dsqlll": "5.2.058.001",
+          "score": 0.16000000000000003,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 28
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.058.005",
+          "hypothesis_bc": "5.2.058.009.001",
+          "hypothesis_dsqlll": "5.2.058.009",
+          "score": 0.16000000000000003,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 29
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.048.003",
+          "hypothesis_bc": "5.2.048.008.001",
+          "hypothesis_dsqlll": "5.2.048.008",
+          "score": 0.13333333333333333,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 30
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.050.008",
+          "hypothesis_bc": "5.2.050.003.001",
+          "hypothesis_dsqlll": "5.2.050.003",
+          "score": 0.13333333333333333,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 31
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.050.008",
+          "hypothesis_bc": "5.2.050.013.001",
+          "hypothesis_dsqlll": "5.2.050.013",
+          "score": 0.13333333333333333,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 32
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.051.006",
+          "hypothesis_bc": "5.2.051.011.001",
+          "hypothesis_dsqlll": "5.2.051.011",
+          "score": 0.13333333333333333,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 33
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.053.004",
+          "hypothesis_bc": "5.2.053.009.001",
+          "hypothesis_dsqlll": "5.2.053.009",
+          "score": 0.13333333333333333,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 34
+        },
+        {
+          "evidence": "Structural search interval around reference 5.2.058.005",
+          "hypothesis_bc": "5.2.058.010.001",
+          "hypothesis_dsqlll": "5.2.058.010",
+          "score": 0.13333333333333333,
+          "status": "STRUCTURAL_UNRESOLVED",
+          "window_rank": 35
+        }
+      ]
+    },
+    {
+      "anchor_count": 0,
+      "anchor_evidence_used": [],
+      "candidate_burden": {
+        "real_resolved_candidate_count": 0,
+        "structural_unresolved_count": 0,
+        "total_candidate_count": 0
+      },
+      "cep_used": null,
+      "cohort_eligibility": "PROTOCOL_COMPLIANT",
+      "ds_candidates": [],
+      "dsq_candidates": [],
+      "failure_code": "STREET_NOT_AVAILABLE",
+      "house_number_policy": "HOUSE_NUMBER_ABSENT",
+      "listing_id": "38813993",
+      "neighbourhood_used": "Campos Elíseos",
+      "prediction_status": "FAILED",
+      "real_resolved_candidates": [],
+      "street_available": false,
+      "street_used": null,
+      "structural_unresolved_hypotheses": []
+    },
+    {
+      "anchor_count": 0,
+      "anchor_evidence_used": [],
+      "candidate_burden": {
+        "real_resolved_candidate_count": 0,
+        "structural_unresolved_count": 0,
+        "total_candidate_count": 0
+      },
+      "cep_used": "12043-000",
+      "cohort_eligibility": "PRESELECTION_ELIGIBILITY_ERROR",
+      "ds_candidates": [],
+      "dsq_candidates": [],
+      "failure_code": "DS_FAILURE",
+      "house_number_policy": "HOUSE_NUMBER_ABSENT",
+      "listing_id": "40591449",
+      "neighbourhood_used": "Jardim Oasis",
+      "prediction_status": "FAILED",
+      "real_resolved_candidates": [],
+      "street_available": true,
+      "street_used": "Avenida Carlos Pedroso da Silveira",
+      "structural_unresolved_hypotheses": []
+    },
+    {
+      "anchor_count": 0,
+      "anchor_evidence_used": [],
+      "candidate_burden": {
+        "real_resolved_candidate_count": 0,
+        "structural_unresolved_count": 0,
+        "total_candidate_count": 0
+      },
+      "cep_used": null,
+      "cohort_eligibility": "PROTOCOL_COMPLIANT",
+      "ds_candidates": [],
+      "dsq_candidates": [],
+      "failure_code": "STREET_NOT_AVAILABLE",
+      "house_number_policy": "HOUSE_NUMBER_ABSENT",
+      "listing_id": "40712114",
+      "neighbourhood_used": "Vila Santa Isabel",
+      "prediction_status": "FAILED",
+      "real_resolved_candidates": [],
+      "street_available": false,
+      "street_used": null,
+      "structural_unresolved_hypotheses": []
+    },
+    {
+      "anchor_count": 0,
+      "anchor_evidence_used": [],
+      "candidate_burden": {
+        "real_resolved_candidate_count": 0,
+        "structural_unresolved_count": 0,
+        "total_candidate_count": 0
+      },
+      "cep_used": "12042-247",
+      "cohort_eligibility": "PROTOCOL_COMPLIANT",
+      "ds_candidates": [],
+      "dsq_candidates": [],
+      "failure_code": "DS_FAILURE",
+      "house_number_policy": "HOUSE_NUMBER_ABSENT",
+      "listing_id": "42910754",
+      "neighbourhood_used": "Jardim Oasis",
+      "prediction_status": "FAILED",
+      "real_resolved_candidates": [],
+      "street_available": true,
+      "street_used": "Rua Edu Mattos Ortiz",
+      "structural_unresolved_hypotheses": []
+    },
+    {
+      "anchor_count": 0,
+      "anchor_evidence_used": [],
+      "candidate_burden": {
+        "real_resolved_candidate_count": 0,
+        "structural_unresolved_count": 0,
+        "total_candidate_count": 0
+      },
+      "cep_used": null,
+      "cohort_eligibility": "PROTOCOL_COMPLIANT",
+      "ds_candidates": [],
+      "dsq_candidates": [],
+      "failure_code": "STREET_NOT_AVAILABLE",
+      "house_number_policy": "HOUSE_NUMBER_ABSENT",
+      "listing_id": "44628622",
+      "neighbourhood_used": "Jardim Continental III",
+      "prediction_status": "FAILED",
+      "real_resolved_candidates": [],
+      "street_available": false,
+      "street_used": null,
+      "structural_unresolved_hypotheses": []
+    }
+  ],
+  "schema_version": "1.0"
+}

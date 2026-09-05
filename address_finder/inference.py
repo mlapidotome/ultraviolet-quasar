@@ -76,17 +76,19 @@ def predict_from_listing(
         if m:
             listing_house_number = int(m.group(1))
 
-    # Inspect title / description / alt-text clues ONLY (never using the corpus!)
+    # Inspect title / description / alt-text clues ONLY if text contains a real street designator
     if not norm_street and isinstance(public_listing_clues, list):
         for c in public_listing_clues:
             val = c.get("value", "")
             if c.get("type") in ("image_alt_geo", "title", "description"):
-                parsed = parse_raw_address(val)
-                if parsed["street_norm"] and parsed["category"] != "DOCUMENTARY_TEXT_VACANT_LOT":
-                    norm_street = parsed["street_norm"]
-                    if parsed["house_number"] and not listing_house_number:
-                        listing_house_number = parsed["house_number"]
-                    break
+                m_st = re.search(r"\b((?:Rua|Avenida|Alameda|Travessa|Praça|Praca|Estrada)\s+[^,]+)", val, re.I)
+                if m_st:
+                    parsed = parse_raw_address(m_st.group(1))
+                    if parsed["street_norm"] and parsed["category"] != "DOCUMENTARY_TEXT_VACANT_LOT":
+                        norm_street = parsed["street_norm"]
+                        if parsed["house_number"] and not listing_house_number:
+                            listing_house_number = parsed["house_number"]
+                        break
 
     house_number_status = (
         "HOUSE_NUMBER_PRESENT_UNVERIFIED"
