@@ -1,41 +1,393 @@
-# Arquitetura e Plano de Implementação — Fase 3B (Revisão Final)
-## Video Composer MVP (Timeline Engine Orientada a Creative Blueprint)
+# Arquitetura e Plano de Implementação — Fase 3C
+## Editing Styles & Overlays Dinâmicos (Video Engine V2 — Bali Imóveis)
 
-**Status:** Planejamento Arquitetural Revisado (PLAN ONLY)  
+**Status:** Planejamento Arquitetural (PLAN ONLY — Aguardando Revisão Externa)  
 **Data:** 05/09/2026  
 **Repositório:** `mlapidotome/facade-checker` (`main`)  
-**Commit Base Homologado (Fase 3A):** `8e2bf0306f557c595e8070628ee3e646a599d759`  
-**Escopo:** Especificação técnica rigorosa e definitiva do primeiro Video Composer determinístico orientado por Creative Blueprint, em modo Shadow Aditivo, sem implementação de código produtivo ou migrations nesta etapa.
+**Commit Base Homologado (Fase 3B Final Hardening):** `a215799dea6740ef4ff2e59ae55837ef47c7f6ba`  
+**Escopo:** Especificação técnica rigorosa e definitiva da evolução do Video Composer MVP para suporte a **Editing Styles Versionáveis**, **Overlay Engine Declarativo**, **Tipografia Segura**, **Safe Areas 9:16**, **Motion Leve** e **Captions Sincronizadas**, mantendo isolamento aditivo via Shadow Mode e retrocompatibilidade estrita.
 
 ---
 
-## 1. Visão Geral e Princípio Central
+## 1. Visão Geral e Princípio Arquitetural
 
-A Fase 3B constrói a primeira ponte funcional entre a fundação de dados da Fase 3A e o futuro Editing Engine:
-$$\text{Creative Blueprint} + \text{Asset Resolver} \xrightarrow{\text{Video Composer}} \text{MP4 Final Renderizado}$$
+A Fase 3B estabeleceu o **Video Composer determinístico MVP**, capaz de transformar clipes de entrada e diretrizes de corte sequencial em um MP4 padronizado (H.264/AAC 1080x1920@30fps).
 
-### O Princípio Central: Execução Pura e Determinística
-O Video Composer **NÃO toma decisões criativas**. Ele é um executor puro de uma receita declarativa:
-$$\text{AI / Creative Engine} \longrightarrow \text{Creative Blueprint} \longrightarrow \text{Video Composer} \longrightarrow \text{FFmpeg}$$
+A **Fase 3C** avança da concatenação simples para a **Edição Declarativa Enriquecida**:
 
-- O **Blueprint** dita os componentes, formatos, cortes e diretrizes.
-- O **Asset Resolver** valida a integridade física, hashes e ownership físico do Job.
-- O **Composer** compila a receita em um plano de execução linear e invoca o FFmpeg através de um pipeline canônico padronizado de re-encode.
+$$\text{Creative Blueprint 1.1} + \text{Editing Style Preset} + \text{Overlay Directives} \xrightarrow[\text{Asset Resolver}]{\text{Video Composer 3C}} \text{Vídeo Editado Final (MP4)}$$
+
+### Princípio da Separação Estrita de Responsabilidades
+O Video Composer **NÃO toma decisões criativas, não gera copy, não escolhe layouts aleatórios e não interpreta estética**:
+$$\text{AI / Copy Engine / Creative Rules} \xrightarrow{\text{decide O QUE e COMO editar}} \text{Creative Blueprint 1.1} \xrightarrow{\text{executa deterministicamente}} \text{Composer 3C + FFmpeg}$$
+
+- O **Blueprint** expressa a intenção de edição em JSON puramente declarativo.
+- O **Editing Style Service** fornece presets visuais canônicos versionados.
+- O **Overlay Service** compila as diretrizes declarativas em uma árvore de filtros (`filter_complex`) do FFmpeg à prova de injeção.
+- O **Asset Resolver** valida ownership, existência física e hashes de qualquer artefato adicional.
+- O **Composer Engine** renderiza, inspeciona via QC e promove o artefato de forma atômica e imutável.
 
 ---
 
-## 2. Decisões Arquiteturais Fundamentais
+## 2. Modelo de Editing Styles
 
-### 2.1 Identidade Canônica de Renderização: A `render_key`
+### 2.1 Decisão Arquitetural: Onde residem os Editing Styles?
+**Decisão:** **JSON/JS Versionado no Código (`video_engine/styles/index.js`)**.
 
-Para garantir determinismo absoluto, reprodutibilidade e invalidação segura de cache, o Composer **NÃO depende apenas da trinca superficial `job_id + creative_id + blueprint_version`**.
+**Justificativa Técnica:**
+1. **Determinismo e Imutabilidade:** Um estilo de edição não é apenas um registro de banco; ele define regras de composição, espaçamentos, curvas de animação, cores e referências a fontes. Ao versioná-lo em código Git (`style_id: "performance_reels_v1"`, `version: 1`), garantimos que a mesma versão de estilo produza exatamente os mesmos pixels em qualquer ambiente (dev, staging, VPS).
+2. **Sem Necessidade de Migration:** Evita DDL/migrações desnecessárias no PostgreSQL nesta fase.
+3. **Identidade na `render_key`:** A alteração de qualquer parâmetro visual em um estilo exige o incremento da sua versão (`version: 2`), invalidando deterministicamente o cache de renderização anterior.
 
-A identidade do render é governada pela **`render_key`**: um hash SHA-256 (64 caracteres hex) calculado sobre a serialização canônica recursiva de **todos os fatores que afetam o resultado visual ou auditivo**:
+### 2.2 Presets MVP da Fase 3C
+
+Criaremos 3 estilos canônicos no MVP:
+
+```javascript
+// video_engine/styles/presets.js
+module.exports = {
+  'performance_reels_v1': {
+    id: 'performance_reels_v1',
+    version: 1,
+    name: 'Performance Reels / TikTok',
+    description: 'Foco em retenção: headlines em caixa alta, badge de preço com punch zoom e ritmo agressivo',
+    typography: {
+      headline_font: 'inter_extrabold',
+      body_font: 'inter_semibold',
+      accent_font: 'inter_black'
+    },
+    colors: {
+      primary: '#FFFFFF',
+      accent: '#FFD700',       // Dourado Bali
+      background_box: '#000000CC', // Preto 80% opacidade
+      price_badge_bg: '#00C853',   // Verde conversão
+      price_badge_text: '#FFFFFF'
+    },
+    motion: {
+      headline_animation: 'fade_scale_pop',
+      price_animation: 'punch_zoom',
+      transition_speed_ms: 200
+    },
+    safe_area: {
+      top_offset_px: 240,
+      bottom_offset_px: 360,
+      margin_horizontal_px: 60
+    }
+  },
+
+  'clean_modern_v1': {
+    id: 'clean_modern_v1',
+    version: 1,
+    name: 'Clean Modern Minimalist',
+    description: 'Estética contemporânea: lower thirds refinados, tipografia elegante e transições suaves',
+    typography: {
+      headline_font: 'montserrat_bold',
+      body_font: 'montserrat_medium',
+      accent_font: 'montserrat_bold'
+    },
+    colors: {
+      primary: '#FFFFFF',
+      accent: '#00E5FF',
+      background_box: '#1A1A1AE6',
+      price_badge_bg: '#1A1A1AE6',
+      price_badge_text: '#00E5FF'
+    },
+    motion: {
+      headline_animation: 'fade_in_slide',
+      price_animation: 'smooth_fade',
+      transition_speed_ms: 300
+    },
+    safe_area: {
+      top_offset_px: 220,
+      bottom_offset_px: 340,
+      margin_horizontal_px: 70
+    }
+  },
+
+  'minimal_luxury_v1': {
+    id: 'minimal_luxury_v1',
+    version: 1,
+    name: 'Minimal Luxury / Alto Padrão',
+    description: 'Edição sóbria para imóveis premium: sem animações bruscas, tipografia limpa e espaçamentos nobres',
+    typography: {
+      headline_font: 'dejavu_bold',
+      body_font: 'dejavu_medium',
+      accent_font: 'dejavu_bold'
+    },
+    colors: {
+      primary: '#F5F5F7',
+      accent: '#D4AF37',       // Ouro clássico
+      background_box: '#111111B3',
+      price_badge_bg: '#D4AF37',
+      price_badge_text: '#111111'
+    },
+    motion: {
+      headline_animation: 'pure_fade',
+      price_animation: 'pure_fade',
+      transition_speed_ms: 400
+    },
+    safe_area: {
+      top_offset_px: 260,
+      bottom_offset_px: 380,
+      margin_horizontal_px: 80
+    }
+  }
+};
+```
+
+---
+
+## 3. Overlay Engine (`video_engine/overlay_service.js`)
+
+### 3.1 Responsabilidades do Módulo
+1. **Validação Estrutural:** Recebe array de `overlays` e garante tipos, coordenadas, bounds de timing e limites de tamanho.
+2. **Compilação de Filtros:** Mapeia cada overlay declarativo para instruções atômicas de FFmpeg (`drawtext`, `drawbox`, `scale`, `crop`, `overlay`).
+3. **Higienização e Escaping Anti-Injeção:** Neutraliza qualquer caractere malicioso ou de controle do FFmpeg.
+4. **Resolução de Posições Declarativas em Coordenadas Absolutas:** Converte `top_safe`, `center`, `lower_third`, `bottom_safe` em expressões $x, y$ matemáticas determinísticas em relação a 1080x1920.
+
+### 3.2 Tipos de Overlays Suportados no MVP 3C
+
+| Tipo de Overlay | Descrição | Parâmetros Declarativos | Efeito Visual |
+|---|---|---|---|
+| `headline` | Título de impacto no gancho | `text`, `start_ms`, `end_ms`, `position`, `box` | Texto destacado com caixa de leitura semi-transparente |
+| `price_badge` | Destaque monetário do imóvel | `text` (ex: "R$ 680 MIL"), `start_ms`, `end_ms`, `position`, `punch_zoom: true` | Caixa destacada com cores de alta conversão |
+| `location_tag` | Bairro / Cidade do imóvel | `text`, `start_ms`, `end_ms`, `position` | Lower-third compacto indicando localização |
+| `cta_banner` | Chamada final de ação | `text` (ex: "Saiba Mais"), `start_ms`, `end_ms`, `position` | Banner de rodapé nos segundos finais |
+| `caption_segment` | Trecho de legenda falada | `text`, `start_ms`, `end_ms`, `highlight_words` | Legenda central/inferior sincronizada com áudio |
+
+---
+
+## 4. Tipografia, Font Presets & Proteção contra Filter Injection
+
+### 4.1 O Perigo de Injeção em Filtros FFmpeg
+No FFmpeg `drawtext`, caracteres como `:`, `'`, `\`, `%`, `[`, `]` possuem significado de sintaxe interna e podem quebrar a execução ou injetar opções arbitrárias de filtro.
+
+### 4.2 Sanitização Rigorosa do Texto
+Todo texto recebido no Blueprint passa por um higienizador determinístico:
+
+```javascript
+/**
+ * Sanitiza texto para uso seguro no drawtext do FFmpeg
+ * 1. Escapa barras invertidas: \ -> \\
+ * 2. Escapa dois-pontos: : -> \:
+ * 3. Escapa aspas simples: ' -> \'
+ * 4. Escapa porcentagem: % -> \%
+ * 5. Remove quebras de linha cruas (\r, \n) substituindo por espaço ou quebra controlada
+ */
+function sanitizeDrawtextString(rawText) {
+  if (typeof rawText !== 'string') return '';
+  return rawText
+    .replace(/\\/g, '\\\\')
+    .replace(/:/g, '\\:')
+    .replace(/'/g, "\\'")
+    .replace(/%/g, '\\%')
+    .replace(/\[/g, '\\[')
+    .replace(/\]/g, '\\]')
+    .replace(/\r?\n/g, ' ')
+    .trim();
+}
+```
+
+### 4.3 Whitelist de Fontes no Servidor
+O Blueprint **NUNCA fornece caminhos de arquivos de fontes**. Ele informa apenas um identificador lógico (`font_preset: "inter_bold"`).
+O `overlay_service` mapeia esse identificador para arquivos de fontes canônicos já disponíveis ou instalados no servidor:
+
+```javascript
+const FONT_REGISTRY = {
+  'dejavu_bold': '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
+  'dejavu_medium': '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+  'liberation_bold': '/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf',
+  'liberation_medium': '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf'
+};
+
+function resolveFontPath(fontKey) {
+  const fontPath = FONT_REGISTRY[fontKey] || FONT_REGISTRY['dejavu_bold'];
+  if (!fs.existsSync(fontPath)) {
+    throw new Error(`[COMPOSER FONT ERROR] Arquivo de fonte não encontrado no sistema: ${fontPath}`);
+  }
+  return fontPath;
+}
+```
+
+---
+
+## 5. Safe Area e Posicionamento em 9:16 (Instagram Reels / TikTok)
+
+Para evitar que textos sejam ocultados pela interface do aplicativo (nome do perfil, legenda nativa, botões de like/share, barra de status), definimos coordenadas canônicas padronizadas baseadas na resolução $1080 \times 1920$:
+
+```
+0px ────────────────────────────────────────────────────────
+    ▲ [Área de Risco: Top Bar / Header do App]
+220px ── TOP_SAFE (y = 220) ────────────────────────────────
+    │
+    │   ÁREA SEGURA PRINCIPAL (Conteúdo Visual e Hooks)
+    │
+960px ── CENTER (y = 960) ──────────────────────────────────
+    │
+    │   ÁREA INFERIOR DE LEITURA (Preço e Benefícios)
+    │
+1380px ── LOWER_THIRD (y = 1380) ───────────────────────────
+    │
+1560px ── BOTTOM_SAFE (y = 1560) ───────────────────────────
+    ▼ [Área de Risco: Legenda Nativa, Áudio, Botões Laterais]
+1920px ─────────────────────────────────────────────────────
+```
+
+### Resolução Matemática de Posições:
+- `top_safe`: $x = (w - \text{text\_w})/2$, $y = 240$
+- `center`: $x = (w - \text{text\_w})/2$, $y = (h - \text{text\_h})/2$
+- `lower_third`: $x = (w - \text{text\_w})/2$, $y = 1380$
+- `bottom_safe`: $x = (w - \text{text\_w})/2$, $y = 1560$
+
+---
+
+## 6. Motion Leve e Efeitos Determinísticos em FFmpeg Puro
+
+A Fase 3C utiliza recursos nativos do FFmpeg sem dependência de engines externas (After Effects, Remotion, Canvas):
+
+### 6.1 Punch Zoom (Destaque em Ganchos e Preço)
+Aplica um corte e escala suave temporária:
+$$\text{scale}=1.12 \times \text{iw}:1.12 \times \text{ih}, \quad \text{crop}=1080:1920:(1.12 \times \text{iw}-1080)/2:(1.12 \times \text{ih}-1920)/2$$
+Ativado dinamicamente via timeline do filtro entre $t_{\text{start}}$ e $t_{\text{end}}$.
+
+### 6.2 Fade In / Fade Out em Overlays
+Implementado no `drawtext` e `drawbox` através do parâmetro `alpha`:
+$$\text{alpha} = \text{if}(\text{lt}(t, t_0 + \delta), (t - t_0)/\delta, \text{if}(\text{gt}(t, t_1 - \delta), (t_1 - t)/\delta, 1))$$
+onde $\delta = 0.25\text{ s}$ (250 ms de fade suave).
+
+### 6.3 Box com Background Semi-Transparente
+Usa `box=1:boxcolor=black@0.75:boxborderw=24` diretamente no `drawtext`, garantindo legibilidade perfeita independente da claridade do vídeo de fundo.
+
+---
+
+## 7. Estratégia de Captions (Legendas)
+
+### Decisão para o MVP 3C: Opção A (Captions Segmentadas no Blueprint)
+O Creative Blueprint 1.1 recebe as legendas já transcritas e sincronizadas em blocos temporais milimétricos:
+
+```json
+"captions": [
+  { "start_ms": 0, "end_ms": 1100, "text": "Este é o melhor apartamento" },
+  { "start_ms": 1150, "end_ms": 2300, "text": "frente ao mar em Balneário Piçarras" },
+  { "start_ms": 2350, "end_ms": 3800, "text": "com 3 suítes e acabamento impecável." }
+]
+```
+
+**Vantagens:**
+- Desacoplamento total: O Composer não precisa rodar modelos pesados de Speech-to-Text (Whisper) durante a renderização.
+- Determinismo: A renderização de legendas é $100\%$ determinística e entra no cálculo da `render_key`.
+- Edição prévia: O AI Engine pode pontuar e formatar o texto antes de enviar para renderização.
+
+---
+
+## 8. Escopo de B-Roll e Picture-in-Picture (PIP)
+
+### 8.1 B-Roll
+- **Fase 3C.1 (MVP Inicial):** Foco estrito em Overlays de Texto, Badges de Preço, Localização, CTA, Captions e Motion Leve.
+- **Fase 3C.2 (Extensão Aditiva):** Suporte a `asset_type: 'broll_clip'` como segmento de timeline alternativa ou overlay de cobertura com timing explícito fornecido pelo Blueprint. Qualquer asset de B-roll exige validação prévia pelo **Asset Resolver** (status `ready`, integridade de hash físico e ownership do Job).
+
+### 8.2 Picture-in-Picture (PIP)
+- **Fase 3C.2 (Extensão Aditiva):** Overlay de avatar secundário sobre vídeo de fundo imobiliário full-screen:
+  - Input 0: Vídeo B-roll full-screen (1080x1920)
+  - Input 1: Avatar falante (redimensionado via `scale=360:640`)
+  - Posicionamento em `overlay=x=60:y=1200:enable='between(t, 0, 10)'`.
+
+---
+
+## 9. Creative Blueprint 1.1 (Contrato Estendido)
+
+O contrato do Blueprint evolui para `schema_version: "1.1"` preservando retrocompatibilidade total com `1.0`:
+
+```json
+{
+  "schema_version": "1.1",
+  "creative_id": "crv_bbddf3ba_var1",
+  "blueprint_version": 1,
+  "format": {
+    "aspect_ratio": "9:16",
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
+  },
+  "editing_style": {
+    "style_id": "performance_reels_v1",
+    "version": 1
+  },
+  "timeline": [
+    {
+      "segment_index": 1,
+      "role": "hook",
+      "asset_id": "ast_hk_bbddf3ba_01",
+      "layer": 0,
+      "source_in_ms": 0,
+      "source_out_ms": 3000
+    },
+    {
+      "segment_index": 2,
+      "role": "body",
+      "asset_id": "ast_bd_bbddf3ba_01",
+      "layer": 0,
+      "source_in_ms": 0,
+      "source_out_ms": 5000
+    }
+  ],
+  "overlays": [
+    {
+      "id": "ov_headline",
+      "type": "headline",
+      "text": "3 SUÍTES FRENTE MAR",
+      "start_ms": 200,
+      "end_ms": 2800,
+      "position": "top_safe",
+      "preset": "bold_box"
+    },
+    {
+      "id": "ov_price",
+      "type": "price_badge",
+      "text": "R$ 1.250.000",
+      "start_ms": 3200,
+      "end_ms": 5500,
+      "position": "lower_third",
+      "preset": "punch_accent"
+    },
+    {
+      "id": "ov_cta",
+      "type": "cta_banner",
+      "text": "AGENDE SUA VISITA EXCLUSIVA",
+      "start_ms": 6000,
+      "end_ms": 7800,
+      "position": "bottom_safe",
+      "preset": "solid_bar"
+    }
+  ],
+  "captions": [
+    { "start_ms": 0, "end_ms": 2900, "text": "Descubra o melhor 3 suítes frente mar de Piçarras." },
+    { "start_ms": 3000, "end_ms": 7800, "text": "Planta exclusiva, varanda gourmet e lazer completo." }
+  ],
+  "composition_directives": {
+    "audio_mix": "normalize",
+    "motion_level": "medium"
+  }
+}
+```
+
+### Retrocompatibilidade Canônica com 1.0
+Se `blueprint.schema_version === '1.0'` ou se `editing_style` e `overlays` forem omitidos:
+- O Composer interpreta como blueprint sequencial puro (comportamento da Fase 3B).
+- `overlays` é tratado como `[]`.
+- `captions` é tratado como `[]`.
+- O render ocorre sem overlays adicionais com custo computacional mínimo.
+
+---
+
+## 10. Identidade de Renderização Canônica (`render_key` 3C)
+
+Qualquer alteração em estilos, textos, posições ou timings altera obrigatoriamente a `render_key`:
 
 ```javascript
 const renderSpec = {
-  schema_version: '1.0',
-  composer_contract_version: 'composer_v1', // Versão do pipeline de render
+  schema_version: '1.1',
+  composer_contract_version: 'composer_v2',
   creative_id: String(blueprint.creative_id),
   blueprint_version: Number(blueprint.blueprint_version || 1),
   format: {
@@ -44,13 +396,15 @@ const renderSpec = {
     height: 1920,
     fps: 30
   },
-  timeline: canonicalTimelineSegments, // Array ordenado: role, layer, source_in_ms, source_out_ms
-  composition_directives: canonicalDirectives, // Transições, ganhos de áudio, normalização
-  input_assets: [
-    // Array ordenado por timeline com asset_id E file_hash físico dos bytes de entrada!
-    { role: 'hook', asset_id: 'ast_hk_bbddf3ba_01', file_hash: 'sha256_hook_bytes...' },
-    { role: 'body', asset_id: 'ast_bd_bbddf3ba_01', file_hash: 'sha256_body_bytes...' }
-  ]
+  editing_style: {
+    style_id: blueprint.editing_style?.style_id || 'none',
+    version: Number(blueprint.editing_style?.version || 0)
+  },
+  timeline: canonicalTimeline, // Array ordenado com asset_id e trims
+  overlays: canonicalOverlays, // Array ordenado por start_ms, end_ms, type, text normalizado
+  captions: canonicalCaptions, // Array ordenado por start_ms
+  composition_directives: canonicalDirectives,
+  input_assets: canonicalInputAssets // Array com asset_id e file_hash físico dos bytes de entrada
 };
 
 const render_key = crypto.createHash('sha256')
@@ -58,275 +412,184 @@ const render_key = crypto.createHash('sha256')
   .digest('hex');
 ```
 
-#### Invariantes da `render_key`:
-1. Se qualquer clipe de entrada for re-renderizado na HeyGen (gerando novo `file_hash`), a `render_key` **muda automaticamente**, forçando nova renderização do criativo.
-2. Se um corte ou trim for alterado no Blueprint, a `render_key` **muda**.
-3. Se a versão do contrato do Composer for atualizada (ex: novo filtro ou novo codec), a `render_key` **muda**.
-4. Mesma receita com os mesmos bytes de entrada = rigorosamente a **mesma `render_key`**.
+---
+
+## 11. Segurança, Limites Rígidos e Resiliência (DDoS & Memory Guards)
+
+Para proteger o VPS de 1 Core / 2 GB RAM contra exaustão de CPU e memória:
+
+| Parâmetro de Segurança | Limite Rígido (Fail-Fast) | Justificativa |
+|---|---|---|
+| Quantidade Máxima de Overlays | **Máximo 20** por criativo | Previne graphs FFmpeg gigantescos |
+| Tamanho Máximo de Texto por Overlay | **Máximo 250 caracteres** | Evita estouro de buffer e quebra de layout |
+| Quantidade Máxima de Segmentos de Caption | **Máximo 60** por vídeo | Cobre vídeos de até 120s com sobra |
+| Duração Máxima do Vídeo | **Máximo 120.000 ms (2 minutos)** | Protege tempo de renderização e CPU |
+| Timeout de Execução do FFmpeg | **180 segundos (3 minutos)** | Folga segura para encoding com filtros |
+| Whitelist de Caracteres em `creative_id` | `/^[a-zA-Z0-9_-]{1,64}$/` | Previne path traversal |
+| Validação de Coordenadas e Bounds | $0 \le \text{start\_ms} < \text{end\_ms} \le \text{duração\_total}$ | Rejeita overlays fora da timeline do vídeo |
 
 ---
 
-### 2.2 Concorrência: Claim Atômico Persistente via PostgreSQL & Stale Recovery
+## 12. Modo Shadow Aditivo (Isolamento Absoluto)
 
-Removemos expressamente qualquer dependência de mutex frágil em memória (`Map<string, Promise>`), adotando **governança transacional atômica no banco de dados (`video_assets`)**:
-
-#### 2.2.1 Mecanismo SQL de Claim Atômico
-Cada renderização tenta adquirir o lock transacionando o asset em `video_assets`:
-
-```sql
-INSERT INTO video_assets (
-    id, job_id, property_ref, asset_type, storage_type,
-    storage_path, file_hash, generation_key, status,
-    specs, metadata, created_at, updated_at
-) VALUES (
-    $1, -- Asset ID derivado da render_key (ex: ast_out_<creative_id>_<render_key_curta>)
-    $2, -- job_id
-    $3, -- property_ref
-    $4, -- asset_type ('rendered_creative' ou 'shadow_creative')
-    'local_file',
-    NULL, -- storage_path é NULL enquanto processing
-    NULL, -- file_hash é NULL enquanto processing
-    $5, -- generation_key = render_key
-    'processing',
-    '{}'::jsonb,
-    $6, -- metadata com pid, host, started_at, temp_filename
-    NOW(),
-    NOW()
-)
-ON CONFLICT (id) DO UPDATE SET
-    status = 'processing',
-    updated_at = NOW(),
-    metadata = video_assets.metadata || $6::jsonb
-WHERE video_assets.status IN ('pending', 'failed')
-   OR (video_assets.status = 'processing' AND video_assets.updated_at < NOW() - INTERVAL '5 minutes')
-RETURNING *;
-```
-
-#### 2.2.2 Interpretação da Resposta do Claim:
-1. **Linha retornada (`RETURNING *`):** A requisição atual **adquiriu com sucesso o direito exclusivo de renderização**. Procede para a invocação do FFmpeg.
-2. **Nenhuma linha retornada (Conflito de Concorrência):**
-   - O Composer consulta o registro existente:
-     - Se `status = 'ready'`: O criativo já foi renderizado e validado -> **Retorno imediato idempotente**.
-     - Se `status = 'processing'` (ativo, dentro da janela de lease): Outro processo ou worker está renderizando -> **Retorna `HTTP 409 Conflict` ou aguarda em polling não-bloqueante**.
-
-#### 2.2.3 Recuperação de Execuções Mortas (Stale Processing Recovery):
-- **Janela de Lease:** `STALE_RENDER_TIMEOUT = 300 segundos` (5 minutos).
-- Se o servidor, container ou processo PM2 sofrer crash ou `kill -9` durante a renderização, o registro permanecerá como `processing`.
-- Quando uma nova chamada ocorrer após 5 minutos (`updated_at < NOW() - INTERVAL '5 minutes'`), a cláusula `WHERE` do claim permite a re-reivindicação atômica do lock, limpando o arquivo temporário órfão gravado no `metadata.temp_filename` e reiniciando a montagem de forma limpa.
+A Fase 3C é implementada em **Shadow Mode Aditivo**:
+- Artefatos gerados: `outputs/jobs/<jobId>/shadow_3c_<creative_id>_<render_key_curta>.mp4`.
+- Registro no catálogo: `asset_type = 'shadow_creative_3c'`.
+- Endpoints do Painel:
+  - `POST /api/v2/panel/video-jobs/:id/compose-shadow-3c/:index`
+  - `GET /api/v2/panel/video-jobs/:id/shadow-3c-video/:index`
+  - `GET /api/v2/panel/video-jobs/:id/compare-shadow-3c/:index`
+- **Zero Impacto:** As colunas oficiais da Fase 2C (`pilot_video_url`, `video2_url`, `video3_url`, `video_jobs.status`) permanecem **100% intocadas**.
 
 ---
 
-### 2.3 Saída Física Imutável e Atomicidade
+## 13. Respostas Objetivas às 20 Decisões Obrigatórias
 
-Um asset `ready` **NUNCA é sobrescrito**. O Composer adota versionamento físico imutável por `render_key`:
+1. **Qual será o schema/version do Blueprint para 3C?**  
+   `schema_version: "1.1"` (com retrocompatibilidade total para `1.0`).
 
-1. **Naming Canônico Imutável:**
-   $$Filename = \texttt{composer\_} + \langle \text{creative\_id} \rangle + \texttt{\_} + \langle \text{render\_key}[0..9] \rangle + \texttt{.mp4}$$
-   *Exemplo:* `composer_crv_bbddf3ba_v1_b1_a8c2f1e4b9.mp4`.
-2. **Atomicidade Estrita (`.tmp`):**
-   - O FFmpeg renderiza exclusivamente em um arquivo temporário único contendo UUID:
-     `outputs/jobs/<job_id>/composer_crv_bbddf3ba_v1_b1_a8c2f1e4b9.tmp.<uuid>.mp4`.
-   - Enquanto o arquivo está em renderização, nenhum leitor externo tem acesso a bytes parciais.
-3. **Inspecção Pré-Promoção:**
-   - Antes de mover o arquivo, `validateMediaStreamsAndDuration()` executa `ffprobe` no arquivo `.tmp`.
-   - Se a validação passar:
-     $$\text{fs.renameSync(tempPath, finalPath)}$$
-   - **Garantia de Imutabilidade:** O `finalPath` deriva da `render_key`. Se o arquivo final já existir no disco com status `ready`, o `rename` é desnecessário e o arquivo existente é preservado.
-4. **Cleanup Garantido:**
-   - O arquivo `.tmp` é destruído em bloco `finally` caso ocorra qualquer erro de timeout, falha de codec ou crash de validação.
+2. **Como representar `editing_style`?**  
+   Objeto explícito com identificador e versão: `editing_style: { style_id: "performance_reels_v1", version: 1 }`.
 
----
+3. **Onde ficam os style presets?**  
+   No módulo de código versionado Git (`video_engine/styles/presets.js`). Sem necessidade de migrations no banco.
 
-### 2.4 FFmpeg: Pipeline Canônico Único de Re-encode (Sem Dual-Path)
+4. **Como overlays são representados?**  
+   Array declarativo `overlays: [{ id, type, text, start_ms, end_ms, position, preset }]` com validação de bounds.
 
-Avaliamos a abordagem anterior de `-c copy` com fallback para re-encode. **Decisão:** No Composer MVP, **eliminamos o dual-path em favor de um pipeline único, padronizado e previsível de re-encode**.
+5. **Como evitar filter injection?**  
+   Higienização estrita de caracteres (`\`, `:`, `'`, `%`, `[`, `]`, `\n`) em `sanitizeDrawtextString()`, parâmetros declarativos restritos e nunca aceitando fragmentos crus de filtergraph do cliente.
 
-#### Justificativa Técnica:
-O `-c copy` (concat demuxer) falha silenciosamente ou introduz artefatos sutis (dessincronia de áudio de ~20ms por priming samples do encoder AAC da HeyGen, timebases incompatíveis ou keyframes desalinhados).
-Um pipeline único de re-encode garante que todo vídeo gerado pelo Composer atenda rigorosamente ao contrato de mídia:
+6. **Como captions são representadas?**  
+   Segmentos pré-sincronizados no Blueprint em `captions: [{ start_ms, end_ms, text }]` (Opção A).
 
-```bash
-ffmpeg -y \
-  -i /var/www/bali-gestor/outputs/jobs/<jobId>/hook_1.mp4 \
-  -i /var/www/bali-gestor/outputs/jobs/<jobId>/body.mp4 \
-  -filter_complex "[0:v][0:a][1:v][1:a]concat=n=2:v=1:a=1[outv][outa]" \
-  -map "[outv]" \
-  -map "[outa]" \
-  -c:v libx264 -preset fast -crf 20 -pix_fmt yuv420p -r 30 -s 1080x1920 \
-  -c:a aac -b:a 192k -ar 44100 -ac 2 \
-  -movflags +faststart \
-  /var/www/bali-gestor/outputs/jobs/<jobId>/composer_<target>.tmp.<uuid>.mp4
-```
+7. **B-roll entra já no MVP ou fica para 3C.2?**  
+   Fica estruturado formalmente no contrato e implementação principal para a subfase **3C.2**, mantendo o MVP 3C.1 focado em overlays tipográficos e motion leve.
 
-- **Execução Segura:** Invocado exclusivamente via `child_process.execFile('ffmpeg', argsArray)` (sem `shell: true`, imune a shell injection).
-- **Controle de Timeout:** Timeout padrão de 120 segundos; captura de `stderr` limitada a 100KB para evitar estouro de memória.
+8. **PIP entra já no MVP ou fica para 3C.2?**  
+   Fica formalizado para a subfase **3C.2**, evitando dispersão do escopo no MVP 3C.1.
 
----
+9. **Quais motion effects entram no MVP?**  
+   `punch_zoom` determinístico em início de corte/preço e `fade_in`/`fade_out` em overlays.
 
-### 2.5 Duração: Unidade Oficial e Descarte de Placeholders
+10. **Quais tipos de overlays entram no MVP?**  
+    `headline`, `price_badge`, `location_tag`, `cta_banner` e `caption_segment`.
 
-1. **Unidade Oficial Única:** O Composer opera internamente **estritamente em milissegundos inteiros (`duration_ms`)**.
-2. **Conversão Única:** A propriedade `asset.specs.duration` (em segundos float) é convertida uma única vez no momento da resolução:
-   $$\text{duration\_ms} = \text{Math.round}(\text{Number}(\text{asset.specs.duration}) \times 1000)$$
-3. **Descarte de Placeholders Fictícios:**
-   - Os valores de `timeline_start_ms` (~9500) e `timeline_end_ms` (~38200) herdados da Fase 3A são tratados **exclusivamente como metadados textuais conceituais e NÃO comandam cortes**.
-   - Na ausência de trims explícitos (`source_in_ms: null`, `source_out_ms: null`), o Composer aloca **100% da duração física real** de cada asset.
-4. **Cálculo Determinístico da Timeline:**
-   $$\text{Timeline}(0) = [0 \to D_{\text{hook\_ms}}]$$
-   $$\text{Timeline}(1) = [D_{\text{hook\_ms}} \to D_{\text{hook\_ms}} + D_{\text{body\_ms}}]$$
-   $$\text{Duração Total Esperada} = D_{\text{hook\_ms}} + D_{\text{body\_ms}}$$
+11. **Quais limites de quantidade/tamanho serão impostos?**  
+    Máx 20 overlays, máx 250 chars por string, máx 60 captions, máx 120s de duração.
 
----
+12. **Como style/overlays alteram `render_key`?**  
+    Todos os elementos do style e overlays entram na serialização canônica recursiva antes da geração do hash SHA-256.
 
-### 2.6 Equivalência Semântica com Tolerância Configurável
+13. **Como compatibilidade com Blueprint antigo é preservada?**  
+    Blueprints com `schema_version: "1.0"` ou sem overlays são interpretados como timeline sequencial limpa (estilo `clean_raw` sem drawtext), executando exatamente como na Fase 3B.
 
-Para homologação do Composer frente ao concat legado da Fase 2C:
-- **Tolerância Configurável:** `COMPOSER_DURATION_TOLERANCE_MS` (valor inicial padrão de homologação: **`250 ms`**).
-- **Critérios de Equivalência no Pós-Render:**
-  1. $|\text{Duração Real do Arquivo} - \text{Duração Total Esperada}| \le 250\text{ ms}$;
-  2. $|\text{Duração do Stream de Vídeo} - \text{Duração do Stream de Áudio}| \le 100\text{ ms}$ (ausência de descompasso);
-  3. Resolução estritamente $1080 \times 1920$, 30 fps;
-  4. Streams ativos: exatamente 1 vídeo H.264 + 1 áudio AAC;
-  5. Ausência de truncamento (áudio do final da fala preservado).
+14. **Como Shadow 3C é diferenciado de Shadow 3B?**  
+    Identificado por `asset_type = 'shadow_creative_3c'`, prefixo de arquivo `shadow_3c_` e contrato `composer_v2`.
+
+15. **Quais módulos novos serão necessários?**  
+    - `video_engine/styles/presets.js` (Catálogo de Estilos de Edição)  
+    - `video_engine/overlay_service.js` (Compilador de Filtros e Sanitizador de Overlays)
+
+16. **Será necessária migration?**  
+    **Não.** A coluna `creative_blueprints JSONB` e a tabela `video_assets` já comportam os novos payloads e asset types sem alterações de DDL.
+
+17. **Como serão tratados fonts/presets?**  
+    Mapeamento lógico em `FONT_REGISTRY` apontando para fontes canônicas existentes no SO (`/usr/share/fonts/truetype/dejavu/...`), com verificação fail-fast de existência física.
+
+18. **Qual timeout esperado para Composer 3C?**  
+    Aumentado de 120s para **180 segundos (3 minutos)** para suportar filtergraphs com múltiplos nós de drawtext e scaling.
+
+19. **Qual será a estratégia de QC?**  
+    Inspeção pós-render via `ffprobe` validando codecs H.264/AAC, resolução 1080x1920, framerate 30 fps, sincronismo áudio/vídeo e tolerância de duração ($\pm 250\text{ ms}$).
+
+20. **Quais critérios precisam passar para liberar implementação?**  
+    Aprovação externa do plano, zero alterações de código no momento, criação da suíte de 45 testes automatizados cobrindo todos os cenários de injeção, styles, overlays, limites e não-regressão da Fase 2C e WhatsApp V1.
 
 ---
 
-### 2.7 Estratégia de Shadow Composer (Rollout Não-Bloqueante)
+## 14. Suíte de Testes Planejada para a Fase 3C (45 Cenários)
 
-A Fase 3B não altera em hipótese alguma o vídeo servido ao usuário final:
-
-| Atributo | Pipeline Oficial (Fase 2C) | Shadow Composer (Fase 3B) |
-| :--- | :--- | :--- |
-| **Geração** | FFmpeg concat legado procedural | `video_engine/composer_service.js` |
-| **Arquivo Gerado** | `pilot.mp4`, `video_2.mp4`, `video_3.mp4` | `shadow_crv_<id>_<render_key>.mp4` |
-| **Asset Type em `video_assets`** | `rendered_creative` | `shadow_creative` |
-| **Colunas em `video_jobs`** | `pilot_video_url`, `video2_url`, `video3_url` | **NÃO MODIFICADAS** (permanecem intactas) |
-| **Status do Job** | Governa `CREATIVE_SET_READY` | **NÃO MODIFICADO** |
-| **Acesso do Usuário** | Rotas oficiais `/pilot`, `/video/:index` | Endpoints internos de homologação `/shadow-video/:index` |
-
-O Shadow Composer opera silenciosamente em segundo plano, permitindo que a suíte automatizada compare lado a lado o output legado e o output do Composer para comprovação formal de equivalência.
-
----
-
-### 2.8 Matriz de Recuperação de Falhas e Integridade (Recovery Matrix)
-
-| Cenário de Falha | Comportamento do Composer | Garantia de Integridade |
-| :--- | :--- | :--- |
-| **Timeout de FFmpeg (> 120s)** | Mata o processo filho (SIGKILL), destrói o `.tmp` e marca o asset como `failed` com `error_message = 'FFMPEG_TIMEOUT'`. | Nenhum arquivo corrompido é promovido. O próximo retry tem lock limpo. |
-| **Crash do PM2 durante o render** | O registro em `video_assets` permanece `processing`. | Após 5 minutos (`stale lease`), nova requisição detecta lease expirada, assume o claim e re-renderiza. |
-| **Arquivo `.tmp` órfão no disco** | O path do temporário é registrado em `metadata.temp_filename`. | O processo de claim ou rotina de boot identifica o `.tmp` órfão e executa `fs.unlinkSync()`. |
-| **Arquivo físico presente sem registro READY** | O Composer **NUNCA** faz scan de diretório para inferir arquivos órfãos. | Arquivos desconhecidos são ignorados; a renderização ocorre deterministicamente para o destino canônico. |
-| **DB com READY mas arquivo ausente no disco** | O `resolveAndValidateAsset()` detecta `!fs.existsSync()` e lança erro explícito. | Impede que o sistema sirva links quebrados; marca o status como `failed` e permite novo render. |
-| **Divergência de `file_hash` de entrada** | O Asset Resolver recalcula o hash físico e detecta divergência antes do FFmpeg. | Bloqueia a execução imediatamente com `TAMPERING ERROR`. |
-
----
-
-## 3. Respostas Objetivas às 10 Questões Arquiteturais Mandatórias
-
-1. **Definição exata da `render_key`:**  
-   Hash SHA-256 (64 hex) resultante da canonicalização recursiva estrita do payload `renderSpec`, contendo versão do contrato, `creative_id`, `blueprint_version`, formato, timeline sequencial, diretrizes de áudio e a lista ordenada de cada `asset_id` acompanhada de seu `file_hash` físico real.
-2. **Algoritmo de cálculo:**  
-   Função pura `computeRenderKey(blueprint, resolvedAssetsMap)` que constrói a árvore de especificação canônica, ordena recursivamente todas as chaves em todos os níveis de objetos (preservando a ordem ordinal de arrays) via `canonicalStringify()` e aplica `crypto.createHash('sha256')`.
-3. **Mecanismo SQL do claim atômico:**  
-   `INSERT INTO video_assets (...) VALUES (...) ON CONFLICT (id) DO UPDATE SET status = 'processing', updated_at = NOW() WHERE video_assets.status IN ('pending', 'failed') OR (status = 'processing' AND updated_at < NOW() - INTERVAL '5 minutes') RETURNING *;`.
-4. **Regra de stale/recovery:**  
-   Janela de lease de 5 minutos. Se `status = 'processing'` e `updated_at < NOW() - 5 min`, o lock é considerado órfão/stale e qualquer nova requisição pode reivindicá-lo atomicamente, deletando o arquivo temporário anterior registrado em `metadata.temp_filename`.
-5. **Path/filename imutável:**  
-   Armazenado estritamente em `outputs/jobs/<job_id>/` com nome determinístico:  
-   `composer_${creative_id}_${render_key.slice(0, 10)}.mp4` (para oficial) ou `shadow_${creative_id}_${render_key.slice(0, 10)}.mp4` (para shadow). Assets `ready` nunca sofrem sobrescrita.
-6. **Decisão final sobre re-encode:**  
-   Adotado um **pipeline único e padronizado de re-encode** via `filter_complex` (`concat=n=2:v=1:a=1`), codificado em H.264 (yuv420p, 1080x1920@30fps) e áudio AAC (192k, 44100Hz, stereo) com `-movflags +faststart`. Eliminado o dual-path `-c copy` para evitar instabilidades de timebase e priming samples.
-7. **Distinção shadow/oficial:**  
-   O Shadow Composer utiliza `asset_type = 'shadow_creative'`, prefixo de arquivo `shadow_` e não altera `video_jobs.pilot_video_url`, `video2_url`, `video3_url` nem `video_jobs.status`. O oficial da 2C permanece 100% isolado.
-8. **Uso de `video_assets` para estado do Composer:**  
-   O ciclo de vida do render (`processing`, `ready`, `failed`) é registrado na linha correspondente em `video_assets`. A coluna `video_jobs.status` permanece limpa e restrita à máquina de estados do negócio (Pilot First).
-9. **Preservação de versões antigas:**  
-   Qualquer alteração que gere nova `render_key` gera um **novo registro e novo arquivo físico**. A versão física e o registro anteriores permanecem intactos no catálogo e no filesystem.
-10. **Tolerância inicial de duração:**  
-    Configurada em `COMPOSER_DURATION_TOLERANCE_MS = 250` (milissegundos). Valida que a duração do arquivo final esteja dentro de $\pm 250\text{ ms}$ da soma física real dos componentes e que a diferença entre os streams de vídeo e áudio seja $\le 100\text{ ms}$.
+1. Blueprint 1.0 legado renderiza normalmente sem overlays.
+2. Blueprint 1.1 sem overlays renderiza de forma idêntica ao 1.0.
+3. Editing style `performance_reels_v1` aplica fontes e cores corretas.
+4. Editing style `clean_modern_v1` aplica tipografia e lower thirds.
+5. Editing style `minimal_luxury_v1` aplica estilo sóbrio.
+6. Editing style inexistente é rejeitado com erro descritivo fail-fast.
+7. Alteração no `style_id` altera a `render_key`.
+8. Alteração na `version` do style altera a `render_key`.
+9. Overlay `headline` renderiza texto na área `top_safe`.
+10. Overlay `price_badge` renderiza preço com caixa de destaque.
+11. Overlay `location_tag` renderiza bairro/cidade.
+12. Overlay `cta_banner` renderiza chamada de ação nos segundos finais.
+13. Captions sincronizadas renderizam nos intervalos temporais especificados.
+14. Overlay com caracteres acentuados PT-BR (ç, ã, é, ó, ú) renderiza sem quebra.
+15. Tentativa de filter injection com `:` e `\` é neutralizada pelo sanitizador.
+16. Tentativa de injection com aspas simples `'` não quebra o comando FFmpeg.
+17. Overlay fora dos limites de tempo ($t_{\text{start}} \ge \text{duração}$) é rejeitado.
+18. Overlay com $t_{\text{start}} \ge t_{\text{end}}$ é rejeitado.
+19. Overlay com texto vazio ou nulo é rejeitado.
+20. Excesso de overlays (> 20) é rejeitado com erro de limite.
+21. Texto excedendo limite (> 250 chars) é rejeitado com erro de limite.
+22. Posição declarativa desconhecida é rejeitada.
+23. Punch zoom é aplicado nos limites de timing corretos.
+24. Fade in/out de overlay opera suavemente sem corte abrupto de opacidade.
+25. Safe area superior (240px) e inferior (360px) respeitadas nos cálculos.
+26. Alteração em qualquer texto de overlay altera a `render_key`.
+27. Alteração no timing de um overlay altera a `render_key`.
+28. Mesma receita com mesmos overlays gera retorno idempotente imediato.
+29. Concorrência no Composer 3C respeita o claim atômico PostgreSQL.
+30. Cleanup autônomo de `.tmp` em caso de falha no render 3C.
+31. Vídeo de saída possui resolução estritamente 1080x1920.
+32. Vídeo de saída possui framerate canônico 30 fps.
+33. Vídeo de saída possui stream de áudio AAC e vídeo H.264.
+34. Sincronismo entre áudio e vídeo mantido dentro da tolerância ($\le 200\text{ ms}$).
+35. Recuperação controlada de READY corrompido em artefatos 3C.
+36. Path traversal em `creative_id` bloqueado.
+37. Fonte de preset inexistente gera erro claro fail-fast.
+38. Modo Shadow 3C gera arquivo `shadow_3c_` sem mutar campos da 2C.
+39. Endpoint `/compose-shadow-3c/:index` responde com HTTP 200 e specs completas.
+40. Endpoint `/shadow-3c-video/:index` realiza streaming autenticado do MP4 3C.
+41. Endpoint `/compare-shadow-3c/:index` compara legado vs 3C.
+42. Job showcase da Fase 2C permanece 100% íntegro servindo os 3 vídeos (HTTP 200).
+43. WhatsApp V1 permanece 100% íntegro e operacional.
+44. Bloqueio estático 403 em `/outputs/jobs/` permanece ativo.
+45. PM2 `bali-gestor` e PostgreSQL 16 saudáveis após execução contínua.
 
 ---
 
-## 4. Suíte de Homologação Planejada para a Fase 3B (32 Cenários)
-
-1. Blueprint válido Hook+Body renderiza com sucesso -> PASS
-2. Ordem sequencial dos clipes respeitada -> PASS
-3. Asset inexistente rejeitado antes de invocar FFmpeg -> PASS
-4. Asset não-ready rejeitado antes do FFmpeg -> PASS
-5. Asset de outro Job rejeitado por violação de ownership físico -> PASS
-6. Symlink externo rejeitado -> PASS
-7. `file_hash` divergente (adulteração de bytes) rejeitado -> PASS
-8. Blueprint vazio ou corrompido rejeitado -> PASS
-9. `schema_version` não suportada rejeitada -> PASS
-10. Camada não suportada (`layer > 0`) rejeitada no MVP -> PASS
-11. Parâmetros de trim inválidos (`source_in >= source_out`) rejeitados -> PASS
-12. Arquivo de saída contém stream de vídeo ativo -> PASS
-13. Arquivo de saída contém stream de áudio ativo -> PASS
-14. Duração de saída dentro da tolerância configurável de $\pm 250\text{ ms}$ -> PASS
-15. Resolução de saída estritamente 1080x1920 -> PASS
-16. Taxa de quadros de saída 30 fps e formato H.264 canônico -> PASS
-17. Pipeline de re-encode padronizado único gera output íntegro -> PASS
-18. Unidade de duração oficial (`duration_ms`) aplicada sem truncamento -> PASS
-19. Placeholders antigos de metadata ignorados (fala completa preservada) -> PASS
-20. Arquivo temporário `.tmp` deletado em caso de falha de renderização -> PASS
-21. Arquivo final existente não corrompido em caso de erro no retry -> PASS
-22. **Mesma `render_key` gera retorno idempotente imediato sem invocar FFmpeg** -> PASS
-23. **Mudança no `file_hash` de um asset de entrada altera a `render_key`** -> PASS
-24. **Mudança no Blueprint (trims, ordem, formato) altera a `render_key`** -> PASS
-25. **Asset READY nunca é sobrescrito fisicamente** -> PASS
-26. **Claim atômico SQL impede duas renderizações simultâneas do mesmo criativo** -> PASS
-27. **Recuperação automática de stale processing após lease de 5 minutos** -> PASS
-28. **Shadow Composer gera arquivo paralelo sem tocar nos campos oficiais da 2C** -> PASS
-29. **Comparação semântica entre Shadow Composer e concat legado demonstra equivalência** -> PASS
-30. **Job showcase da Fase 2C permanece 100% íntegro servindo os 3 vídeos (HTTP 200)** -> PASS
-31. **WhatsApp V1 e bloqueio estático 403 em `/outputs/jobs/` permanecem intocados** -> PASS
-32. **PM2 `bali-gestor` e PostgreSQL 16 saudáveis** -> PASS
-
----
-
-## 5. Roadmap Estratégico Pós-Fase 3B
+## 15. Roadmap Conceitual Pós-Fase 3C
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│ Fase 3A (Homologada): Asset Model & Creative Blueprint Foundation      │
-│ - Tabela video_assets, creative_blueprints, generation_key, file_hash  │
-└───────────────────────────────────┬────────────────────────────────────┘
-                                    │
-                                    ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│ Fase 3B (Atual Planejamento): Video Composer MVP (Timeline Engine)     │
-│ - composer_service.js com render_key determinística profunda           │
-│ - Claim atômico SQL, re-encode canônico único, modo Shadow aditivo     │
-└───────────────────────────────────┬────────────────────────────────────┘
-                                    │
-                                    ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│ Fase 3C: Editing Styles & Overlays Dinâmicos                           │
-│ - Camadas adicionais (layer > 0): B-roll de fotos sobre o áudio do body│
-│ - Legendas automáticas com destaque de palavras e ducking de áudio     │
-└───────────────────────────────────┬────────────────────────────────────┘
-                                    │
-                                    ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│ Fase 3D: Reutilização Controlada de Assets & Reference Library         │
-│ - Ativação controlada de reuso de assets por generation_key            │
-│ - Decomposição de anúncios campeões em blueprints de Video DNA         │
-└───────────────────────────────────┬────────────────────────────────────┘
-                                    │
-                                    ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│ Fase 3E: Creative Variations & Multi-Armed Combinatorics               │
-│ - Geração combinatória de N variantes com custo de renderização mínimo │
-└───────────────────────────────────┬────────────────────────────────────┘
-                                    │
-                                    ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│ Fase 3F: Creative IDs & Meta Ads Feedback Loop                         │
-│ - Correlação analítica de Creative IDs com CPA/CTR no Facebook Ads API │
-└────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│ FASE 3C: Editing Styles & Overlays Dinâmicos (MVP)               │
+│ - Presets de edição versionáveis, Overlay Engine, Captions, QC  │
+└────────────────────────────────┬─────────────────────────────────┘
+                                 │
+                                 ▼
+┌──────────────────────────────────────────────────────────────────┐
+│ FASE 3D: Reference Library & Video DNA                           │
+│ - Extração de arquétipos de anúncios vencedores (padrões visuais)│
+└────────────────────────────────┬─────────────────────────────────┘
+                                 │
+                                 ▼
+┌──────────────────────────────────────────────────────────────────┐
+│ FASE 3E: Creative Combinatorics & Batch Variations               │
+│ - Matriz N ganchos x M corpos x K estilos = Coleções em escala   │
+└────────────────────────────────┬─────────────────────────────────┘
+                                 │
+                                 ▼
+┌──────────────────────────────────────────────────────────────────┐
+│ FASE 3F: Creative IDs & Meta Ads Performance Feedback Loop       │
+│ - Rastreamento de criativos no Meta Ads e aprendizado contínuo   │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-> [!IMPORTANT]
-> **Status da Entrega:** Este plano consolida integralmente todas as correções arquiteturais exigidas na revisão externa. O código de produção, banco de dados, migrations e serviços no VPS permanecem 100% inalterados (**PLAN ONLY**).
+## 16. Conclusão da Etapa PLAN ONLY
+
+O plano acima detalha a arquitetura exata, contratos declarativos, mitigação de segurança e isolamento de execução da Fase 3C.
+
+**Nenhuma linha de código de produção, migration ou deploy foi executada nesta etapa.**  
+Aguardando revisão e aprovação externa para liberação de implementação.
