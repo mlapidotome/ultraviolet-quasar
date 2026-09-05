@@ -68,8 +68,7 @@ PILOT_N = 10  # Frozen main blind pilot size
 DISCOVERY_MAX = 500
 
 CNM_SEARCH_URL_TEMPLATE = (
-    "https://www.chavesnamao.com.br/imoveis-para-venda/sp-taubate/"
-    "?tipo={type_slug}&finalidade=residencial&pagina={page}"
+    "https://www.chavesnamao.com.br/casas-a-venda/sp-taubate/?pg={page}"
 )
 
 # Pre-registered failure taxonomy codes
@@ -233,9 +232,11 @@ def _is_eligible_listing(lid: str, url: str) -> tuple[bool, dict, str | None]:
         info(f"  Auditing: {lid} excluded (condominium property)")
         return False, meta, condo_reason
 
-    has_img = bool(re.search(r"<img[^>]+(fachada|facade|exterior|frente)", ll))
+    has_img = bool(re.search(rf'<img[^>]+src=[\'"][^\'"]*/{lid}/', lhtml, re.IGNORECASE))
     if not has_img:
-        has_img = bool(re.search(r"<img[^>]+imovel", ll))
+        has_img = bool(re.search(r'<img[^>]+src=[\'"][^\'"]*imoveis/[^\'"]*', lhtml, re.IGNORECASE))
+    if not has_img:
+        has_img = bool(re.search(r'<img[^>]+alt=[\'"][^\'"]*(?:casa|sobrado|im[oó]vel|fachada|frente|exterior)', lhtml, re.IGNORECASE))
     meta["has_facade_image"] = has_img
     if not has_img:
         return False, meta, "NO_FACADE_IMAGE"
@@ -269,50 +270,51 @@ def stage_discovery(paths: dict[str, Path]) -> None:
 
     req_headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
 
-    for type_slug in ("casa", "sobrado"):
-        page = 1
-        while len(seen_ids) < DISCOVERY_MAX:
-            search_url = CNM_SEARCH_URL_TEMPLATE.format(type_slug=type_slug, page=page)
-            info(f"Crawling: {search_url}")
-            try:
-                req = urllib.request.Request(search_url, headers=req_headers)
-                with urllib.request.urlopen(req, timeout=20) as resp:
-                    html = resp.read().decode("utf-8", errors="replace")
-            except Exception as exc:
-                info(f"Stop page {page}: {exc}")
+    page = 1
+    while len(seen_ids) < DISCOVERY_MAX and len(eligible) < 12:
+        search_url = CNM_SEARCH_URL_TEMPLATE.format(page=page)
+        info(f"Crawling: {search_url}")
+        try:
+            req = urllib.request.Request(search_url, headers=req_headers)
+            with urllib.request.urlopen(req, timeout=20) as resp:
+                html = resp.read().decode("utf-8", errors="replace")
+        except Exception as exc:
+            info(f"Stop page {page}: {exc}")
+            break
+
+        # Robust extraction of /id-<number>/ links preserving canonical URL
+        page_listings = address_finder.extract_cnm_search_listings(html)
+        if not page_listings:
+            break
+
+        for lid, canon_url in page_listings:
+            if lid in seen_ids:
+                continue
+            seen_ids.add(lid)
+
+            # Public crawl safety: conservative pacing
+            time.sleep(1.0)
+
+            ok, meta, excl_reason = _is_eligible_listing(lid, canon_url)
+            if ok:
+                eligible.append({
+                    "listing_id": lid,
+                    "source_url": canon_url,  # Original discovered canonical URL preserved
+                    "property_type": meta["property_type"],
+                    "municipality": TARGET_MUNICIPALITY,
+                    "state": TARGET_STATE,
+                    "has_facade_image": True,
+                    "direct_address_leaked": False,
+                })
+            else:
+                audit_exclusions.append({
+                    "listing_id": lid,
+                    "source_url": canon_url,
+                    "reason": excl_reason,
+                })
+            if len(eligible) >= 12:
                 break
-
-            # Robust extraction of /id-<number>/ links preserving canonical URL
-            page_listings = address_finder.extract_cnm_search_listings(html)
-            if not page_listings:
-                break
-
-            for lid, canon_url in page_listings:
-                if lid in seen_ids:
-                    continue
-                seen_ids.add(lid)
-
-                # Public crawl safety: conservative pacing
-                time.sleep(1.0)
-
-                ok, meta, excl_reason = _is_eligible_listing(lid, canon_url)
-                if ok:
-                    eligible.append({
-                        "listing_id": lid,
-                        "source_url": canon_url,  # Original discovered canonical URL preserved
-                        "property_type": meta["property_type"],
-                        "municipality": TARGET_MUNICIPALITY,
-                        "state": TARGET_STATE,
-                        "has_facade_image": True,
-                        "direct_address_leaked": False,
-                    })
-                else:
-                    audit_exclusions.append({
-                        "listing_id": lid,
-                        "source_url": canon_url,
-                        "reason": excl_reason,
-                    })
-            page += 1
+        page += 1
 
     # Deterministic sorting: numeric listing_id ascending, fallback URL
     eligible.sort(key=lambda r: (int(r["listing_id"]), r["source_url"]))
@@ -451,7 +453,7 @@ def stage_snapshots(paths: dict[str, Path]) -> None:
 # STAGE 3 -- Public Input Extraction
 # ---------------------------------------------------------------------------
 def stage_inputs(paths: dict[str, Path]) -> None:
-    """Extract real public clues from frozen HTML. Persists source provenance."""
+    """Extract real public clues from frozen HTML. Persists source provenance, file SHAs, and leakage audit."""
     _gate(paths, "snapshot_manifest")
     _abort_if_frozen(paths, "public_inputs", "Public inputs already frozen.")
     snap_manifest = load_json(paths["snapshot_manifest"])
@@ -460,31 +462,216 @@ def stage_inputs(paths: dict[str, Path]) -> None:
 
     for snap in snap_manifest["snapshots"]:
         lid = snap["listing_id"]
-        if not snap["snapshot_ok"]:
+        source_url = snap["source_url"]
+        prop_type = snap.get("property_type", "casa")
+
+        if not snap.get("snapshot_ok"):
             listings.append({"listing_id": lid, "clues": [], "extraction_ok": False})
             continue
 
-        html_rel = next((f["relative_path"] for f in snap.get("files", []) if f["file"] == "listing.html"), None)
-        if not html_rel:
+        html_file_info = next((f for f in snap.get("files", []) if f["file"] == "listing.html"), None)
+        clues_file_info = next((f for f in snap.get("files", []) if f["file"] == "public_clues.json"), None)
+        if not html_file_info:
             listings.append({"listing_id": lid, "clues": [], "extraction_ok": False})
             continue
 
-        hp = repo_root / html_rel
+        hp = repo_root / html_file_info["relative_path"]
         if not hp.is_file():
             listings.append({"listing_id": lid, "clues": [], "extraction_ok": False})
             continue
 
         html = hp.read_text(encoding="utf-8", errors="replace")
-        clues = address_finder.extract_public_clues_from_html(html)
-        listings.append({"listing_id": lid, "clues": clues, "extraction_ok": True})
-        info(f"  {lid}: {len(clues)} clues extracted with provenance")
+
+        # Clean unrelated sections: recommendation cards, other listings, and footer ads
+        clean_html = re.sub(
+            r'<div[^>]+class=["\'][^"\']*(?:recomendad|outros-imoveis|relacionad|veja-tambem|footer|anuncio|publicidade)[^"\']*["\'][^>]*>.*?</div>',
+            "",
+            html,
+            flags=re.IGNORECASE | re.DOTALL,
+        )
+        clean_html = re.sub(r'<footer\b[^>]*>.*?</footer>', '', clean_html, flags=re.IGNORECASE | re.DOTALL)
+
+        # 1. Title
+        m_title = re.search(r"<title[^>]*>(.*?)</title>", clean_html, re.IGNORECASE | re.DOTALL)
+        title = re.sub(r"\s+", " ", m_title.group(1)).strip() if m_title else None
+        title_src = "meta_title" if m_title else None
+
+        # 2. Description
+        m_desc = re.search(r'<meta\s+(?:name|property)=["\'](?:description|og:description)["\']\s+content=["\'](.*?)["\']', clean_html, re.IGNORECASE | re.DOTALL)
+        desc = re.sub(r"\s+", " ", m_desc.group(1)).strip() if m_desc else None
+        desc_avail = desc is not None
+        desc_src = "meta_description" if desc_avail else None
+
+        # 3. Street & Neighbourhood from Title / Description
+        street = None
+        street_src = None
+        bairro = None
+        bairro_src = None
+
+        if title:
+            m_st_b = re.search(r"na\s+((?:Rua|Avenida|Alameda|Travessa|Estrada|Praça)\s+[^,]+?),\s*([^,]+?),\s*Taubat", title, re.IGNORECASE)
+            if m_st_b:
+                street = m_st_b.group(1).strip()
+                street_src = "meta_title"
+                bairro = m_st_b.group(2).strip()
+                bairro_src = "meta_title"
+            else:
+                m_b = re.search(r"(?:no|na)\s+([^,]+?),\s*Taubat", title, re.IGNORECASE)
+                if m_b:
+                    bairro = m_b.group(1).strip()
+                    bairro_src = "meta_title"
+
+        if not bairro and desc:
+            m_bd = re.search(r"(?:no|na|em)\s+([A-Z\xc0-\xda][A-Za-z0-9\xc0-\xff\s\-]+?)\s+em\s+Taubat", desc, re.IGNORECASE)
+            if m_bd:
+                bairro = m_bd.group(1).strip()
+                bairro_src = "meta_description"
+
+        street_avail = street is not None
+
+        # 4. CEP (Taubaté 120XX-XXX or 121XX-XXX)
+        cep = None
+        cep_src = None
+        m_cep = re.search(r'\b(12[01]\d{2}-\d{3})\b', clean_html)
+        if m_cep:
+            cep = m_cep.group(1)
+            cep_src = "clean_html_postalCode"
+
+        # 5. House number
+        house_num = None
+        house_num_src = None
+        if street:
+            for t_field, t_text in [("meta_title", title), ("meta_description", desc)]:
+                if t_text and street in t_text:
+                    after_st = t_text.split(street)[1]
+                    m_num = re.search(r'^[,\s]+(?:n[°º]?|n[ºo]\.?|n[uú]mero\s*)?(\d{1,5})\b', after_st)
+                    if m_num:
+                        house_num = int(m_num.group(1))
+                        house_num_src = t_field
+                        break
+
+        house_number_policy = "HOUSE_NUMBER_PRESENT_UNVERIFIED" if house_num is not None else "HOUSE_NUMBER_ABSENT"
+
+        # 6. Property type
+        prop_type_src = "discovery_pool_metadata"
+
+        # 7. Area m2
+        area_m2 = None
+        area_src = None
+        if desc:
+            m_a = re.search(r'(\d+)\s*m[²2]', desc, re.IGNORECASE)
+            if m_a:
+                area_m2 = m_a.group(1)
+                area_src = "meta_description"
+        if not area_m2:
+            m_a2 = re.search(r'(\d+)\s*m[²2]', clean_html, re.IGNORECASE)
+            if m_a2:
+                area_m2 = m_a2.group(1)
+                area_src = "html_body"
+
+        # 8. Floors
+        floors = None
+        floors_src = None
+        m_fl = re.search(r'(\d)\s*(?:pavimento|andar)', clean_html, re.IGNORECASE)
+        if m_fl:
+            floors = int(m_fl.group(1))
+            floors_src = "html_body"
+
+        # 9. Image alt geo
+        img_alt_list = []
+        for m in re.finditer(r'<img[^>]+alt=["\']((?!\s)[^"\'"]{5,120})["\']', clean_html, re.IGNORECASE):
+            alt = m.group(1).strip()
+            if any(kw in alt.lower() for kw in ("taubat", "bairro", "fachada", "frente", "exterior", "casa", "rua")):
+                img_alt_list.append(alt)
+        image_alt_geo = len(img_alt_list) > 0
+        image_alt_geo_src = "img_alt_tags" if image_alt_geo else None
+
+        # 10. Image URL metadata available
+        cdn_imgs = re.findall(r'<img[^>]+src=["\'](https?://[^"\'\s]+\.(?:jpg|jpeg|png|webp)[^"\'\s]*)["\']', clean_html, re.IGNORECASE)
+        image_url_metadata_available = len(cdn_imgs) > 0
+        image_url_src = "img_src_cdn" if image_url_metadata_available else None
+
+        # Provenance mapping for non-null clues
+        provenance = {}
+        if title: provenance["title"] = title_src
+        if desc_avail: provenance["description"] = desc_src
+        if neighbourhood := bairro: provenance["neighbourhood"] = bairro_src
+        if street: provenance["street"] = street_src
+        if cep: provenance["cep"] = cep_src
+        if house_num: provenance["house_number"] = house_num_src
+        if prop_type: provenance["property_type"] = prop_type_src
+        if area_m2: provenance["area_m2"] = area_src
+        if floors: provenance["floors"] = floors_src
+        if image_alt_geo: provenance["image_alt_geo"] = image_alt_geo_src
+        if image_url_metadata_available: provenance["image_url_metadata_available"] = image_url_src
+
+        # Leakage classification on target-listing-owned fields only
+        is_leak, leak_ev = address_finder.classify_target_listing_leakage(html)
+        leakage_class = "DIRECT_EXACT_ADDRESS_LEAK" if is_leak else "NO_LEAK"
+        leak_source = "TARGET_LISTING" if is_leak else "NONE"
+
+        # Formatted clues list for Address Finder inference engine
+        clues_list = []
+        if title: clues_list.append({"type": "title", "value": title, "source_field": title_src})
+        if desc: clues_list.append({"type": "description", "value": desc, "source_field": desc_src})
+        if bairro: clues_list.append({"type": "neighbourhood", "value": bairro, "source_field": bairro_src})
+        if street: clues_list.append({"type": "street", "value": street, "source_field": street_src})
+        if cep: clues_list.append({"type": "cep", "value": cep, "source_field": cep_src})
+        if house_num: clues_list.append({"type": "house_number", "value": house_num, "source_field": house_num_src})
+        if prop_type: clues_list.append({"type": "property_type", "value": prop_type, "source_field": prop_type_src})
+        if area_m2: clues_list.append({"type": "area_m2", "value": area_m2, "source_field": area_src})
+        if floors: clues_list.append({"type": "floors", "value": floors, "source_field": floors_src})
+        for alt in img_alt_list:
+            clues_list.append({"type": "image_alt_geo", "value": alt, "source_field": image_alt_geo_src})
+        for cdn_u in cdn_imgs[:5]:
+            clues_list.append({"type": "image_url", "value": cdn_u, "source_field": image_url_src})
+
+        listings.append({
+            "listing_id": lid,
+            "source_url": source_url,
+            "source_html_sha256": html_file_info["sha256"] if html_file_info else None,
+            "source_clues_sha256": clues_file_info["sha256"] if clues_file_info else None,
+            "title": title,
+            "description_available": desc_avail,
+            "neighbourhood": bairro,
+            "street": street,
+            "street_available": street_avail,
+            "cep": cep,
+            "house_number": house_num,
+            "house_number_policy": house_number_policy,
+            "property_type": prop_type,
+            "area_m2": area_m2,
+            "floors": floors,
+            "image_alt_geo": image_alt_geo,
+            "image_url_metadata_available": image_url_metadata_available,
+            "provenance": provenance,
+            "leakage_class": leakage_class,
+            "leak_source": leak_source,
+            "leak_evidence": leak_ev,
+            "clues": clues_list,
+            "extraction_ok": True,
+        })
+        info(f"  {lid}: {len(clues_list)} clues extracted (street_avail={street_avail}, leak={leakage_class})")
+
+    st_avail_count = sum(1 for l in listings if l.get("street_available"))
+    h_num_present_count = sum(1 for l in listings if l.get("house_number") is not None)
+    cep_present_count = sum(1 for l in listings if l.get("cep") is not None)
+    leak_dq_count = sum(1 for l in listings if l.get("leakage_class") == "DIRECT_EXACT_ADDRESS_LEAK")
 
     digest = write_json(paths["public_inputs"], {
         "schema_version": SCHEMA_VERSION,
         "generated_at": now_utc(),
+        "cohort_size": len(listings),
+        "street_available_count": st_avail_count,
+        "street_not_available_count": len(listings) - st_avail_count,
+        "house_number_present_count": h_num_present_count,
+        "house_number_absent_count": len(listings) - h_num_present_count,
+        "cep_present_count": cep_present_count,
+        "cep_absent_count": len(listings) - cep_present_count,
+        "leakage_disqualified_count": leak_dq_count,
         "listings": listings,
     })
-    info(f"Public inputs frozen. SHA-256: {digest}")
+    info(f"Public inputs frozen: {len(listings)} entries (street_avail={st_avail_count}/10, leaks={leak_dq_count}). SHA-256: {digest}")
 
 
 # ---------------------------------------------------------------------------

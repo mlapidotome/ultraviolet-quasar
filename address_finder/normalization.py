@@ -279,11 +279,30 @@ def is_condominium_listing(text_or_html: str) -> Tuple[bool, Optional[str]]:
     """
     Check if property text or HTML explicitly identifies it as a condominium.
     Main pilot cohort is OPEN-STREET houses/sobrados only.
+    Restricts check to target listing fields, ignoring footer navigation and recommendation carousels.
     Returns (is_condo: bool, reason: str | None).
     """
     if not text_or_html:
         return False, None
-    m = _CONDO_RE.search(text_or_html)
+
+    # If full HTML is provided, extract target-owned fields
+    if "<html" in text_or_html.lower() or "<title" in text_or_html.lower():
+        m_title = re.search(r"<title[^>]*>(.*?)</title>", text_or_html, re.IGNORECASE | re.DOTALL)
+        m_h1 = re.search(r"<h1[^>]*>(.*?)</h1>", text_or_html, re.IGNORECASE | re.DOTALL)
+        m_desc = re.search(r'<meta\s+name=[\'"]description[\'"]\s+content=[\'"](.*?)[\'"]', text_or_html, re.IGNORECASE | re.DOTALL)
+        m_body_desc = re.search(r'<div[^>]+class=[\'"][^\'"]*(?:descricao|description)[^\'"]*[\'"][^>]*>(.*?)</div>', text_or_html, re.IGNORECASE | re.DOTALL)
+
+        target_parts = [
+            m_title.group(1) if m_title else "",
+            m_h1.group(1) if m_h1 else "",
+            m_desc.group(1) if m_desc else "",
+            m_body_desc.group(1) if m_body_desc else "",
+        ]
+        eval_text = " ".join(target_parts)
+    else:
+        eval_text = text_or_html
+
+    m = _CONDO_RE.search(eval_text)
     if m:
         return True, "CONDOMINIUM_EXCLUDED_MAIN_COHORT"
     return False, None
