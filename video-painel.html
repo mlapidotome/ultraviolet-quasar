@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Engine V2 — Bali Imóveis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #0B0F19;
+      --bg-card: #111827;
+      --bg-card-sub: #1F2937;
+      --border-color: #374151;
+      --text-primary: #F9FAFB;
+      --text-secondary: #9CA3AF;
+      --text-muted: #6B7280;
+      --accent: #3B82F6;
+      --accent-hover: #2563EB;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --error: #EF4444;
+      --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      font-family: var(--font-family);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+    }
+
+    /* Header */
+    header {
+      background-color: var(--bg-card);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-logo {
+      font-size: 1.5rem;
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--success);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Input Card */
+    .search-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .search-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .search-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.25rem;
+    }
+
+    .search-form {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .input-field {
+      flex: 1;
+      min-width: 260px;
+      background-color: var(--bg-card-sub);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .input-field:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    .input-field:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-submit {
+      background-color: var(--accent);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      background-color: var(--accent-hover);
+    }
+
+    .btn-submit:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* Feedback Banners */
+    .banner {
+      display: none;
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      font-size: 0.9rem;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .banner.visible {
+      display: flex;
+    }
+
+    .banner-error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #FCA5A5;
+    }
+
+    .banner-warning {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #FCD34D;
+    }
+
+    .banner-icon {
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    /* Result Sections */
+    .result-section {
+      display: none;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .result-section.visible {
+      display: flex;
+    }
+
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Job Metadata Box */
+    .job-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .meta-item {
+      background-color: var(--bg-card-sub);
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .meta-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .meta-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      word-break: break-all;
+    }
+
+    .badge-ready {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-degraded {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-copy {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      border-radius: 4px;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: all 0.2s;
+    }
+
+    .btn-copy:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+      border-color: var(--text-secondary);
+    }
+
+    /* Property Summary */
+    .prop-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .prop-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .prop-tag {
+      background-color: var(--bg-card-sub);
+      padding: 0.3rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* Financial Simulation Grid */
+    .finance-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 0.85rem;
+    }
+
+    .finance-box {
+      background-color: var(--bg-card-sub);
+      border-radius: 8px;
+      padding: 1rem;
+      border-top: 3px solid var(--accent);
+    }
+
+    .finance-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .finance-val {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* Hooks & Scripts */
+    .scripts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .script-item {
+      background-color: var(--bg-card-sub);
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .script-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .script-tag {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .script-look {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .script-text {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #E5E7EB;
+      white-space: pre-wrap;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 0.85rem 1rem;
+      border-radius: 6px;
+      border-left: 3px solid var(--accent);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-color);
+      margin-top: auto;
+    }
+
+    @media (max-width: 640px) {
+      header { padding: 0.85rem 1rem; }
+      main { padding: 1rem; }
+      .search-form { flex-direction: column; }
+      .btn-submit { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Principal -->
+  <header>
+    <div class="brand">
+      <span class="brand-logo">🎬</span>
+      <div>
+        <div class="brand-title">Bali Imóveis</div>
+        <div class="brand-subtitle">Video Engine V2 — Painel Web de Jobs</div>
+      </div>
+    </div>
+    <div class="status-badge">
+      <span class="status-dot"></span>
+      Core Ativo
+    </div>
+  </header>
+
+  <!-- Corpo Principal -->
+  <main>
+    <!-- Card de Busca / Criação de Job -->
+    <section class="search-card">
+      <h2 class="search-title">🔍 Iniciar Novo Job de Vídeo</h2>
+      <p class="search-desc">Digite a referência do imóvel cadastrado no CRM para gerar automaticamente a simulação e os 3 ganchos de roteiro.</p>
+      
+      <form class="search-form" id="jobForm" onsubmit="handleCreateJob(event)">
+        <input 
+          type="text" 
+          id="propertyRefInput" 
+          class="input-field" 
+          placeholder="Código ou Ref do Imóvel (ex: 1639)" 
+          autocomplete="off"
+          required
+        />
+        <button type="submit" id="submitBtn" class="btn-submit">
+          <span>🚀 Buscar e Criar Job</span>
+        </button>
+      </form>
+    </section>
+
+    <!-- Banners de Alerta / Erro -->
+    <div id="errorBanner" class="banner banner-error">
+      <span class="banner-icon">⚠️</span>
+      <div id="errorMessage">Ocorreu um erro ao consultar o imóvel.</div>
+    </div>
+
+    <div id="degradedBanner" class="banner banner-warning">
+      <span class="banner-icon">⚡</span>
+      <div><strong>Atenção:</strong> Roteiros gerados com sucesso, mas persistência em banco indisponível no momento.</div>
+    </div>
+
+    <!-- Resultados Renderizados -->
+    <div id="resultSection" class="result-section">
+      
+      <!-- Detalhes do Job -->
+      <section class="card">
+        <div class="card-header">
+          <h3 class="card-title">📋 Detalhes do Job</h3>
+          <span id="jobStatusBadge" class="badge-ready">SCRIPT_READY</span>
+        </div>
+        <div class="job-meta-grid">
+          <div class="meta-item">
+            <div class="meta-label">Job UUID</div>
+            <div class="meta-value">
+              <span id="jobIdText">--</span>
+              <button type="button" class="btn-copy" id="copyJobIdBtn" onclick="copyJobId()">📋 Copiar</button>
+            </div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Origem & Canal</div>
+            <div class="meta-value" id="jobSourceText">web_panel</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Corretor Responsável</div>
+            <div class="meta-value" id="jobBrokerText">marcel</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Resumo do Imóvel -->
+      <section class="card">
+        <div class="card-header">
+          <h3 class="card-title">🏠 Resumo do Imóvel (CRM)</h3>
+          <span id="propRefBadge" class="prop-tag">Ref: --</span>
+        </div>
+        <div>
+          <h4 id="propTitle" class="prop-title">--</h4>
+          <div class="prop-tags">
+            <span id="propBairro" class="prop-tag">📍 Bairro: --</span>
+            <span id="propArea" class="prop-tag">📐 Área: --</span>
+            <span id="propQuartos" class="prop-tag">🛏️ Quartos: --</span>
+            <span id="propPreco" class="prop-tag">🏷️ Valor: --</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Simulação Financeira -->
+      <section class="card">
+        <div class="card-header">
+          <h3 class="card-title">💰 Simulação Financeira</h3>
+        </div>
+        <div class="finance-grid">
+          <div class="finance-box">
+            <div class="finance-label">Valor de Venda</div>
+            <div class="finance-val" id="finPreco">--</div>
+          </div>
+          <div class="finance-box">
+            <div class="finance-label">Entrada Estimada (20%)</div>
+            <div class="finance-val" id="finEntrada">--</div>
+          </div>
+          <div class="finance-box">
+            <div class="finance-label">Financiamento (80%)</div>
+            <div class="finance-val" id="finFinanciamento">--</div>
+          </div>
+          <div class="finance-box">
+            <div class="finance-label">Parcela Estimada</div>
+            <div class="finance-val" id="finParcela">--</div>
+          </div>
+          <div class="finance-box">
+            <div class="finance-label">Renda Familiar Mínima</div>
+            <div class="finance-val" id="finRenda">--</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Roteiros de Anúncio -->
+      <section class="card">
+        <div class="card-header">
+          <h3 class="card-title">🎙️ Roteiros de Anúncio (3 Ganchos + Corpo)</h3>
+        </div>
+        <div class="scripts-list">
+          
+          <!-- Gancho 1 -->
+          <div class="script-item">
+            <div class="script-header">
+              <span class="script-tag">💡 GANCHO 1 — Choque / Entrada</span>
+              <span class="script-look">Look: Terno Executivo 👔</span>
+            </div>
+            <div class="script-text" id="scriptHook1">--</div>
+            <div>
+              <button type="button" class="btn-copy" onclick="copyText('scriptHook1', this)">📋 Copiar Gancho 1</button>
+            </div>
+          </div>
+
+          <!-- Gancho 2 -->
+          <div class="script-item">
+            <div class="script-header">
+              <span class="script-tag">🔥 GANCHO 2 — Aluguel vs Parcela</span>
+              <span class="script-look">Look: Podcaster no Microfone 🎙️</span>
+            </div>
+            <div class="script-text" id="scriptHook2">--</div>
+            <div>
+              <button type="button" class="btn-copy" onclick="copyText('scriptHook2', this)">📋 Copiar Gancho 2</button>
+            </div>
+          </div>
+
+          <!-- Gancho 3 -->
+          <div class="script-item">
+            <div class="script-header">
+              <span class="script-tag">🌿 GANCHO 3 — Renda Familiar / Oportunidade</span>
+              <span class="script-look">Look: Casual 🌿</span>
+            </div>
+            <div class="script-text" id="scriptHook3">--</div>
+            <div>
+              <button type="button" class="btn-copy" onclick="copyText('scriptHook3', this)">📋 Copiar Gancho 3</button>
+            </div>
+          </div>
+
+          <!-- Corpo -->
+          <div class="script-item">
+            <div class="script-header">
+              <span class="script-tag">📖 DESENVOLVIMENTO & BAIRRO</span>
+              <span class="script-look">Corpo Principal com CTA</span>
+            </div>
+            <div class="script-text" id="scriptBody">--</div>
+            <div>
+              <button type="button" class="btn-copy" onclick="copyText('scriptBody', this)">📋 Copiar Corpo</button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Rodapé -->
+  <footer>
+    Video Engine V2 • Bali Imóveis • Núcleo de Jobs Independente de Interface • 2026
+  </footer>
+
+  <script>
+    // Gerenciador de Submissão do Formulário
+    async function handleCreateJob(event) {
+      if (event) event.preventDefault();
+
+      const input = document.getElementById('propertyRefInput');
+      const submitBtn = document.getElementById('submitBtn');
+      const errorBanner = document.getElementById('errorBanner');
+      const errorMessage = document.getElementById('errorMessage');
+      const degradedBanner = document.getElementById('degradedBanner');
+      const resultSection = document.getElementById('resultSection');
+
+      const ref = input.value.trim();
+      if (!ref) {
+        showError('Por favor, informe uma referência válida.');
+        return;
+      }
+
+      // Ocultar estados anteriores
+      errorBanner.classList.remove('visible');
+      degradedBanner.classList.remove('visible');
+
+      // Prevenção de Concorrência & Loading State
+      input.disabled = true;
+      submitBtn.disabled = true;
+      const originalBtnHtml = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<span>⏳ Processando no CRM...</span>';
+
+      try {
+        const response = await fetch('/api/v2/panel/video-jobs', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ property_ref: ref })
+        });
+
+        const data = await response.json().catch(() => null);
+
+        if (response.status === 201 && data && data.success) {
+          // Sucesso Nominal
+          renderJobData(data, false);
+        } else if (response.status === 503 && data) {
+          // Modo Degradado (PostgreSQL Offline)
+          degradedBanner.classList.add('visible');
+          renderJobData(data, true);
+        } else if (response.status === 404) {
+          resultSection.classList.remove('visible');
+          showError('Imóvel não encontrado no CRM para a referência informada.');
+        } else if (response.status === 400) {
+          resultSection.classList.remove('visible');
+          showError(data?.message || 'Referência de imóvel inválida.');
+        } else if (response.status === 401) {
+          resultSection.classList.remove('visible');
+          showError('Acesso não autorizado ao painel. Atualize a página e autentique-se.');
+        } else {
+          resultSection.classList.remove('visible');
+          showError(data?.message || 'Erro interno ao processar solicitação. Tente novamente em instantes.');
+        }
+      } catch (err) {
+        resultSection.classList.remove('visible');
+        showError('Falha na comunicação com o servidor. Verifique sua conexão.');
+      } finally {
+        input.disabled = false;
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnHtml;
+      }
+    }
+
+    function showError(msg) {
+      const errorBanner = document.getElementById('errorBanner');
+      const errorMessage = document.getElementById('errorMessage');
+      errorMessage.textContent = msg;
+      errorBanner.classList.add('visible');
+    }
+
+    function renderJobData(data, isDegraded) {
+      const resultSection = document.getElementById('resultSection');
+      const jobStatusBadge = document.getElementById('jobStatusBadge');
+      const jobIdText = document.getElementById('jobIdText');
+      const copyJobIdBtn = document.getElementById('copyJobIdBtn');
+      const jobSourceText = document.getElementById('jobSourceText');
+      const jobBrokerText = document.getElementById('jobBrokerText');
+
+      // 1. Metadados do Job
+      if (isDegraded || !data.job_id) {
+        jobStatusBadge.className = 'badge-degraded';
+        jobStatusBadge.textContent = 'PERSISTÊNCIA INDISPONÍVEL';
+        jobIdText.textContent = '[Persistência indisponível]';
+        copyJobIdBtn.style.display = 'none';
+      } else {
+        jobStatusBadge.className = 'badge-ready';
+        jobStatusBadge.textContent = data.status || 'SCRIPT_READY';
+        jobIdText.textContent = data.job_id;
+        copyJobIdBtn.style.display = 'inline-flex';
+      }
+
+      jobSourceText.textContent = data.source || 'web_panel';
+      jobBrokerText.textContent = 'marcel';
+
+      // 2. Resumo do Imóvel
+      const p = data.property || {};
+      document.getElementById('propRefBadge').textContent = 'Ref: #' + (p.ref || p.codigo || document.getElementById('propertyRefInput').value.trim());
+      document.getElementById('propTitle').textContent = p.titulo || p.tipo || 'Imóvel sem título';
+      document.getElementById('propBairro').textContent = '📍 Bairro: ' + (p.bairro || 'Não informado');
+      document.getElementById('propArea').textContent = '📐 Área: ' + (p.area ? p.area + ' m²' : 'Não informada');
+      document.getElementById('propQuartos').textContent = '🛏️ Quartos: ' + (p.quartos || '0');
+      document.getElementById('propPreco').textContent = '🏷️ Valor: ' + (p.preco_venda_formatado || p.preco_venda || 'R$ --');
+
+      // 3. Simulação Financeira
+      const fin = p.financiamento || {};
+      document.getElementById('finPreco').textContent = fin.preco_formatado || p.preco_venda_formatado || '--';
+      document.getElementById('finEntrada').textContent = fin.entrada_formatada || '--';
+      document.getElementById('finFinanciamento').textContent = fin.financiamento_formatado || '--';
+      document.getElementById('finParcela').textContent = fin.parcela_formatada || '--';
+      document.getElementById('finRenda').textContent = fin.renda_formatada || '--';
+
+      // 4. Roteiros de Anúncio
+      const s = data.scripts || {};
+      document.getElementById('scriptHook1').textContent = s.gancho1 || s.hook1 || 'Roteiro não disponível';
+      document.getElementById('scriptHook2').textContent = s.gancho2 || s.hook2 || 'Roteiro não disponível';
+      document.getElementById('scriptHook3').textContent = s.gancho3 || s.hook3 || 'Roteiro não disponível';
+      document.getElementById('scriptBody').textContent = s.desenvolvimento || s.corpo || s.body || 'Desenvolvimento não disponível';
+
+      resultSection.classList.add('visible');
+    }
+
+    function copyJobId() {
+      const id = document.getElementById('jobIdText').textContent;
+      if (id && !id.startsWith('[')) {
+        navigator.clipboard.writeText(id).then(() => {
+          const btn = document.getElementById('copyJobIdBtn');
+          const original = btn.textContent;
+          btn.textContent = '✅ Copiado!';
+          setTimeout(() => btn.textContent = original, 2000);
+        });
+      }
+    }
+
+    function copyText(elementId, btn) {
+      const text = document.getElementById(elementId).textContent;
+      if (text) {
+        navigator.clipboard.writeText(text).then(() => {
+          const original = btn.textContent;
+          btn.textContent = '✅ Copiado!';
+          setTimeout(() => btn.textContent = original, 2000);
+        });
+      }
+    }
+  </script>
+</body>
+</html>
