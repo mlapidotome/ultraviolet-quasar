@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "description": "Pre-registered failure taxonomy codes for the Blinded Real-Listing Address Finder Pilot.",
+  "codes": [
+    {
+      "code": "LISTING_CLUE_FAILURE",
+      "description": "No usable public clue could be extracted from the listing snapshot."
+    },
+    {
+      "code": "STREET_NOT_AVAILABLE",
+      "description": "Street name could not be determined from any public signal."
+    },
+    {
+      "code": "DS_FAILURE",
+      "description": "Distance-signal lookup produced no actionable result."
+    },
+    {
+      "code": "DSQ_FAILURE",
+      "description": "DSQ (disambiguation/quantification) step failed to narrow candidates."
+    },
+    {
+      "code": "NO_ANCHOR",
+      "description": "No spatial anchor (landmark, cross-street, neighbourhood centroid) available."
+    },
+    {
+      "code": "LLL_GENERATION_MISS",
+      "description": "LLL model produced zero or all-invalid candidates."
+    },
+    {
+      "code": "CANDIDATE_RESOLUTION_FAILURE",
+      "description": "None of the generated candidates could be resolved to a unique geocoded address."
+    },
+    {
+      "code": "GT_UNRESOLVED",
+      "description": "Ground truth could not be established for this listing (used only in evaluation, never before freeze)."
+    },
+    {
+      "code": "DIRECT_EXACT_ADDRESS_LEAK",
+      "description": "Listing was disqualified because the exact physical address was found in a public field."
+    },
+    {
+      "code": "FACADE_INCONCLUSIVE",
+      "description": "Facade Checker returned no match above the acceptance threshold for TOP-3 candidates."
+    },
+    {
+      "code": "FACADE_FALSE_SIGNAL",
+      "description": "Facade Checker produced a false positive; candidate was rejected after cross-validation."
+    }
+  ]
+}
