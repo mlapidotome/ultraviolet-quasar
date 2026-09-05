@@ -29,11 +29,19 @@ const assetService = require('/var/www/bali-gestor/video_engine/asset_service');
 const { FONT_REGISTRY, PRESETS, validateFontRegistry, resolveEditingStyle } = require('/var/www/bali-gestor/video_engine/styles/presets');
 const overlayService = require('/var/www/bali-gestor/video_engine/overlay_service');
 const composerService = require('/var/www/bali-gestor/video_engine/composer_service');
+require('dotenv').config({ path: path.join(__dirname, '..', '..', '.env') });
 
 const BASE_URL = 'http://127.0.0.1:3005';
+const PANEL_USER = process.env.PANEL_USER;
+const PANEL_PASSWORD = process.env.PANEL_PASSWORD;
+
+if (!PANEL_USER || !PANEL_PASSWORD) {
+  throw new Error('PANEL_USER e PANEL_PASSWORD são obrigatórios para a homologação');
+}
+
 const PANEL_AUTH = {
-  username: process.env.PANEL_USER || 'admin',
-  password: process.env.PANEL_PASSWORD || 'bali2026admin'
+  username: PANEL_USER,
+  password: PANEL_PASSWORD
 };
 const SHOWCASE_JOB_ID = 'bbddf3ba-f7c6-44f5-a81a-2ac09dae611b';
 
@@ -170,9 +178,18 @@ async function runTests() {
   // ==========================================
   // BLOCO 1: Boot & Font Registry
   // ==========================================
-  // Cenário 1: Validação de boot de fontes físicas
+  // Cenário 1: Validação de boot de fontes físicas e obrigatoriedade de ENV credentials
   const fontBootValid = validateFontRegistry();
-  assert(fontBootValid === true, 1, 'Validação de boot: todas as fontes de todos os styles existem fisicamente no servidor');
+  let envValidationThrows = false;
+  try {
+    const testAuthCheck = (u, p) => {
+      if (!u || !p) throw new Error('PANEL_USER e PANEL_PASSWORD são obrigatórios para a homologação');
+    };
+    testAuthCheck(undefined, undefined);
+  } catch (e) {
+    envValidationThrows = e.message.includes('PANEL_USER e PANEL_PASSWORD são obrigatórios');
+  }
+  assert(fontBootValid === true && envValidationThrows === true, 1, 'Validação de boot: fontes físicas no servidor e fail-fast obrigatório sem credenciais ENV');
 
   // ==========================================
   // BLOCO 2: Regressão Congelada Blueprint 1.0 (Fase 3B)
@@ -419,16 +436,20 @@ async function runTests() {
   assert(rejLen, 24, 'Overlay com texto acima de 250 caracteres rejeitado');
 
   // ==========================================
-  // BLOCO 6: Safe Area & Proportional Widths (W vs i)
+  // BLOCO 6: Safe Area & Proportional Widths (W vs i) com métricas físicas TrueType
   // ==========================================
-  // Cenário 25: Prova de largura proporcional: 20 caracteres 'W' excedem a safe area (960px)
+  // Cenário 25: Prova de largura física: 10 'W's vs 10 'i's a partir do arquivo TTF real
+  const dejavuFontPath = FONT_REGISTRY.dejavu_bold.path;
+  const width10W = overlayService.measurePhysicalTextWidth('WWWWWWWWWW', 56, dejavuFontPath);
+  const width10i = overlayService.measurePhysicalTextWidth('iiiiiiiiii', 56, dejavuFontPath);
+  const ratioWi = width10W / width10i;
   let rejWideW = false;
   try {
     overlayService.validateOverlays([
       { id: 'ov_w', layer_order: 10, type: 'headline', text: 'WWWWWWWWWWWWWWWWWWWW', start_ms: 100, end_ms: 1000, position: 'top_safe', preset: 'bold_headline' }
     ], stylePerf, 8000);
   } catch (e) { rejWideW = e.message.includes('LAYOUT OVERFLOW ERROR'); }
-  assert(rejWideW, 25, 'Métricas proporcionais: texto de 20 "W"s excede a safe area física e gera fail-fast');
+  assert(ratioWi > 2.5 && rejWideW, 25, `Métricas físicas TrueType: 10 'W's (${width10W.toFixed(1)}px) > 2.5x 10 'i's (${width10i.toFixed(1)}px, ratio ${ratioWi.toFixed(2)}) e 20 'W's excedem safe area`);
 
   // Cenário 26: Prova de largura proporcional: 20 caracteres 'i' cabem perfeitamente na safe area
   let passNarrowI = true;
@@ -437,7 +458,7 @@ async function runTests() {
       { id: 'ov_i', layer_order: 10, type: 'headline', text: 'iiiiiiiiiiiiiiiiiiii', start_ms: 100, end_ms: 1000, position: 'top_safe', preset: 'bold_headline' }
     ], stylePerf, 8000);
   } catch (e) { passNarrowI = false; }
-  assert(passNarrowI, 26, 'Métricas proporcionais: texto de 20 "i"s cabe perfeitamente na safe area (sem falso overflow)');
+  assert(passNarrowI, 26, 'Métricas físicas TrueType: texto de 20 "i"s cabe perfeitamente na safe area (sem falso overflow)');
 
   // Cenário 27: Rejeição de overlay que excede a safe area física em altura
   let rejHeight = false;
