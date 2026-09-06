@@ -80,7 +80,9 @@ O arquivo [`video_engine/media_understanding/analysis_schema.js`](file:///c:/Use
 
 ---
 
-## 2. Arquitetura da Fase 4B.2 — Photo Media Understanding
+## 2. Arquitetura da Fase 4B.2 — Separação Estrita entre Cache Global e Projeção de Propriedade
+
+Para garantir pureza arquitetural, isolamento de cache e auditabilidade completa, o sistema desacopla rigidamente a **análise semântica pura do conteúdo físico** (global, imutável, agnóstica de propriedade) da **projeção contextual de propriedade** (reconciliação de CRM e metadados de catálogo).
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -90,7 +92,7 @@ O arquivo [`video_engine/media_understanding/analysis_schema.js`](file:///c:/Use
                                        │
                                        ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│ 1. PHOTO ANALYSIS FINGERPRINT                                               │
+│ 1. CANONICAL PHOTO ANALYSIS FINGERPRINT (Global, Content-Addressed)         │
 │ photo_analysis_key = SHA-256(canonicalJSON({                                │
 │   physical_file_hash, analyzer_type, analyzer_version,                      │
 │   model_id, prompt_version, schema_version, quality_rules_version,           │
@@ -113,10 +115,10 @@ O arquivo [`video_engine/media_understanding/analysis_schema.js`](file:///c:/Use
                          │                                   │
                          │                                   ▼
                          │                 ┌──────────────────────────────────┐
-                         │                 │ 3. STRICT SCHEMA VALIDATION      │
-                         │                 │ Fail-Fast em room_type & feature │
-                         │                 │ Normalização & Clamping [0, 1]   │
-                         │                 │ Decomposição de Qualidade        │
+                         │                 │ 3. STRICT SCHEMA & SCORE CHECK   │
+                         │                 │ Fail-Fast em bounds [0.0, 1.0]   │
+                         │                 │ ZERO Clamping silencioso         │
+                         │                 │ Validação de Taxonomia [16+16]   │
                          │                 └─────────────────┬────────────────┘
                          │                                   │
                          │                                   ▼
@@ -125,28 +127,30 @@ O arquivo [`video_engine/media_understanding/analysis_schema.js`](file:///c:/Use
                          │                 │ outputs/media_analysis/photos/   │
                          │                 │ <photo_analysis_key>/            │
                          │                 │ analysis.json                    │
+                         │                 │ (ESTRITAMENTE GlobalPhotoAnalysis│
+                         │                 │  ZERO property_ref / asset_id /  │
+                         │                 │  crm_category no cache global)   │
                          │                 └─────────────────┬────────────────┘
                          │                                   │
                          └─────────────────┬─────────────────┘
                                            │
                                            ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│ 5. PHOTO UNDERSTANDING CATALOG RESULT                                       │
-│ {                                                                           │
-│   photo_analysis_key, physical_file_hash,                                   │
-│   semantic: { primary_room_type, secondary_room_types, features, conf },    │
-│   quality: { technical_quality, aesthetic_score, editorial_utility },       │
-│   provenance: { crm_category_hint, divergence_detected, ... }               │
-│ }                                                                           │
+│ 5. PROPERTY RUNTIME PROJECTION LAYER (PropertyPhotoSemanticView)            │
+│ Combina GlobalPhotoAnalysis com o contexto específico da propriedade:       │
+│ - asset_id, property_ref, physical_file_hash                                │
+│ - crm_context: { crm_photo_id, raw_crm_category, normalized_crm_room_hint } │
+│ - semantic_reconciliation: { comparable, divergence_detected, reason }      │
+│ - Global Analysis (semantic, quality, analyzer_provenance)                  │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 3. Schemas Canônicos e Validação Estrita
+## 3. Schemas Canônicos e Contratos de Dados
 
-### 3.1 Schema de Saída: `PhotoAnalysisResult`
-A saída de análise semântica de uma foto segue a seguinte estrutura canônica validada:
+### 3.1 Schema Global Imutável: `GlobalPhotoAnalysis` (Gravado no Cache Global)
+O arquivo de cache global `outputs/media_analysis/photos/<photo_analysis_key>/analysis.json` contém **exclusivamente** informações intrínsecas dos pixels e metadados do analisador. **É terminantemente proibido gravar `property_ref`, `asset_id`, `crm_category` ou `divergence_detected` neste arquivo.**
 
 ```json
 {
@@ -186,9 +190,53 @@ A saída de análise semântica de uma foto segue a seguinte estrutura canônica
     },
     "composite_quality_score": 0.89
   },
-  "provenance": {
-    "crm_category_hint": "Unidade",
+  "analyzer_provenance": {
+    "analyzer_type": "photo_vlm_understanding",
+    "analyzer_version": "1.0.0",
+    "model_id": "gpt-4o-mini",
+    "prompt_version": "photo_vlm_v1",
+    "schema_version": "1.0.0",
+    "quality_rules_version": "1.0.0",
+    "taxonomy_version": "1.0.0",
+    "analyzed_at": "2026-09-06T10:00:00.000Z"
+  }
+}
+```
+
+### 3.2 Schema de Projeção Contextual: `PropertyPhotoSemanticView` (Runtime / Catálogo)
+Quando o sistema consulta as fotos de um imóvel (`REF 1628`), a camada de serviço combina o `GlobalPhotoAnalysis` com o registro `property_photo` do banco `video_assets`:
+
+```json
+{
+  "asset_id": "ast_pimg_8f2a1b...",
+  "property_ref": "1628",
+  "physical_file_hash": "64_chars_hex_sha256",
+  "photo_analysis_key": "64_chars_hex_sha256",
+  "crm_context": {
+    "crm_photo_id": "1446700",
+    "raw_crm_category": "Unidade",
+    "normalized_crm_room_hint": null,
+    "comparable": false
+  },
+  "semantic_reconciliation": {
     "divergence_detected": false,
+    "divergence_reason": "crm_category_not_comparable",
+    "crm_category_mapper_version": "1.0.0"
+  },
+  "semantic": {
+    "primary_room_type": "living_room",
+    "secondary_room_types": ["dining_room"],
+    "features": ["open_concept", "porcelain_tile", "natural_lighting"],
+    "description": "Sala de estar ampla integrada...",
+    "confidence": 0.95
+  },
+  "quality": {
+    "technical_quality": { "score": 0.89, "sharpness": 0.90, "exposure": 0.85, "noise_compression": 0.95, "resolution_adequacy": 1.00, "perspective_alignment": 0.80 },
+    "aesthetic_score": { "score": 0.87, "composition": 0.85, "framing": 0.80, "visual_balance": 0.85, "lighting_atmosphere": 0.90, "cleanliness_staging": 0.95 },
+    "editorial_utility": { "score": 0.91, "room_coverage": 0.90, "feature_clarity": 0.85, "spaciousness_perception": 0.90, "obstruction_level": 1.00, "utility_label": "high_value_anchor" },
+    "composite_quality_score": 0.89
+  },
+  "analyzer_provenance": {
     "analyzer_type": "photo_vlm_understanding",
     "analyzer_version": "1.0.0",
     "model_id": "gpt-4o-mini",
@@ -203,41 +251,53 @@ A saída de análise semântica de uma foto segue a seguinte estrutura canônica
 
 ---
 
-## 4. Decomposição de Qualidade e Editorial Utility
+## 4. Matriz de Autoridade, Origem e Validação Estrita dos Quality Scores
 
-Para eliminar notas opacas e garantir auditabilidade completa, o Photo Media Understanding avalia 3 pilares independentes:
+### 4.1 Matriz de Origem e Autoridade
+Para garantir transparência e eliminar ambiguidades na proveniência das métricas:
 
-### 4.1 Technical Quality (Peso: 30%)
-Mede a integridade óptica e digital da captura:
-1. **`sharpness` [0.0–1.0]:** Nitidez dos contornos, ausência de borrão de movimento ou foco incorreto.
-2. **`exposure` [0.0–1.0]:** Equilíbrio de exposição, sem estouro de brancos nas janelas ou sombras empastadas.
-3. **`noise_compression` [0.0–1.0]:** Ausência de ruído digital ISO alto e artefatos de compressão JPEG.
-4. **`resolution_adequacy` [0.0–1.0]:** Suficiência da resolução física para exibição vertical em 1080x1920 ($1.0$ para $\ge 900\text{px}$ de short edge).
-5. **`perspective_alignment` [0.0–1.0]:** Nivelamento vertical de paredes e ausência de distorção de lente olho-de-peixe extrema.
-$$\text{technical\_quality.score} = 0.30 \cdot \text{sharpness} + 0.25 \cdot \text{exposure} + 0.20 \cdot \text{noise} + 0.15 \cdot \text{resolution} + 0.10 \cdot \text{perspective}$$
+| Campo / Métrica | Origem / Autoridade (`source`) | Método de Cálculo / Obtenção | Regra de Validação Estrita |
+| :--- | :--- | :--- | :--- |
+| `specs.width`, `height`, `aspect_ratio` | `deterministic_specs` | FFprobe / Full Decode físico (4B.1). | Inteiros positivos $>0$. |
+| `resolution_adequacy` | `deterministic_specs` | Determinado via $\min(1.0, \text{short\_edge} / 900.0)$. | Float estrito em $[0.0, 1.0]$. |
+| `sharpness` | `vlm` | Inferência VLM sobre nitidez óptica dos contornos. | Float estrito em $[0.0, 1.0]$. |
+| `exposure` | `vlm` | Inferência VLM sobre equilíbrio tonal e alcance dinâmico. | Float estrito em $[0.0, 1.0]$. |
+| `noise_compression` | `vlm` | Inferência VLM sobre ausência de ruído ISO e artefatos. | Float estrito em $[0.0, 1.0]$. |
+| `perspective_alignment` | `vlm` | Inferência VLM sobre verticalidade e distorção de lente. | Float estrito em $[0.0, 1.0]$. |
+| `composition` | `vlm` | Inferência VLM sobre regra dos terços e linhas-guia. | Float estrito em $[0.0, 1.0]$. |
+| `framing` | `vlm` | Inferência VLM sobre cortes estruturais harmoniosos. | Float estrito em $[0.0, 1.0]$. |
+| `visual_balance` | `vlm` | Inferência VLM sobre distribuição de massas visuais. | Float estrito em $[0.0, 1.0]$. |
+| `lighting_atmosphere` | `vlm` | Inferência VLM sobre clima de iluminação e acolhimento. | Float estrito em $[0.0, 1.0]$. |
+| `cleanliness_staging` | `vlm` | Inferência VLM sobre arrumação e ausência de desordem. | Float estrito em $[0.0, 1.0]$. |
+| `room_coverage` | `vlm` | Inferência VLM sobre amplitude e cobertura do cômodo. | Float estrito em $[0.0, 1.0]$. |
+| `feature_clarity` | `vlm` | Inferência VLM sobre nitidez e destaque dos diferenciais. | Float estrito em $[0.0, 1.0]$. |
+| `spaciousness_perception` | `vlm` | Inferência VLM sobre sensação espacial transmitida. | Float estrito em $[0.0, 1.0]$. |
+| `obstruction_level` | `vlm` | Inferência VLM ($1.0$ = desobstruído; $0.0$ = bloqueado). | Float estrito em $[0.0, 1.0]$. |
+| `technical_quality.score` | `deterministic_formula` | Média ponderada dos subcomponentes técnicos. | Float estrito em $[0.0, 1.0]$, precisão 2 decimais. |
+| `aesthetic_score.score` | `deterministic_formula` | Média ponderada dos subcomponentes estéticos. | Float estrito em $[0.0, 1.0]$, precisão 2 decimais. |
+| `editorial_utility.score` | `deterministic_formula` | Média ponderada dos subcomponentes de utilidade. | Float estrito em $[0.0, 1.0]$, precisão 2 decimais. |
+| `composite_quality_score` | `deterministic_formula` | $0.45 \cdot \text{utility} + 0.30 \cdot \text{aesthetic} + 0.25 \cdot \text{technical}$. | Float estrito em $[0.0, 1.0]$, precisão 2 decimais. |
+| `utility_label` | `deterministic_formula` | Mapeamento por faixas de corte fixas. | Enum: `high_value_anchor`, `supporting_detail`, etc. |
 
-### 4.2 Aesthetic & Composition Quality (Peso: 30%)
-Mede a harmonia visual e o apelo imobiliário:
-1. **`composition` [0.0–1.0]:** Enquadramento da cena, regra dos terços e linhas-guia.
-2. **`framing` [0.0–1.0]:** Corte visual dos elementos estruturais (não cortar móveis ao meio de forma deselegante).
-3. **`visual_balance` [0.0–1.0]:** Distribuição harmônica de pesos visuais na foto.
-4. **`lighting_atmosphere` [0.0–1.0]:** Sensação de ambiente agradável, acolhedor e bem iluminado.
-5. **`cleanliness_staging` [0.0–1.0]:** Organização do ambiente, ausência de bagunça, roupas espalhadas ou itens pessoais invasivos.
-$$\text{aesthetic\_score.score} = 0.25 \cdot \text{composition} + 0.20 \cdot \text{framing} + 0.20 \cdot \text{balance} + 0.20 \cdot \text{lighting} + 0.15 \cdot \text{cleanliness}$$
+### 4.2 Política de Validação Fail-Fast (ZERO Clamping Silencioso)
+É **expressamente proibido** realizar clamping defensivo silencioso de valores inválidos (ex: transformar `1.4 -> 1.0`, `-0.2 -> 0.0` ou ignorar `NaN`). Qualquer valor fora dos limites estritos $[0.0, 1.0]$, `NaN`, `Infinity` ou tipo não numérico dispara imediatamente o erro:
 
-### 4.3 Editorial Utility (Peso: 40%)
-Mede a utilidade específica da imagem para montagem de um vídeo de anúncio imobiliário:
-1. **`room_coverage` [0.0–1.0]:** Capacidade da foto de mostrar a totalidade do cômodo (uma foto angular ampla vale mais que uma foto fechada num canto).
-2. **`feature_clarity` [0.0–1.0]:** Quão nítidas e destacadas são as características de valor do imóvel (ex: armários planejados bem visíveis, bancada de granito clara).
-3. **`spaciousness_perception` [0.0–1.0]:** Capacidade da fotografia de transmitir a sensação real de espaço e amplitude.
-4. **`obstruction_level` [0.0–1.0]:** Grau de desobstrução visual ($1.0$ = visão desimpedida; $0.2$ = coluna ou porta bloqueando a visão principal).
-$$\text{editorial\_utility.score} = 0.35 \cdot \text{room\_coverage} + 0.30 \cdot \text{feature\_clarity} + 0.20 \cdot \text{spaciousness} + 0.15 \cdot \text{obstruction\_level}$$
+$$\text{SCORE\_OUT\_OF\_BOUNDS\_ERROR: Score '\{field\}' with value '\{value\}' is outside strict bounds [0.0, 1.0]}$$
 
-### 4.4 Utility Labels Qualitativos
-- `high_value_anchor` ($\text{editorial\_utility.score} \ge 0.80$): Foto âncora excelente para abrir ou sustentar um beat principal do ambiente.
-- `supporting_detail` ($0.60 \le \text{editorial\_utility.score} < 0.80$): Foto boa de detalhe ou ângulo complementar.
-- `marginal_usable` ($0.40 \le \text{editorial\_utility.score} < 0.60$): Utilizável apenas em fallback se não houver outra opção do cômodo.
-- `editorial_reject` ($\text{editorial\_utility.score} < 0.40$): Inadequada para o vídeo (muito escura, detalhe irrelevante, banheiro com tampa aberta, etc.).
+A integridade semântica depende da resposta correta do modelo e do validador. Se o modelo falhar, o job falha com log auditável em vez de mascarar dados corrompidos.
+
+### 4.3 Fórmulas de Ponderação Determinística
+1. **Technical Quality:**
+   $$\text{technical\_quality.score} = 0.30 \cdot \text{sharpness} + 0.25 \cdot \text{exposure} + 0.20 \cdot \text{noise\_compression} + 0.15 \cdot \text{resolution\_adequacy} + 0.10 \cdot \text{perspective\_alignment}$$
+2. **Aesthetic Quality:**
+   $$\text{aesthetic\_score.score} = 0.25 \cdot \text{composition} + 0.20 \cdot \text{framing} + 0.20 \cdot \text{visual\_balance} + 0.20 \cdot \text{lighting\_atmosphere} + 0.15 \cdot \text{cleanliness\_staging}$$
+3. **Editorial Utility:**
+   $$\text{editorial\_utility.score} = 0.35 \cdot \text{room\_coverage} + 0.30 \cdot \text{feature\_clarity} + 0.20 \cdot \text{spaciousness\_perception} + 0.15 \cdot \text{obstruction\_level}$$
+4. **Utility Labels:**
+   - `high_value_anchor`: $\text{editorial\_utility.score} \ge 0.80$
+   - `supporting_detail`: $0.60 \le \text{editorial\_utility.score} < 0.80$
+   - `marginal_usable`: $0.40 \le \text{editorial\_utility.score} < 0.60$
+   - `editorial_reject`: $\text{editorial\_utility.score} < 0.40$
 
 ---
 
@@ -252,10 +312,38 @@ Uma regra de ouro da arquitetura:
 
 ---
 
-## 6. Política para Casos Visuais Ambíguos e Divergências CRM
+## 6. Normalização de Categorias CRM e Reconciliação Semântica
 
-### 6.1 Tratamento de Ambientes Híbridos / Contíguos
-Muitos imóveis modernos possuem plantas integradas. A política de classificação semântica estabelece:
+### 6.1 Mapeamento e Classificação de Categorias do CRM (`crm_category_mapper_version = "1.0.0"`)
+O CRM ImobTotal envia categorias textuais livres. O normalizador classifica as categorias em dois grupos:
+
+1. **Categorias Vagas / Genéricas (Não comparáveis):**
+   - Exemplos: `"Unidade"`, `"Geral"`, `"Outros"`, `"Fotos"`, `"Diversas"`, `""`, `null`.
+   - Normalização: `normalized_crm_room_hint = null`.
+   - Comparabilidade: `comparable = false`.
+   - Divergência: `divergence_detected = false`, `divergence_reason = "crm_category_not_comparable"`.
+   - *Resultado:* **Zero falso positivo de divergência** quando o corretor usou `"Unidade"` para todas as fotos.
+
+2. **Categorias Específicas de Ambiente (Comparáveis):**
+   - Exemplos e mapeamentos canônicos:
+     - `"Quarto"`, `"Dormitório"`, `"Dormitorio"` $\rightarrow$ `"bedroom"`
+     - `"Suíte"`, `"Suite"` $\rightarrow$ `"suite"`
+     - `"Sala"`, `"Living"` $\rightarrow$ `"living_room"`
+     - `"Cozinha"` $\rightarrow$ `"kitchen"`
+     - `"Banheiro"`, `"Lavabo"` $\rightarrow$ `"bathroom"`
+     - `"Sacada"`, `"Varanda"` $\rightarrow$ `"balcony"`
+     - `"Fachada"` $\rightarrow$ `"facade"`
+     - `"Garagem"`, `"Vaga"` $\rightarrow$ `"garage"`
+     - `"Lazer"`, `"Piscina"`, `"Churrasqueira"` $\rightarrow$ `"leisure"`
+     - `"Área de Serviço"`, `"Lavanderia"` $\rightarrow$ `"laundry"`
+   - Normalização: `normalized_crm_room_hint = "<canonical_room_type>"`.
+   - Comparabilidade: `comparable = true`.
+   - Avaliação de Divergência:
+     - Se `normalized_crm_room_hint === primary_room_type` $\rightarrow$ `divergence_detected = false`, `divergence_reason = null`.
+     - Se `normalized_crm_room_hint !== primary_room_type` e `!secondary_room_types.includes(normalized_crm_room_hint)`:
+       $\rightarrow$ `divergence_detected = true`, `divergence_reason = "crm_hint_mismatch"`.
+
+### 6.2 Tratamento de Ambientes Híbridos / Contíguos
 1. **Sala Integrada (Estar + Jantar):**
    - `primary_room_type = 'living_room'` (ou `'dining_room'` se a mesa ocupar $>60\%$ do enquadramento).
    - `secondary_room_types = ['dining_room']`.
@@ -276,18 +364,12 @@ Muitos imóveis modernos possuem plantas integradas. A política de classificaç
 8. **Ambiente Não Identificável com Confiança:**
    - `primary_room_type = 'unknown'`, `confidence < 0.50`.
 
-### 6.2 Proveniência e Divergência CRM
-O CRM ImobTotal categoriza fotos através de strings livres cadastradas por corretores (ex: `"Unidade"`, `"Sala"`, `"Área Comum"`).
-- O valor original do CRM é preservado em `provenance.crm_category_hint`.
-- A autoridade semântica oficial é **100% dos pixels reais analisados pelo VLM**.
-- Se `crm_category_hint` indicar `"Quarto"` mas os pixels revelarem uma cozinha, o sistema registra `primary_room_type = 'kitchen'` e `divergence_detected = true`.
-
 ---
 
 ## 7. Fingerprint e Cache Global Imutável
 
 ### 7.1 Cálculo do `photo_analysis_key`
-O fingerprint semântico é **estritamente global e agnóstico de propriedade** (content-addressed):
+O fingerprint semântico é **estritamente global, content-addressed e determinístico**:
 
 $$\text{photo\_analysis\_key} = \text{SHA-256}\left(\text{canonicalJSON}\left(\begin{array}{l}
 \text{physical\_file\_hash}, \\
@@ -299,6 +381,9 @@ $$\text{photo\_analysis\_key} = \text{SHA-256}\left(\text{canonicalJSON}\left(\b
 \text{quality\_rules\_version}, \\
 \text{taxonomy\_version}
 \end{array}\right)\right)$$
+
+> [!NOTE]
+> Metadados operacionais voláteis (como `analyzed_at` ou timestamp de execução) são gravados no JSON para fins de auditoria, mas **NÃO participam** da tupla de entrada do `photo_analysis_key`. O hash é puramente derivado de invariantes estáticos e dos bytes da imagem.
 
 ### 7.2 Isolamento de Propriedade
 Se o imóvel `REF 1628` e o imóvel `REF 1601` compartilharem a mesma foto física ($\text{physical\_file\_hash} = H$):
@@ -350,29 +435,43 @@ Critério de desempate determinístico:
 
 ---
 
-## 10. Matriz de Testes Formais (Fase 4B.2)
+## 10. Matriz de Testes Formais Expandida (Fase 4B.2)
 
-A suíte de testes cobrirá os seguintes cenários formais:
-- **Cenário A:** Análise de foto real gera schema completo e válido.
-- **Cenário B:** Determinismo estrito de `photo_analysis_key`.
-- **Cenário C:** Mudança de `physical_file_hash` gera nova key.
-- **Cenário D:** Mudança de `model_id` gera nova key.
-- **Cenário E:** Mudança de `prompt_version` gera nova key.
-- **Cenário F:** Mudança de `schema_version` ou `taxonomy_version` gera nova key.
-- **Cenário G:** Cache Hit global reutiliza análise sem chamada ao provider.
-- **Cenário H:** `room_type` fora da taxonomia oficial é rejeitado com fail-fast.
-- **Cenário I:** `feature` fora da taxonomia oficial é rejeitada com fail-fast.
-- **Cenário J:** Scores fora do intervalo $[0.0, 1.0]$ são rejeitados com fail-fast.
-- **Cenário K:** Decomposição de qualidade contém todos os 10 subcomponentes auditáveis.
-- **Cenário L:** Detecção explícita de divergência entre `crm_category` e `primary_room_type`.
-- **Cenário M:** Foto ambígua (sala + jantar) popula `secondary_room_types` corretamente.
-- **Cenário N:** Foto com baixa cobertura/utilidade recebe label `supporting_detail` ou `marginal_usable`.
-- **Cenário O:** Ranking intra-ambiente ordena fotos do mesmo cômodo coerentemente.
-- **Cenário P:** Múltiplas propriedades compartilhando o mesmo blob utilizam o mesmo cache semântico global.
-- **Cenário Q:** Concorrência física de 2 workers analisando a mesma foto $\rightarrow$ 1 único cache persistido e zero corrupção.
-- **Cenário R:** Provider timeout e erro de rede não corrompem cache global.
-- **Cenário S:** Falha de decode ou imagem vazia impede chamada ao VLM.
-- **Cenário T:** Composer V3, Property Video Ingestion e Creative Director permanecem 100% intocados.
+A suíte de testes cobrirá os seguintes cenários formais rigorosos:
+
+| Cenário | Descrição do Teste | Critério de Aceitação / Asserção |
+| :--- | :--- | :--- |
+| **Cenário A** | Análise de foto real gera schema completo e válido. | Objeto segue rigorosamente a estrutura de `GlobalPhotoAnalysis`. |
+| **Cenário B** | Determinismo estrito de `photo_analysis_key`. | Mesmos inputs geram rigorosamente o mesmo hash de 64 caracteres. |
+| **Cenário C** | Mudança de `physical_file_hash` gera nova key. | Hashes físicos distintos produzem chaves de análise distintas. |
+| **Cenário D** | Mudança de `model_id` gera nova key. | `gpt-4o` vs `gpt-4o-mini` geram chaves distintas. |
+| **Cenário E** | Mudança de `prompt_version` gera nova key. | Alteração no prompt invalida cache deterministicamente. |
+| **Cenário F** | Mudança de `schema_version` ou `taxonomy_version`. | Alteração de versão de contrato gera nova chave. |
+| **Cenário G** | Cache Hit global reutiliza análise sem chamada ao provider. | Leitura do disco com 0 invocações de provider VLM. |
+| **Cenário H** | `room_type` fora da taxonomia oficial é rejeitado com fail-fast. | Lança `INVALID_ROOM_TYPE_ERROR`. |
+| **Cenário I** | `feature` fora da taxonomia oficial é rejeitada com fail-fast. | Lança `INVALID_FEATURE_ERROR`. |
+| **Cenário J** | Decomposição de qualidade contém todos os 14 subcomponentes. | Todos os subscores técnicos, estéticos e utilitários presentes. |
+| **Cenário K** | Cálculo determinístico de fórmulas de qualidade e pesos. | Subscores ponderados batem com precisão aritmética exata. |
+| **Cenário L** | Foto ambígua (sala + jantar) popula `secondary_room_types`. | `secondary_room_types` contém ambientes secundários válidos. |
+| **Cenário M** | Foto com baixa cobertura/utilidade recebe label de utility correto. | Mapeamento estrito de `utility_label` conforme pontuação. |
+| **Cenário N** | Ranking intra-ambiente ordena fotos do mesmo cômodo coerentemente. | Ordenação determinística com critério de desempate por hash. |
+| **Cenário O** | Múltiplas propriedades compartilhando blob usam mesmo cache. | `REF 1628` e `REF 1601` acessam o mesmo arquivo físico de cache. |
+| **Cenário P** | Concorrência física de 2 workers (No-Clobber atomic write). | 1 único cache persistido e zero corrupção (`EEXIST` tratado). |
+| **Cenário Q** | Provider timeout e erro de rede não corrompem cache global. | Falha limpa sem criação de arquivos parciais no cache. |
+| **Cenário R** | Falha de decode ou imagem vazia impede chamada ao VLM. | Validação física preliminar rejeita imagem antes da API. |
+| **Cenário S** | Composer V3 e Creative Director 4A.3 permanecem 100% intocados. | Zero modificação em pipelines de vídeo anteriores. |
+| **Cenário T** | Ingestão de fotos 4B.1 permanece 100% intocada. | Módulos `photo_ingestion/` inalterados. |
+| **Cenário U** | `GlobalPhotoAnalysis` no cache NÃO contém campos property-specific. | `property_ref`, `asset_id`, `crm_category`, `divergence_detected` ausentes do JSON global. |
+| **Cenário V** | `PropertyPhotoSemanticView` projeta corretamente contexto da propriedade. | Objeto de catálogo combina análise global com contexto de CRM. |
+| **Cenário W** | Fail-fast estrito para score $> 1.0$ (proibido clamping para 1.0). | Lança `SCORE_OUT_OF_BOUNDS_ERROR` imediato. |
+| **Cenário X** | Fail-fast estrito para score $< 0.0$ (proibido clamping para 0.0). | Lança `SCORE_OUT_OF_BOUNDS_ERROR` imediato. |
+| **Cenário Y** | Fail-fast estrito para score `NaN`, `Infinity` ou não-numérico. | Lança `SCORE_OUT_OF_BOUNDS_ERROR` imediato. |
+| **Cenário Z** | Autoridade determinística de `resolution_adequacy` via specs físicas. | Calculado a partir de `specs.short_edge` ($\ge 900\text{px} \rightarrow 1.0$). |
+| **Cenário AA** | CRM vago (`"Unidade"`) gera `comparable: false` e sem falso positivo. | `normalized_crm_room_hint = null`, `divergence_detected = false`. |
+| **Cenário AB** | CRM específico (`"Quarto"`) divergente do VLM (`"kitchen"`) gera divergência. | `comparable: true`, `divergence_detected = true`, `reason = "crm_hint_mismatch"`. |
+| **Cenário AC** | CRM específico (`"Sala"`) coincidente com VLM (`"living_room"`) sem divergência. | `comparable: true`, `divergence_detected = false`, `reason = null`. |
+| **Cenário AD** | Timestamp `analyzed_at` diferente NÃO altera `photo_analysis_key`. | Fingerprint é estritamente invariante a timestamps de execução. |
+| **Cenário AE** | Contact Sheet HTML exibe metadados separados (global vs CRM). | Visualização HTML separa dados intrínsecos de reconciliação de CRM. |
 
 ---
 
@@ -388,22 +487,24 @@ Quando autorizado, o showcase executará:
 
 ---
 
-## 12. Arquivos a Criar e Modificar na Futura Implementação
+## 12. Arquivos a Criar na Futura Implementação (Zero Modificação em Código Existente)
 
 ### Novos Arquivos a Criar:
 - `video_engine/property_media/photo_understanding/photo_analysis_schema.js` (Schema, taxonomia e `computePhotoAnalysisKey`)
-- `video_engine/property_media/photo_understanding/quality_evaluator.js` (Fórmulas e decomposição de qualidade)
+- `video_engine/property_media/photo_understanding/quality_evaluator.js` (Fórmulas, autoridade de scores e validação fail-fast)
+- `video_engine/property_media/photo_understanding/crm_category_reconciler.js` (Normalização e detecção de divergência CRM)
 - `video_engine/property_media/photo_understanding/providers/base_photo_understanding_provider.js` (Interface abstrata)
 - `video_engine/property_media/photo_understanding/providers/mock_photo_understanding_provider.js` (Mock determinístico para testes)
 - `video_engine/property_media/photo_understanding/providers/openai_photo_understanding_provider.js` (Integração VLM estruturada)
-- `video_engine/property_media/photo_understanding/photo_media_understanding_service.js` (Serviço orquestrador com cache No-Clobber)
+- `video_engine/property_media/photo_understanding/photo_media_understanding_service.js` (Serviço orquestrador com cache No-Clobber e projeção)
 - `video_engine/property_media/photo_understanding/index.js` (Exportações do módulo)
-- `tests/video_engine/photo_media_understanding_tests.js` (Suíte formal de testes A–T)
+- `tests/video_engine/photo_media_understanding_tests.js` (Suíte formal de testes A–AE)
 - `run_showcase_photo_media_understanding.js` (Showcase real da REF 1628)
 
 ### Arquivos Existentes:
-- **ZERO modificações** em `composer_service.js`, `creative_director/`, `property_media/property_media_service.js` ou migrations.
+- **ZERO modificações** em `composer_service.js`, `creative_director/`, `property_media/photo_ingestion/`, `property_media/property_media_service.js` ou migrations.
 
 ---
 
 **STATUS:** PLANO DE ARQUITETURA DA FASE 4B.2 FINALIZADO E PRONTO PARA REVISÃO EXTERNA. STOP.
+
