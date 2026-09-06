@@ -22,6 +22,20 @@ const ALLOWED_UTILITY_LABELS = Object.freeze([
 ]);
 
 /**
+ * Validação estrita de formato SHA-256 hexadecimal (exatamente 64 caracteres hex)
+ */
+function validateSha256Hex(val, fieldName = 'hash') {
+  if (!val || typeof val !== 'string') {
+    throw new Error(`[SCHEMA_ERROR] ${fieldName} deve ser uma string não-vazia`);
+  }
+  const clean = val.trim().toLowerCase();
+  if (!/^[a-f0-9]{64}$/.test(clean)) {
+    throw new Error(`[SCHEMA_ERROR] ${fieldName} deve ser um hash SHA-256 hexadecimal válido de 64 caracteres, recebido: '${val}'`);
+  }
+  return clean;
+}
+
+/**
  * Validação estrita de score numérico no intervalo [0.0, 1.0].
  * ZERO clamping: qualquer valor fora dos limites, NaN, Infinity ou não-numérico DISPARA ERRO.
  */
@@ -123,22 +137,20 @@ function computePhotoAnalysisKey({
   taxonomy_version = TAXONOMY_VERSION,
   provider_config = {}
 }) {
-  if (!physical_file_hash || typeof physical_file_hash !== 'string') {
-    throw new Error('[SCHEMA_ERROR] physical_file_hash é obrigatório para computePhotoAnalysisKey');
-  }
+  const cleanPhysicalHash = validateSha256Hex(physical_file_hash, 'physical_file_hash');
   if (!model_id || typeof model_id !== 'string') {
     throw new Error('[SCHEMA_ERROR] model_id é obrigatório para computePhotoAnalysisKey');
   }
 
   const canonicalObj = {
-    physical_file_hash: physical_file_hash.trim().toLowerCase(),
-    analyzer_type: analyzer_type.trim(),
-    analyzer_version: analyzer_version.trim(),
-    model_id: model_id.trim().toLowerCase(),
-    prompt_version: prompt_version.trim(),
-    schema_version: schema_version.trim(),
-    quality_rules_version: quality_rules_version.trim(),
-    taxonomy_version: taxonomy_version.trim(),
+    physical_file_hash: cleanPhysicalHash,
+    analyzer_type: String(analyzer_type || DEFAULT_ANALYZER_TYPE).trim(),
+    analyzer_version: String(analyzer_version || DEFAULT_ANALYZER_VERSION).trim(),
+    model_id: String(model_id).trim().toLowerCase(),
+    prompt_version: String(prompt_version || DEFAULT_PROMPT_VERSION).trim(),
+    schema_version: String(schema_version || SCHEMA_VERSION).trim(),
+    quality_rules_version: String(quality_rules_version || DEFAULT_QUALITY_RULES_VERSION).trim(),
+    taxonomy_version: String(taxonomy_version || TAXONOMY_VERSION).trim(),
     provider_config: provider_config && typeof provider_config === 'object' ? provider_config : {}
   };
 
@@ -176,13 +188,9 @@ function validateGlobalPhotoAnalysis(obj) {
     }
   }
 
-  // 2. Validação dos campos canônicos obrigatórios
-  if (!obj.photo_analysis_key || typeof obj.photo_analysis_key !== 'string' || obj.photo_analysis_key.length !== 64) {
-    throw new Error('[SCHEMA_ERROR] photo_analysis_key inválido ou ausente (64 caracteres hex obrigatório)');
-  }
-  if (!obj.physical_file_hash || typeof obj.physical_file_hash !== 'string' || obj.physical_file_hash.length !== 64) {
-    throw new Error('[SCHEMA_ERROR] physical_file_hash inválido ou ausente (64 caracteres hex obrigatório)');
-  }
+  // 2. Validação dos campos canônicos obrigatórios com verificação estrita de formato SHA-256
+  const cleanAnalysisKey = validateSha256Hex(obj.photo_analysis_key, 'photo_analysis_key');
+  const cleanPhysicalHash = validateSha256Hex(obj.physical_file_hash, 'physical_file_hash');
 
   // 3. Validação Semântica
   if (!obj.semantic || typeof obj.semantic !== 'object') {
@@ -237,8 +245,8 @@ function validateGlobalPhotoAnalysis(obj) {
   }
 
   return {
-    photo_analysis_key: obj.photo_analysis_key,
-    physical_file_hash: obj.physical_file_hash,
+    photo_analysis_key: cleanAnalysisKey,
+    physical_file_hash: cleanPhysicalHash,
     semantic: {
       primary_room_type: primaryRoom,
       secondary_room_types: secondaryRooms,
@@ -261,6 +269,7 @@ module.exports = {
   ALLOWED_ROOM_TYPES,
   ALLOWED_FEATURES,
   ALLOWED_UTILITY_LABELS,
+  validateSha256Hex,
   validateStrictScore,
   validateStrictRoomType,
   validateStrictFeature,

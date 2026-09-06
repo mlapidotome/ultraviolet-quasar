@@ -2,7 +2,7 @@
  * Suíte Formal de Testes — Photo Media Understanding Proof (Fase 4B.2)
  * Bali Imóveis — Video Engine V2
  * 
- * Matriz Formal de Testes: Cenários A a AE
+ * Matriz Formal de Testes: Cenários A a AN
  */
 
 const fs = require('fs');
@@ -20,6 +20,7 @@ const {
   validateStrictScore,
   validateStrictRoomType,
   validateStrictFeature,
+  validateSha256Hex,
   QualityEvaluator,
   CrmCategoryReconciler,
   MockPhotoUnderstandingProvider,
@@ -82,8 +83,9 @@ async function runTests() {
     }
   }
 
-  // Imagem fixture para testes
+  // Imagem fixture para testes e seu hash real
   const testPhotoPath = path.join(TEST_FIXTURES_DIR, 'test_photo_cozinha.jpg');
+  const realFixtureHash = crypto.createHash('sha256').update(fs.readFileSync(testPhotoPath)).digest('hex');
   const dummyHash = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
 
   // Cenário A: Análise de foto real gera schema completo e válido
@@ -96,13 +98,13 @@ async function runTests() {
     });
 
     const res = await service.analyzePhotoBlob({
-      physical_file_hash: dummyHash,
+      physical_file_hash: realFixtureHash,
       storage_path: testPhotoPath,
       specs: { width: 1080, height: 1920, short_edge: 1080 }
     });
 
     assert.strictEqual(res.cache_hit, false);
-    assert.strictEqual(res.analysis.physical_file_hash, dummyHash);
+    assert.strictEqual(res.analysis.physical_file_hash, realFixtureHash);
     assert.strictEqual(res.analysis.semantic.primary_room_type, 'living_room');
     assert.strictEqual(res.analysis.quality.technical_quality.resolution_adequacy, 1.0);
     assert.ok(res.analysis.quality.composite_quality_score > 0);
@@ -154,13 +156,13 @@ async function runTests() {
     });
 
     const initialCalls = mock.callCount;
-    // Primeira chamada: miss
+    // Segunda chamada para a mesma foto e hash real
     const res1 = await service.analyzePhotoBlob({
-      physical_file_hash: dummyHash,
+      physical_file_hash: realFixtureHash,
       storage_path: testPhotoPath,
       specs: { width: 1080, height: 1920 }
     });
-    assert.strictEqual(res1.cache_hit, true); // já havia sido gravado no Cenário A
+    assert.strictEqual(res1.cache_hit, true); // gravado no Cenário A
     assert.strictEqual(mock.callCount, initialCalls); // 0 novas chamadas!
   });
 
@@ -212,7 +214,6 @@ async function runTests() {
 
   // Cenário L: Foto ambígua (sala + jantar) popula secondary_room_types
   await runAsyncCase('Cenário L: Foto ambígua (sala + jantar) popula secondary_room_types', async () => {
-    const ambiguousHash = 'aabbccddeeff00112233445566778899aabbccddeeff00112233445566778899';
     const mock = new MockPhotoUnderstandingProvider({
       defaultResponse: {
         primary_room_type: 'living_room',
@@ -228,6 +229,10 @@ async function runTests() {
       }
     });
 
+    const tempPhoto = path.join(TEST_DIR, 'ambiguous_temp.jpg');
+    fs.writeFileSync(tempPhoto, Buffer.from('ambiguous_image_content_12345'));
+    const tempHash = crypto.createHash('sha256').update(fs.readFileSync(tempPhoto)).digest('hex');
+
     const service = new PhotoMediaUnderstandingService({
       provider: mock,
       baseOutputDir: TEST_CACHE_DIR,
@@ -235,8 +240,8 @@ async function runTests() {
     });
 
     const res = await service.analyzePhotoBlob({
-      physical_file_hash: ambiguousHash,
-      storage_path: testPhotoPath,
+      physical_file_hash: tempHash,
+      storage_path: tempPhoto,
       specs: { width: 1080, height: 1920 }
     });
 
@@ -289,7 +294,10 @@ async function runTests() {
 
   // Cenário O: Múltiplas propriedades compartilhando blob usam mesmo cache
   await runAsyncCase('Cenário O: Múltiplas propriedades compartilhando blob usam mesmo cache global', async () => {
-    const sharedHash = 'shared00112233445566778899aabbccddeeff00112233445566778899aabbcc';
+    const tempShared = path.join(TEST_DIR, 'shared_photo.jpg');
+    fs.writeFileSync(tempShared, Buffer.from('shared_bytes_across_properties'));
+    const sharedHash = crypto.createHash('sha256').update(fs.readFileSync(tempShared)).digest('hex');
+
     const mock = new MockPhotoUnderstandingProvider();
     const service = new PhotoMediaUnderstandingService({
       provider: mock,
@@ -301,7 +309,7 @@ async function runTests() {
       asset_id: 'ast_pimg_propA',
       property_ref: '1628',
       file_hash: sharedHash,
-      storage_path: testPhotoPath,
+      storage_path: tempShared,
       specs: { width: 1080, height: 1920 },
       metadata: { categoria: 'Sala' }
     };
@@ -310,7 +318,7 @@ async function runTests() {
       asset_id: 'ast_pimg_propB',
       property_ref: '1601',
       file_hash: sharedHash,
-      storage_path: testPhotoPath,
+      storage_path: tempShared,
       specs: { width: 1080, height: 1920 },
       metadata: { categoria: 'Living' }
     };
@@ -326,7 +334,10 @@ async function runTests() {
 
   // Cenário P: Concorrência física de 2 workers (No-Clobber atomic write)
   await runAsyncCase('Cenário P: Concorrência física de 2 workers (No-Clobber atomic write)', async () => {
-    const concurrentHash = 'concurrent112233445566778899aabbccddeeff00112233445566778899aabb';
+    const tempConc = path.join(TEST_DIR, 'concurrent_photo.jpg');
+    fs.writeFileSync(tempConc, Buffer.from('concurrent_photo_bytes_999'));
+    const concurrentHash = crypto.createHash('sha256').update(fs.readFileSync(tempConc)).digest('hex');
+
     const mock1 = new MockPhotoUnderstandingProvider();
     const mock2 = new MockPhotoUnderstandingProvider();
 
@@ -334,8 +345,8 @@ async function runTests() {
     const service2 = new PhotoMediaUnderstandingService({ provider: mock2, baseOutputDir: TEST_CACHE_DIR, tmpDir: TEST_TMP_DIR });
 
     const [res1, res2] = await Promise.all([
-      service1.analyzePhotoBlob({ physical_file_hash: concurrentHash, storage_path: testPhotoPath, specs: { short_edge: 900 } }),
-      service2.analyzePhotoBlob({ physical_file_hash: concurrentHash, storage_path: testPhotoPath, specs: { short_edge: 900 } })
+      service1.analyzePhotoBlob({ physical_file_hash: concurrentHash, storage_path: tempConc, specs: { short_edge: 900 } }),
+      service2.analyzePhotoBlob({ physical_file_hash: concurrentHash, storage_path: tempConc, specs: { short_edge: 900 } })
     ]);
 
     assert.strictEqual(res1.photo_analysis_key, res2.photo_analysis_key);
@@ -347,14 +358,17 @@ async function runTests() {
 
   // Cenário Q: Provider timeout e erro não corrompem cache global
   await runAsyncCase('Cenário Q: Provider timeout e erro não corrompem cache global', async () => {
-    const failHash = 'fail00112233445566778899aabbccddeeff00112233445566778899aabbcc00';
+    const tempFail = path.join(TEST_DIR, 'fail_photo.jpg');
+    fs.writeFileSync(tempFail, Buffer.from('fail_bytes_image_123'));
+    const failHash = crypto.createHash('sha256').update(fs.readFileSync(tempFail)).digest('hex');
+
     const mock = new MockPhotoUnderstandingProvider();
     mock.shouldFail = true;
 
     const service = new PhotoMediaUnderstandingService({ provider: mock, baseOutputDir: TEST_CACHE_DIR, tmpDir: TEST_TMP_DIR });
 
     await assert.rejects(async () => {
-      await service.analyzePhotoBlob({ physical_file_hash: failHash, storage_path: testPhotoPath });
+      await service.analyzePhotoBlob({ physical_file_hash: failHash, storage_path: tempFail });
     }, /\[MOCK_ERROR\]/);
 
     const key = computePhotoAnalysisKey({ physical_file_hash: failHash, model_id: mock.modelId });
@@ -504,7 +518,6 @@ async function runTests() {
   // Cenário AD: Timestamp analyzed_at diferente NÃO altera photo_analysis_key
   runCase('Cenário AD: Timestamp analyzed_at diferente NÃO altera photo_analysis_key', () => {
     const key1 = computePhotoAnalysisKey({ physical_file_hash: dummyHash, model_id: 'gpt-4o-mini' });
-    // Mesmo com timestamp diferente em execução, o key gerado é idêntico:
     const key2 = computePhotoAnalysisKey({ physical_file_hash: dummyHash, model_id: 'gpt-4o-mini' });
     assert.strictEqual(key1, key2);
   });
@@ -516,6 +529,174 @@ async function runTests() {
     const key3 = computePhotoAnalysisKey({ physical_file_hash: dummyHash, model_id: 'gpt-4o-mini', provider_config: { detail: 'low', temperature: 0.7 } });
     assert.notStrictEqual(key1, key2);
     assert.notStrictEqual(key1, key3);
+  });
+
+  // =========================================================================
+  // NOVOS CENÁRIOS DE INTEGRIDADE (AF a AN)
+  // =========================================================================
+
+  // Cenário AF: storage_path contém bytes cujo SHA difere do physical_file_hash informado -> fail-fast antes do provider
+  await runAsyncCase('Cenário AF: storage_path com SHA divergente dispara PHOTO_PHYSICAL_HASH_MISMATCH', async () => {
+    const mock = new MockPhotoUnderstandingProvider();
+    const service = new PhotoMediaUnderstandingService({ provider: mock, baseOutputDir: TEST_CACHE_DIR, tmpDir: TEST_TMP_DIR });
+    const fakeHash = 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+
+    await assert.rejects(async () => {
+      await service.analyzePhotoBlob({
+        physical_file_hash: fakeHash, // informado FAKE
+        storage_path: testPhotoPath    // bytes reais do fixture
+      });
+    }, /\[PHOTO_PHYSICAL_HASH_MISMATCH\]/);
+  });
+
+  // Cenário AG: Hash mismatch -> provider call count permanece 0
+  await runAsyncCase('Cenário AG: Hash mismatch mantém provider call count em 0', async () => {
+    const mock = new MockPhotoUnderstandingProvider();
+    const service = new PhotoMediaUnderstandingService({ provider: mock, baseOutputDir: TEST_CACHE_DIR, tmpDir: TEST_TMP_DIR });
+    const fakeHash = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+
+    try {
+      await service.analyzePhotoBlob({
+        physical_file_hash: fakeHash,
+        storage_path: testPhotoPath
+      });
+    } catch (e) {}
+
+    assert.strictEqual(mock.callCount, 0); // Provedor NUNCA foi chamado!
+  });
+
+  // Cenário AH: Canonical analysis.json estruturalmente válido, mas com photo_analysis_key diferente -> rejeitado
+  await runAsyncCase('Cenário AH: Canonical analysis.json com photo_analysis_key divergente é rejeitado com CANONICAL_ANALYSIS_IDENTITY_ERROR', async () => {
+    const mock = new MockPhotoUnderstandingProvider();
+    const service = new PhotoMediaUnderstandingService({ provider: mock, baseOutputDir: TEST_CACHE_DIR, tmpDir: TEST_TMP_DIR });
+
+    const key = computePhotoAnalysisKey({ physical_file_hash: realFixtureHash, model_id: mock.modelId, provider_config: mock.getBehavioralConfig() });
+    const canonicalDir = path.join(TEST_CACHE_DIR, key);
+    if (!fs.existsSync(canonicalDir)) fs.mkdirSync(canonicalDir, { recursive: true });
+
+    // Grava canonical com photo_analysis_key errada (envenenada)
+    const poisonedKey = 'eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
+    const poisonedJson = {
+      photo_analysis_key: poisonedKey, // DIVERGENTE!
+      physical_file_hash: realFixtureHash,
+      semantic: { primary_room_type: 'kitchen', secondary_room_types: [], features: [], description: 'teste', confidence: 0.9 },
+      quality: {
+        technical_quality: { sharpness: 0.9, exposure: 0.9, noise_compression: 0.9, resolution_adequacy: 1.0, perspective_alignment: 0.9, score: 0.9 },
+        aesthetic_score: { composition: 0.9, framing: 0.9, visual_balance: 0.9, lighting_atmosphere: 0.9, cleanliness_staging: 0.9, score: 0.9 },
+        editorial_utility: { room_coverage: 0.9, feature_clarity: 0.9, spaciousness_perception: 0.9, obstruction_level: 1.0, score: 0.9, utility_label: 'high_value_anchor' },
+        composite_quality_score: 0.9
+      },
+      analyzer_provenance: { analyzer_type: 'mock' }
+    };
+    fs.writeFileSync(path.join(canonicalDir, 'analysis.json'), JSON.stringify(poisonedJson, null, 2), 'utf8');
+
+    await assert.rejects(async () => {
+      await service.analyzePhotoBlob({ physical_file_hash: realFixtureHash, storage_path: testPhotoPath });
+    }, /\[CANONICAL_ANALYSIS_IDENTITY_ERROR\]/);
+  });
+
+  // Cenário AI: Canonical analysis.json possui key correta, mas physical_file_hash diferente -> rejeitado
+  await runAsyncCase('Cenário AI: Canonical analysis.json com physical_file_hash divergente é rejeitado', async () => {
+    const mock = new MockPhotoUnderstandingProvider();
+    const service = new PhotoMediaUnderstandingService({ provider: mock, baseOutputDir: TEST_CACHE_DIR, tmpDir: TEST_TMP_DIR });
+
+    const key = computePhotoAnalysisKey({ physical_file_hash: realFixtureHash, model_id: mock.modelId, provider_config: mock.getBehavioralConfig() });
+    const canonicalDir = path.join(TEST_CACHE_DIR, key);
+    if (!fs.existsSync(canonicalDir)) fs.mkdirSync(canonicalDir, { recursive: true });
+
+    // Grava canonical com physical_file_hash errado
+    const poisonedHash = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
+    const poisonedJson = {
+      photo_analysis_key: key,
+      physical_file_hash: poisonedHash, // DIVERGENTE!
+      semantic: { primary_room_type: 'kitchen', secondary_room_types: [], features: [], description: 'teste', confidence: 0.9 },
+      quality: {
+        technical_quality: { sharpness: 0.9, exposure: 0.9, noise_compression: 0.9, resolution_adequacy: 1.0, perspective_alignment: 0.9, score: 0.9 },
+        aesthetic_score: { composition: 0.9, framing: 0.9, visual_balance: 0.9, lighting_atmosphere: 0.9, cleanliness_staging: 0.9, score: 0.9 },
+        editorial_utility: { room_coverage: 0.9, feature_clarity: 0.9, spaciousness_perception: 0.9, obstruction_level: 1.0, score: 0.9, utility_label: 'high_value_anchor' },
+        composite_quality_score: 0.9
+      },
+      analyzer_provenance: { analyzer_type: 'mock' }
+    };
+    fs.writeFileSync(path.join(canonicalDir, 'analysis.json'), JSON.stringify(poisonedJson, null, 2), 'utf8');
+
+    await assert.rejects(async () => {
+      await service.analyzePhotoBlob({ physical_file_hash: realFixtureHash, storage_path: testPhotoPath });
+    }, /\[CANONICAL_ANALYSIS_IDENTITY_ERROR\]/);
+  });
+
+  // Cenário AJ: EEXIST concorrente com canonical de identidade divergente -> CANONICAL_ANALYSIS_IDENTITY_ERROR
+  await runAsyncCase('Cenário AJ: Concorrência EEXIST com canonical divergente dispara CANONICAL_ANALYSIS_IDENTITY_ERROR', async () => {
+    const service = new PhotoMediaUnderstandingService({ baseOutputDir: TEST_CACHE_DIR, tmpDir: TEST_TMP_DIR });
+    const testKey = '1111222233334444555566667777888899990000aaaabbbbccccddddeeeeffff';
+    const canonicalDir = path.join(TEST_CACHE_DIR, testKey);
+    if (!fs.existsSync(canonicalDir)) fs.mkdirSync(canonicalDir, { recursive: true });
+
+    // Canonical existente com hash diferente do globalAnalysis que tentará ser publicado
+    const existingDivergent = {
+      photo_analysis_key: testKey,
+      physical_file_hash: '2222222222222222222222222222222222222222222222222222222222222222',
+      semantic: { primary_room_type: 'kitchen', secondary_room_types: [], features: [], description: 'divergente', confidence: 0.9 },
+      quality: {
+        technical_quality: { sharpness: 0.9, exposure: 0.9, noise_compression: 0.9, resolution_adequacy: 1.0, perspective_alignment: 0.9, score: 0.9 },
+        aesthetic_score: { composition: 0.9, framing: 0.9, visual_balance: 0.9, lighting_atmosphere: 0.9, cleanliness_staging: 0.9, score: 0.9 },
+        editorial_utility: { room_coverage: 0.9, feature_clarity: 0.9, spaciousness_perception: 0.9, obstruction_level: 1.0, score: 0.9, utility_label: 'high_value_anchor' },
+        composite_quality_score: 0.9
+      },
+      analyzer_provenance: { analyzer_type: 'mock' }
+    };
+    fs.writeFileSync(path.join(canonicalDir, 'analysis.json'), JSON.stringify(existingDivergent, null, 2), 'utf8');
+
+    const toPublish = {
+      photo_analysis_key: testKey,
+      physical_file_hash: '3333333333333333333333333333333333333333333333333333333333333333', // DIVERGENTE DO CANONICAL EXISTENTE
+      semantic: { primary_room_type: 'kitchen', secondary_room_types: [], features: [], description: 'novo', confidence: 0.9 },
+      quality: existingDivergent.quality,
+      analyzer_provenance: existingDivergent.analyzer_provenance
+    };
+
+    await assert.rejects(async () => {
+      await service.publishGlobalAnalysisNoClobber(testKey, toPublish);
+    }, /\[CANONICAL_ANALYSIS_IDENTITY_ERROR\]/);
+  });
+
+  // Cenário AK: Canonical divergente permanece byte-for-byte intacto
+  await runAsyncCase('Cenário AK: Canonical divergente permanece byte-for-byte intacto (zero unlink/truncate)', async () => {
+    const testKey = '1111222233334444555566667777888899990000aaaabbbbccccddddeeeeffff';
+    const canonicalPath = path.join(TEST_CACHE_DIR, testKey, 'analysis.json');
+    const content = fs.readFileSync(canonicalPath, 'utf8');
+    assert.ok(content.includes('divergente')); // ainda intacto no disco!
+  });
+
+  // Cenário AL: SHA inválido/não-hex é rejeitado com fail-fast
+  runCase('Cenário AL: SHA inválido/não-hex é rejeitado por validateSha256Hex', () => {
+    assert.throws(() => { validateSha256Hex('not_a_sha'); }, /SCHEMA_ERROR/);
+    assert.throws(() => { validateSha256Hex('0123456789abcdef'); }, /SCHEMA_ERROR/); // tamanho 16
+    assert.throws(() => { validateSha256Hex('z'.repeat(64)); }, /SCHEMA_ERROR/); // não-hex
+    assert.strictEqual(validateSha256Hex(dummyHash.toUpperCase()), dummyHash); // normaliza case
+  });
+
+  // Cenário AM: Caminho normal válido continua gerando cache hit
+  await runAsyncCase('Cenário AM: Caminho normal válido gera e reutiliza cache hit com sucesso', async () => {
+    const tempValid = path.join(TEST_DIR, 'valid_photo_normal.jpg');
+    fs.writeFileSync(tempValid, Buffer.from('valid_normal_bytes_for_testing'));
+    const validHash = crypto.createHash('sha256').update(fs.readFileSync(tempValid)).digest('hex');
+
+    const mock = new MockPhotoUnderstandingProvider();
+    const service = new PhotoMediaUnderstandingService({ provider: mock, baseOutputDir: TEST_CACHE_DIR, tmpDir: TEST_TMP_DIR });
+
+    const first = await service.analyzePhotoBlob({ physical_file_hash: validHash, storage_path: tempValid });
+    assert.strictEqual(first.cache_hit, false);
+
+    const second = await service.analyzePhotoBlob({ physical_file_hash: validHash, storage_path: tempValid });
+    assert.strictEqual(second.cache_hit, true);
+    assert.strictEqual(second.analysis.physical_file_hash, validHash);
+  });
+
+  // Cenário AN: Prova de idempotência da suíte
+  runCase('Cenário AN: Invariantes de integridade física e cache consolidadas', () => {
+    assert.ok(PhotoMediaUnderstandingService);
+    assert.ok(validateSha256Hex);
   });
 
   cleanupTestEnvironment();

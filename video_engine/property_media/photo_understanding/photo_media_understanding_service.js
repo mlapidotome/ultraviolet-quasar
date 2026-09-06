@@ -14,6 +14,7 @@ const {
   DEFAULT_PROMPT_VERSION,
   DEFAULT_QUALITY_RULES_VERSION,
   TAXONOMY_VERSION,
+  validateSha256Hex,
   computePhotoAnalysisKey,
   validateGlobalPhotoAnalysis,
   validateStrictRoomType,
@@ -29,6 +30,23 @@ const MockPhotoUnderstandingProvider = require('./providers/mock_photo_understan
 
 const PHOTO_ANALYSIS_BASE_DIR = path.join(__dirname, '..', '..', '..', 'outputs', 'media_analysis', 'photos');
 const PHOTO_ANALYSIS_TMP_DIR = path.join(PHOTO_ANALYSIS_BASE_DIR, '.tmp');
+
+/**
+ * Cálculo de Hash Físico via Streaming SHA-256 (O(N) nos bytes do arquivo)
+ */
+async function computeFileHashStream(filePath) {
+  if (!filePath || !fs.existsSync(filePath)) {
+    throw new Error(`[PHOTO_UNDERSTANDING_ERROR] Arquivo físico não encontrado: ${filePath}`);
+  }
+
+  return new Promise((resolve, reject) => {
+    const hash = crypto.createHash('sha256');
+    const stream = fs.createReadStream(filePath);
+    stream.on('data', chunk => hash.update(chunk));
+    stream.on('end', () => resolve(hash.digest('hex').toLowerCase()));
+    stream.on('error', err => reject(err));
+  });
+}
 
 class PhotoMediaUnderstandingService {
   constructor({
@@ -64,21 +82,32 @@ class PhotoMediaUnderstandingService {
 
   /**
    * Analisa um blob físico de imagem e persiste o resultado canônico global
-   * Retorna estritamente GlobalPhotoAnalysis (zero dados de propriedade)
+   * Revalida o physical_file_hash contra os bytes reais no disco antes de qualquer cache lookup ou provider call.
    */
   async analyzePhotoBlob({ physical_file_hash, storage_path, specs = {}, options = {} }) {
-    if (!physical_file_hash || typeof physical_file_hash !== 'string') {
-      throw new Error('[PHOTO_UNDERSTANDING_ERROR] physical_file_hash é obrigatório');
-    }
+    // 1. Validação estrita de formato do physical_file_hash informado
+    const cleanExpectedHash = validateSha256Hex(physical_file_hash, 'physical_file_hash');
+
+    // 2. Validação física do arquivo no disco
     if (!storage_path || !fs.existsSync(storage_path)) {
       throw new Error(`[PHOTO_UNDERSTANDING_ERROR] Arquivo físico não encontrado: ${storage_path}`);
+    }
+    const stat = fs.statSync(storage_path);
+    if (!stat.isFile()) {
+      throw new Error(`[PHOTO_UNDERSTANDING_ERROR] Caminho não é um arquivo regular: ${storage_path}`);
+    }
+
+    // 3. Revalidação Física O(N) Streaming SHA-256 contra os bytes reais
+    const actualPhysicalHash = await computeFileHashStream(storage_path);
+    if (actualPhysicalHash !== cleanExpectedHash) {
+      throw new Error(`[PHOTO_PHYSICAL_HASH_MISMATCH] physical_file_hash divergente dos bytes reais no disco: esperado '${cleanExpectedHash}', calculado '${actualPhysicalHash}'`);
     }
 
     const providerConfig = this.provider.getBehavioralConfig ? this.provider.getBehavioralConfig() : {};
 
-    // 1. Cálculo Determinístico do Analysis Key
+    // 4. Cálculo Determinístico do Analysis Key
     const photoAnalysisKey = computePhotoAnalysisKey({
-      physical_file_hash,
+      physical_file_hash: actualPhysicalHash,
       analyzer_type: DEFAULT_ANALYZER_TYPE,
       analyzer_version: DEFAULT_ANALYZER_VERSION,
       model_id: this.provider.modelId || 'unknown',
@@ -91,50 +120,59 @@ class PhotoMediaUnderstandingService {
 
     const canonicalPath = this.getCanonicalCachePath(photoAnalysisKey);
 
-    // 2. Verificação de Cache Hit Global
+    // 5. Verificação de Cache Hit Global com Validação Estrita de Identidade
     if (fs.existsSync(canonicalPath)) {
       try {
         const cachedRaw = fs.readFileSync(canonicalPath, 'utf8');
         const cachedJson = JSON.parse(cachedRaw);
         const validated = validateGlobalPhotoAnalysis(cachedJson);
+
+        // Validação de Identidade Canônica: a análise em cache DEVE pertencer à mesma key e hash físico
+        if (validated.photo_analysis_key !== photoAnalysisKey || validated.physical_file_hash !== actualPhysicalHash) {
+          throw new Error(`[CANONICAL_ANALYSIS_IDENTITY_ERROR] Cache canônico em '${canonicalPath}' possui identidade divergente: esperado key='${photoAnalysisKey}', hash='${actualPhysicalHash}', recebido key='${validated.photo_analysis_key}', hash='${validated.physical_file_hash}'`);
+        }
+
         return {
           photo_analysis_key: photoAnalysisKey,
           analysis: validated,
           cache_hit: true
         };
       } catch (cacheErr) {
+        if (cacheErr.message.includes('CANONICAL_ANALYSIS_IDENTITY_ERROR')) {
+          throw cacheErr;
+        }
         console.warn(`[PHOTO_UNDERSTANDING_WARN] Cache existente corrompido para key ${photoAnalysisKey}:`, cacheErr.message);
       }
     }
 
-    // 3. Cache Miss: Execução da Análise Visual via Provider
+    // 6. Cache Miss: Execução da Análise Visual via Provider
     const rawResult = await this.provider.analyzePhoto({
       imageInput: storage_path,
       specs,
-      options: { ...options, physical_file_hash }
+      options: { ...options, physical_file_hash: actualPhysicalHash }
     });
 
     if (!rawResult || typeof rawResult !== 'object') {
       throw new Error('[PHOTO_UNDERSTANDING_ERROR] Provedor retornou resposta inválida');
     }
 
-    // 4. Validação e Normalização Semântica Estrita
+    // 7. Validação e Normalização Semântica Estrita
     const primaryRoom = validateStrictRoomType(rawResult.primary_room_type, 'primary_room_type');
     const secondaryRooms = normalizeAndValidateSecondaryRooms(rawResult.secondary_room_types, primaryRoom);
     const features = normalizeAndValidateFeatures(rawResult.features);
     const confidence = validateStrictScore(rawResult.confidence, 'confidence');
     const description = rawResult.description ? String(rawResult.description).slice(0, 500) : '';
 
-    // 5. Avaliação Determinística de Qualidade
+    // 8. Avaliação Determinística de Qualidade
     const evaluatedQuality = QualityEvaluator.evaluateQuality({
       rawVlmScores: rawResult.raw_vlm_scores || rawResult,
       specs
     });
 
-    // 6. Montagem do GlobalPhotoAnalysis
+    // 9. Montagem do GlobalPhotoAnalysis
     const globalAnalysis = {
       photo_analysis_key: photoAnalysisKey,
-      physical_file_hash: physical_file_hash.toLowerCase().trim(),
+      physical_file_hash: actualPhysicalHash,
       semantic: {
         primary_room_type: primaryRoom,
         secondary_room_types: secondaryRooms,
@@ -160,7 +198,7 @@ class PhotoMediaUnderstandingService {
     // Validação estrita do schema global (fail-fast)
     validateGlobalPhotoAnalysis(globalAnalysis);
 
-    // 7. Publicação Atômica No-Clobber no Cache Global
+    // 10. Publicação Atômica No-Clobber no Cache Global
     await this.publishGlobalAnalysisNoClobber(photoAnalysisKey, globalAnalysis);
 
     return {
@@ -195,13 +233,24 @@ class PhotoMediaUnderstandingService {
         try {
           const existingRaw = fs.readFileSync(canonicalPath, 'utf8');
           const existingJson = JSON.parse(existingRaw);
-          validateGlobalPhotoAnalysis(existingJson);
-          // Arquivo existente é válido -> remove staging próprio e segue
+          const validatedExisting = validateGlobalPhotoAnalysis(existingJson);
+
+          // Validação Estrita de Identidade Canônica em Concorrência
+          if (validatedExisting.photo_analysis_key !== photoAnalysisKey ||
+              validatedExisting.physical_file_hash !== globalAnalysis.physical_file_hash) {
+            try { fs.unlinkSync(stagingPath); } catch (e) {}
+            throw new Error(`[CANONICAL_ANALYSIS_IDENTITY_ERROR] Arquivo canônico existente possui identidade divergente: esperado key='${photoAnalysisKey}', hash='${globalAnalysis.physical_file_hash}', recebido key='${validatedExisting.photo_analysis_key}', hash='${validatedExisting.physical_file_hash}'`);
+          }
+
+          // Arquivo existente é válido e idêntico -> remove staging próprio e segue
           try { fs.unlinkSync(stagingPath); } catch (e) {}
           return;
         } catch (valErr) {
-          // Arquivo existente corrompido: NÃO deletar arquivo canônico compartilhado
+          // Em caso de erro: NUNCA deletar arquivo canônico compartilhado
           try { fs.unlinkSync(stagingPath); } catch (e) {}
+          if (valErr.message.includes('CANONICAL_ANALYSIS_IDENTITY_ERROR')) {
+            throw valErr;
+          }
           throw new Error(`[CANONICAL_ANALYSIS_INTEGRITY_ERROR] Arquivo canônico existente inválido em ${canonicalPath}: ${valErr.message}`);
         }
       } else {
@@ -349,6 +398,7 @@ const defaultPhotoMediaUnderstandingService = new PhotoMediaUnderstandingService
 module.exports = {
   PhotoMediaUnderstandingService,
   defaultPhotoMediaUnderstandingService,
+  computeFileHashStream,
   PHOTO_ANALYSIS_BASE_DIR,
   PHOTO_ANALYSIS_TMP_DIR
 };
