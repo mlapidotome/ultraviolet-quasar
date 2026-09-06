@@ -584,21 +584,49 @@ class PropertyMediaService {
     const pool = getPool();
     const cleanRef = String(propertyRef).trim();
 
-    // 1. Buscar fotos do snapshot via CRM / Banco local
+    // 1. Buscar fotos: priorizar assets READY materializados no video_assets com validação física
     let photos = [];
     try {
-      const jobService = require('../job_service');
-      const imovel = await jobService.fetchImovelData(cleanRef);
-      if (Array.isArray(imovel?.fotos)) {
-        photos = imovel.fotos.map((f, idx) => ({
-          asset_id: `ast_crm_photo_${cleanRef}_${idx + 1}`,
-          asset_type: 'image',
-          role: 'property_photo',
-          url: typeof f === 'string' ? f : (f.url || f.link),
-          index: idx + 1
-        }));
+      const photoRes = await pool.query(
+        "SELECT * FROM video_assets WHERE property_ref = $1 AND asset_type = 'property_photo' AND status = 'ready' ORDER BY created_at ASC",
+        [cleanRef]
+      );
+      if (photoRes.rows && photoRes.rows.length > 0) {
+        const { verifyCanonicalBlobIntegrity } = require('./photo_ingestion/photo_blob_store');
+        for (const row of photoRes.rows) {
+          const integrity = await verifyCanonicalBlobIntegrity(row.storage_path, row.file_hash);
+          if (integrity.valid) {
+            photos.push({
+              asset_id: row.id,
+              asset_type: 'property_photo',
+              role: 'property_photo',
+              property_ref: row.property_ref,
+              storage_path: row.storage_path,
+              file_hash: row.file_hash,
+              specs: row.specs || {},
+              metadata: row.metadata || {}
+            });
+          }
+        }
       }
     } catch (e) {}
+
+    // Fallback: se nenhuma foto materializada no banco, buscar fotos do snapshot via CRM / Banco local
+    if (photos.length === 0) {
+      try {
+        const jobService = require('../job_service');
+        const imovel = await jobService.fetchImovelData(cleanRef);
+        if (Array.isArray(imovel?.fotos)) {
+          photos = imovel.fotos.map((f, idx) => ({
+            asset_id: `ast_crm_photo_${cleanRef}_${idx + 1}`,
+            asset_type: 'image',
+            role: 'property_photo',
+            url: typeof f === 'string' ? f : (f.url || f.link),
+            index: idx + 1
+          }));
+        }
+      } catch (e) {}
+    }
 
     // 2. Buscar vídeos com status READY no banco com validação física rigorosa
     const videos = [];

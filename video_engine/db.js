@@ -80,12 +80,14 @@ function createInMemoryPool() {
         return { rows: matching, rowCount: matching.length };
       }
 
-      // 3. SELECT * FROM video_assets WHERE property_ref = $1 AND asset_type = 'property_video' AND status = 'ready'
-      if (/^SELECT\s+\*\s+FROM\s+video_assets\s+WHERE\s+property_ref\s*=\s*\$1\s+AND\s+asset_type\s*=\s*'property_video'\s+AND\s+status\s*=\s*'ready'/i.test(trimmed)) {
+      // 3. SELECT * FROM video_assets WHERE property_ref = $1 AND asset_type = ... AND status = 'ready'
+      if (/^SELECT\s+\*\s+FROM\s+video_assets\s+WHERE\s+property_ref\s*=\s*\$1\s+AND\s+asset_type\s*=\s*(?:'([^']+)'|\$2)\s+AND\s+status\s*=\s*'ready'/i.test(trimmed)) {
         const propRef = params[0];
+        const assetTypeMatch = trimmed.match(/asset_type\s*=\s*'([^']+)'/i);
+        const expectedType = assetTypeMatch ? assetTypeMatch[1] : params[1];
         const matching = [];
         for (const row of tables.video_assets.values()) {
-          if (String(row.property_ref) === String(propRef) && row.asset_type === 'property_video' && row.status === 'ready') {
+          if (String(row.property_ref) === String(propRef) && (!expectedType || row.asset_type === expectedType) && row.status === 'ready') {
             matching.push({ ...row });
           }
         }
