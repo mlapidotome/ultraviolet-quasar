@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Módulo de Continuidade Editorial e Regras Cinematográficas — Creative Director (Fase 4A.3)
  * Bali Imóveis
  */
@@ -148,44 +148,108 @@ function resolveVisualDecisionsForBeat({
   }
 
   // 5. Fallback determinístico (quando não há match semântico suficiente ou vídeo disponível)
-  // Selecionar o segmento de vídeo de maior qualidade geral disponível
-  const segmentsByQuality = (mediaCatalog.segments || []).slice().sort((a, b) => {
+  // Ordenar segmentos por qualidade geral (estética 60% + técnica 40%)
+  const segmentsByQuality = (mediaCatalog?.segments || []).slice().sort((a, b) => {
     const qA = (a.aesthetic_score * 0.60) + (a.technical_quality_score * 0.40);
     const qB = (b.aesthetic_score * 0.60) + (b.technical_quality_score * 0.40);
     return qB - qA;
   });
 
-  const bestGeneralSegment = segmentsByQuality.find(s => {
+  // 5.1 Tentativa A: Encontrar um único segmento genérico com footage disponível >= beatDuration
+  const singleViableGeneralSegment = segmentsByQuality.find(s => {
     const consumed = consumedFootageMap[s.segment_index] !== undefined ? consumedFootageMap[s.segment_index] : s.start_ms;
     return (s.end_ms - consumed) >= beatDuration;
-  }) || segmentsByQuality[0];
+  });
 
-  if (bestGeneralSegment) {
-    const consumed = consumedFootageMap[bestGeneralSegment.segment_index] !== undefined
-      ? consumedFootageMap[bestGeneralSegment.segment_index]
-      : bestGeneralSegment.start_ms;
-    const durToUse = Math.min(beatDuration, bestGeneralSegment.end_ms - consumed);
+  if (singleViableGeneralSegment) {
+    const consumed = consumedFootageMap[singleViableGeneralSegment.segment_index] !== undefined
+      ? consumedFootageMap[singleViableGeneralSegment.segment_index]
+      : singleViableGeneralSegment.start_ms;
     const sourceIn = consumed;
-    const sourceOut = sourceIn + durToUse;
-    consumedFootageMap[bestGeneralSegment.segment_index] = sourceOut;
+    const sourceOut = sourceIn + beatDuration;
+    consumedFootageMap[singleViableGeneralSegment.segment_index] = sourceOut;
 
     return [{
       timeline_start_ms: beat.start_ms,
       timeline_end_ms: beat.end_ms,
       timeline_duration_ms: beatDuration,
       selected_asset_id: mediaCatalog.asset_id,
-      selected_segment_index: bestGeneralSegment.segment_index,
+      selected_segment_index: singleViableGeneralSegment.segment_index,
       source_in_ms: sourceIn,
       source_out_ms: sourceOut,
-      source_duration_ms: durToUse,
+      source_duration_ms: beatDuration,
       confidence: 0.50,
       fallback_used: true,
       fallback_type: 'generic_property_media',
-      selection_reason: `Fallback ativado: sem match semântico >= ${minRelevance}. Selecionado segmento de alta estética geral (#${bestGeneralSegment.segment_index} ${bestGeneralSegment.room_type})`
+      selection_reason: `Fallback ativado: sem match semântico >= ${minRelevance}. Selecionado segmento de alta estética geral (#${singleViableGeneralSegment.segment_index} ${singleViableGeneralSegment.room_type})`
     }];
   }
 
-  // Fallback final: Modo apresentador fullscreen
+  // 5.2 Tentativa B: Sequência de 2 takes genéricos se nenhum take único cobrir beatDuration
+  const partiallyViableGeneral = segmentsByQuality.filter(s => {
+    const consumed = consumedFootageMap[s.segment_index] !== undefined ? consumedFootageMap[s.segment_index] : s.start_ms;
+    return (s.end_ms - consumed) >= minVisualDuration;
+  });
+
+  if (partiallyViableGeneral.length >= 2) {
+    const gTake1 = partiallyViableGeneral[0];
+    const gTake1Consumed = consumedFootageMap[gTake1.segment_index] !== undefined ? consumedFootageMap[gTake1.segment_index] : gTake1.start_ms;
+    const gTake1Avail = gTake1.end_ms - gTake1Consumed;
+    const gTake1Dur = Math.min(gTake1Avail, Math.round(beatDuration / 2));
+    const gTake2Dur = beatDuration - gTake1Dur;
+
+    if (gTake1Dur >= minVisualDuration && gTake2Dur >= minVisualDuration) {
+      const gTake2 = partiallyViableGeneral.find(s => {
+        if (s.segment_index === gTake1.segment_index) return false;
+        const c = consumedFootageMap[s.segment_index] !== undefined ? consumedFootageMap[s.segment_index] : s.start_ms;
+        return (s.end_ms - c) >= gTake2Dur;
+      });
+
+      if (gTake2) {
+        const gTake2Consumed = consumedFootageMap[gTake2.segment_index] !== undefined ? consumedFootageMap[gTake2.segment_index] : gTake2.start_ms;
+        const t1SourceIn = gTake1Consumed;
+        const t1SourceOut = t1SourceIn + gTake1Dur;
+        consumedFootageMap[gTake1.segment_index] = t1SourceOut;
+
+        const t2SourceIn = gTake2Consumed;
+        const t2SourceOut = t2SourceIn + gTake2Dur;
+        consumedFootageMap[gTake2.segment_index] = t2SourceOut;
+
+        return [
+          {
+            timeline_start_ms: beat.start_ms,
+            timeline_end_ms: beat.start_ms + gTake1Dur,
+            timeline_duration_ms: gTake1Dur,
+            selected_asset_id: mediaCatalog.asset_id,
+            selected_segment_index: gTake1.segment_index,
+            source_in_ms: t1SourceIn,
+            source_out_ms: t1SourceOut,
+            source_duration_ms: gTake1Dur,
+            confidence: 0.50,
+            fallback_used: true,
+            fallback_type: 'generic_property_media',
+            selection_reason: `Fallback sequencial 1/2: alta estética geral (#${gTake1.segment_index} ${gTake1.room_type})`
+          },
+          {
+            timeline_start_ms: beat.start_ms + gTake1Dur,
+            timeline_end_ms: beat.end_ms,
+            timeline_duration_ms: gTake2Dur,
+            selected_asset_id: mediaCatalog.asset_id,
+            selected_segment_index: gTake2.segment_index,
+            source_in_ms: t2SourceIn,
+            source_out_ms: t2SourceOut,
+            source_duration_ms: gTake2Dur,
+            confidence: 0.50,
+            fallback_used: true,
+            fallback_type: 'generic_property_media',
+            selection_reason: `Fallback sequencial 2/2: alta estética geral (#${gTake2.segment_index} ${gTake2.room_type})`
+          }
+        ];
+      }
+    }
+  }
+
+  // 5.3 Tentativa C / Fallback final: Modo apresentador fullscreen
   return [{
     timeline_start_ms: beat.start_ms,
     timeline_end_ms: beat.end_ms,
@@ -198,7 +262,7 @@ function resolveVisualDecisionsForBeat({
     confidence: 1.0,
     fallback_used: true,
     fallback_type: 'presenter_fullscreen',
-    selection_reason: 'Fallback ativado: nenhum segmento de vídeo viável disponível. Apresentador mantido em tela cheia.'
+    selection_reason: 'Fallback ativado: nenhum segmento de vídeo viável com duração suficiente. Apresentador mantido em tela cheia.'
   }];
 }
 

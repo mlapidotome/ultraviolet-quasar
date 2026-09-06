@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Suíte de Testes Formais: Creative Director & Semantic Matching (Fase 4A.3)
  * Cenários A a Z
  * Bali Imóveis
@@ -710,6 +710,304 @@ async function runAllTests() {
     assert.strictEqual(expectedTimelineCursor, 14000, 'Cobertura final deve ser exatamente 14000ms');
     reportPass('Cenário Z — Sequência Visual Cobre Intervalo Total Sem Gaps/Overlaps');
   } catch (e) { reportFail('Cenário Z', e); }
+
+  // ----------------------------------------------------
+  // Cenário AA: Segmento Genérico Menor que Beat Não Pode Ser Retornado como Cobertura Integral Única
+  // ----------------------------------------------------
+  try {
+    const mediaCatalog = {
+      property_ref: '1628',
+      asset_id: 'ast_pvid_short_fallback',
+      segments: [
+        {
+          segment_index: 0,
+          room_type: 'facade',
+          start_ms: 0,
+          end_ms: 2500, // Duração de 2.5s (menor que o beat de 4s)
+          technical_quality_score: 0.90,
+          aesthetic_score: 0.90,
+          confidence: 0.90,
+          features: []
+        }
+      ]
+    };
+    const beat = { beat_index: 0, start_ms: 0, end_ms: 4000, duration_ms: 4000, text: 'Roteiro sem match' };
+    const ranked = evaluateAndRankCandidates({
+      semanticIntent: { requested_room_types: ['garage'], requested_features: [] },
+      requiredDurationMs: 4000,
+      mediaCatalog
+    });
+    const decisions = resolveVisualDecisionsForBeat({
+      beat,
+      rankedCandidates: ranked,
+      mediaCatalog,
+      consumedFootageMap: {}
+    });
+
+    // Não pode retornar 1 único take de generic_property_media com timeline_duration 4000 e source 2500
+    if (decisions.length === 1 && decisions[0].fallback_type === 'generic_property_media') {
+      assert.strictEqual(decisions[0].timeline_duration_ms, decisions[0].source_duration_ms, 'source_duration deve igualar timeline_duration');
+      assert.strictEqual(decisions[0].timeline_duration_ms, 4000);
+      assert.fail('Segmento de 2.5s não pode cobrir 4s como cobertura integral');
+    }
+    reportPass('Cenário AA — Segmento Genérico Curto Não é Retornado como Cobertura Integral Única');
+  } catch (e) { reportFail('Cenário AA', e); }
+
+  // ----------------------------------------------------
+  // Cenário AB: Fallback Retorna presenter_fullscreen ou Sequência Física Válida Cobrindo Exatamente o Beat
+  // ----------------------------------------------------
+  try {
+    const mediaCatalog = {
+      property_ref: '1628',
+      asset_id: 'ast_pvid_short_fallback',
+      segments: [
+        {
+          segment_index: 0,
+          room_type: 'facade',
+          start_ms: 0,
+          end_ms: 2500,
+          technical_quality_score: 0.90,
+          aesthetic_score: 0.90,
+          confidence: 0.90,
+          features: []
+        }
+      ]
+    };
+    const beat = { beat_index: 0, start_ms: 0, end_ms: 4000, duration_ms: 4000, text: 'Roteiro sem match' };
+    const ranked = evaluateAndRankCandidates({
+      semanticIntent: { requested_room_types: ['garage'], requested_features: [] },
+      requiredDurationMs: 4000,
+      mediaCatalog
+    });
+    const decisions = resolveVisualDecisionsForBeat({
+      beat,
+      rankedCandidates: ranked,
+      mediaCatalog,
+      consumedFootageMap: {}
+    });
+
+    assert(decisions.length >= 1);
+    let totalTimeline = 0;
+    for (const d of decisions) {
+      assert.strictEqual(d.timeline_duration_ms, d.source_duration_ms, 'timeline === source duration');
+      totalTimeline += d.timeline_duration_ms;
+    }
+    assert.strictEqual(totalTimeline, 4000, 'Cobertura total deve somar exatamente a duração do beat');
+    if (decisions.length === 1) {
+      assert.strictEqual(decisions[0].fallback_type, 'presenter_fullscreen');
+    }
+    reportPass('Cenário AB — Fallback Retorna presenter_fullscreen ou Sequência Válida Exata');
+  } catch (e) { reportFail('Cenário AB', e); }
+
+  // ----------------------------------------------------
+  // Cenário AC: Todo Fallback Property Video Mantém timeline_duration === source_duration
+  // ----------------------------------------------------
+  try {
+    const mediaCatalog = {
+      property_ref: '1628',
+      asset_id: 'ast_pvid_long_fallback',
+      segments: [
+        {
+          segment_index: 0,
+          room_type: 'facade',
+          start_ms: 0,
+          end_ms: 6000,
+          technical_quality_score: 0.90,
+          aesthetic_score: 0.90,
+          confidence: 0.90,
+          features: []
+        }
+      ]
+    };
+    const beat = { beat_index: 0, start_ms: 0, end_ms: 3500, duration_ms: 3500, text: 'Roteiro sem match' };
+    const ranked = evaluateAndRankCandidates({
+      semanticIntent: { requested_room_types: ['garage'], requested_features: [] },
+      requiredDurationMs: 3500,
+      mediaCatalog
+    });
+    const decisions = resolveVisualDecisionsForBeat({
+      beat,
+      rankedCandidates: ranked,
+      mediaCatalog,
+      consumedFootageMap: {}
+    });
+
+    for (const d of decisions) {
+      assert.strictEqual(d.timeline_duration_ms, d.source_duration_ms);
+      assert.strictEqual(d.timeline_end_ms - d.timeline_start_ms, d.timeline_duration_ms);
+      assert.strictEqual(d.source_out_ms - d.source_in_ms, d.source_duration_ms);
+    }
+    reportPass('Cenário AC — Todo Fallback Property Video Mantém timeline_duration === source_duration');
+  } catch (e) { reportFail('Cenário AC', e); }
+
+  // ----------------------------------------------------
+  // Cenário AD: Fallback Nunca Produz source_out > segment.end_ms
+  // ----------------------------------------------------
+  try {
+    const mediaCatalog = {
+      property_ref: '1628',
+      asset_id: 'ast_pvid_test_ad',
+      segments: [
+        {
+          segment_index: 0,
+          room_type: 'living_room',
+          start_ms: 1000,
+          end_ms: 4000,
+          technical_quality_score: 0.85,
+          aesthetic_score: 0.85,
+          confidence: 0.90,
+          features: []
+        }
+      ]
+    };
+    const beat = { beat_index: 0, start_ms: 0, end_ms: 3000, duration_ms: 3000, text: 'Roteiro genérico' };
+    const ranked = evaluateAndRankCandidates({
+      semanticIntent: { requested_room_types: ['cinema'], requested_features: [] },
+      requiredDurationMs: 3000,
+      mediaCatalog
+    });
+    const consumedMap = { 0: 2000 }; // Já consumiu até 2000ms, restam 2000ms (< 3000ms)
+    const decisions = resolveVisualDecisionsForBeat({
+      beat,
+      rankedCandidates: ranked,
+      mediaCatalog,
+      consumedFootageMap: consumedMap
+    });
+
+    for (const d of decisions) {
+      if (d.selected_segment_index === 0) {
+        assert(d.source_out_ms <= 4000, 'source_out não pode ultrapassar segment.end_ms');
+      }
+    }
+    reportPass('Cenário AD — Fallback Nunca Produz source_out > segment.end_ms');
+  } catch (e) { reportFail('Cenário AD', e); }
+
+  // ----------------------------------------------------
+  // Cenário AE: Cenário com Property Fallback Suficientemente Longo Continua Funcionando
+  // ----------------------------------------------------
+  try {
+    const mediaCatalog = {
+      property_ref: '1628',
+      asset_id: 'ast_pvid_ae',
+      segments: [
+        {
+          segment_index: 0,
+          room_type: 'living_room',
+          start_ms: 0,
+          end_ms: 10000,
+          technical_quality_score: 0.88,
+          aesthetic_score: 0.82,
+          confidence: 0.95,
+          features: []
+        }
+      ]
+    };
+    const beat = { beat_index: 0, start_ms: 0, end_ms: 4000, duration_ms: 4000, text: 'Roteiro institucional' };
+    const ranked = evaluateAndRankCandidates({
+      semanticIntent: { requested_room_types: ['garage'], requested_features: [] },
+      requiredDurationMs: 4000,
+      mediaCatalog
+    });
+    const decisions = resolveVisualDecisionsForBeat({
+      beat,
+      rankedCandidates: ranked,
+      mediaCatalog,
+      consumedFootageMap: {}
+    });
+
+    assert.strictEqual(decisions.length, 1);
+    assert.strictEqual(decisions[0].fallback_used, true);
+    assert.strictEqual(decisions[0].fallback_type, 'generic_property_media');
+    assert.strictEqual(decisions[0].source_in_ms, 0);
+    assert.strictEqual(decisions[0].source_out_ms, 4000);
+    assert.strictEqual(decisions[0].timeline_duration_ms, 4000);
+    assert.strictEqual(decisions[0].source_duration_ms, 4000);
+    reportPass('Cenário AE — Property Fallback Longo Continua Funcionando Normalmente');
+  } catch (e) { reportFail('Cenário AE', e); }
+
+  // ----------------------------------------------------
+  // Cenário AF: Cenário com Nenhum Property Segment Utilizável Chega ao Presenter Fallback Sem Exception
+  // ----------------------------------------------------
+  try {
+    const emptyCatalog = {
+      property_ref: '1628',
+      asset_id: 'ast_pvid_empty',
+      segments: []
+    };
+    const beat = { beat_index: 0, start_ms: 0, end_ms: 5000, duration_ms: 5000, text: 'Roteiro qualquer' };
+    const ranked = evaluateAndRankCandidates({
+      semanticIntent: { requested_room_types: ['living_room'], requested_features: [] },
+      requiredDurationMs: 5000,
+      mediaCatalog: emptyCatalog
+    });
+    const decisions = resolveVisualDecisionsForBeat({
+      beat,
+      rankedCandidates: ranked,
+      mediaCatalog: emptyCatalog,
+      consumedFootageMap: {}
+    });
+
+    assert.strictEqual(decisions.length, 1);
+    assert.strictEqual(decisions[0].fallback_used, true);
+    assert.strictEqual(decisions[0].fallback_type, 'presenter_fullscreen');
+    assert.strictEqual(decisions[0].timeline_duration_ms, 5000);
+    assert.strictEqual(decisions[0].source_duration_ms, 5000);
+    assert.strictEqual(decisions[0].selected_asset_id, null);
+    reportPass('Cenário AF — Nenhum Property Segment Utilizável Chega ao Presenter Fallback Sem Exception');
+  } catch (e) { reportFail('Cenário AF', e); }
+
+  // ----------------------------------------------------
+  // Cenário AG: validateBeatDecision Passa em Todos os Caminhos de Fallback Produzidos pelo Engine
+  // ----------------------------------------------------
+  try {
+    const testBeats = [
+      { beat_index: 0, start_ms: 0, end_ms: 3000, duration_ms: 3000, text: 'Roteiro A' },
+      { beat_index: 1, start_ms: 3000, end_ms: 8000, duration_ms: 5000, text: 'Roteiro B' }
+    ];
+    const catalogs = [
+      // 1. Catálogo com segmento longo
+      { property_ref: '1628', asset_id: 'ast_1', segments: [{ segment_index: 0, room_type: 'pool', start_ms: 0, end_ms: 10000, technical_quality_score: 0.8, aesthetic_score: 0.8, confidence: 0.9, features: [] }] },
+      // 2. Catálogo com múltiplos segmentos curtos (sequência de 2 takes)
+      { property_ref: '1628', asset_id: 'ast_2', segments: [
+        { segment_index: 0, room_type: 'hallway', start_ms: 0, end_ms: 2500, technical_quality_score: 0.8, aesthetic_score: 0.8, confidence: 0.9, features: [] },
+        { segment_index: 1, room_type: 'facade', start_ms: 3000, end_ms: 6000, technical_quality_score: 0.85, aesthetic_score: 0.85, confidence: 0.9, features: [] }
+      ]},
+      // 3. Catálogo vazio (presenter fullscreen)
+      { property_ref: '1628', asset_id: 'ast_3', segments: [] }
+    ];
+
+    for (const cat of catalogs) {
+      for (const beat of testBeats) {
+        const intent = extractSemanticIntent(beat.text);
+        const ranked = evaluateAndRankCandidates({
+          semanticIntent: intent,
+          requiredDurationMs: beat.duration_ms,
+          mediaCatalog: cat
+        });
+        const visualDecisions = resolveVisualDecisionsForBeat({
+          beat,
+          rankedCandidates: ranked,
+          mediaCatalog: cat,
+          consumedFootageMap: {}
+        });
+
+        const beatDecision = {
+          beat_index: beat.beat_index,
+          start_ms: beat.start_ms,
+          end_ms: beat.end_ms,
+          duration_ms: beat.duration_ms,
+          spoken_text: beat.text,
+          semantic_intent: intent,
+          evaluated_candidates: ranked,
+          visual_decisions: visualDecisions
+        };
+
+        // Validação estrita de schema
+        validateBeatDecision(beatDecision);
+      }
+    }
+    reportPass('Cenário AG — validateBeatDecision Passa em Todos os Caminhos de Fallback');
+  } catch (e) { reportFail('Cenário AG', e); }
 
   // Cleanup de jobs temporários de teste
   try {
