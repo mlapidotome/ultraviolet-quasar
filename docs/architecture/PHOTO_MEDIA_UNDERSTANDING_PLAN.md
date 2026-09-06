@@ -100,24 +100,33 @@ flowchart LR
 
 ## 4. Concorrência e Filesystem Publication Seguro
 
-Para eliminar classes de race condition (como as corrigidas em Property Video Ingestion):
+Para eliminar classes de race condition e garantir que workers de ingestão **nunca** interfiram em arquivos compartilhados:
 
 1. **Staging Exclusivo por Processo/Worker:**
    - Todo download é feito em um diretório temporário isolado:
      `outputs/media_blobs/photos/.tmp/ingest_<token>_<uuid>.tmp`
 2. **Validação Pré-Publicação:**
    - Inspeção de integridade física via FFprobe e Decode real antes de mover para o path final.
-   - Cálculo do `physical_file_hash`.
-3. **Publicação Atômica e Imutável (`winner/loser` seguro):**
-   - Caminho final canônico: `outputs/media_blobs/photos/<physical_file_hash>.<ext>`
-   - Se o arquivo final já existir:
-     - Worker B calcula o hash do arquivo existente.
-     - Se o hash coincidir: Worker B simplesmente descarta seu arquivo temporário no `.tmp` e reutiliza o arquivo já publicado (Idempotência segura).
-     - Se o hash divergir (corrupção): Worker B remove o corrompido e promove atomicamente seu arquivo validado.
-   - Se o arquivo final não existir:
-     - Worker A promove via `fs.renameSync(staging, finalPath)`.
-4. **Regra de Ouro de Cleanup:**
-   - O worker **NUNCA** executa `unlink` sobre o arquivo final canônico compartilhado em caso de erro; o cleanup é estritamente restrito ao seu próprio arquivo de staging temporário (`.tmp`).
+   - Cálculo do `physical_file_hash` ($H$).
+3. **Regras Estritas de Publicação e Bloqueio de Unlink de Blobs Canônicos:**
+   - Caminho final canônico: `canonicalPath = outputs/media_blobs/photos/<H>.<normalized_ext>`
+   - **Caso 1 — `canonicalPath` não existe:**
+     - Worker promove seu staging de forma segura via `fs.renameSync(staging, canonicalPath)`.
+     - Valida a publicação e prossegue com a criação do property asset.
+   - **Caso 2 — `canonicalPath` já existe:**
+     - Worker calcula o SHA-256 físico do arquivo existente (`existingHash`).
+     - **Se `existingHash === H`:**
+       - **CACHE / DEDUPLICATION HIT:** O worker descarta **apenas** seu arquivo de staging temporário (`.tmp`) e reutiliza o `canonicalPath` já existente.
+     - **Se `existingHash !== H`:**
+       - **FAIL FAST:** Lança erro imediato `CANONICAL_BLOB_INTEGRITY_ERROR`.
+       - O worker **NUNCA** executa `unlink` sobre o `canonicalPath`, **NUNCA** sobrescreve o `canonicalPath`, e **NUNCA** tenta repair automático in-band. O blob global compartilhado é preservado intacto e a divergência é registrada para investigação out-of-band.
+4. **Concorrência de Primeira Publicação (Races entre Workers):**
+   - Se Worker A e Worker B baixam simultaneamente a mesma foto ($H$) quando o blob canônico ainda não existe:
+     - Ambos produzem exatamente os mesmos bytes e hash $H$.
+     - Um dos workers concluirá o `renameSync` primeiro.
+     - O segundo worker detecta a existência de `canonicalPath`, valida que `existingHash === H`, descarta seu staging temporário no `.tmp`, e ambos vinculam seus respectivos property assets ao mesmo blob canônico válido.
+5. **Regra de Ouro de Cleanup:**
+   - O worker de ingestão **NUNCA** executa `unlink` ou qualquer operação destrutiva sobre o diretório `outputs/media_blobs/photos/` principal ou sobre qualquer arquivo canônico publicado; o cleanup de erro é estritamente restrito ao seu próprio arquivo de staging temporário (`.tmp`).
 
 ---
 
@@ -293,7 +302,7 @@ A suíte formal de testes da Fase 4B cobrirá os seguintes cenários:
 - **Cenário Y:** Múltiplas referências de foto no CRM com mesmo conteúdo preservam array completo de metadados.
 - **Cenário Z:** Ingestão concorrente da mesma foto por dois workers nunca permite ao loser apagar o arquivo do winner.
 - **Cenário AA:** Arquivo canônico existente no blob store com hash correto é reutilizado sem novo download.
-- **Cenário AB:** Arquivo canônico existente com hash corrompido é detectado e recuperado com segurança.
+- **Cenário AB:** Imagem truncada com dados corrompidos descartada em staging antes de afetar o catálogo.
 - **Cenário AC:** Tentativa de redirect para IP de metadata em nuvem (`169.254.169.254`) bloqueada imediatamente.
 - **Cenário AD:** Falha de decode real impede que o asset transite para o status `ready`.
 - **Cenário AE:** Mudança de URL com bytes idênticos não invalida o cache semântico global.
@@ -303,6 +312,13 @@ A suíte formal de testes da Fase 4B cobrirá os seguintes cenários:
 - **Cenário AI:** Validação de `features` contra a taxonomia unificada de 17 features (Fase 4B.2).
 - **Cenário AJ:** Divergência entre `crm_category` e `vlm_prediction` registrada sem perda da proveniência original.
 - **Cenário AK:** Composer V3 e Property Video Ingestion permanecem 100% desacoplados e intocados.
+- **Cenário AL:** Canonical blob inexistente $\rightarrow$ publicação bem-sucedida no blob store global.
+- **Cenário AM:** Canonical blob já existe com hash correto $\rightarrow$ reutilização sem rewrite (idempotência segura).
+- **Cenário AN:** Canonical blob existe com hash divergente do nome esperado $\rightarrow$ FAIL FAST (`CANONICAL_BLOB_INTEGRITY_ERROR`) e o arquivo canônico **NÃO** é removido ou modificado.
+- **Cenário AO:** Dois workers publicando simultaneamente os mesmos bytes $\rightarrow$ um único blob canônico válido permanece.
+- **Cenário AP:** Worker loser em concorrência remove **somente** seu arquivo de staging próprio no `.tmp`.
+- **Cenário AQ:** Nenhum caminho normal de erro executa `unlink` no blob global.
+- **Cenário AR:** Dois property assets de refs diferentes (`1628` e `1601`) apontam para o mesmo blob físico sem conflito de ownership.
 
 ---
 
