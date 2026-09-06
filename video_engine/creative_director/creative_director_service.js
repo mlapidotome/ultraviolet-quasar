@@ -1,6 +1,6 @@
 /**
  * Serviço Principal do Creative Director — Video Engine V2
- * Bali Imóveis (Fase 4A.3)
+ * Bali Imóveis (Fase 4C — Multimodal Semantic Matching)
  */
 
 const fs = require('fs');
@@ -18,6 +18,7 @@ const {
   DEFAULT_SCORING_WEIGHTS,
   DEFAULT_SEMANTIC_THRESHOLDS,
   validateBeatDecision,
+  computePropertySemanticMediaPoolKey,
   computeCreativeDirectionKey
 } = require('./creative_direction_schema');
 const { extractSemanticIntent } = require('./intent_extractor');
@@ -37,13 +38,15 @@ class CreativeDirectorService {
   }
 
   /**
-   * Constrói o plano editorial auditável de Creative Direction a partir dos Beats e Media Understanding
+   * Constrói o plano editorial auditável de Creative Direction a partir dos Beats e Catálogo Multimodal
    */
   async createDirectionPlan({
     jobId,
     propertyRef,
     scriptTimingResult,
-    mediaUnderstandingResult,
+    mediaUnderstandingResult = null,
+    propertySemanticCatalog = null,
+    photoAssets = null,
     options = {}
   } = {}) {
     if (!jobId) throw new Error('[CREATIVE_DIRECTOR_ERROR] jobId é obrigatório');
@@ -51,25 +54,60 @@ class CreativeDirectorService {
     if (!scriptTimingResult || !Array.isArray(scriptTimingResult.beats)) {
       throw new Error('[CREATIVE_DIRECTOR_ERROR] scriptTimingResult com array de beats é obrigatório');
     }
-    if (!mediaUnderstandingResult || !Array.isArray(mediaUnderstandingResult.segments)) {
-      throw new Error('[CREATIVE_DIRECTOR_ERROR] mediaUnderstandingResult com array de segments é obrigatório');
-    }
 
     const cleanJobId = String(jobId).trim();
     const cleanRef = String(propertyRef).trim();
     const scoringWeights = options.scoringWeights || DEFAULT_SCORING_WEIGHTS;
     const semanticThresholds = options.semanticThresholds || DEFAULT_SEMANTIC_THRESHOLDS;
     const minVisualDurationMs = options.minVisualDurationMs || semanticThresholds.min_visual_duration_ms || 1500;
+    const maxPhotoVisualDurationMs = options.maxPhotoVisualDurationMs || semanticThresholds.max_photo_visual_duration_ms || 6000;
 
-    const scriptTimingKey = scriptTimingResult.alignment_key;
+    const scriptTimingKey = scriptTimingResult.script_timing_key || scriptTimingResult.alignment_key;
     const beatAnalysisKey = scriptTimingResult.beat_analysis_key;
-    const mediaUnderstandingKey = mediaUnderstandingResult.analysis_key;
 
-    // 1. Cálculo do Fingerprint Canônico (creative_direction_key)
+    // 1. Montagem do Catálogo Canônico Multimodal (Vídeo + Fotos)
+    let mediaCatalog = propertySemanticCatalog || options.mediaCatalog || null;
+
+    if (!mediaCatalog) {
+      const videoAssets = [];
+      if (mediaUnderstandingResult && Array.isArray(mediaUnderstandingResult.segments)) {
+        const videoAssetId = mediaUnderstandingResult.asset_id || `ast_pvid_${cleanRef}_video`;
+        videoAssets.push({
+          asset_id: videoAssetId,
+          physical_file_hash: mediaUnderstandingResult.physical_file_hash || '',
+          analysis_key: mediaUnderstandingResult.analysis_key || '',
+          segments: mediaUnderstandingResult.segments
+        });
+      }
+
+      let photos = photoAssets || options.photoAssets || options.photos || [];
+      if (photos.length === 0 && options.autoFetchPhotos !== false && !mediaUnderstandingResult) {
+        try {
+          const { PhotoMediaUnderstandingService } = require('../property_media/photo_understanding');
+          const photoService = new PhotoMediaUnderstandingService();
+          const photoRes = await photoService.analyzePropertyPhotos(cleanRef);
+          photos = photoRes.photos || [];
+        } catch (e) {}
+      }
+
+      mediaCatalog = {
+        property_ref: cleanRef,
+        video_assets: videoAssets,
+        photo_assets: photos,
+        segments: videoAssets.length > 0 ? videoAssets[0].segments : []
+      };
+    }
+
+    // 2. Cálculo do Fingerprint Canônico (creative_direction_key)
+    const propertySemanticMediaPoolKey = computePropertySemanticMediaPoolKey({
+      video_assets: mediaCatalog.video_assets || (mediaCatalog.segments ? [mediaCatalog] : []),
+      photo_assets: mediaCatalog.photo_assets || mediaCatalog.photos || []
+    });
+
     const creativeDirectionKey = computeCreativeDirectionKey({
       script_timing_key: scriptTimingKey,
       beat_analysis_key: beatAnalysisKey,
-      media_understanding_key: mediaUnderstandingKey,
+      property_semantic_media_pool_key: propertySemanticMediaPoolKey,
       intent_extractor_version: this.intentExtractorVersion,
       media_ranker_version: this.mediaRankerVersion,
       continuity_engine_version: this.continuityEngineVersion,
@@ -78,6 +116,7 @@ class CreativeDirectorService {
       scoring_weights: scoringWeights,
       semantic_thresholds: semanticThresholds,
       min_visual_duration_ms: minVisualDurationMs,
+      max_photo_visual_duration_ms: maxPhotoVisualDurationMs,
       schema_version: SCHEMA_VERSION
     });
 
@@ -85,7 +124,7 @@ class CreativeDirectorService {
     const directionDir = path.join(jobDir, 'creative_direction', creativeDirectionKey);
     const directionFilePath = path.join(directionDir, 'direction_plan.json');
 
-    // 2. Verificação de Cache Hit Imutável
+    // 3. Verificação de Cache Hit Imutável
     if (fs.existsSync(directionFilePath)) {
       try {
         const cachedRaw = fs.readFileSync(directionFilePath, 'utf8');
@@ -101,6 +140,7 @@ class CreativeDirectorService {
             job_id: cleanJobId,
             property_ref: cleanRef,
             creative_direction_key: creativeDirectionKey,
+            property_semantic_media_pool_key: propertySemanticMediaPoolKey,
             direction_plan: cachedPlan,
             direction_plan_path: directionFilePath
           };
@@ -108,33 +148,38 @@ class CreativeDirectorService {
       } catch (e) {}
     }
 
-    // 3. Montagem do Catálogo Canônico de Mídia da 4A.1
-    const videoAssetId = mediaUnderstandingResult.asset_id || `ast_pvid_${cleanRef}_video`;
-    const mediaCatalog = {
-      asset_id: videoAssetId,
-      physical_file_hash: mediaUnderstandingResult.physical_file_hash,
-      segments: mediaUnderstandingResult.segments
-    };
-
-    // 4. Decisão Editorial Beat por Beat
+    // 4. Decisão Editorial Beat por Beat Multimodal
     const beatsDecisions = [];
     const consumedFootageMap = {};
+    const recentPhotosUsageMap = {};
     let lastVisualDecision = null;
+    let recentModalityFlips = 0;
+    let lastMediaKind = null;
 
-    for (const beat of scriptTimingResult.beats) {
+    for (let beatIdx = 0; beatIdx < scriptTimingResult.beats.length; beatIdx++) {
+      const beat = scriptTimingResult.beats[beatIdx];
+
       // 4.1 Extração de Intenção Semântica
       const semanticIntent = extractSemanticIntent(beat.text);
 
-      // 4.2 Ranking e Feasibility de Candidatos
+      // 4.2 Ranking e Feasibility de Candidatos (Vídeo + Foto)
       const lastSegIdx = lastVisualDecision ? lastVisualDecision.selected_segment_index : null;
       const evaluatedCandidates = evaluateAndRankCandidates({
         semanticIntent,
         requiredDurationMs: beat.duration_ms,
         mediaCatalog,
+        lastSelectedCandidate: lastVisualDecision,
         lastSelectedSegmentIndex: lastSegIdx,
+        recentPhotosUsageMap,
+        currentBeatIndex: beatIdx,
+        recentModalityFlips,
         consumedFootageMap,
         scoringWeights,
-        semanticThresholds
+        semanticThresholds: {
+          ...semanticThresholds,
+          min_visual_duration_ms: minVisualDurationMs,
+          max_photo_visual_duration_ms: maxPhotoVisualDurationMs
+        }
       });
 
       // 4.3 Continuidade e Resolução da Sequência Visual
@@ -143,8 +188,13 @@ class CreativeDirectorService {
         rankedCandidates: evaluatedCandidates,
         mediaCatalog,
         consumedFootageMap,
+        recentPhotosUsageMap,
         lastVisualDecision,
-        semanticThresholds: { ...semanticThresholds, min_visual_duration_ms: minVisualDurationMs }
+        semanticThresholds: {
+          ...semanticThresholds,
+          min_visual_duration_ms: minVisualDurationMs,
+          max_photo_visual_duration_ms: maxPhotoVisualDurationMs
+        }
       });
 
       const beatDecision = {
@@ -162,7 +212,12 @@ class CreativeDirectorService {
       beatsDecisions.push(beatDecision);
 
       if (visualDecisions.length > 0) {
-        lastVisualDecision = visualDecisions[visualDecisions.length - 1];
+        const lastDec = visualDecisions[visualDecisions.length - 1];
+        if (lastMediaKind && lastDec.media_kind && lastDec.media_kind !== lastMediaKind) {
+          recentModalityFlips++;
+        }
+        lastMediaKind = lastDec.media_kind;
+        lastVisualDecision = lastDec;
       }
     }
 
@@ -170,11 +225,11 @@ class CreativeDirectorService {
     const directionPlan = {
       schema_version: SCHEMA_VERSION,
       creative_direction_key: creativeDirectionKey,
+      property_semantic_media_pool_key: propertySemanticMediaPoolKey,
       job_id: cleanJobId,
       property_ref: cleanRef,
       script_timing_key: scriptTimingKey,
       beat_analysis_key: beatAnalysisKey,
-      media_understanding_key: mediaUnderstandingKey,
       intent_extractor_version: this.intentExtractorVersion,
       media_ranker_version: this.mediaRankerVersion,
       continuity_engine_version: this.continuityEngineVersion,
@@ -201,6 +256,7 @@ class CreativeDirectorService {
       job_id: cleanJobId,
       property_ref: cleanRef,
       creative_direction_key: creativeDirectionKey,
+      property_semantic_media_pool_key: propertySemanticMediaPoolKey,
       direction_plan: directionPlan,
       direction_plan_path: directionFilePath
     };
@@ -230,17 +286,50 @@ class CreativeDirectorService {
 
     for (const beatDec of directionPlan.beats_decisions) {
       for (const vDec of beatDec.visual_decisions) {
-        const isPresenterFullscreen = (vDec.fallback_used && vDec.fallback_type === 'presenter_fullscreen');
-        const dur = vDec.timeline_duration_ms || (vDec.timeline_end_ms - vDec.timeline_start_ms);
+        const isPresenterFullscreen = (vDec.fallback_used && vDec.fallback_type === 'presenter_fullscreen') || !vDec.selected_asset_id;
+        const isPhoto = (vDec.media_kind === 'photo' || vDec.asset_type === 'image' || vDec.media_kind === 'property_photo');
 
-        if (isPresenterFullscreen || !vDec.selected_asset_id) {
+        let startMs = vDec.timeline_start_ms;
+        let endMs = vDec.timeline_end_ms;
+        let sourceIn = vDec.source_in_ms !== null && vDec.source_in_ms !== undefined ? vDec.source_in_ms : null;
+        let sourceOut = vDec.source_out_ms !== null && vDec.source_out_ms !== undefined ? vDec.source_out_ms : null;
+
+        // Garantir cobertura contínua sem gaps entre beats
+        if (visualTimeline.length === 0) {
+          if (startMs > 0) {
+            if (!isPhoto && sourceIn !== null) {
+              sourceIn = Math.max(0, sourceIn - startMs);
+            }
+            startMs = 0;
+          }
+        } else {
+          const prevSeg = visualTimeline[visualTimeline.length - 1];
+          if (startMs > prevSeg.end_ms) {
+            const gap = startMs - prevSeg.end_ms;
+            prevSeg.end_ms = startMs;
+            if (prevSeg.asset_type === 'video' && prevSeg.source_out_ms !== null) {
+              prevSeg.source_out_ms += gap;
+            }
+            if (pipWindows.length > 0) {
+              const lastPip = pipWindows[pipWindows.length - 1];
+              lastPip.end_ms = startMs;
+              lastPip.source_out_ms = startMs;
+            }
+          } else if (startMs < prevSeg.end_ms) {
+            startMs = prevSeg.end_ms;
+          }
+        }
+
+        const dur = Math.max(1, endMs - startMs);
+
+        if (isPresenterFullscreen) {
           visualTimeline.push({
             asset_id: presenterAssetId,
             asset_type: 'video',
-            start_ms: vDec.timeline_start_ms,
-            end_ms: vDec.timeline_end_ms,
-            source_in_ms: vDec.source_in_ms,
-            source_out_ms: vDec.source_out_ms,
+            start_ms: startMs,
+            end_ms: endMs,
+            source_in_ms: sourceIn !== null ? sourceIn : startMs,
+            source_out_ms: sourceOut !== null ? sourceOut : endMs,
             fit: 'cover',
             transition_in: { type: 'cut' }
           });
@@ -250,14 +339,60 @@ class CreativeDirectorService {
             scene_type: 'presenter_fullscreen',
             duration_ms: dur,
             asset_id: presenterAssetId,
-            source_in_ms: vDec.source_in_ms,
-            source_out_ms: vDec.source_out_ms,
+            source_in_ms: sourceIn !== null ? sourceIn : startMs,
+            source_out_ms: sourceOut !== null ? sourceOut : endMs,
             visual_layers: [
               {
                 layer_type: 'presenter_fullscreen',
                 asset_id: presenterAssetId,
-                source_in_ms: vDec.source_in_ms,
-                source_out_ms: vDec.source_out_ms
+                source_in_ms: sourceIn !== null ? sourceIn : startMs,
+                source_out_ms: sourceOut !== null ? sourceOut : endMs
+              }
+            ],
+            audio_mix: {
+              presenter_volume: 1.0,
+              broll_audio_volume: 0.0
+            }
+          });
+        } else if (isPhoto) {
+          // B-roll de Foto com Ken Burns automático pelo Composer V3
+          visualTimeline.push({
+            asset_id: vDec.selected_asset_id,
+            asset_type: 'image',
+            start_ms: startMs,
+            end_ms: endMs,
+            fit: 'cover',
+            transition_in: { type: 'cut' }
+          });
+
+          // Janela PIP do Apresentador sincronizada com lip-sync
+          pipWindows.push({
+            start_ms: startMs,
+            end_ms: endMs,
+            source_in_ms: startMs,
+            source_out_ms: endMs,
+            position: 'bottom_right',
+            shape: 'rounded_rect'
+          });
+
+          scenes.push({
+            scene_index: sceneIdx++,
+            scene_type: 'broll_fullscreen_avatar_pip',
+            duration_ms: dur,
+            asset_id: vDec.selected_asset_id,
+            visual_layers: [
+              {
+                layer_type: 'broll_fullscreen',
+                asset_id: vDec.selected_asset_id,
+                asset_type: 'image'
+              },
+              {
+                layer_type: 'avatar_pip_overlay',
+                asset_id: presenterAssetId,
+                pip_position: 'bottom_right',
+                width_percent: 32,
+                height_percent: 32,
+                border_radius: 16
               }
             ],
             audio_mix: {
@@ -270,20 +405,20 @@ class CreativeDirectorService {
           visualTimeline.push({
             asset_id: vDec.selected_asset_id,
             asset_type: 'video',
-            start_ms: vDec.timeline_start_ms,
-            end_ms: vDec.timeline_end_ms,
-            source_in_ms: vDec.source_in_ms,
-            source_out_ms: vDec.source_out_ms,
+            start_ms: startMs,
+            end_ms: endMs,
+            source_in_ms: sourceIn !== null ? sourceIn : startMs,
+            source_out_ms: sourceOut !== null ? sourceOut : endMs,
             fit: 'cover',
             transition_in: { type: 'cut' }
           });
 
           // Janela PIP do Apresentador sincronizada com lip-sync
           pipWindows.push({
-            start_ms: vDec.timeline_start_ms,
-            end_ms: vDec.timeline_end_ms,
-            source_in_ms: vDec.timeline_start_ms,
-            source_out_ms: vDec.timeline_end_ms,
+            start_ms: startMs,
+            end_ms: endMs,
+            source_in_ms: startMs,
+            source_out_ms: endMs,
             position: 'bottom_right',
             shape: 'rounded_rect'
           });
@@ -293,14 +428,14 @@ class CreativeDirectorService {
             scene_type: 'broll_fullscreen_avatar_pip',
             duration_ms: dur,
             asset_id: vDec.selected_asset_id,
-            source_in_ms: vDec.source_in_ms,
-            source_out_ms: vDec.source_out_ms,
+            source_in_ms: sourceIn !== null ? sourceIn : startMs,
+            source_out_ms: sourceOut !== null ? sourceOut : endMs,
             visual_layers: [
               {
                 layer_type: 'broll_fullscreen',
                 asset_id: vDec.selected_asset_id,
-                source_in_ms: vDec.source_in_ms,
-                source_out_ms: vDec.source_out_ms
+                source_in_ms: sourceIn !== null ? sourceIn : startMs,
+                source_out_ms: sourceOut !== null ? sourceOut : endMs
               },
               {
                 layer_type: 'avatar_pip_overlay',
