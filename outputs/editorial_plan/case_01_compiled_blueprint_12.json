@@ -9,13 +9,15 @@
     "fps": 30
   },
   "editing_style": {
-    "style_id": "luxury_minimal",
+    "style_id": "performance_reels_v1",
     "version": 1
   },
   "total_duration_ms": 52680,
   "audio_track": {
     "primary_asset_id": "ast_presenter_marcel_julia_v2",
-    "broll_audio_policy": "mute_all_broll"
+    "broll_audio_policy": "mute_all_broll",
+    "source_in_ms": 0,
+    "source_out_ms": 52680
   },
   "visual_timeline": [
     {
@@ -31,60 +33,60 @@
       }
     },
     {
-      "asset_id": "ast_vid_julia_living",
+      "asset_id": "ast_presenter_marcel_julia_v2",
       "asset_type": "video",
       "start_ms": 6440,
       "end_ms": 12239,
-      "source_in_ms": 0,
-      "source_out_ms": 5799,
+      "source_in_ms": 6440,
+      "source_out_ms": 12239,
       "fit": "cover",
       "transition_in": {
         "type": "cut"
       }
     },
     {
-      "asset_id": "ast_vid_julia_balcony",
+      "asset_id": "ast_presenter_marcel_julia_v2",
       "asset_type": "video",
       "start_ms": 12239,
       "end_ms": 19200,
-      "source_in_ms": 0,
-      "source_out_ms": 6961,
+      "source_in_ms": 12239,
+      "source_out_ms": 19200,
       "fit": "cover",
       "transition_in": {
         "type": "cut"
       }
     },
     {
-      "asset_id": "ast_vid_julia_living",
+      "asset_id": "ast_presenter_marcel_julia_v2",
       "asset_type": "video",
       "start_ms": 19200,
       "end_ms": 27440,
-      "source_in_ms": 3320,
-      "source_out_ms": 11560,
+      "source_in_ms": 19200,
+      "source_out_ms": 27440,
       "fit": "cover",
       "transition_in": {
         "type": "cut"
       }
     },
     {
-      "asset_id": "ast_vid_julia_amenities",
+      "asset_id": "ast_presenter_marcel_julia_v2",
       "asset_type": "video",
       "start_ms": 27440,
       "end_ms": 31799,
-      "source_in_ms": 0,
-      "source_out_ms": 4359,
+      "source_in_ms": 27440,
+      "source_out_ms": 31799,
       "fit": "cover",
       "transition_in": {
         "type": "cut"
       }
     },
     {
-      "asset_id": "ast_vid_julia_amenities",
+      "asset_id": "ast_presenter_marcel_julia_v2",
       "asset_type": "video",
       "start_ms": 31799,
       "end_ms": 37040,
-      "source_in_ms": 4359,
-      "source_out_ms": 9600,
+      "source_in_ms": 31799,
+      "source_out_ms": 37040,
       "fit": "cover",
       "transition_in": {
         "type": "cut"
@@ -134,24 +136,30 @@
   "overlays": [
     {
       "id": "ov_loc_beat_04",
+      "layer_order": 10,
       "type": "location_tag",
       "position": "lower_third",
+      "preset": "location_badge",
       "text": "Taubaté Shopping / Shibata / Dutra",
       "start_ms": 12239,
       "end_ms": 19200
     },
     {
       "id": "ov_fin_beat_08",
+      "layer_order": 20,
       "type": "price_badge",
       "position": "lower_third",
-      "text": "Parcelas na faixa de R$ 2.000 | Total R$ 350.000 (MCMV)",
+      "preset": "price_punch",
+      "text": "R$ 350 MIL | MCMV",
       "start_ms": 37040,
       "end_ms": 44680
     },
     {
       "id": "ov_cta_beat_010",
+      "layer_order": 30,
       "type": "cta_banner",
       "position": "bottom_safe",
+      "preset": "cta_bar",
       "text": "Saiba Mais | Agende sua Visita",
       "start_ms": 47040,
       "end_ms": 52680
@@ -160,13 +168,28 @@
   "captions": [
     {
       "start_ms": 0,
+      "end_ms": 2146,
+      "text": "Por que continuar pagando aluguel se você"
+    },
+    {
+      "start_ms": 2146,
+      "end_ms": 4292,
+      "text": "pode morar a minutos do Taubaté Shopping e do"
+    },
+    {
+      "start_ms": 4292,
       "end_ms": 6440,
-      "text": "Por que continuar pagando aluguel se você pode morar a minutos do Taubaté Shopping e do Shibata pagando parcelas de R$2.000?"
+      "text": "Shibata pagando parcelas de R$2.000?"
     },
     {
       "start_ms": 6440,
+      "end_ms": 8100,
+      "text": "Dá uma olhada nesse apartamento de R$350.000"
+    },
+    {
+      "start_ms": 8100,
       "end_ms": 9760,
-      "text": "Dá uma olhada nesse apartamento de R$350.000 no Residencial Júlia."
+      "text": "no Residencial Júlia."
     },
     {
       "start_ms": 9760,
@@ -175,28 +198,93 @@
     },
     {
       "start_ms": 12239,
+      "end_ms": 13979,
+      "text": "Você estará a poucos minutos do Taubaté"
+    },
+    {
+      "start_ms": 13979,
+      "end_ms": 15719,
+      "text": "Shopping, coladinho ao supermercado Shibata e"
+    },
+    {
+      "start_ms": 15719,
+      "end_ms": 17459,
+      "text": "com acesso ultra rápido à Dutra e Carvalho"
+    },
+    {
+      "start_ms": 17459,
       "end_ms": 19200,
-      "text": "Você estará a poucos minutos do Taubaté Shopping, coladinho ao supermercado Shibata e com acesso ultra rápido à Dutra e Carvalho Pinto."
+      "text": "Pinto."
     },
     {
       "start_ms": 19200,
+      "end_ms": 21260,
+      "text": "O apartamento tem 68m² muito bem planejados:"
+    },
+    {
+      "start_ms": 21260,
+      "end_ms": 23320,
+      "text": "sala espaçosa, cozinha funcional, dois"
+    },
+    {
+      "start_ms": 23320,
+      "end_ms": 25380,
+      "text": "banheiros, dois dormitórios sendo uma suíte"
+    },
+    {
+      "start_ms": 25380,
       "end_ms": 27440,
-      "text": "O apartamento tem 68m² muito bem planejados: sala espaçosa, cozinha funcional, dois banheiros, dois dormitórios sendo uma suíte privativa."
+      "text": "privativa."
     },
     {
       "start_ms": 27440,
+      "end_ms": 28893,
+      "text": "E o destaque especial: uma varanda deliciosa"
+    },
+    {
+      "start_ms": 28893,
+      "end_ms": 30346,
+      "text": "com churrasqueira para curtir o fim de"
+    },
+    {
+      "start_ms": 30346,
       "end_ms": 31799,
-      "text": "E o destaque especial: uma varanda deliciosa com churrasqueira para curtir o fim de semana."
+      "text": "semana."
     },
     {
       "start_ms": 31799,
+      "end_ms": 33546,
+      "text": "O condomínio conta com portaria remota 24h,"
+    },
+    {
+      "start_ms": 33546,
+      "end_ms": 35293,
+      "text": "salão de festas, área gourmet, playground e"
+    },
+    {
+      "start_ms": 35293,
       "end_ms": 37040,
-      "text": "O condomínio conta com portaria remota 24h, salão de festas, área gourmet, playground e vaga coberta."
+      "text": "vaga coberta."
     },
     {
       "start_ms": 37040,
+      "end_ms": 38950,
+      "text": "Tudo isso por apenas R$350.000, financiado"
+    },
+    {
+      "start_ms": 38950,
+      "end_ms": 40860,
+      "text": "pelo Minha Casa Minha Vida, com entrada em"
+    },
+    {
+      "start_ms": 40860,
+      "end_ms": 42770,
+      "text": "torno de R$60.000 a R$70.000 e parcelas na"
+    },
+    {
+      "start_ms": 42770,
       "end_ms": 44680,
-      "text": "Tudo isso por apenas R$350.000, financiado pelo Minha Casa Minha Vida, com entrada em torno de R$60.000 a R$70.000 e parcelas na faixa de R$2.000."
+      "text": "faixa de R$2.000."
     },
     {
       "start_ms": 44680,
@@ -205,13 +293,23 @@
     },
     {
       "start_ms": 47040,
+      "end_ms": 48920,
+      "text": "Faz o seguinte: clica no botão Saiba Mais,"
+    },
+    {
+      "start_ms": 48920,
+      "end_ms": 50800,
+      "text": "deixe o seu melhor telefone que a nossa"
+    },
+    {
+      "start_ms": 50800,
       "end_ms": 52680,
-      "text": "Faz o seguinte: clica no botão Saiba Mais, deixe o seu melhor telefone que a nossa equipe vai te chamar e agendar uma visita."
+      "text": "equipe vai te chamar e agendar uma visita."
     }
   ],
   "resolution_metadata": {
     "compiler_version": "1.0.0",
-    "compiled_at": "2026-09-07T01:53:02.854Z",
+    "compiled_at": "2026-09-07T02:07:03.139Z",
     "case_id": "CASE_01",
     "total_beats": 10,
     "resolution_trace": [
@@ -230,8 +328,8 @@
         "state_decision": "SWITCH",
         "source_strategy": "PROPERTY",
         "graphic_intent": "NONE",
-        "action": "SWITCH_TO_PROPERTY_4C (VIDEO_TRIM)",
-        "selected_asset_id": "ast_vid_julia_living"
+        "action": "FALLBACK_PRESENTER_PROPERTY_MISSING",
+        "selected_asset_id": "ast_presenter_marcel_julia_v2"
       },
       {
         "beat_id": "BEAT_03",
@@ -240,7 +338,7 @@
         "source_strategy": "CURRENT_STATE",
         "graphic_intent": "NONE",
         "action": "HOLD_SUSTAIN_PREVIOUS_VISUAL",
-        "selected_asset_id": "ast_vid_julia_living"
+        "selected_asset_id": "ast_presenter_marcel_julia_v2"
       },
       {
         "beat_id": "BEAT_04",
@@ -248,8 +346,8 @@
         "state_decision": "SWITCH",
         "source_strategy": "LOCATION",
         "graphic_intent": "LOCATION_SUPPORT",
-        "action": "SWITCH_TO_LOCATION_BROLL_4C",
-        "selected_asset_id": "ast_vid_julia_balcony"
+        "action": "FALLBACK_PRESENTER_LOCATION_MISSING",
+        "selected_asset_id": "ast_presenter_marcel_julia_v2"
       },
       {
         "beat_id": "BEAT_05",
@@ -257,8 +355,8 @@
         "state_decision": "SWITCH",
         "source_strategy": "PROPERTY",
         "graphic_intent": "NONE",
-        "action": "SWITCH_TO_PROPERTY_4C (VIDEO_TRIM)",
-        "selected_asset_id": "ast_vid_julia_living"
+        "action": "FALLBACK_PRESENTER_PROPERTY_MISSING",
+        "selected_asset_id": "ast_presenter_marcel_julia_v2"
       },
       {
         "beat_id": "BEAT_06",
@@ -266,8 +364,8 @@
         "state_decision": "SWITCH",
         "source_strategy": "LIFESTYLE",
         "graphic_intent": "NONE",
-        "action": "SWITCH_TO_PROPERTY_4C (VIDEO_TRIM)",
-        "selected_asset_id": "ast_vid_julia_amenities"
+        "action": "FALLBACK_PRESENTER_PROPERTY_MISSING",
+        "selected_asset_id": "ast_presenter_marcel_julia_v2"
       },
       {
         "beat_id": "BEAT_07",
@@ -275,8 +373,8 @@
         "state_decision": "SWITCH",
         "source_strategy": "PROPERTY",
         "graphic_intent": "NONE",
-        "action": "SWITCH_TO_PROPERTY_4C (VIDEO_TRIM)",
-        "selected_asset_id": "ast_vid_julia_amenities"
+        "action": "FALLBACK_PRESENTER_PROPERTY_MISSING",
+        "selected_asset_id": "ast_presenter_marcel_julia_v2"
       },
       {
         "beat_id": "BEAT_08",
@@ -307,6 +405,26 @@
       }
     ],
     "graceful_degradations": [
+      {
+        "beat_id": "BEAT_02",
+        "reason": "No matching property media for living_room; degraded to presenter on camera."
+      },
+      {
+        "beat_id": "BEAT_04",
+        "reason": "No location B-roll candidate in media catalog; degraded to presenter on camera."
+      },
+      {
+        "beat_id": "BEAT_05",
+        "reason": "No matching property media for living_room/kitchen/suite; degraded to presenter on camera."
+      },
+      {
+        "beat_id": "BEAT_06",
+        "reason": "No matching property media for balcony/condo_amenities/facade; degraded to presenter on camera."
+      },
+      {
+        "beat_id": "BEAT_07",
+        "reason": "No matching property media for condo_amenities/facade; degraded to presenter on camera."
+      },
       {
         "beat_id": "BEAT_08",
         "type": "DESIGN_SYSTEM_DEGRADATION",

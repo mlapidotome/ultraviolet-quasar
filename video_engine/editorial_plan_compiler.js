@@ -47,6 +47,57 @@ class EditorialPlanCompiler {
   }
 
   /**
+   * Divide texto longo de fala em segmentos de legenda que respeitam os limites de linha e caracteres
+   */
+  static chunkCaption(text, startMs, endMs, maxCharsPerChunk = 45) {
+    if (!text || typeof text !== 'string') return [];
+    const words = text.trim().split(/\s+/);
+    if (words.length === 0 || words[0] === '') return [];
+
+    const chunks = [];
+    let currentChunkWords = [];
+    let currentLen = 0;
+
+    for (const w of words) {
+      const addedLen = currentChunkWords.length === 0 ? w.length : currentLen + 1 + w.length;
+      if (addedLen <= maxCharsPerChunk) {
+        currentChunkWords.push(w);
+        currentLen = addedLen;
+      } else {
+        if (currentChunkWords.length > 0) {
+          chunks.push(currentChunkWords.join(' '));
+        }
+        currentChunkWords = [w];
+        currentLen = w.length;
+      }
+    }
+    if (currentChunkWords.length > 0) {
+      chunks.push(currentChunkWords.join(' '));
+    }
+
+    if (chunks.length === 0) return [];
+    if (chunks.length === 1) {
+      return [{ start_ms: startMs, end_ms: endMs, text: chunks[0] }];
+    }
+
+    const totalDuration = endMs - startMs;
+    const chunkDuration = Math.floor(totalDuration / chunks.length);
+    const result = [];
+
+    for (let i = 0; i < chunks.length; i++) {
+      const cStart = startMs + (i * chunkDuration);
+      const cEnd = (i === chunks.length - 1) ? endMs : cStart + chunkDuration;
+      result.push({
+        start_ms: cStart,
+        end_ms: cEnd,
+        text: chunks[i]
+      });
+    }
+
+    return result;
+  }
+
+  /**
    * Mapeia subjects e intenção do plano em room_types e features para a Fase 4C
    */
   static mapSubjectsToSemanticIntent(unit) {
@@ -369,19 +420,23 @@ class EditorialPlanCompiler {
         const textTag = unit.typography_intent?.semantic_target || 'Taubaté / Próx. Shopping e Shibata';
         overlays.push({
           id: `ov_loc_${beatId.toLowerCase()}`,
+          layer_order: (overlays.length + 1) * 10,
           type: 'location_tag',
           position: 'lower_third',
+          preset: 'location_badge',
           text: textTag,
           start_ms: timing.start_ms,
           end_ms: timing.end_ms
         });
       } else if (graphicIntent === 'HERO_INFORMATION') {
-        // Beat 08 Card Financeiro: Graceful Degradation para price_badge limpo
-        const financialBadgeText = 'Parcelas na faixa de R$ 2.000 | Total R$ 350.000 (MCMV)';
+        // Beat 08 Card Financeiro: Graceful Degradation para price_badge limpo de 1 linha
+        const financialBadgeText = 'R$ 350 MIL | MCMV';
         overlays.push({
           id: `ov_fin_${beatId.toLowerCase()}`,
+          layer_order: (overlays.length + 1) * 10,
           type: 'price_badge',
           position: 'lower_third',
+          preset: 'price_punch',
           text: financialBadgeText,
           start_ms: timing.start_ms,
           end_ms: timing.end_ms
@@ -395,8 +450,10 @@ class EditorialPlanCompiler {
       } else if (graphicIntent === 'CTA_SUPPORT') {
         overlays.push({
           id: `ov_cta_${beatId.toLowerCase()}`,
+          layer_order: (overlays.length + 1) * 10,
           type: 'cta_banner',
           position: 'bottom_safe',
+          preset: 'cta_bar',
           text: 'Saiba Mais | Agende sua Visita',
           start_ms: timing.start_ms,
           end_ms: timing.end_ms
@@ -406,11 +463,8 @@ class EditorialPlanCompiler {
       // 3. Captions de Fala
       const excerpt = unit.script_excerpt || unit.spoken_text || '';
       if (excerpt) {
-        captions.push({
-          start_ms: timing.start_ms,
-          end_ms: timing.end_ms,
-          text: excerpt
-        });
+        const chunked = EditorialPlanCompiler.chunkCaption(excerpt, timing.start_ms, timing.end_ms);
+        captions.push(...chunked);
       }
 
       resolutionTrace.push({
