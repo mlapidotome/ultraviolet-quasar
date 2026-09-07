@@ -1,0 +1,257 @@
+[
+  {
+    "plan_unit_id": "PLAN_UNIT_01",
+    "beat_id": "BEAT_01",
+    "time_range": "00:00.000 - 00:06.440",
+    "editorial_intent": "HOLD presenter on camera; opening hook delivery with direct human eye contact; zero overlays.",
+    "current_engine_capability": "SUPPORTED",
+    "asset_resolution": {
+      "status": "RESOLVED_EXISTING",
+      "selected_source": "Presenter Video Asset (Marcel)",
+      "provenance": "asset_service registered presenter video"
+    },
+    "blueprint_1_2_mapping": {
+      "visual_timeline": [
+        {
+          "kind": "presenter_fullscreen",
+          "start_ms": 0,
+          "end_ms": 6440
+        }
+      ],
+      "overlays": [],
+      "captions": [
+        {
+          "start_ms": 0,
+          "end_ms": 6440,
+          "text": "Por que continuar pagando aluguel..."
+        }
+      ]
+    },
+    "engine_gaps": "None. Fully executable in Composer V3 today."
+  },
+  {
+    "plan_unit_id": "PLAN_UNIT_02",
+    "beat_id": "BEAT_02",
+    "time_range": "00:06.440 - 00:09.760",
+    "editorial_intent": "SWITCH to property living room hero reveal matching 'Dá uma olhada'; voice-over continues.",
+    "current_engine_capability": "SUPPORTED",
+    "asset_resolution": {
+      "status": "RUNTIME_POOL_RESOLUTION_REQUIRED",
+      "mechanism": "Phase 4C media_ranker matching room_type: 'living_room', features: ['integrated_living', 'spacious']",
+      "candidate_classes": [
+        "property_video (1:1 trim)",
+        "property_photo (Ken Burns)"
+      ]
+    },
+    "blueprint_1_2_mapping": {
+      "visual_timeline": [
+        {
+          "kind": "property_video_or_photo",
+          "start_ms": 6440,
+          "end_ms": 9760,
+          "motion": "ken_burns_or_trim"
+        }
+      ],
+      "overlays": [],
+      "audio": "presenter master audio track preserved"
+    },
+    "engine_gaps": "None. Fully supported in Blueprint 1.2 / Composer V3."
+  },
+  {
+    "plan_unit_id": "PLAN_UNIT_03",
+    "beat_id": "BEAT_03",
+    "time_range": "00:09.760 - 00:12.239",
+    "editorial_intent": "HOLD living room B-roll across bridge; visual breathing room.",
+    "current_engine_capability": "SUPPORTED",
+    "asset_resolution": {
+      "status": "RESOLVED_INHERITED",
+      "mechanism": "Extend Beat 02 asset end_ms to 12239ms"
+    },
+    "blueprint_1_2_mapping": {
+      "visual_timeline": "Continues Beat 02 segment up to 12239ms without cut",
+      "overlays": []
+    },
+    "engine_gaps": "None. Fully supported."
+  },
+  {
+    "plan_unit_id": "PLAN_UNIT_04",
+    "beat_id": "BEAT_04",
+    "time_range": "00:12.239 - 00:19.200",
+    "editorial_intent": "SWITCH to verified location evidence (Taubaté Shopping, Shibata, Dutra) + location tag.",
+    "current_engine_capability": "PARTIALLY_SUPPORTED",
+    "asset_resolution": {
+      "status": "REQUIRES_EXTERNAL_MEDIA",
+      "mechanism": "Location tag overlay supported; verified geographic POI footage requires external sourcing",
+      "evidence_status": "VERIFIED_EVIDENCE_REQUIRED (media_fitness = UNKNOWN until verified asset available)"
+    },
+    "blueprint_1_2_mapping": {
+      "visual_timeline": [
+        {
+          "kind": "location_media_if_available",
+          "start_ms": 12239,
+          "end_ms": 19200
+        }
+      ],
+      "overlays": [
+        {
+          "id": "ov_loc_04",
+          "type": "location_tag",
+          "position": "lower_third",
+          "text": "Taubaté / Próx. Shopping e Shibata",
+          "start_ms": 12239,
+          "end_ms": 19200
+        }
+      ]
+    },
+    "engine_gaps": "External Media Gap: Automated verified geographic POI sourcing does not yet exist in engine."
+  },
+  {
+    "plan_unit_id": "PLAN_UNIT_05",
+    "beat_id": "BEAT_05",
+    "time_range": "00:19.200 - 00:27.440",
+    "editorial_intent": "SWITCH to sequential interior tour demonstrating 68m² (kitchen, bathrooms, suite).",
+    "current_engine_capability": "SUPPORTED",
+    "asset_resolution": {
+      "status": "RUNTIME_POOL_RESOLUTION_REQUIRED",
+      "mechanism": "Phase 4C media_ranker sequential matching: kitchen -> bathroom -> suite/bedroom",
+      "candidate_classes": [
+        "property_photo sequence (Ken Burns)",
+        "property_video segments"
+      ]
+    },
+    "blueprint_1_2_mapping": {
+      "visual_timeline": "Sequential items in visual_timeline totalling 8.24s duration",
+      "overlays": []
+    },
+    "engine_gaps": "None. Multi-item visual_timeline is natively supported in Blueprint 1.2 / Composer V3."
+  },
+  {
+    "plan_unit_id": "PLAN_UNIT_06",
+    "beat_id": "BEAT_06",
+    "time_range": "00:27.440 - 00:31.799",
+    "editorial_intent": "SWITCH to hero reveal of gourmet balcony with barbecue; emotional lifestyle payoff.",
+    "current_engine_capability": "SUPPORTED",
+    "asset_resolution": {
+      "status": "RUNTIME_POOL_RESOLUTION_REQUIRED",
+      "mechanism": "Phase 4C media_ranker matching room_type: 'balcony', features: ['barbecue', 'gourmet']",
+      "candidate_classes": [
+        "property_video hero",
+        "property_photo hero (Ken Burns)"
+      ]
+    },
+    "blueprint_1_2_mapping": {
+      "visual_timeline": [
+        {
+          "kind": "property_video_or_photo",
+          "start_ms": 27440,
+          "end_ms": 31799,
+          "motion": "ken_burns_or_trim"
+        }
+      ],
+      "overlays": []
+    },
+    "engine_gaps": "None. Fully supported."
+  },
+  {
+    "plan_unit_id": "PLAN_UNIT_07",
+    "beat_id": "BEAT_07",
+    "time_range": "00:31.799 - 00:37.040",
+    "editorial_intent": "SWITCH to sequential coverage of condo amenities (security, party room, playground).",
+    "current_engine_capability": "SUPPORTED",
+    "asset_resolution": {
+      "status": "RUNTIME_POOL_RESOLUTION_REQUIRED",
+      "mechanism": "Phase 4C media_ranker matching room_type: 'condo_amenities', features: ['facade', 'playground', 'party_hall']"
+    },
+    "blueprint_1_2_mapping": {
+      "visual_timeline": "Sequential amenity visual items totalling 5.24s",
+      "overlays": []
+    },
+    "engine_gaps": "None. Fully supported."
+  },
+  {
+    "plan_unit_id": "PLAN_UNIT_08",
+    "beat_id": "BEAT_08",
+    "time_range": "00:37.040 - 00:44.680",
+    "editorial_intent": "SWITCH to Presenter on camera (subtle punch-in) + Hero Financial Card (R$350k, MCMV, R$60-70k entrada, ~R$2k parcelas).",
+    "current_engine_capability": "PARTIALLY_SUPPORTED",
+    "asset_resolution": {
+      "status": "RESOLVED_EXISTING (Presenter) + DESIGN_RESOLUTION_REQUIRED (Financial Card)",
+      "presenter_source": "Presenter Video Asset (Marcel)",
+      "hierarchy_status": "UNRESOLVED (Installment vs Total Price visual dominance)"
+    },
+    "blueprint_1_2_mapping": {
+      "visual_timeline": [
+        {
+          "kind": "presenter_fullscreen",
+          "start_ms": 37040,
+          "end_ms": 44680,
+          "transform": "subtle_punch_in"
+        }
+      ],
+      "overlays": [
+        {
+          "id": "ov_fin_08",
+          "type": "price_badge",
+          "position": "lower_third",
+          "text": "R$ 350.000 | Minha Casa Minha Vida | Parcelas ~R$ 2.000",
+          "start_ms": 37040,
+          "end_ms": 44680
+        }
+      ]
+    },
+    "engine_gaps": "Design System Gap: Current overlay engine only supports single-string text box. Multi-line structured card with hierarchy requires design component specification."
+  },
+  {
+    "plan_unit_id": "PLAN_UNIT_09",
+    "beat_id": "BEAT_09",
+    "time_range": "00:44.680 - 00:47.040",
+    "editorial_intent": "EVOLVE: Dismiss financial card; clean frame; hold Marcel eye contact for personal consultative question.",
+    "current_engine_capability": "SUPPORTED",
+    "asset_resolution": {
+      "status": "RESOLVED_EXISTING",
+      "presenter_source": "Presenter Video Asset (Marcel)"
+    },
+    "blueprint_1_2_mapping": {
+      "visual_timeline": [
+        {
+          "kind": "presenter_fullscreen",
+          "start_ms": 44680,
+          "end_ms": 47040
+        }
+      ],
+      "overlays": []
+    },
+    "engine_gaps": "None. Fully supported (overlay simply omitted)."
+  },
+  {
+    "plan_unit_id": "PLAN_UNIT_10",
+    "beat_id": "BEAT_10",
+    "time_range": "00:47.040 - 00:52.680",
+    "editorial_intent": "EVOLVE: Presenter on camera delivers direct closing conversion; introduce clean minimal CTA badge.",
+    "current_engine_capability": "SUPPORTED",
+    "asset_resolution": {
+      "status": "RESOLVED_EXISTING",
+      "presenter_source": "Presenter Video Asset (Marcel)"
+    },
+    "blueprint_1_2_mapping": {
+      "visual_timeline": [
+        {
+          "kind": "presenter_fullscreen",
+          "start_ms": 47040,
+          "end_ms": 52680
+        }
+      ],
+      "overlays": [
+        {
+          "id": "ov_cta_10",
+          "type": "cta_banner",
+          "position": "bottom_safe",
+          "text": "Saiba Mais | Agende sua Visita",
+          "start_ms": 47040,
+          "end_ms": 52680
+        }
+      ]
+    },
+    "engine_gaps": "None for basic CTA banner; custom button badge is a minor design extension."
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "schema_id": "SCHEMA_INFORMATION_INTENT_V01",
+  "title": "Information Intent Schema",
+  "description": "Formalizes facts, metrics, and claims that must survive editing, and flags unresolved hierarchy choices.",
+  "epistemic_status": "QUALITATIVE_SCHEMA_CANDIDATE",
+  "currently_binding": false,
+  "fields": {
+    "facts_to_preserve": "Array of factual statements required for legal/commercial integrity",
+    "facts_to_emphasize": "Array of facts designated for focal viewer retention",
+    "facts_to_support": "Array of secondary contextual facts",
+    "facts_requiring_verified_evidence": "Array of claims needing external or geographical verification",
+    "information_hierarchy_status": "RESOLVED | UNRESOLVED"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "model_id": "BALI_CREATIVE_DECISION_MODEL_V01",
+  "title": "Bali Creative Decision Model v0.1",
+  "description": "Semantic decision architecture defining how an intelligent editor reasons from narrative needs to technique selection.",
+  "epistemic_status": "QUALITATIVE_ARCHITECTURE_SPECIFICATION",
+  "currently_binding": false,
+  "core_principles": [
+    "Given this specific narrative moment, what should a strong Bali editor do — and why?",
+    "Need prioritization is strictly contextual with zero universal category precedence.",
+    "Visual debt heightens narrative payoff relevance without mandatory cut enforcement.",
+    "Editorial memory uses qualitative density and fatigue awareness without arbitrary fixed time windows.",
+    "Preserve Performance (HOLD with zero techniques) is a first-class positive editorial decision."
+  ],
+  "sub_models": [
+    "MOD_NEED_PRIORITIZATION_V01",
+    "MOD_OPPORTUNITY_DISRUPTION_V01",
+    "SCHEMA_CURRENT_VISUAL_STATE_V01",
+    "MOD_MEDIA_FITNESS_V01",
+    "SCHEMA_EDITORIAL_MEMORY_V01",
+    "MOD_VISUAL_DEBT_V01",
+    "MOD_ATTENTION_BUDGET_V01",
+    "MOD_CANDIDATE_EVALUATION_V01",
+    "MOD_CONFIDENCE_UNCERTAINTY_V01"
+  ]
+}

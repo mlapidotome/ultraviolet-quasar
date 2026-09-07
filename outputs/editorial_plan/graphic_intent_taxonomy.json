@@ -1,0 +1,41 @@
+{
+  "taxonomy_id": "TAXONOMY_GRAPHIC_INTENT_V01",
+  "title": "Graphic Intent Taxonomy",
+  "description": "Defines the role and density of graphic/typographic overlays. Does not prescribe visual templates.",
+  "epistemic_status": "QUALITATIVE_TAXONOMY_CANDIDATE",
+  "currently_binding": false,
+  "values": [
+    {
+      "value": "NONE",
+      "description": "No graphic or typographic overlay; pure photographic/human frame."
+    },
+    {
+      "value": "MINIMAL",
+      "description": "Subtle supporting identifier (e.g. clean location tag or small badge)."
+    },
+    {
+      "value": "SUPPORTING",
+      "description": "Secondary graphic assisting voice without demanding focal dominance."
+    },
+    {
+      "value": "INFORMATIONAL",
+      "description": "Structured data presentation aiding factual comprehension."
+    },
+    {
+      "value": "EMPHATIC",
+      "description": "Selective keyword or metric highlight."
+    },
+    {
+      "value": "HERO_INFORMATION",
+      "description": "Card or structured overlay acting as key visual focus alongside presenter."
+    },
+    {
+      "value": "CTA_SUPPORT",
+      "description": "Actionable closing graphic guiding conversion."
+    },
+    {
+      "value": "LOCATION_SUPPORT",
+      "description": "Unobtrusive geographic/neighborhood locator."
+    }
+  ]
+}

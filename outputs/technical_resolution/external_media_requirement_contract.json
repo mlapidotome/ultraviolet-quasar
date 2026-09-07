@@ -1,0 +1,24 @@
+{
+  "contract_id": "CONTRACT_EXTERNAL_MEDIA_REQUIREMENT_V01",
+  "title": "External Media Requirement Contract",
+  "description": "Formal contract for location, neighborhood, and POI evidence requirements that cannot be fulfilled by internal property CRM assets alone.",
+  "epistemic_status": "SYSTEM_CONTRACT_SPECIFICATION",
+  "currently_binding": false,
+  "schema": {
+    "semantic_role": "string (e.g. location_proof, highway_access_proof)",
+    "target_entities": "array of domain entities (e.g. Taubaté Shopping, Supermercado Shibata, Dutra)",
+    "evidence_requirement": "VERIFIED_EVIDENCE_REQUIRED | CONTEXTUAL_ATMOSPHERE_SUFFICIENT",
+    "verification_standard": "Must visibly show named landmark or verified cartographic route",
+    "preferred_media_classes": [
+      "verified_poi_video",
+      "verified_route_map",
+      "geographically_verified_aerial"
+    ],
+    "fallback_media_classes": [
+      "contextual_neighborhood_aerial",
+      "location_title_card"
+    ],
+    "status": "MISSING | UNVERIFIED | VERIFIED | UNKNOWN",
+    "boundary_rule": "Never label unverified atmospheric drone footage as verified geographic proof."
+  }
+}

@@ -1,0 +1,196 @@
+{
+  "shot_duration_by_function": {
+    "hook": {
+      "count": 26,
+      "avg_duration_seconds": 2.22,
+      "median_duration_seconds": 1.4,
+      "p25_duration_seconds": 0.84,
+      "p75_duration_seconds": 2.56,
+      "min_duration_seconds": 0.24,
+      "max_duration_seconds": 13.75
+    },
+    "storytelling_pain_point": {
+      "count": 33,
+      "avg_duration_seconds": 2.8,
+      "median_duration_seconds": 1.76,
+      "p25_duration_seconds": 0.8,
+      "p75_duration_seconds": 3.8,
+      "min_duration_seconds": 0.45,
+      "max_duration_seconds": 11.27
+    },
+    "solution_presentation": {
+      "count": 40,
+      "avg_duration_seconds": 3.69,
+      "median_duration_seconds": 1.9,
+      "p25_duration_seconds": 1.44,
+      "p75_duration_seconds": 3.67,
+      "min_duration_seconds": 0.3,
+      "max_duration_seconds": 30.49
+    },
+    "cta": {
+      "count": 10,
+      "avg_duration_seconds": 5.28,
+      "median_duration_seconds": 3.84,
+      "p25_duration_seconds": 0.86,
+      "p75_duration_seconds": 4.45,
+      "min_duration_seconds": 0.5,
+      "max_duration_seconds": 24.73
+    },
+    "room_detail": {
+      "count": 20,
+      "avg_duration_seconds": 2.22,
+      "median_duration_seconds": 2,
+      "p25_duration_seconds": 1.93,
+      "p75_duration_seconds": 2.73,
+      "min_duration_seconds": 0.84,
+      "max_duration_seconds": 4.02
+    },
+    "pricing_anchoring": {
+      "count": 3,
+      "avg_duration_seconds": 2,
+      "median_duration_seconds": 2.1,
+      "p25_duration_seconds": 0.87,
+      "p75_duration_seconds": 3.04,
+      "min_duration_seconds": 0.87,
+      "max_duration_seconds": 3.04
+    },
+    "none": {
+      "count": 1,
+      "avg_duration_seconds": 0.43,
+      "median_duration_seconds": 0.43,
+      "p25_duration_seconds": 0.43,
+      "p75_duration_seconds": 0.43,
+      "min_duration_seconds": 0.43,
+      "max_duration_seconds": 0.43
+    }
+  },
+  "presenter_uninterrupted_stretch": {
+    "total_runs": 9,
+    "avg_duration_seconds": 30.2,
+    "median_duration_seconds": 19.55,
+    "p25_duration_seconds": 5.97,
+    "p75_duration_seconds": 48.22,
+    "max_uninterrupted_seconds": 70.19999999999999
+  },
+  "broll_duration_by_function": {
+    "storytelling_pain_point": {
+      "count": 6,
+      "avg_duration_seconds": 3.95,
+      "median_duration_seconds": 4.01,
+      "min_duration_seconds": 0.73,
+      "max_duration_seconds": 10.34
+    },
+    "hook": {
+      "count": 8,
+      "avg_duration_seconds": 1.54,
+      "median_duration_seconds": 1.02,
+      "min_duration_seconds": 0.42,
+      "max_duration_seconds": 4.91
+    },
+    "solution_presentation": {
+      "count": 9,
+      "avg_duration_seconds": 3.82,
+      "median_duration_seconds": 1.77,
+      "min_duration_seconds": 0.34,
+      "max_duration_seconds": 16.73
+    },
+    "pricing_anchoring": {
+      "count": 1,
+      "avg_duration_seconds": 2.1,
+      "median_duration_seconds": 2.1,
+      "min_duration_seconds": 2.1,
+      "max_duration_seconds": 2.1
+    },
+    "room_detail": {
+      "count": 16,
+      "avg_duration_seconds": 2.26,
+      "median_duration_seconds": 2,
+      "min_duration_seconds": 1.89,
+      "max_duration_seconds": 4.02
+    },
+    "none": {
+      "count": 1,
+      "avg_duration_seconds": 0.43,
+      "median_duration_seconds": 0.43,
+      "min_duration_seconds": 0.43,
+      "max_duration_seconds": 0.43
+    },
+    "cta": {
+      "count": 1,
+      "avg_duration_seconds": 4.45,
+      "median_duration_seconds": 4.45,
+      "min_duration_seconds": 4.45,
+      "max_duration_seconds": 4.45
+    }
+  },
+  "consecutive_broll_chains": {
+    "total_broll_chains": 10,
+    "avg_chain_length_shots": 4.3,
+    "max_consecutive_brolls": 19,
+    "distribution": {
+      "single_shot_cutaway": 6,
+      "short_sequence_2_3_shots": 0,
+      "extended_sequence_4_plus": 4
+    }
+  },
+  "pacing_by_narrative_section": {
+    "opening_hook_0_10s": {
+      "total_shots": 27,
+      "avg_shot_duration": 1.4,
+      "cuts_per_minute": 42.9
+    },
+    "middle_body_development": {
+      "total_shots": 92,
+      "avg_shot_duration": 3.66,
+      "cuts_per_minute": 16.4
+    },
+    "closing_cta_last_10s": {
+      "total_shots": 14,
+      "avg_shot_duration": 1.96,
+      "cuts_per_minute": 30.6
+    }
+  },
+  "presenter_handoff_and_return": {
+    "handoffs_to_broll_count": 5,
+    "returns_to_presenter_count": 6,
+    "return_rate_percent": 120
+  },
+  "typography_occurrence_distribution": {
+    "lower_third_title": {
+      "count": 49,
+      "percentage": 36.8
+    },
+    "none": {
+      "count": 47,
+      "percentage": 35.3
+    },
+    "kinetic_word_by_word_captions": {
+      "count": 21,
+      "percentage": 15.8
+    },
+    "full_screen_typography": {
+      "count": 9,
+      "percentage": 6.8
+    },
+    "price_feature_badges": {
+      "count": 4,
+      "percentage": 3
+    },
+    "persistent_top_headline": {
+      "count": 3,
+      "percentage": 2.3
+    }
+  },
+  "evidence_gaps": [
+    {
+      "field": "speech_to_visual_latency_milliseconds",
+      "reason": "Whisper word-level alignment combined with visual cut timestamps indicates cuts coincide within ±120ms of phrase boundaries, but precise sub-frame acoustic onset was not re-probed.",
+      "insufficient_evidence": true
+    },
+    {
+      "field": "sound_sfx_volume_decibels",
+      "reason": "Audio mix contains integrated music and sfx, but stem separation was not executed in Pass 1.",
+      "insufficient_evidence": true
+    }
+  ]
+}

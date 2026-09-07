@@ -1,0 +1,20 @@
+{
+  "contract_id": "CONTRACT_ASSET_RESOLUTION_V01",
+  "title": "Asset Resolution Contract (Phase 4C Reuse)",
+  "description": "Defines how Technical Resolution integrates with Phase 4C Multimodal Semantic Matching to select real property media without duplicating ranking logic.",
+  "epistemic_status": "SYSTEM_CONTRACT_SPECIFICATION",
+  "currently_binding": false,
+  "core_reuse_principles": [
+    "REUSE, DO NOT DUPLICATE: Technical Resolution delegates candidate scoring and ranking directly to 4C (media_ranker.js, intent_extractor.js, editorial_continuity_engine.js).",
+    "SEMANTIC RELEVANCE OVER SPEED: Never pick first file or arbitrary CRM position; assets must pass 4C semantic thresholds (room_type, features).",
+    "UNIFIED MEDIA CANDIDATES: Seamlessly evaluates both property photos (with Ken Burns) and property video segments (with 1:1 trim).",
+    "PHYSICAL INTEGRITY & PROVENANCE: Every selected asset is validated by asset_service with SHA-256 byte verification and property ownership check."
+  ],
+  "interface_mapping": {
+    "editorial_plan_input": "media_intent, source_strategy, subjects, visual_payoff_intent",
+    "intent_extractor_bridge": "Maps subjects & media_intent to requested_room_types and requested_features",
+    "media_ranker_execution": "computeSemanticRelevance() + buildUnifiedMediaCandidates()",
+    "continuity_engine_execution": "Enforces non-repetition, fatigue avoidance, and duration feasibility",
+    "blueprint_compiler": "Emits visual_timeline item (kind: 'property_video' with source trim, or kind: 'property_photo' with motion: 'ken_burns')"
+  }
+}

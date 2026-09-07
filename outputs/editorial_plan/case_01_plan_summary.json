@@ -1,0 +1,141 @@
+{
+  "case_id": "CASE_01",
+  "property_name": "Residencial Júlia",
+  "presenter": "Marcel",
+  "total_beats": 10,
+  "total_duration_seconds": 52.68,
+  "state_decisions": {
+    "HOLD": 2,
+    "EVOLVE": 2,
+    "SWITCH": 6
+  },
+  "source_strategies": {
+    "PRESENTER": 4,
+    "PROPERTY": 3,
+    "LOCATION": 1,
+    "LIFESTYLE": 1,
+    "CURRENT_STATE": 1
+  },
+  "graphic_intent_distribution": {
+    "NONE": 6,
+    "LOCATION_SUPPORT": 1,
+    "HERO_INFORMATION": 1,
+    "CTA_SUPPORT": 1
+  },
+  "evidence_status": {
+    "verified_required": 1,
+    "unresolved_hierarchies": 1
+  },
+  "units_overview": [
+    {
+      "beat_id": "BEAT_01",
+      "time": "00:00.000 - 00:06.440",
+      "state": "HOLD",
+      "source_strategy": "PRESENTER",
+      "media_intent": "presenter_performance",
+      "graphic_intent": "NONE",
+      "principal_constraint": "CONTINUITY, PERFORMANCE_PRESERVATION",
+      "unresolved_requirements": "NONE",
+      "editorial_summary": "Preserve Marcel delivering the opening hook directly to camera. Zero cut or graphic distraction to maximize initial human trust and emotional engagement."
+    },
+    {
+      "beat_id": "BEAT_02",
+      "time": "00:06.440 - 00:09.760",
+      "state": "SWITCH",
+      "source_strategy": "PROPERTY",
+      "media_intent": "property_reveal, property_hero",
+      "graphic_intent": "NONE",
+      "principal_constraint": "CLARITY, IMMEDIATE_VISUAL_PAYOFF",
+      "unresolved_requirements": "NONE",
+      "editorial_summary": "Switch from presenter to living room hero reveal to fulfill 'Dá uma olhada'. Voice-over continues over clean, spacious interior framing."
+    },
+    {
+      "beat_id": "BEAT_03",
+      "time": "00:09.760 - 00:12.239",
+      "state": "HOLD",
+      "source_strategy": "CURRENT_STATE",
+      "media_intent": "continuity_support, atmosphere",
+      "graphic_intent": "NONE",
+      "principal_constraint": "AVOID_OVER_CUTTING",
+      "unresolved_requirements": "NONE",
+      "editorial_summary": "Sustain living room framing across the short 2.48s bridge. Provide visual breathing room before transitioning into location proof."
+    },
+    {
+      "beat_id": "BEAT_04",
+      "time": "00:12.239 - 00:19.200",
+      "state": "SWITCH",
+      "source_strategy": "LOCATION",
+      "media_intent": "location_proof, location_context",
+      "graphic_intent": "LOCATION_SUPPORT",
+      "principal_constraint": "GEOGRAPHIC_ACCURACY, DO_NOT_ASSUME_GENERIC_DRONE_IS_PROOF",
+      "unresolved_requirements": "Geographic verification of available location footage (POI landmarks vs generic atmospheric aerial)",
+      "editorial_summary": "Switch to location evidence displaying neighborhood context and highway access, supported by a minimal location tag. Requires verified geographic evidence; generic drone remains UNKNOWN in proof strength."
+    },
+    {
+      "beat_id": "BEAT_05",
+      "time": "00:19.200 - 00:27.440",
+      "state": "SWITCH",
+      "source_strategy": "PROPERTY",
+      "media_intent": "property_demonstration, spatial_orientation, feature_detail",
+      "graphic_intent": "NONE",
+      "principal_constraint": "COHERENT_TOUR, AVOID_ON_SCREEN_BULLET_LISTS",
+      "unresolved_requirements": "NONE",
+      "editorial_summary": "Switch to sequential interior tour demonstrating the 68m² layout (kitchen, bathrooms, suite) with smooth spatial continuity, avoiding text clutter."
+    },
+    {
+      "beat_id": "BEAT_06",
+      "time": "00:27.440 - 00:31.799",
+      "state": "SWITCH",
+      "source_strategy": "LIFESTYLE",
+      "media_intent": "property_hero, lifestyle_projection, feature_detail",
+      "graphic_intent": "NONE",
+      "principal_constraint": "HIGHLIGHT_HERO_FEATURE, PRESERVE_BREATHING_ROOM",
+      "unresolved_requirements": "NONE",
+      "editorial_summary": "Switch to hero reveal of the gourmet balcony with barbecue. Hold shot for lifestyle projection and emotional payoff without competing overlays."
+    },
+    {
+      "beat_id": "BEAT_07",
+      "time": "00:31.799 - 00:37.040",
+      "state": "SWITCH",
+      "source_strategy": "PROPERTY",
+      "media_intent": "amenity_proof, property_demonstration",
+      "graphic_intent": "NONE",
+      "principal_constraint": "SHOW_FACILITIES, AVOID_ICON_GRIDS",
+      "unresolved_requirements": "NONE",
+      "editorial_summary": "Switch to sequential B-roll of condominium common areas (security entrance, party room, playground) to document real building infrastructure."
+    },
+    {
+      "beat_id": "BEAT_08",
+      "time": "00:37.040 - 00:44.680",
+      "state": "SWITCH",
+      "source_strategy": "PRESENTER",
+      "media_intent": "presenter_performance, financial_support",
+      "graphic_intent": "HERO_INFORMATION",
+      "principal_constraint": "NUMERICAL_ACCURACY, AVOID_VISUAL_CLUTTER, PRESERVE_PRESENTER_AUTHORITY",
+      "unresolved_requirements": "Information hierarchy: whether monthly installment (~R$ 2.000) or total price (R$ 350.000) is the visual hero element on the card",
+      "editorial_summary": "Reanchor on Marcel with a subtle punch-in while displaying a clean financial summary card. Preserves human authority for big numbers; hierarchy between installment vs total price remains UNRESOLVED."
+    },
+    {
+      "beat_id": "BEAT_09",
+      "time": "00:44.680 - 00:47.040",
+      "state": "EVOLVE",
+      "source_strategy": "PRESENTER",
+      "media_intent": "presenter_performance",
+      "graphic_intent": "NONE",
+      "principal_constraint": "CLEAN_FRAME, REMOVE_FINANCIAL_GRAPHICS",
+      "unresolved_requirements": "NONE",
+      "editorial_summary": "Evolve current state by clearing the financial card, holding Marcel in a clean frame to let the consultative question (*'E aí, gostou?'*) connect directly before CTA."
+    },
+    {
+      "beat_id": "BEAT_010",
+      "time": "00:47.040 - 00:52.680",
+      "state": "EVOLVE",
+      "source_strategy": "PRESENTER",
+      "media_intent": "presenter_performance, cta_support",
+      "graphic_intent": "CTA_SUPPORT",
+      "principal_constraint": "CLEAR_INSTRUCTION, MINIMAL_GRAPHICS, HUMAN_LED_CLOSING",
+      "unresolved_requirements": "NONE",
+      "editorial_summary": "Evolve presenter frame with a clean, minimal CTA badge during closing seconds. Marcel leads conversion directly looking at camera with zero full-screen logo takeover."
+    }
+  ]
+}

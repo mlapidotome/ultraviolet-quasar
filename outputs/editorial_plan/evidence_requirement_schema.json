@@ -1,0 +1,13 @@
+{
+  "schema_id": "SCHEMA_EVIDENCE_REQUIREMENT_V01",
+  "title": "Evidence Requirement Schema",
+  "description": "Tracks claims requiring verified external or geographical proof, preventing unverified footage from being labeled proof.",
+  "epistemic_status": "QUALITATIVE_SCHEMA_CANDIDATE",
+  "currently_binding": false,
+  "fields": {
+    "evidence_type": "LOCATION_GEOGRAPHIC_PROXIMITY | PROPERTY_METRICS_LAYOUT | FINANCIAL_TERMS | CONDO_AMENITIES",
+    "requirement_level": "VERIFIED_EVIDENCE_REQUIRED | CONTEXTUAL_ATMOSPHERE_SUFFICIENT | UNRESOLVED",
+    "possible_semantic_evidence_classes": "Array of acceptable evidence classes (e.g. verified POI, route map, verified aerial)",
+    "evidence_verification_status": "VERIFIED | UNVERIFIED | UNKNOWN"
+  }
+}

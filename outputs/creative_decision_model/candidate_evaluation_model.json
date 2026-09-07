@@ -1,0 +1,12 @@
+{
+  "model_id": "MOD_CANDIDATE_EVALUATION_V01",
+  "title": "Candidate Evaluation Model",
+  "description": "Structured evaluation of editorial options per beat, documenting selected choice, rejected alternatives, and trade-off rationales.",
+  "epistemic_status": "QUALITATIVE_FRAMEWORK_CANDIDATE",
+  "currently_binding": false,
+  "decision_categories": [
+    "HOLD",
+    "EVOLVE",
+    "SWITCH"
+  ]
+}

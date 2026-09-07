@@ -1,0 +1,34 @@
+{
+  "description": "Conceptual attention economics model. The Creative Director must invest viewer attention in strict proportion to editorial importance (EDITORIAL IMPORTANCE GOVERNS EMPHASIS INTENSITY).",
+  "levels": {
+    "LOW": {
+      "attention_budget": "Minimal sensory friction; suitable for continuous baseline communication.",
+      "typical_tools": [
+        "Dynamic captions",
+        "Keyword emphasis",
+        "Clean hard cuts",
+        "Subtle reframes",
+        "Ambient music bed"
+      ]
+    },
+    "MEDIUM": {
+      "attention_budget": "Noticeable sensory shift; demands cognitive focus on a specific proof or feature.",
+      "typical_tools": [
+        "Digital scale punch-in",
+        "Amenity badges",
+        "Cutaways to macro details",
+        "Drone context shots"
+      ]
+    },
+    "HIGH": {
+      "attention_budget": "Major cognitive and visual demand; reserved strictly for HERO moments and core offers.",
+      "typical_tools": [
+        "Full-screen commercial cards",
+        "Hero number typography",
+        "Presenter + split graphics",
+        "Animated landmark maps"
+      ]
+    }
+  },
+  "governing_rule": "Never deploy HIGH editorial cost techniques during minor SUPPORTING beats. Reserve peak attention investment for MAJOR and HERO moments."
+}

@@ -1,0 +1,13 @@
+{
+  "model_id": "MOD_CONFIDENCE_UNCERTAINTY_V01",
+  "title": "Confidence & Uncertainty Model",
+  "description": "Explicitly captures epistemic confidence and flags unknown visual or production aspects.",
+  "epistemic_status": "QUALITATIVE_FRAMEWORK_CANDIDATE",
+  "currently_binding": false,
+  "confidence_levels": [
+    "HIGH",
+    "MEDIUM",
+    "LOW"
+  ],
+  "uncertainty_handling": "When visual footage metadata or specific camera angles are uninspected, label explicitly as UNKNOWN rather than inferring details."
+}

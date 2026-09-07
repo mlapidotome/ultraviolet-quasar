@@ -1,0 +1,106 @@
+{
+  "traceability_id": "TRACE_PLAN_TO_GRAMMAR_V01",
+  "grammar_version": "v0.2",
+  "mappings": [
+    {
+      "plan_unit_id": "PLAN_UNIT_01",
+      "beat_id": "BEAT_01",
+      "canonical_narrative_functions": [
+        "HOOK",
+        "PAIN",
+        "PROMISE",
+        "OFFER"
+      ],
+      "timing_preserved": "00:00.000 - 00:06.440"
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_02",
+      "beat_id": "BEAT_02",
+      "canonical_narrative_functions": [
+        "REVEAL",
+        "VALUE",
+        "OFFER"
+      ],
+      "timing_preserved": "00:06.440 - 00:09.760"
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_03",
+      "beat_id": "BEAT_03",
+      "canonical_narrative_functions": [
+        "VALUE",
+        "EXPLANATION"
+      ],
+      "timing_preserved": "00:09.760 - 00:12.239"
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_04",
+      "beat_id": "BEAT_04",
+      "canonical_narrative_functions": [
+        "PROOF",
+        "EXPLANATION",
+        "VALUE"
+      ],
+      "timing_preserved": "00:12.239 - 00:19.200"
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_05",
+      "beat_id": "BEAT_05",
+      "canonical_narrative_functions": [
+        "DEMONSTRATION",
+        "PROOF",
+        "EXPLANATION"
+      ],
+      "timing_preserved": "00:19.200 - 00:27.440"
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_06",
+      "beat_id": "BEAT_06",
+      "canonical_narrative_functions": [
+        "DESIRE",
+        "VALUE",
+        "PROOF"
+      ],
+      "timing_preserved": "00:27.440 - 00:31.799"
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_07",
+      "beat_id": "BEAT_07",
+      "canonical_narrative_functions": [
+        "PROOF",
+        "EXPLANATION",
+        "VALUE"
+      ],
+      "timing_preserved": "00:31.799 - 00:37.040"
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_08",
+      "beat_id": "BEAT_08",
+      "canonical_narrative_functions": [
+        "OFFER",
+        "VALUE",
+        "AUTHORITY",
+        "PROOF"
+      ],
+      "timing_preserved": "00:37.040 - 00:44.680"
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_09",
+      "beat_id": "BEAT_09",
+      "canonical_narrative_functions": [
+        "HOOK",
+        "VALUE"
+      ],
+      "timing_preserved": "00:44.680 - 00:47.040"
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_10",
+      "beat_id": "BEAT_010",
+      "canonical_narrative_functions": [
+        "CTA",
+        "AUTHORITY",
+        "EXPLANATION"
+      ],
+      "timing_preserved": "00:47.040 - 00:52.680"
+    }
+  ]
+}

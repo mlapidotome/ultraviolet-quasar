@@ -1,0 +1,16 @@
+{
+  "contract_id": "TECHNICAL_RESOLUTION_CONTRACT_V01",
+  "title": "Technical Resolution Contract Specification",
+  "description": "Specifies the interface and compilation schema between Editorial Plan Units and Creative Blueprint 1.2.",
+  "epistemic_status": "SYSTEM_ARCHITECTURE_SPECIFICATION",
+  "currently_binding": false,
+  "resolution_flow": [
+    "1. Read EDITORIAL_PLAN_UNIT",
+    "2. If source_strategy is PRESENTER / CURRENT_STATE, resolve to presenter asset or sustain previous item",
+    "3. If source_strategy is PROPERTY / LIFESTYLE, invoke Phase 4C Multimodal Semantic Matching on Property Media Pool",
+    "4. If source_strategy is LOCATION, check for verified location asset or emit EXTERNAL_MEDIA_REQUIREMENT",
+    "5. Resolve graphic and typography intents against Bali Design Tokens",
+    "6. Check for spatiotemporal collisions against Safe Rectangles and PIP windows",
+    "7. Compile into valid Blueprint 1.2 schema for deterministic execution by Composer V3"
+  ]
+}

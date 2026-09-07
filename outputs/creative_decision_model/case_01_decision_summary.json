@@ -1,0 +1,151 @@
+{
+  "case_id": "CASE_01",
+  "property_name": "Residencial Júlia",
+  "location": "Taubaté, SP",
+  "presenter": "Marcel",
+  "provenance": {
+    "ground_truth_source": "HUMAN_HOMOLOGATED_TRANSCRIPT",
+    "ground_truth_authority": "HUMAN_HOMOLOGATED_CASE_GROUND_TRUTH",
+    "ground_truth_locked": true
+  },
+  "total_beats": 10,
+  "state_decision_breakdown": {
+    "HOLD": 2,
+    "EVOLVE": 2,
+    "SWITCH": 6
+  },
+  "state_decision_percentages": {
+    "HOLD": "20%",
+    "EVOLVE": "20%",
+    "SWITCH": "60%"
+  },
+  "zero_technique_beats": 3,
+  "beats_summary": [
+    {
+      "beat_id": "BEAT_01",
+      "time_range": "00:00.000 - 00:06.440",
+      "spoken_text": "Por que continuar pagando aluguel se você pode morar a minutos do Taubaté Shopping e do Shibata pagando parcelas de R$2.000?",
+      "narrative_functions": "HOOK, PAIN, PROMISE, OFFER",
+      "subjects": "rent_vs_own, installment_affordability, location_proximity, shopping_supermarket",
+      "state_decision": "HOLD",
+      "primary_visual_strategy": "Preserve presenter performance on camera; establish direct human rapport and hook proposition without distracting cuts.",
+      "selected_techniques": [],
+      "reasoning": "Presenter's direct address establishes human connection and authority. Zero-effect preserve performance is the strongest editorial choice."
+    },
+    {
+      "beat_id": "BEAT_02",
+      "time_range": "00:06.440 - 00:09.760",
+      "spoken_text": "Dá uma olhada nesse apartamento de R$350.000 no Residencial Júlia.",
+      "narrative_functions": "REVEAL, VALUE, OFFER",
+      "subjects": "property_introduction, apartment_interior, price_anchor",
+      "state_decision": "SWITCH",
+      "primary_visual_strategy": "Switch to hero reveal of apartment interior/living room matching the direct invitation 'Dá uma olhada'.",
+      "selected_techniques": [
+        "T_BROLL_HERO_REVEAL"
+      ],
+      "reasoning": "Fulfills the narrative invitation 'Dá uma olhada' by showcasing the main interior space."
+    },
+    {
+      "beat_id": "BEAT_03",
+      "time_range": "00:09.760 - 00:12.239",
+      "spoken_text": "A localização é perfeita para o dia a dia.",
+      "narrative_functions": "VALUE, EXPLANATION",
+      "subjects": "location_value, convenience_bridge",
+      "state_decision": "HOLD",
+      "primary_visual_strategy": "Hold living room B-roll across short verbal transition to maintain pacing and allow visual breathing room.",
+      "selected_techniques": [],
+      "reasoning": "Allows the viewer to appreciate the apartment interior while audio bridges into location."
+    },
+    {
+      "beat_id": "BEAT_04",
+      "time_range": "00:12.239 - 00:19.200",
+      "spoken_text": "Você estará a poucos minutos do Taubaté Shopping, coladinho ao supermercado Shibata e com acesso ultra rápido à Dutra e Carvalho Pinto.",
+      "narrative_functions": "PROOF, EXPLANATION, VALUE",
+      "subjects": "macro_location, highway_access, shopping_proximity, supermarket_proximity",
+      "state_decision": "SWITCH",
+      "primary_visual_strategy": "LOCATION_EVIDENCE_REQUIRED: Switch to verified location evidence (verified POI context, route visualization, or verified aerial/street landmarks); if only unverified atmospheric drone exists, treat evidence strength as UNKNOWN rather than confirmed geographic proof.",
+      "selected_techniques": [
+        "T_BROLL_HERO_REVEAL",
+        "T_LOWER_THIRD_LOCATION_TAG"
+      ],
+      "reasoning": "Demands verified visual proof of location advantages with minimal, elegant typography, recognizing that unverified drone footage remains UNKNOWN in evidentiary value."
+    },
+    {
+      "beat_id": "BEAT_05",
+      "time_range": "00:19.200 - 00:27.440",
+      "spoken_text": "O apartamento tem 68m² muito bem planejados: sala espaçosa, cozinha funcional, dois banheiros, dois dormitórios sendo uma suíte privativa.",
+      "narrative_functions": "DEMONSTRATION, PROOF, EXPLANATION",
+      "subjects": "floor_plan, square_meters, living_room, kitchen, bathrooms, bedrooms, suite",
+      "state_decision": "SWITCH",
+      "primary_visual_strategy": "Switch to sequential coverage of apartment interior spaces (living, kitchen, suite) matching spoken tour.",
+      "selected_techniques": [
+        "T_BROLL_SEQUENTIAL_DETAIL"
+      ],
+      "reasoning": "Sequential visual coverage provides natural proof of 68m² layout without visual pollution."
+    },
+    {
+      "beat_id": "BEAT_06",
+      "time_range": "00:27.440 - 00:31.799",
+      "spoken_text": "E o destaque especial: uma varanda deliciosa com churrasqueira para curtir o fim de semana.",
+      "narrative_functions": "DESIRE, VALUE, PROOF",
+      "subjects": "balcony, barbecue, weekend_lifestyle, hero_amenity",
+      "state_decision": "SWITCH",
+      "primary_visual_strategy": "Switch to hero reveal of the balcony with barbecue, holding the shot to allow lifestyle appreciation.",
+      "selected_techniques": [
+        "T_BROLL_HERO_REVEAL"
+      ],
+      "reasoning": "Hero reveal of balcony allows viewer to emotionally connect with weekend leisure and lifestyle."
+    },
+    {
+      "beat_id": "BEAT_07",
+      "time_range": "00:31.799 - 00:37.040",
+      "spoken_text": "O condomínio conta com portaria remota 24h, salão de festas, área gourmet, playground e vaga coberta.",
+      "narrative_functions": "PROOF, EXPLANATION, VALUE",
+      "subjects": "condominium_amenities, security, leisure_facilities, parking",
+      "state_decision": "SWITCH",
+      "primary_visual_strategy": "Switch to sequential detail shots of common amenities (facade, playground, party room).",
+      "selected_techniques": [
+        "T_BROLL_SEQUENTIAL_DETAIL"
+      ],
+      "reasoning": "Real footage of condominium facilities provides credible proof of infrastructure."
+    },
+    {
+      "beat_id": "BEAT_08",
+      "time_range": "00:37.040 - 00:44.680",
+      "spoken_text": "Tudo isso por apenas R$350.000, financiado pelo Minha Casa Minha Vida, com entrada em torno de R$60.000 a R$70.000 e parcelas na faixa de R$2.000.",
+      "narrative_functions": "OFFER, VALUE, AUTHORITY, PROOF",
+      "subjects": "total_price, government_financing_program, down_payment, monthly_installments, financial_feasibility",
+      "state_decision": "SWITCH",
+      "primary_visual_strategy": "Return to presenter on camera with subtle punch-in and accompany with a clean, minimal financial summary card.",
+      "selected_techniques": [
+        "T_PRESENTER_PUNCH_IN",
+        "T_CARD_PRICE_TERMS_HERO"
+      ],
+      "reasoning": "Presenter's presence builds trust during financial commitment, while a clean card anchors complex numbers (MCMV, R$350k, parcelas R$2.000)."
+    },
+    {
+      "beat_id": "BEAT_09",
+      "time_range": "00:44.680 - 00:47.040",
+      "spoken_text": "E aí, gostou dessa oportunidade?",
+      "narrative_functions": "HOOK, VALUE",
+      "subjects": "consultative_question, rapport_refresh, opportunity_reflection",
+      "state_decision": "EVOLVE",
+      "primary_visual_strategy": "Dismiss financial graphic card to clean the frame; hold presenter on camera to establish pure conversational rapport.",
+      "selected_techniques": [],
+      "reasoning": "Transitioning back to a clean frame allows the presenter's personal question to resonate directly with the viewer."
+    },
+    {
+      "beat_id": "BEAT_010",
+      "time_range": "00:47.040 - 00:52.680",
+      "spoken_text": "Faz o seguinte: clica no botão Saiba Mais, deixe o seu melhor telefone que a nossa equipe vai te chamar e agendar uma visita.",
+      "narrative_functions": "CTA, AUTHORITY, EXPLANATION",
+      "subjects": "call_to_action, lead_capture, visit_scheduling, friction_reduction",
+      "state_decision": "EVOLVE",
+      "primary_visual_strategy": "Evolve presenter base frame by introducing a clean, minimal CTA button badge / end card while preserving direct eye contact closing guidance.",
+      "selected_techniques": [
+        "T_CTA_END_CARD_MINIMAL"
+      ],
+      "reasoning": "Presenter directly instructing action maintains conversion momentum; adding the minimal CTA badge evolves the frame without cutting away."
+    }
+  ]
+}

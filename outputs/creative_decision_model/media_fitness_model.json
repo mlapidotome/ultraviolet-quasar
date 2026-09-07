@@ -1,0 +1,12 @@
+{
+  "model_id": "MOD_MEDIA_FITNESS_V01",
+  "title": "Media Fitness Model",
+  "description": "Pre-evaluates candidate media assets for technical, semantic, and aesthetic suitability before considering them for cuts.",
+  "epistemic_status": "QUALITATIVE_FRAMEWORK_CANDIDATE",
+  "currently_binding": false,
+  "evaluation_dimensions": [
+    "SEMANTIC_RELEVANCE: Direct connection between asset visual subject and spoken narrative.",
+    "AESTHETIC_QUALITY: Lighting, stability, framing, and clean real estate presentation.",
+    "COMPOSITION_HARMONY: Spatial flow and continuity with surrounding shots."
+  ]
+}

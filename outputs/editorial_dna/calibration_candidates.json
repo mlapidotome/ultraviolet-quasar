@@ -1,0 +1,166 @@
+[
+  {
+    "candidate_id": "CALIB_HOOK_VOICE_ONSET",
+    "topic": "Hook Voice Onset Latency",
+    "parameter_name": "hook_voice_start_latency_seconds",
+    "observed_range": "< 0.3s (0.05s - 0.35s across references)",
+    "source_refs": [
+      "REF_01",
+      "REF_02",
+      "REF_04",
+      "REF_05"
+    ],
+    "evidence_strength": "strong_reference_support",
+    "associated_principle": "PRIN_CORE_07",
+    "candidate_for_future_testing": true,
+    "currently_binding": false,
+    "testing_hypothesis": "Starting voice audio within 0.1s - 0.3s of frame 0 minimizes drop-off on muted/autoplay feeds."
+  },
+  {
+    "candidate_id": "CALIB_HOOK_FIRST_INTERRUPT",
+    "topic": "Hook First Visual Disruption Window",
+    "parameter_name": "hook_first_visual_disruption_seconds",
+    "observed_range": "1.2s - 2.5s",
+    "source_refs": [
+      "REF_01",
+      "REF_02",
+      "REF_03"
+    ],
+    "evidence_strength": "strong_reference_support",
+    "associated_principle": "PRIN_CORE_07",
+    "candidate_for_future_testing": true,
+    "currently_binding": false,
+    "testing_hypothesis": "Executing a scale punch or cut within the first 2.5s resets attention before habituation sets in."
+  },
+  {
+    "candidate_id": "CALIB_BREATHING_ROOM_DURATION",
+    "topic": "Aesthetic Breathing Room Hold Duration",
+    "parameter_name": "aesthetic_breathing_room_hold_seconds",
+    "observed_range": "3.0s - 5.0s (up to 6.5s on scenic drone / facade shots)",
+    "source_refs": [
+      "REF_03",
+      "REF_05"
+    ],
+    "evidence_strength": "moderate_reference_support",
+    "associated_principle": "PRIN_CORE_09",
+    "candidate_for_future_testing": true,
+    "currently_binding": false,
+    "testing_hypothesis": "Holding high aesthetic score photos/videos for 3.0s - 5.0s increases perceived property luxury without inducing boredom."
+  },
+  {
+    "candidate_id": "CALIB_TYPOGRAPHY_EMPHASIS_COLORS",
+    "topic": "Keyword Emphasis Color Palette",
+    "parameter_name": "caption_keyword_highlight_palette",
+    "observed_range": "High-contrast Warm Yellow (#FFD700) and Neon Green (#00E676)",
+    "source_refs": [
+      "REF_01",
+      "REF_02",
+      "REF_03",
+      "REF_04",
+      "REF_05"
+    ],
+    "evidence_strength": "strong_reference_support",
+    "associated_principle": "PRIN_CORE_10",
+    "candidate_for_future_testing": true,
+    "currently_binding": false,
+    "testing_hypothesis": "Highlighting emphasized words in warm gold/yellow or vibrant green improves reading retention; Bali brand tokens must define final palette."
+  },
+  {
+    "candidate_id": "CALIB_SOUND_SFX_DUCKING_LEVEL",
+    "topic": "SFX Mix Volume & Ducking Relative to Dialogue",
+    "parameter_name": "sfx_gain_relative_to_dialogue_db",
+    "observed_range": "-14dB to -18dB under dialogue track; music at -18dB to -24dB",
+    "source_refs": [
+      "REF_01",
+      "REF_02",
+      "REF_03"
+    ],
+    "evidence_strength": "moderate_reference_support",
+    "associated_principle": "PRIN_CORE_11",
+    "candidate_for_future_testing": true,
+    "currently_binding": false,
+    "testing_hypothesis": "Keeping transition and punch SFX in the -14dB to -18dB range adds perceptual polish without reducing speech intelligibility."
+  },
+  {
+    "candidate_id": "CALIB_TRANSITION_HARD_CUT_RATIO",
+    "topic": "Hard Cut Dominance Percentage",
+    "parameter_name": "hard_cut_to_digital_transition_ratio_percent",
+    "observed_range": "88.7% hard cuts across 133 shots (80% - 95% per reference)",
+    "source_refs": [
+      "REF_01",
+      "REF_02",
+      "REF_03",
+      "REF_04",
+      "REF_05"
+    ],
+    "evidence_strength": "strong_reference_support",
+    "associated_principle": "PRIN_CORE_12",
+    "candidate_for_future_testing": true,
+    "currently_binding": false,
+    "testing_hypothesis": "Defaulting to hard cuts for >80% of shot transitions maintains broadcast elegance; digital transitions must remain rare punctuation."
+  },
+  {
+    "candidate_id": "CALIB_PACING_CONVERSION_VS_TOUR",
+    "topic": "Contextual Cut Frequency Ranges",
+    "parameter_name": "cuts_per_minute_by_profile_range",
+    "observed_range": "High-Energy Conversion: 24-35 cuts/min | Property Tour: 14-20 cuts/min",
+    "source_refs": [
+      "REF_02",
+      "REF_05"
+    ],
+    "evidence_strength": "strong_reference_support",
+    "associated_principle": "PRIN_CTX_01",
+    "candidate_for_future_testing": true,
+    "currently_binding": false,
+    "testing_hypothesis": "Calibrating profile pacing targets as flexible distributions (e.g. median shot 1.5s-2.0s for conversion vs 2.8s-3.5s for showcase)."
+  },
+  {
+    "candidate_id": "CALIB_PRESENTER_SCREEN_SHARE_RATIO",
+    "topic": "Presenter Visual Screen Time Distribution",
+    "parameter_name": "presenter_screen_share_percent_range",
+    "observed_range": "Authority/Pain Narrative: 70%-90% | Product Tour/Launch: 15%-35%",
+    "source_refs": [
+      "REF_01",
+      "REF_03",
+      "REF_04",
+      "REF_05"
+    ],
+    "evidence_strength": "strong_reference_support",
+    "associated_principle": "PRIN_CTX_02",
+    "candidate_for_future_testing": true,
+    "currently_binding": false,
+    "testing_hypothesis": "Modulating presenter screen time between 20% and 85% based on narrative archetype preserves human-led guidance while adapting to showcase needs."
+  },
+  {
+    "candidate_id": "CALIB_PRESENTER_MONOLOGUE_LIMIT",
+    "topic": "Presenter Continuous Hold Without Visual Evolution",
+    "parameter_name": "presenter_max_static_hold_seconds",
+    "observed_range": "3.5s - 5.0s before scale punch-in, reframing, or cutaway",
+    "source_refs": [
+      "REF_01",
+      "REF_02",
+      "REF_04"
+    ],
+    "evidence_strength": "strong_reference_support",
+    "associated_principle": "PRIN_AVOID_04",
+    "candidate_for_future_testing": true,
+    "currently_binding": false,
+    "testing_hypothesis": "Triggering an evolution (punch-in, angle change, b-roll cutaway) when presenter speaks continuously beyond narrative sentence boundaries prevents visual stagnation."
+  },
+  {
+    "candidate_id": "CALIB_PRESENTER_PUNCH_SCALE_FACTOR",
+    "topic": "Presenter Digital Punch-In Scale Factor",
+    "parameter_name": "digital_punch_scale_factor",
+    "observed_range": "1.15x - 1.25x crop centered on eye line",
+    "source_refs": [
+      "REF_01",
+      "REF_02",
+      "REF_04"
+    ],
+    "evidence_strength": "strong_reference_support",
+    "associated_principle": "PRIN_CORE_06",
+    "candidate_for_future_testing": true,
+    "currently_binding": false,
+    "testing_hypothesis": "A 1.18x crop factor provides optimal perceptual jump without noticeable pixel softening on standard 1080p footage."
+  }
+]

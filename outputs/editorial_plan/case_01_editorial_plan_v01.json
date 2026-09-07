@@ -1,0 +1,1182 @@
+{
+  "plan_id": "PLAN_CASE01_JULIA_V01",
+  "case_id": "CASE_01",
+  "property_name": "Residencial Júlia",
+  "location": "Taubaté, SP (próximo ao Taubaté Shopping e Shibata, acesso à Dutra e Carvalho Pinto)",
+  "presenter": "Marcel",
+  "total_beats": 10,
+  "total_duration_seconds": 52.68,
+  "provenance": {
+    "ground_truth_source": "HUMAN_HOMOLOGATED_TRANSCRIPT",
+    "ground_truth_authority": "HUMAN_HOMOLOGATED_CASE_GROUND_TRUTH",
+    "ground_truth_locked": true,
+    "safeguard": "Case ground truth must never be silently replaced by similarly named media, filenames, previous analyses, reference datasets or inferred content."
+  },
+  "epistemic_status": "QUALITATIVE_EDITORIAL_PLAN_CONTRACT",
+  "currently_binding": false,
+  "macro_trajectory_summary": {
+    "visual_source_trajectory": [
+      "BEAT_01: PRESENTER (Hook setup)",
+      "BEAT_02: PROPERTY (Living room reveal)",
+      "BEAT_03: CURRENT_STATE / PROPERTY (Breathing room)",
+      "BEAT_04: LOCATION (Verified location evidence required)",
+      "BEAT_05: PROPERTY (68m² interior tour demonstration)",
+      "BEAT_06: LIFESTYLE / PROPERTY (Balcony & barbecue hero payoff)",
+      "BEAT_07: PROPERTY (Condo amenities infrastructure proof)",
+      "BEAT_08: PRESENTER (Reanchor for financial terms & price card)",
+      "BEAT_09: PRESENTER (Frame cleanse & consultative reflection)",
+      "BEAT_10: PRESENTER (Human-led CTA with minimal end badge)"
+    ],
+    "human_property_balance": "Human leads opening hook, price authority, and closing CTA; Property & Location prove physical reality in middle arc.",
+    "information_density_trajectory": "Low at start -> Visual proof in middle -> Climax peak at Beat 08 (Financial terms) -> Reset at Beat 09 -> Clear action at Beat 10.",
+    "graphic_load_trajectory": "NONE (B1-B3) -> MINIMAL Location Tag (B4) -> NONE (B5-B7) -> HERO Card (B8) -> NONE (B9) -> MINIMAL CTA Badge (B10).",
+    "open_evidence_requirements": [
+      "BEAT_04: VERIFIED_EVIDENCE_REQUIRED for geographic proximity (Taubaté Shopping, Shibata, Dutra)"
+    ],
+    "open_unresolved_hierarchies": [
+      "BEAT_08: Financial card visual hero element (Installment affordability ~R$ 2.000 vs Total Price R$ 350.000)"
+    ]
+  },
+  "plan_units": [
+    {
+      "plan_unit_id": "PLAN_UNIT_01",
+      "beat_id": "BEAT_01",
+      "time_range_source": "00:00.000 - 00:06.440",
+      "duration_seconds": 6.44,
+      "script_excerpt": "Por que continuar pagando aluguel se você pode morar a minutos do Taubaté Shopping e do Shibata pagando parcelas de R$2.000?",
+      "ground_truth_reference": {
+        "source": "HUMAN_HOMOLOGATED_TRANSCRIPT",
+        "authority": "HUMAN_HOMOLOGATED_CASE_GROUND_TRUTH",
+        "locked": true
+      },
+      "creative_decision_reference": "DEC_CASE01_BEAT_01",
+      "narrative_functions": [
+        "HOOK",
+        "PAIN",
+        "PROMISE",
+        "OFFER"
+      ],
+      "subjects": [
+        "rent_vs_own",
+        "installment_affordability",
+        "location_proximity",
+        "shopping_supermarket"
+      ],
+      "viewer_effects": [
+        "curiosity",
+        "identification",
+        "value_perception",
+        "reassurance"
+      ],
+      "state_decision": "HOLD",
+      "primary_visual_strategy": "Preserve presenter performance on camera; establish direct human rapport and hook proposition without distracting cuts.",
+      "source_strategy": "PRESENTER",
+      "media_intent": [
+        "presenter_performance"
+      ],
+      "continuity_intent": [
+        "PRESERVE_PERFORMANCE",
+        "PRESERVE_EMOTIONAL_FLOW"
+      ],
+      "composition_intent": [
+        "human_focused",
+        "clean",
+        "balanced"
+      ],
+      "graphic_intent": "NONE",
+      "typography_intent": {
+        "role": "caption",
+        "hierarchy": "SUPPORTING",
+        "semantic_target": "spoken dialogue",
+        "desired_effect": "comprehension support without visual distraction",
+        "visual_priority": "LOW"
+      },
+      "information_intent": {
+        "facts_to_preserve": [
+          "aluguel vs morar próprio",
+          "minutos do Taubaté Shopping e Shibata",
+          "parcelas de R$ 2.000"
+        ],
+        "facts_to_emphasize": [
+          "parcelas de R$ 2.000",
+          "Taubaté Shopping e Shibata"
+        ],
+        "facts_to_support": [],
+        "facts_requiring_verified_evidence": [],
+        "information_hierarchy_status": "RESOLVED"
+      },
+      "transition_intent": "CONTINUOUS",
+      "audio_intent": [
+        "VOICE_FIRST",
+        "PRESERVE_DIALOGUE"
+      ],
+      "motion_intent": "PRESERVE_NATURAL_MOTION",
+      "emphasis_intent": {
+        "editorial_importance": "MAJOR",
+        "emphasis_target": "presenter hook delivery and financial contrast",
+        "relative_intensity": "BALANCED"
+      },
+      "attention_intent": {
+        "cognitive_load": "LOW",
+        "focus_target": "presenter facial expression and eye contact",
+        "breathing_room": "NATURAL"
+      },
+      "performance_preservation_intent": "HIGH",
+      "visual_payoff_intent": "PENDING (location and property promised for subsequent beats)",
+      "location_evidence_intent": "NONE (verbal hook stage)",
+      "candidate_technique_refs": [],
+      "selected_technique_refs": [],
+      "asset_requirements": [
+        {
+          "semantic_role": "presenter_take",
+          "subject": "Marcel on camera delivering opening hook",
+          "evidence_requirement": "presenter_delivery",
+          "quality_requirement": "clear_audio_and_lighting",
+          "verification_requirement": "dialogue_match",
+          "availability_status": "AVAILABLE_CONFIRMED"
+        }
+      ],
+      "unresolved_requirements": [],
+      "constraints": [
+        "CONTINUITY",
+        "PERFORMANCE_PRESERVATION"
+      ],
+      "confidence": "HIGH",
+      "uncertainties": [
+        "Specific lens framing beyond medium shot is UNKNOWN"
+      ],
+      "editorial_summary": "Preserve Marcel delivering the opening hook directly to camera. Zero cut or graphic distraction to maximize initial human trust and emotional engagement."
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_02",
+      "beat_id": "BEAT_02",
+      "time_range_source": "00:06.440 - 00:09.760",
+      "duration_seconds": 3.32,
+      "script_excerpt": "Dá uma olhada nesse apartamento de R$350.000 no Residencial Júlia.",
+      "ground_truth_reference": {
+        "source": "HUMAN_HOMOLOGATED_TRANSCRIPT",
+        "authority": "HUMAN_HOMOLOGATED_CASE_GROUND_TRUTH",
+        "locked": true
+      },
+      "creative_decision_reference": "DEC_CASE01_BEAT_02",
+      "narrative_functions": [
+        "REVEAL",
+        "VALUE",
+        "OFFER"
+      ],
+      "subjects": [
+        "property_introduction",
+        "apartment_interior",
+        "price_anchor"
+      ],
+      "viewer_effects": [
+        "curiosity",
+        "orientation",
+        "interest"
+      ],
+      "state_decision": "SWITCH",
+      "primary_visual_strategy": "Switch to hero reveal of apartment interior/living room matching the direct invitation 'Dá uma olhada'.",
+      "source_strategy": "PROPERTY",
+      "media_intent": [
+        "property_reveal",
+        "property_hero"
+      ],
+      "continuity_intent": [
+        "ALLOW_SOURCE_CHANGE",
+        "PRESERVE_VOICE_OVER",
+        "CREATE_PAYOFF"
+      ],
+      "composition_intent": [
+        "property_focused",
+        "immersive",
+        "spacious"
+      ],
+      "graphic_intent": "NONE",
+      "typography_intent": {
+        "role": "caption",
+        "hierarchy": "SUPPORTING",
+        "semantic_target": "spoken dialogue",
+        "desired_effect": "reading support without obscuring interior beauty",
+        "visual_priority": "LOW"
+      },
+      "information_intent": {
+        "facts_to_preserve": [
+          "R$ 350.000",
+          "Residencial Júlia"
+        ],
+        "facts_to_emphasize": [
+          "Residencial Júlia",
+          "R$ 350.000"
+        ],
+        "facts_to_support": [],
+        "facts_requiring_verified_evidence": [
+          "property interior match"
+        ],
+        "information_hierarchy_status": "RESOLVED"
+      },
+      "transition_intent": "REVEAL",
+      "audio_intent": [
+        "VOICE_FIRST",
+        "PRESERVE_DIALOGUE"
+      ],
+      "motion_intent": "HERO_REVEAL",
+      "emphasis_intent": {
+        "editorial_importance": "HIGH",
+        "emphasis_target": "interior space living room amplitude",
+        "relative_intensity": "MEANINGFUL"
+      },
+      "attention_intent": {
+        "cognitive_load": "BALANCED",
+        "focus_target": "living room architecture and light",
+        "breathing_room": "OPEN"
+      },
+      "performance_preservation_intent": "MEDIUM",
+      "visual_payoff_intent": "FULFILLED (living room revealed)",
+      "location_evidence_intent": "NONE",
+      "candidate_technique_refs": [
+        "T_BROLL_HERO_REVEAL"
+      ],
+      "selected_technique_refs": [
+        "T_BROLL_HERO_REVEAL"
+      ],
+      "asset_requirements": [
+        {
+          "semantic_role": "living_room_hero",
+          "subject": "Living room / integrated space of Residencial Júlia",
+          "evidence_requirement": "property_visual_proof",
+          "quality_requirement": "wide_angle_stable_light",
+          "verification_requirement": "property_match",
+          "availability_status": "UNKNOWN (media uninspected in fast mode)"
+        }
+      ],
+      "unresolved_requirements": [],
+      "constraints": [
+        "CLARITY",
+        "IMMEDIATE_VISUAL_PAYOFF"
+      ],
+      "confidence": "HIGH",
+      "uncertainties": [
+        "Specific camera movement speed of B-roll asset is UNKNOWN"
+      ],
+      "editorial_summary": "Switch from presenter to living room hero reveal to fulfill 'Dá uma olhada'. Voice-over continues over clean, spacious interior framing."
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_03",
+      "beat_id": "BEAT_03",
+      "time_range_source": "00:09.760 - 00:12.239",
+      "duration_seconds": 2.48,
+      "script_excerpt": "A localização é perfeita para o dia a dia.",
+      "ground_truth_reference": {
+        "source": "HUMAN_HOMOLOGATED_TRANSCRIPT",
+        "authority": "HUMAN_HOMOLOGATED_CASE_GROUND_TRUTH",
+        "locked": true
+      },
+      "creative_decision_reference": "DEC_CASE01_BEAT_03",
+      "narrative_functions": [
+        "VALUE",
+        "EXPLANATION"
+      ],
+      "subjects": [
+        "location_value",
+        "convenience_bridge"
+      ],
+      "viewer_effects": [
+        "anticipation",
+        "reassurance"
+      ],
+      "state_decision": "HOLD",
+      "primary_visual_strategy": "Hold living room B-roll across short verbal transition to maintain pacing and allow visual breathing room.",
+      "source_strategy": "CURRENT_STATE",
+      "media_intent": [
+        "continuity_support",
+        "atmosphere"
+      ],
+      "continuity_intent": [
+        "MAINTAIN_CURRENT_STATE",
+        "PRESERVE_VOICE_OVER",
+        "RESET_VISUAL_LOAD"
+      ],
+      "composition_intent": [
+        "property_focused",
+        "clean",
+        "spacious"
+      ],
+      "graphic_intent": "NONE",
+      "typography_intent": {
+        "role": "caption",
+        "hierarchy": "SUPPORTING",
+        "semantic_target": "spoken dialogue",
+        "desired_effect": "continuity without visual clutter",
+        "visual_priority": "LOW"
+      },
+      "information_intent": {
+        "facts_to_preserve": [
+          "localização perfeita para o dia a dia"
+        ],
+        "facts_to_emphasize": [],
+        "facts_to_support": [
+          "dia a dia"
+        ],
+        "facts_requiring_verified_evidence": [],
+        "information_hierarchy_status": "RESOLVED"
+      },
+      "transition_intent": "CONTINUOUS",
+      "audio_intent": [
+        "VOICE_FIRST",
+        "PRESERVE_DIALOGUE"
+      ],
+      "motion_intent": "PRESERVE_NATURAL_MOTION",
+      "emphasis_intent": {
+        "editorial_importance": "MEDIUM",
+        "emphasis_target": "verbal transition into location segment",
+        "relative_intensity": "SUPPORTING"
+      },
+      "attention_intent": {
+        "cognitive_load": "LOW",
+        "focus_target": "interior appreciation while listening to bridge",
+        "breathing_room": "HIGH"
+      },
+      "performance_preservation_intent": "LOW",
+      "visual_payoff_intent": "FULFILLED",
+      "location_evidence_intent": "NONE (bridge sentence before specific proofs)",
+      "candidate_technique_refs": [],
+      "selected_technique_refs": [],
+      "asset_requirements": [
+        {
+          "semantic_role": "living_room_hero_continuation",
+          "subject": "Sustained interior shot",
+          "evidence_requirement": "continuity",
+          "quality_requirement": "stable",
+          "verification_requirement": "same_as_previous",
+          "availability_status": "UNKNOWN"
+        }
+      ],
+      "unresolved_requirements": [],
+      "constraints": [
+        "AVOID_OVER_CUTTING"
+      ],
+      "confidence": "HIGH",
+      "uncertainties": [],
+      "editorial_summary": "Sustain living room framing across the short 2.48s bridge. Provide visual breathing room before transitioning into location proof."
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_04",
+      "beat_id": "BEAT_04",
+      "time_range_source": "00:12.239 - 00:19.200",
+      "duration_seconds": 6.96,
+      "script_excerpt": "Você estará a poucos minutos do Taubaté Shopping, coladinho ao supermercado Shibata e com acesso ultra rápido à Dutra e Carvalho Pinto.",
+      "ground_truth_reference": {
+        "source": "HUMAN_HOMOLOGATED_TRANSCRIPT",
+        "authority": "HUMAN_HOMOLOGATED_CASE_GROUND_TRUTH",
+        "locked": true
+      },
+      "creative_decision_reference": "DEC_CASE01_BEAT_04",
+      "narrative_functions": [
+        "PROOF",
+        "EXPLANATION",
+        "VALUE"
+      ],
+      "subjects": [
+        "macro_location",
+        "highway_access",
+        "shopping_proximity",
+        "supermarket_proximity"
+      ],
+      "viewer_effects": [
+        "reassurance",
+        "clarity",
+        "geographic_orientation"
+      ],
+      "state_decision": "SWITCH",
+      "primary_visual_strategy": "LOCATION_EVIDENCE_REQUIRED: Switch to verified location evidence (verified POI context, route visualization, or verified aerial/street landmarks); if only unverified atmospheric drone exists, treat evidence strength as UNKNOWN rather than confirmed geographic proof.",
+      "source_strategy": "LOCATION",
+      "media_intent": [
+        "location_proof",
+        "location_context"
+      ],
+      "continuity_intent": [
+        "ALLOW_SOURCE_CHANGE",
+        "PRESERVE_VOICE_OVER"
+      ],
+      "composition_intent": [
+        "contextual",
+        "clean",
+        "balanced"
+      ],
+      "graphic_intent": "LOCATION_SUPPORT",
+      "typography_intent": {
+        "role": "location_identifier",
+        "hierarchy": "SUPPORTING",
+        "semantic_target": "Taubaté Shopping / Shibata / Dutra",
+        "desired_effect": "clear geographic anchoring with minimal typography",
+        "visual_priority": "BALANCED"
+      },
+      "information_intent": {
+        "facts_to_preserve": [
+          "minutos do Taubaté Shopping",
+          "coladinho ao Shibata",
+          "acesso rápido à Dutra e Carvalho Pinto"
+        ],
+        "facts_to_emphasize": [
+          "Taubaté Shopping",
+          "Shibata",
+          "Dutra",
+          "Carvalho Pinto"
+        ],
+        "facts_to_support": [
+          "minutos",
+          "coladinho"
+        ],
+        "facts_requiring_verified_evidence": [
+          "POI proximity",
+          "highway access proximity"
+        ],
+        "information_hierarchy_status": "RESOLVED"
+      },
+      "transition_intent": "CLEAN_CHANGE",
+      "audio_intent": [
+        "VOICE_FIRST",
+        "PRESERVE_DIALOGUE"
+      ],
+      "motion_intent": "SPATIAL_EXPLORATION",
+      "emphasis_intent": {
+        "editorial_importance": "HIGH",
+        "emphasis_target": "geographic convenience and road access",
+        "relative_intensity": "MEANINGFUL"
+      },
+      "attention_intent": {
+        "cognitive_load": "BALANCED",
+        "focus_target": "neighborhood context and location tag",
+        "breathing_room": "BALANCED"
+      },
+      "performance_preservation_intent": "LOW",
+      "visual_payoff_intent": "PENDING (requires verified geographical asset)",
+      "location_evidence_intent": "VERIFIED_EVIDENCE_REQUIRED",
+      "candidate_technique_refs": [
+        "T_BROLL_HERO_REVEAL",
+        "T_LOWER_THIRD_LOCATION_TAG"
+      ],
+      "selected_technique_refs": [
+        "T_BROLL_HERO_REVEAL",
+        "T_LOWER_THIRD_LOCATION_TAG"
+      ],
+      "asset_requirements": [
+        {
+          "semantic_role": "verified_location_asset",
+          "subject": "Neighborhood context showing proximity to Taubaté Shopping, Shibata, Dutra",
+          "evidence_requirement": "geographic_proximity_proof",
+          "quality_requirement": "clear_landmarks_or_verified_poi",
+          "verification_requirement": "geographic_accuracy",
+          "availability_status": "UNKNOWN (generic drone available, verified proof status UNKNOWN)"
+        }
+      ],
+      "unresolved_requirements": [
+        "Geographic verification of available location footage (POI landmarks vs generic atmospheric aerial)"
+      ],
+      "constraints": [
+        "GEOGRAPHIC_ACCURACY",
+        "DO_NOT_ASSUME_GENERIC_DRONE_IS_PROOF"
+      ],
+      "confidence": "MEDIUM",
+      "uncertainties": [
+        "Evidence strength remains UNKNOWN until external geographic verification is performed"
+      ],
+      "editorial_summary": "Switch to location evidence displaying neighborhood context and highway access, supported by a minimal location tag. Requires verified geographic evidence; generic drone remains UNKNOWN in proof strength."
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_05",
+      "beat_id": "BEAT_05",
+      "time_range_source": "00:19.200 - 00:27.440",
+      "duration_seconds": 8.24,
+      "script_excerpt": "O apartamento tem 68m² muito bem planejados: sala espaçosa, cozinha funcional, dois banheiros, dois dormitórios sendo uma suíte privativa.",
+      "ground_truth_reference": {
+        "source": "HUMAN_HOMOLOGATED_TRANSCRIPT",
+        "authority": "HUMAN_HOMOLOGATED_CASE_GROUND_TRUTH",
+        "locked": true
+      },
+      "creative_decision_reference": "DEC_CASE01_BEAT_05",
+      "narrative_functions": [
+        "DEMONSTRATION",
+        "PROOF",
+        "EXPLANATION"
+      ],
+      "subjects": [
+        "floor_plan",
+        "square_meters",
+        "living_room",
+        "kitchen",
+        "bathrooms",
+        "bedrooms",
+        "suite"
+      ],
+      "viewer_effects": [
+        "spatial_understanding",
+        "comfort",
+        "practicality"
+      ],
+      "state_decision": "SWITCH",
+      "primary_visual_strategy": "Switch to sequential coverage of apartment interior spaces (living, kitchen, suite) matching spoken tour.",
+      "source_strategy": "PROPERTY",
+      "media_intent": [
+        "property_demonstration",
+        "spatial_orientation",
+        "feature_detail"
+      ],
+      "continuity_intent": [
+        "ALLOW_SOURCE_CHANGE",
+        "PRESERVE_VOICE_OVER",
+        "PRESERVE_SPATIAL_FLOW"
+      ],
+      "composition_intent": [
+        "property_focused",
+        "detail_oriented",
+        "clean"
+      ],
+      "graphic_intent": "NONE",
+      "typography_intent": {
+        "role": "caption",
+        "hierarchy": "SUPPORTING",
+        "semantic_target": "spoken dialogue",
+        "desired_effect": "reading support without bulleted screen clutter",
+        "visual_priority": "LOW"
+      },
+      "information_intent": {
+        "facts_to_preserve": [
+          "68m²",
+          "sala espaçosa",
+          "cozinha funcional",
+          "dois banheiros",
+          "dois dormitórios",
+          "uma suíte privativa"
+        ],
+        "facts_to_emphasize": [
+          "68m²",
+          "duas suítes/dormitórios",
+          "cozinha funcional"
+        ],
+        "facts_to_support": [],
+        "facts_requiring_verified_evidence": [
+          "layout match 68m²"
+        ],
+        "information_hierarchy_status": "RESOLVED"
+      },
+      "transition_intent": "CLEAN_CHANGE",
+      "audio_intent": [
+        "VOICE_FIRST",
+        "PRESERVE_DIALOGUE"
+      ],
+      "motion_intent": "SPATIAL_EXPLORATION",
+      "emphasis_intent": {
+        "editorial_importance": "HIGH",
+        "emphasis_target": "interior layout flow and functional spaces",
+        "relative_intensity": "MEANINGFUL"
+      },
+      "attention_intent": {
+        "cognitive_load": "BALANCED",
+        "focus_target": "interior finishes, kitchen, suite, and spatial feel",
+        "breathing_room": "BALANCED"
+      },
+      "performance_preservation_intent": "LOW",
+      "visual_payoff_intent": "FULFILLED (demonstrates enumerated rooms)",
+      "location_evidence_intent": "NONE",
+      "candidate_technique_refs": [
+        "T_BROLL_SEQUENTIAL_DETAIL"
+      ],
+      "selected_technique_refs": [
+        "T_BROLL_SEQUENTIAL_DETAIL"
+      ],
+      "asset_requirements": [
+        {
+          "semantic_role": "interior_sequential_coverage",
+          "subject": "Kitchen, bathrooms, bedrooms, and suite of 68m² unit",
+          "evidence_requirement": "property_layout_proof",
+          "quality_requirement": "clear_interior_light_stable",
+          "verification_requirement": "unit_type_match",
+          "availability_status": "UNKNOWN"
+        }
+      ],
+      "unresolved_requirements": [],
+      "constraints": [
+        "COHERENT_TOUR",
+        "AVOID_ON_SCREEN_BULLET_LISTS"
+      ],
+      "confidence": "HIGH",
+      "uncertainties": [
+        "Specific sequence order of interior cuts is UNKNOWN"
+      ],
+      "editorial_summary": "Switch to sequential interior tour demonstrating the 68m² layout (kitchen, bathrooms, suite) with smooth spatial continuity, avoiding text clutter."
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_06",
+      "beat_id": "BEAT_06",
+      "time_range_source": "00:27.440 - 00:31.799",
+      "duration_seconds": 4.36,
+      "script_excerpt": "E o destaque especial: uma varanda deliciosa com churrasqueira para curtir o fim de semana.",
+      "ground_truth_reference": {
+        "source": "HUMAN_HOMOLOGATED_TRANSCRIPT",
+        "authority": "HUMAN_HOMOLOGATED_CASE_GROUND_TRUTH",
+        "locked": true
+      },
+      "creative_decision_reference": "DEC_CASE01_BEAT_06",
+      "narrative_functions": [
+        "DESIRE",
+        "VALUE",
+        "PROOF"
+      ],
+      "subjects": [
+        "balcony",
+        "barbecue",
+        "weekend_lifestyle",
+        "hero_amenity"
+      ],
+      "viewer_effects": [
+        "desire",
+        "relaxation",
+        "lifestyle_aspiration"
+      ],
+      "state_decision": "SWITCH",
+      "primary_visual_strategy": "Switch to hero reveal of the balcony with barbecue, holding the shot to allow lifestyle appreciation.",
+      "source_strategy": "LIFESTYLE",
+      "media_intent": [
+        "property_hero",
+        "lifestyle_projection",
+        "feature_detail"
+      ],
+      "continuity_intent": [
+        "ALLOW_SOURCE_CHANGE",
+        "PRESERVE_VOICE_OVER",
+        "CREATE_PAYOFF"
+      ],
+      "composition_intent": [
+        "hero",
+        "immersive",
+        "spacious"
+      ],
+      "graphic_intent": "NONE",
+      "typography_intent": {
+        "role": "caption",
+        "hierarchy": "SUPPORTING",
+        "semantic_target": "spoken dialogue",
+        "desired_effect": "pure visual lifestyle experience without text distraction",
+        "visual_priority": "LOW"
+      },
+      "information_intent": {
+        "facts_to_preserve": [
+          "varanda com churrasqueira",
+          "curtir o fim de semana"
+        ],
+        "facts_to_emphasize": [
+          "varanda com churrasqueira"
+        ],
+        "facts_to_support": [
+          "fim de semana"
+        ],
+        "facts_requiring_verified_evidence": [
+          "balcony barbecue visual proof"
+        ],
+        "information_hierarchy_status": "RESOLVED"
+      },
+      "transition_intent": "REVEAL",
+      "audio_intent": [
+        "VOICE_FIRST",
+        "PRESERVE_DIALOGUE",
+        "ATMOSPHERE_SUPPORT"
+      ],
+      "motion_intent": "HERO_REVEAL",
+      "emphasis_intent": {
+        "editorial_importance": "MAJOR",
+        "emphasis_target": "balcony leisure and barbecue feature",
+        "relative_intensity": "HERO"
+      },
+      "attention_intent": {
+        "cognitive_load": "LOW",
+        "focus_target": "balcony space, grill, and outdoor integration",
+        "breathing_room": "OPEN"
+      },
+      "performance_preservation_intent": "LOW",
+      "visual_payoff_intent": "FULFILLED (lifestyle hero feature shown)",
+      "location_evidence_intent": "NONE",
+      "candidate_technique_refs": [
+        "T_BROLL_HERO_REVEAL"
+      ],
+      "selected_technique_refs": [
+        "T_BROLL_HERO_REVEAL"
+      ],
+      "asset_requirements": [
+        {
+          "semantic_role": "balcony_barbecue_hero",
+          "subject": "Balcony with barbecue area and open view",
+          "evidence_requirement": "hero_feature_proof",
+          "quality_requirement": "warm_natural_light_inviting",
+          "verification_requirement": "property_balcony_match",
+          "availability_status": "UNKNOWN"
+        }
+      ],
+      "unresolved_requirements": [],
+      "constraints": [
+        "HIGHLIGHT_HERO_FEATURE",
+        "PRESERVE_BREATHING_ROOM"
+      ],
+      "confidence": "HIGH",
+      "uncertainties": [],
+      "editorial_summary": "Switch to hero reveal of the gourmet balcony with barbecue. Hold shot for lifestyle projection and emotional payoff without competing overlays."
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_07",
+      "beat_id": "BEAT_07",
+      "time_range_source": "00:31.799 - 00:37.040",
+      "duration_seconds": 5.24,
+      "script_excerpt": "O condomínio conta com portaria remota 24h, salão de festas, área gourmet, playground e vaga coberta.",
+      "ground_truth_reference": {
+        "source": "HUMAN_HOMOLOGATED_TRANSCRIPT",
+        "authority": "HUMAN_HOMOLOGATED_CASE_GROUND_TRUTH",
+        "locked": true
+      },
+      "creative_decision_reference": "DEC_CASE01_BEAT_07",
+      "narrative_functions": [
+        "PROOF",
+        "EXPLANATION",
+        "VALUE"
+      ],
+      "subjects": [
+        "condominium_amenities",
+        "security",
+        "leisure_facilities",
+        "parking"
+      ],
+      "viewer_effects": [
+        "security",
+        "family_appeal",
+        "completeness"
+      ],
+      "state_decision": "SWITCH",
+      "primary_visual_strategy": "Switch to sequential detail shots of common amenities (facade, playground, party room).",
+      "source_strategy": "PROPERTY",
+      "media_intent": [
+        "amenity_proof",
+        "property_demonstration"
+      ],
+      "continuity_intent": [
+        "ALLOW_SOURCE_CHANGE",
+        "PRESERVE_VOICE_OVER"
+      ],
+      "composition_intent": [
+        "property_focused",
+        "detail_oriented",
+        "clean"
+      ],
+      "graphic_intent": "NONE",
+      "typography_intent": {
+        "role": "caption",
+        "hierarchy": "SUPPORTING",
+        "semantic_target": "spoken dialogue",
+        "desired_effect": "comprehension support without icon clutter",
+        "visual_priority": "LOW"
+      },
+      "information_intent": {
+        "facts_to_preserve": [
+          "portaria remota 24h",
+          "salão de festas",
+          "área gourmet",
+          "playground",
+          "vaga coberta"
+        ],
+        "facts_to_emphasize": [
+          "portaria remota 24h",
+          "salão de festas",
+          "playground",
+          "vaga coberta"
+        ],
+        "facts_to_support": [],
+        "facts_requiring_verified_evidence": [
+          "amenity existence in building"
+        ],
+        "information_hierarchy_status": "RESOLVED"
+      },
+      "transition_intent": "CLEAN_CHANGE",
+      "audio_intent": [
+        "VOICE_FIRST",
+        "PRESERVE_DIALOGUE"
+      ],
+      "motion_intent": "SPATIAL_EXPLORATION",
+      "emphasis_intent": {
+        "editorial_importance": "HIGH",
+        "emphasis_target": "building security and family infrastructure",
+        "relative_intensity": "MEANINGFUL"
+      },
+      "attention_intent": {
+        "cognitive_load": "BALANCED",
+        "focus_target": "amenity facilities and building exterior",
+        "breathing_room": "BALANCED"
+      },
+      "performance_preservation_intent": "LOW",
+      "visual_payoff_intent": "FULFILLED (amenity proof shown)",
+      "location_evidence_intent": "NONE",
+      "candidate_technique_refs": [
+        "T_BROLL_SEQUENTIAL_DETAIL"
+      ],
+      "selected_technique_refs": [
+        "T_BROLL_SEQUENTIAL_DETAIL"
+      ],
+      "asset_requirements": [
+        {
+          "semantic_role": "condo_amenity_coverage",
+          "subject": "Facade, party hall, playground, covered garage",
+          "evidence_requirement": "amenity_visual_proof",
+          "quality_requirement": "clean_architectural_framing",
+          "verification_requirement": "condo_facility_match",
+          "availability_status": "UNKNOWN"
+        }
+      ],
+      "unresolved_requirements": [],
+      "constraints": [
+        "SHOW_FACILITIES",
+        "AVOID_ICON_GRIDS"
+      ],
+      "confidence": "HIGH",
+      "uncertainties": [
+        "Availability of specific playground vs party hall takes is UNKNOWN"
+      ],
+      "editorial_summary": "Switch to sequential B-roll of condominium common areas (security entrance, party room, playground) to document real building infrastructure."
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_08",
+      "beat_id": "BEAT_08",
+      "time_range_source": "00:37.040 - 00:44.680",
+      "duration_seconds": 7.64,
+      "script_excerpt": "Tudo isso por apenas R$350.000, financiado pelo Minha Casa Minha Vida, com entrada em torno de R$60.000 a R$70.000 e parcelas na faixa de R$2.000.",
+      "ground_truth_reference": {
+        "source": "HUMAN_HOMOLOGATED_TRANSCRIPT",
+        "authority": "HUMAN_HOMOLOGATED_CASE_GROUND_TRUTH",
+        "locked": true
+      },
+      "creative_decision_reference": "DEC_CASE01_BEAT_08",
+      "narrative_functions": [
+        "OFFER",
+        "VALUE",
+        "AUTHORITY",
+        "PROOF"
+      ],
+      "subjects": [
+        "total_price",
+        "government_financing_program",
+        "down_payment",
+        "monthly_installments",
+        "financial_feasibility"
+      ],
+      "viewer_effects": [
+        "accessibility",
+        "empowerment",
+        "decision_urgency",
+        "credibility"
+      ],
+      "state_decision": "SWITCH",
+      "primary_visual_strategy": "Return to presenter on camera with subtle punch-in and accompany with a clean, minimal financial summary card.",
+      "source_strategy": "PRESENTER",
+      "media_intent": [
+        "presenter_performance",
+        "financial_support"
+      ],
+      "continuity_intent": [
+        "ALLOW_VISUAL_REANCHOR",
+        "PRESERVE_PERFORMANCE",
+        "PRESERVE_DIALOGUE"
+      ],
+      "composition_intent": [
+        "human_focused",
+        "informational",
+        "balanced"
+      ],
+      "graphic_intent": "HERO_INFORMATION",
+      "typography_intent": {
+        "role": "financial_anchor",
+        "hierarchy": "HERO",
+        "semantic_target": "R$ 350.000 / Minha Casa Minha Vida / Parcelas ~R$ 2.000",
+        "desired_effect": "financial clarity and accessibility anchored by human authority",
+        "visual_priority": "HIGH"
+      },
+      "information_intent": {
+        "facts_to_preserve": [
+          "R$ 350.000",
+          "Minha Casa Minha Vida",
+          "entrada em torno de R$ 60.000 a R$ 70.000",
+          "parcelas na faixa de R$ 2.000"
+        ],
+        "facts_to_emphasize": [
+          "R$ 350.000",
+          "parcelas ~R$ 2.000",
+          "Minha Casa Minha Vida"
+        ],
+        "facts_to_support": [
+          "entrada R$ 60.000 a R$ 70.000"
+        ],
+        "facts_requiring_verified_evidence": [
+          "exact financing criteria eligibility"
+        ],
+        "information_hierarchy_status": "UNRESOLVED"
+      },
+      "transition_intent": "REANCHOR",
+      "audio_intent": [
+        "VOICE_FIRST",
+        "PRESERVE_DIALOGUE",
+        "EMPHASIS_SUPPORT"
+      ],
+      "motion_intent": "ATTENTION_REFOCUS",
+      "emphasis_intent": {
+        "editorial_importance": "CRITICAL",
+        "emphasis_target": "commercial offer credibility and financial feasibility",
+        "relative_intensity": "HERO"
+      },
+      "attention_intent": {
+        "cognitive_load": "HIGH",
+        "focus_target": "presenter facial authority + clean financial summary card",
+        "breathing_room": "STRUCTURED"
+      },
+      "performance_preservation_intent": "CRITICAL",
+      "visual_payoff_intent": "FULFILLED (financial terms anchored)",
+      "location_evidence_intent": "NONE",
+      "candidate_technique_refs": [
+        "T_PRESENTER_PUNCH_IN",
+        "T_CARD_PRICE_TERMS_HERO"
+      ],
+      "selected_technique_refs": [
+        "T_PRESENTER_PUNCH_IN",
+        "T_CARD_PRICE_TERMS_HERO"
+      ],
+      "asset_requirements": [
+        {
+          "semantic_role": "presenter_financial_delivery",
+          "subject": "Marcel on camera delivering price and terms",
+          "evidence_requirement": "presenter_authority",
+          "quality_requirement": "high_clarity",
+          "verification_requirement": "dialogue_match",
+          "availability_status": "AVAILABLE_CONFIRMED"
+        }
+      ],
+      "unresolved_requirements": [
+        "Information hierarchy: whether monthly installment (~R$ 2.000) or total price (R$ 350.000) is the visual hero element on the card"
+      ],
+      "constraints": [
+        "NUMERICAL_ACCURACY",
+        "AVOID_VISUAL_CLUTTER",
+        "PRESERVE_PRESENTER_AUTHORITY"
+      ],
+      "confidence": "HIGH",
+      "uncertainties": [
+        "Final graphic layout of financial card is UNRESOLVED (deferred to future design resolution)"
+      ],
+      "editorial_summary": "Reanchor on Marcel with a subtle punch-in while displaying a clean financial summary card. Preserves human authority for big numbers; hierarchy between installment vs total price remains UNRESOLVED."
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_09",
+      "beat_id": "BEAT_09",
+      "time_range_source": "00:44.680 - 00:47.040",
+      "duration_seconds": 2.36,
+      "script_excerpt": "E aí, gostou dessa oportunidade?",
+      "ground_truth_reference": {
+        "source": "HUMAN_HOMOLOGATED_TRANSCRIPT",
+        "authority": "HUMAN_HOMOLOGATED_CASE_GROUND_TRUTH",
+        "locked": true
+      },
+      "creative_decision_reference": "DEC_CASE01_BEAT_09",
+      "narrative_functions": [
+        "HOOK",
+        "VALUE"
+      ],
+      "subjects": [
+        "consultative_question",
+        "rapport_refresh",
+        "opportunity_reflection"
+      ],
+      "viewer_effects": [
+        "personal_connection",
+        "self_reflection"
+      ],
+      "state_decision": "EVOLVE",
+      "primary_visual_strategy": "Dismiss financial graphic card to clean the frame; hold presenter on camera to establish pure conversational rapport.",
+      "source_strategy": "PRESENTER",
+      "media_intent": [
+        "presenter_performance"
+      ],
+      "continuity_intent": [
+        "PRESERVE_PERFORMANCE",
+        "RESET_VISUAL_LOAD",
+        "PRESERVE_DIALOGUE"
+      ],
+      "composition_intent": [
+        "human_focused",
+        "clean"
+      ],
+      "graphic_intent": "NONE",
+      "typography_intent": {
+        "role": "caption",
+        "hierarchy": "SUPPORTING",
+        "semantic_target": "spoken dialogue",
+        "desired_effect": "frame cleanse focusing 100% on presenter expression",
+        "visual_priority": "LOW"
+      },
+      "information_intent": {
+        "facts_to_preserve": [
+          "gostou dessa oportunidade?"
+        ],
+        "facts_to_emphasize": [],
+        "facts_to_support": [],
+        "facts_requiring_verified_evidence": [],
+        "information_hierarchy_status": "RESOLVED"
+      },
+      "transition_intent": "CONTINUOUS",
+      "audio_intent": [
+        "VOICE_FIRST",
+        "PRESERVE_DIALOGUE"
+      ],
+      "motion_intent": "PRESERVE_NATURAL_MOTION",
+      "emphasis_intent": {
+        "editorial_importance": "MEDIUM",
+        "emphasis_target": "direct eye-to-eye conversational question",
+        "relative_intensity": "SUPPORTING"
+      },
+      "attention_intent": {
+        "cognitive_load": "LOW",
+        "focus_target": "presenter facial smile and engaging question",
+        "breathing_room": "OPEN"
+      },
+      "performance_preservation_intent": "HIGH",
+      "visual_payoff_intent": "FULFILLED",
+      "location_evidence_intent": "NONE",
+      "candidate_technique_refs": [],
+      "selected_technique_refs": [],
+      "asset_requirements": [
+        {
+          "semantic_role": "presenter_conversational_bridge",
+          "subject": "Marcel asking consultative question",
+          "evidence_requirement": "presenter_delivery",
+          "quality_requirement": "continuous_take",
+          "verification_requirement": "dialogue_match",
+          "availability_status": "AVAILABLE_CONFIRMED"
+        }
+      ],
+      "unresolved_requirements": [],
+      "constraints": [
+        "CLEAN_FRAME",
+        "REMOVE_FINANCIAL_GRAPHICS"
+      ],
+      "confidence": "HIGH",
+      "uncertainties": [],
+      "editorial_summary": "Evolve current state by clearing the financial card, holding Marcel in a clean frame to let the consultative question (*'E aí, gostou?'*) connect directly before CTA."
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_10",
+      "beat_id": "BEAT_010",
+      "time_range_source": "00:47.040 - 00:52.680",
+      "duration_seconds": 5.64,
+      "script_excerpt": "Faz o seguinte: clica no botão Saiba Mais, deixe o seu melhor telefone que a nossa equipe vai te chamar e agendar uma visita.",
+      "ground_truth_reference": {
+        "source": "HUMAN_HOMOLOGATED_TRANSCRIPT",
+        "authority": "HUMAN_HOMOLOGATED_CASE_GROUND_TRUTH",
+        "locked": true
+      },
+      "creative_decision_reference": "DEC_CASE01_BEAT_10",
+      "narrative_functions": [
+        "CTA",
+        "AUTHORITY",
+        "EXPLANATION"
+      ],
+      "subjects": [
+        "call_to_action",
+        "lead_capture",
+        "visit_scheduling",
+        "friction_reduction"
+      ],
+      "viewer_effects": [
+        "clarity_of_action",
+        "low_friction_confidence",
+        "readiness_to_convert"
+      ],
+      "state_decision": "EVOLVE",
+      "primary_visual_strategy": "Evolve presenter base frame by introducing a clean, minimal CTA button badge / end card while preserving direct eye contact closing guidance.",
+      "source_strategy": "PRESENTER",
+      "media_intent": [
+        "presenter_performance",
+        "cta_support"
+      ],
+      "continuity_intent": [
+        "PRESERVE_PERFORMANCE",
+        "PRESERVE_DIALOGUE"
+      ],
+      "composition_intent": [
+        "human_focused",
+        "clean",
+        "supporting"
+      ],
+      "graphic_intent": "CTA_SUPPORT",
+      "typography_intent": {
+        "role": "cta_instruction",
+        "hierarchy": "MAJOR",
+        "semantic_target": "Saiba Mais / Agende sua visita",
+        "desired_effect": "unambiguous conversion direction without blocking presenter face",
+        "visual_priority": "HIGH"
+      },
+      "information_intent": {
+        "facts_to_preserve": [
+          "clica no botão Saiba Mais",
+          "deixe seu melhor telefone",
+          "equipe vai te chamar e agendar uma visita"
+        ],
+        "facts_to_emphasize": [
+          "botão Saiba Mais",
+          "agendar uma visita"
+        ],
+        "facts_to_support": [
+          "deixe seu melhor telefone"
+        ],
+        "facts_requiring_verified_evidence": [],
+        "information_hierarchy_status": "RESOLVED"
+      },
+      "transition_intent": "CONTINUOUS",
+      "audio_intent": [
+        "VOICE_FIRST",
+        "PRESERVE_DIALOGUE",
+        "EMOTIONAL_SUPPORT"
+      ],
+      "motion_intent": "SUBTLE_EVOLUTION",
+      "emphasis_intent": {
+        "editorial_importance": "CRITICAL",
+        "emphasis_target": "conversion instruction and low-friction next step",
+        "relative_intensity": "MAJOR"
+      },
+      "attention_intent": {
+        "cognitive_load": "BALANCED",
+        "focus_target": "presenter eye contact + minimal CTA badge",
+        "breathing_room": "BALANCED"
+      },
+      "performance_preservation_intent": "CRITICAL",
+      "visual_payoff_intent": "FULFILLED",
+      "location_evidence_intent": "NONE",
+      "candidate_technique_refs": [
+        "T_CTA_END_CARD_MINIMAL"
+      ],
+      "selected_technique_refs": [
+        "T_CTA_END_CARD_MINIMAL"
+      ],
+      "asset_requirements": [
+        {
+          "semantic_role": "presenter_closing_cta",
+          "subject": "Marcel delivering final call-to-action",
+          "evidence_requirement": "presenter_closing",
+          "quality_requirement": "strong_eye_contact",
+          "verification_requirement": "dialogue_match",
+          "availability_status": "AVAILABLE_CONFIRMED"
+        }
+      ],
+      "unresolved_requirements": [],
+      "constraints": [
+        "CLEAR_INSTRUCTION",
+        "MINIMAL_GRAPHICS",
+        "HUMAN_LED_CLOSING"
+      ],
+      "confidence": "HIGH",
+      "uncertainties": [],
+      "editorial_summary": "Evolve presenter frame with a clean, minimal CTA badge during closing seconds. Marcel leads conversion directly looking at camera with zero full-screen logo takeover."
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "model_version": "0.1",
+  "grammar_version": "0.2",
+  "traceability_mappings": [
+    {
+      "decision_component": "Interpretation (Narrative Functions, Viewer Effects, Arc State)",
+      "maps_to_grammar_layer": "Narrative Functions Taxonomy & Viewer Effects Taxonomy",
+      "description": "The Creative Decision Model ingests composite narrative functions and cognitive targets directly from Grammar v0.2."
+    },
+    {
+      "decision_component": "Need Prioritization (Primary, Secondary, Constraints)",
+      "maps_to_grammar_layer": "Editorial Needs Taxonomy",
+      "description": "Translates Grammar editorial needs into an operational hierarchy for each beat without numerical weighting."
+    },
+    {
+      "decision_component": "State Decision (HOLD / EVOLVE / SWITCH)",
+      "maps_to_grammar_layer": "Visual State Preference Model",
+      "description": "Directly resolves the Grammar state preference into an editorial action based on Opportunity Gain vs Disruption Cost."
+    }
+  ]
+}

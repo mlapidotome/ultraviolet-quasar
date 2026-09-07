@@ -1,0 +1,145 @@
+[
+  {
+    "trigger": "room_mention",
+    "description": "Fala menciona um cômodo específico (cozinha, varanda gourmet, suíte, sala, lavabo, etc.)",
+    "intent": "Materializar e provar a existência, acabamento e amplitude do ambiente mencionado.",
+    "common_visual_response": "Corte imediato para B-roll / Foto do ambiente correspondente (duração 2.0s - 3.5s).",
+    "alternative_response": "Apresentador caminhando pelo cômodo apontando para os detalhes com identificador lower-third.",
+    "supporting_refs": [
+      "REF_01",
+      "REF_03",
+      "REF_05"
+    ],
+    "confidence": 0.98
+  },
+  {
+    "trigger": "feature_mention",
+    "description": "Fala menciona um atributo físico específico (freezer vertical, despensa, churrasqueira, fechamento em vidro, piscina)",
+    "intent": "Destacar o diferencial prático e funcional daquele elemento.",
+    "common_visual_response": "Corte para take fechado / macro do item em uso ou decorado (duração 1.5s - 2.5s).",
+    "alternative_response": "Cartela gráfica ou badge em overlay com seta indicadora sobre o B-roll.",
+    "supporting_refs": [
+      "REF_01",
+      "REF_03",
+      "REF_05"
+    ],
+    "confidence": 0.94
+  },
+  {
+    "trigger": "price_value_mention",
+    "description": "Fala menciona preço, condições de pagamento, parcelas ou valorização",
+    "intent": "Ancorar o valor financeiro e criar sensação de oportunidade/acessibilidade.",
+    "common_visual_response": "GC em destaque com tipografia em verde/amarelo ou cartela cheia de fluxo de pagamento.",
+    "alternative_response": "Apresentador em close-up com ênfase enfática e número em legenda destacada.",
+    "supporting_refs": [
+      "REF_03",
+      "REF_04"
+    ],
+    "confidence": 0.92
+  },
+  {
+    "trigger": "location_mention",
+    "description": "Fala menciona cidade, bairro ou proximidade da praia (Guarapari, Jockey Itaparica, Taubaté)",
+    "intent": "Gerar desejo geográfico, ancorar prestígio e comprovar conveniência/acesso.",
+    "common_visual_response": "Take aéreo de drone mostrando praia, orla ou entorno do empreendimento.",
+    "alternative_response": "Badge fixo com nome da cidade/bairro e mapa estilizado.",
+    "supporting_refs": [
+      "REF_03",
+      "REF_04",
+      "REF_05"
+    ],
+    "confidence": 0.95
+  },
+  {
+    "trigger": "pain_problem_statement",
+    "description": "Fala descreve sofrimento, rotina frustrante ou limitação de espaço",
+    "intent": "Evocar empatia, identificação imediata e dor emocional no prospect.",
+    "common_visual_response": "Apresentador em plano médio olhando com expressão de cumplicidade/seriedade.",
+    "alternative_response": "Corte para b-roll ilustrativo da dor (ex: pia cheia de louça, bife esfumaçando).",
+    "supporting_refs": [
+      "REF_01",
+      "REF_02"
+    ],
+    "confidence": 0.96
+  },
+  {
+    "trigger": "benefit_solution_statement",
+    "description": "Fala apresenta a solução, alívio ou vantagem exclusiva do imóvel",
+    "intent": "Gerar aspiração, alívio emocional e desejo de compra.",
+    "common_visual_response": "Corte para o imóvel iluminado, decorado e espaçoso com movimento de câmera fluido.",
+    "alternative_response": "Apresentador sorrindo em plano aberto com punch-in enfático.",
+    "supporting_refs": [
+      "REF_01",
+      "REF_03",
+      "REF_04",
+      "REF_05"
+    ],
+    "confidence": 0.95
+  },
+  {
+    "trigger": "number_statistic_mention",
+    "description": "Fala cita quantidade de lotes, metragem quadrada, número de quartos ou métricas de autoridade",
+    "intent": "Comprovar escala, precisão técnica e credibilidade factual.",
+    "common_visual_response": "Tipografia cinética com o número em escala ampliada e cor contrastante.",
+    "alternative_response": "Planta humanizada com cotas de dimensão em destaque.",
+    "supporting_refs": [
+      "REF_02",
+      "REF_03",
+      "REF_04",
+      "REF_05"
+    ],
+    "confidence": 0.96
+  },
+  {
+    "trigger": "objection_break",
+    "description": "Fala quebra objeção clássica (\"sem banco\", \"sem comprovação de renda\", \"ganha em dólar/euro\")",
+    "intent": "Eliminar a principal barreira mental que trava o avanço do lead.",
+    "common_visual_response": "Apresentador em close-up direto com tom de revelação (\"presta atenção nessa parte\").",
+    "alternative_response": "GC de alto impacto com texto da objeção superada em vermelho/verde.",
+    "supporting_refs": [
+      "REF_04"
+    ],
+    "confidence": 0.9
+  },
+  {
+    "trigger": "cta_conversion",
+    "description": "Fala convida para ação final (clicar no botão, link da bio, cadastro)",
+    "intent": "Direcionar a conversão sem hesitação ou ambiguidade.",
+    "common_visual_response": "Apresentador em câmera olhando nos olhos com gesto apontando para baixo.",
+    "alternative_response": "Cartela final com logotipo, chamada de texto e contato WhatsApp.",
+    "supporting_refs": [
+      "REF_01",
+      "REF_02",
+      "REF_03",
+      "REF_04",
+      "REF_05"
+    ],
+    "confidence": 0.99
+  },
+  {
+    "trigger": "long_presenter_stretch",
+    "description": "Apresentador falando continuamente no mesmo enquadramento por > 4.0 segundos",
+    "intent": "Evitar sensação de estagnação visual e manter o olho do espectador estimulado.",
+    "common_visual_response": "Punch-in digital de escala (1.0x -> 1.2x) na próxima palavra enfática.",
+    "alternative_response": "Inserção de micro B-roll de 1.5s cobrindo a fala sem cortar o áudio.",
+    "supporting_refs": [
+      "REF_01",
+      "REF_02",
+      "REF_04"
+    ],
+    "confidence": 0.94
+  },
+  {
+    "trigger": "visual_monotony",
+    "description": "Cena de B-roll ou imóvel permanecendo estática por > 3.0 segundos",
+    "intent": "Manter a fluidez visual e profundidade espacial.",
+    "common_visual_response": "Troca de plano (corte seco para novo ângulo ou detalhe).",
+    "alternative_response": "Movimento de câmera contínuo (pan/push-in) ou retorno ao apresentador.",
+    "supporting_refs": [
+      "REF_03",
+      "REF_04",
+      "REF_05"
+    ],
+    "confidence": 0.92
+  }
+]

@@ -1,0 +1,82 @@
+{
+  "traceability_id": "TRACE_PLAN_TO_TECHNIQUE_V01",
+  "technique_library_version": "v0.1",
+  "mappings": [
+    {
+      "plan_unit_id": "PLAN_UNIT_01",
+      "beat_id": "BEAT_01",
+      "selected_techniques": [],
+      "execution_parameters_excluded": true
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_02",
+      "beat_id": "BEAT_02",
+      "selected_techniques": [
+        "T_BROLL_HERO_REVEAL"
+      ],
+      "execution_parameters_excluded": true
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_03",
+      "beat_id": "BEAT_03",
+      "selected_techniques": [],
+      "execution_parameters_excluded": true
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_04",
+      "beat_id": "BEAT_04",
+      "selected_techniques": [
+        "T_BROLL_HERO_REVEAL",
+        "T_LOWER_THIRD_LOCATION_TAG"
+      ],
+      "execution_parameters_excluded": true
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_05",
+      "beat_id": "BEAT_05",
+      "selected_techniques": [
+        "T_BROLL_SEQUENTIAL_DETAIL"
+      ],
+      "execution_parameters_excluded": true
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_06",
+      "beat_id": "BEAT_06",
+      "selected_techniques": [
+        "T_BROLL_HERO_REVEAL"
+      ],
+      "execution_parameters_excluded": true
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_07",
+      "beat_id": "BEAT_07",
+      "selected_techniques": [
+        "T_BROLL_SEQUENTIAL_DETAIL"
+      ],
+      "execution_parameters_excluded": true
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_08",
+      "beat_id": "BEAT_08",
+      "selected_techniques": [
+        "T_PRESENTER_PUNCH_IN",
+        "T_CARD_PRICE_TERMS_HERO"
+      ],
+      "execution_parameters_excluded": true
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_09",
+      "beat_id": "BEAT_09",
+      "selected_techniques": [],
+      "execution_parameters_excluded": true
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_10",
+      "beat_id": "BEAT_010",
+      "selected_techniques": [
+        "T_CTA_END_CARD_MINIMAL"
+      ],
+      "execution_parameters_excluded": true
+    }
+  ]
+}

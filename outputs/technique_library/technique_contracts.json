@@ -1,0 +1,897 @@
+[
+  {
+    "technique_id": "TECH_HARD_CUT",
+    "family": "SHOT_CUT",
+    "name": "Hard Cut",
+    "description": "Instantaneous transition between two camera angles or media assets on an audio pause boundary.",
+    "serves_editorial_needs": [
+      "NOVELTY",
+      "VISUAL_PROOF",
+      "SPATIAL_CLARITY",
+      "CONTINUITY"
+    ],
+    "supports_viewer_effects": [
+      "understanding",
+      "anticipation_payoff",
+      "orientation"
+    ],
+    "good_when": [
+      "Moving from presenter claim to property proof",
+      "Switching between distinct rooms on phrase breaks"
+    ],
+    "avoid_when": [
+      "Presenter is in the middle of a continuous emotional sentence (unless motivating an intentional punch)"
+    ],
+    "compatible_emotional_modes": [
+      "curious",
+      "conversational",
+      "confident",
+      "aspirational",
+      "urgent",
+      "playful"
+    ],
+    "incompatible_or_risky_contexts": [
+      "Mid-syllable cutting without acoustic pause"
+    ],
+    "compatible_techniques": [
+      "TECH_CAPTIONS",
+      "TECH_KEYWORD_EMPHASIS",
+      "TECH_ROOM_LABEL"
+    ],
+    "attention_cost": "LOW",
+    "editorial_cost": "LOW",
+    "intensity_capability": "moderate",
+    "requires_media_or_context": [
+      "Two clean footage sources with clear audio pause boundary"
+    ],
+    "evidence_source": [
+      "Universal in 88.7% of shots across REF_01-05"
+    ],
+    "epistemic_status": "REFERENCE-DERIVED PRINCIPLE",
+    "currently_binding": false
+  },
+  {
+    "technique_id": "TECH_VISUAL_HOLD",
+    "family": "SHOT_CUT",
+    "name": "Visual Hold",
+    "description": "Deliberate continuation of the current visual framing and media asset across narrative sentences.",
+    "serves_editorial_needs": [
+      "CONTINUITY",
+      "PERFORMANCE_PRESERVATION",
+      "AESTHETIC_BREATHING"
+    ],
+    "supports_viewer_effects": [
+      "trust",
+      "spatial_understanding",
+      "desire"
+    ],
+    "good_when": [
+      "Presenter delivery is deeply engaging",
+      "Property shot is exceptionally beautiful and deserves contemplation"
+    ],
+    "avoid_when": [
+      "Visual framing has become stale and viewer attention risks dropping"
+    ],
+    "compatible_emotional_modes": [
+      "empathetic",
+      "confident",
+      "aspirational",
+      "reassuring",
+      "premium"
+    ],
+    "incompatible_or_risky_contexts": [
+      "High-energy fast pitch where pace demands visual resets"
+    ],
+    "compatible_techniques": [
+      "TECH_CAPTIONS",
+      "TECH_KEYWORD_EMPHASIS",
+      "TECH_MUSIC_BED"
+    ],
+    "attention_cost": "LOW",
+    "editorial_cost": "LOW",
+    "intensity_capability": "subtle",
+    "requires_media_or_context": [
+      "High-quality source performance or aesthetic imagery"
+    ],
+    "evidence_source": [
+      "REF_01, REF_04, REF_05 holds"
+    ],
+    "epistemic_status": "HUMAN-HOMOLOGATED PRINCIPLE",
+    "currently_binding": false
+  },
+  {
+    "technique_id": "TECH_CUTAWAY",
+    "family": "SHOT_CUT",
+    "name": "Cutaway",
+    "description": "Brief insertion of a related visual detail, feature, or symbolic proof before returning to the main line.",
+    "serves_editorial_needs": [
+      "VISUAL_PROOF",
+      "NOVELTY",
+      "EMPHASIS"
+    ],
+    "supports_viewer_effects": [
+      "belief",
+      "memorability",
+      "understanding"
+    ],
+    "good_when": [
+      "A specific feature or pain item is uttered (grill, sink, fixture)"
+    ],
+    "avoid_when": [
+      "No relevant asset exists; cutting to random filler degrades trust"
+    ],
+    "compatible_emotional_modes": [
+      "conversational",
+      "curious",
+      "confident",
+      "playful"
+    ],
+    "incompatible_or_risky_contexts": [
+      "Overly fragmented cutaways that break narrative train of thought"
+    ],
+    "compatible_techniques": [
+      "TECH_CAPTIONS",
+      "TECH_DETAIL_SHOT"
+    ],
+    "attention_cost": "MEDIUM",
+    "editorial_cost": "LOW",
+    "intensity_capability": "moderate",
+    "requires_media_or_context": [
+      "Specific detail asset matching spoken entity"
+    ],
+    "evidence_source": [
+      "REF_01 bife/pia, REF_05 acabamentos"
+    ],
+    "epistemic_status": "REFERENCE-DERIVED PRINCIPLE",
+    "currently_binding": false
+  },
+  {
+    "technique_id": "TECH_PUNCH_IN",
+    "family": "PRESENTER_EVOLUTION",
+    "name": "Digital Scale Punch-In",
+    "description": "Instantaneous crop/scale increase on the presenter centered on eye-line on an emphatic word break.",
+    "serves_editorial_needs": [
+      "EMPHASIS",
+      "NOVELTY",
+      "HUMAN_CONNECTION"
+    ],
+    "supports_viewer_effects": [
+      "memorability",
+      "urgency",
+      "identification"
+    ],
+    "good_when": [
+      "Presenter delivers a key revelation, thesis statement, or objection break"
+    ],
+    "avoid_when": [
+      "Source footage has low resolution or presenter face is partially occluded"
+    ],
+    "compatible_emotional_modes": [
+      "urgent",
+      "confident",
+      "curious",
+      "empathetic"
+    ],
+    "incompatible_or_risky_contexts": [
+      "Slow luxury tour where sudden jump crops disrupt serenity"
+    ],
+    "compatible_techniques": [
+      "TECH_KEYWORD_EMPHASIS",
+      "TECH_IMPACT_SFX"
+    ],
+    "attention_cost": "MEDIUM",
+    "editorial_cost": "LOW",
+    "intensity_capability": "moderate",
+    "requires_media_or_context": [
+      "High-res presenter footage (>1080p)"
+    ],
+    "evidence_source": [
+      "REF_01, REF_02, REF_04"
+    ],
+    "epistemic_status": "REFERENCE-DERIVED PRINCIPLE",
+    "currently_binding": false
+  },
+  {
+    "technique_id": "TECH_SUBTLE_REFRAME",
+    "family": "PRESENTER_EVOLUTION",
+    "name": "Subtle Reframe / Alternate Framing",
+    "description": "Gentle shift in framing, crop position, or multi-camera cut to give visual variety during longer monologues.",
+    "serves_editorial_needs": [
+      "CONTINUITY",
+      "NOVELTY",
+      "PERFORMANCE_PRESERVATION"
+    ],
+    "supports_viewer_effects": [
+      "trust",
+      "understanding"
+    ],
+    "good_when": [
+      "Presenter is explaining a multi-step concept in a conversational tone"
+    ],
+    "avoid_when": [
+      "Sharp punch-in is needed for sudden dramatic shock"
+    ],
+    "compatible_emotional_modes": [
+      "conversational",
+      "empathetic",
+      "reassuring",
+      "premium"
+    ],
+    "incompatible_or_risky_contexts": [
+      "Very short 1-second shots"
+    ],
+    "compatible_techniques": [
+      "TECH_CAPTIONS",
+      "TECH_MUSIC_BED"
+    ],
+    "attention_cost": "LOW",
+    "editorial_cost": "LOW",
+    "intensity_capability": "subtle",
+    "requires_media_or_context": [
+      "Presenter footage"
+    ],
+    "evidence_source": [
+      "REF_04, REF_05"
+    ],
+    "epistemic_status": "REFERENCE-DERIVED PRINCIPLE",
+    "currently_binding": false
+  },
+  {
+    "technique_id": "TECH_PRESENTER_PLUS_GRAPHIC",
+    "family": "PRESENTER_EVOLUTION",
+    "name": "Presenter with Graphic Overlay",
+    "description": "Presenter remains visible while a side card, badge, or metric appears beside them in active safe area.",
+    "serves_editorial_needs": [
+      "HUMAN_CONNECTION",
+      "INFORMATION_CLARITY",
+      "EMPHASIS"
+    ],
+    "supports_viewer_effects": [
+      "trust",
+      "understanding",
+      "memorability"
+    ],
+    "good_when": [
+      "Presenter cites price, financial conditions, or size specs"
+    ],
+    "avoid_when": [
+      "Graphic occludes presenter face or eyes"
+    ],
+    "compatible_emotional_modes": [
+      "confident",
+      "conversational",
+      "urgent"
+    ],
+    "incompatible_or_risky_contexts": [
+      "Presenter framed dead-center without horizontal room for card"
+    ],
+    "compatible_techniques": [
+      "TECH_PRICE_CARD",
+      "TECH_FEATURE_BADGE"
+    ],
+    "attention_cost": "HIGH",
+    "editorial_cost": "MEDIUM",
+    "intensity_capability": "strong",
+    "requires_media_or_context": [
+      "Presenter footage with lateral framing margin"
+    ],
+    "evidence_source": [
+      "REF_03, REF_04"
+    ],
+    "epistemic_status": "REFERENCE-DERIVED PRINCIPLE",
+    "currently_binding": false
+  },
+  {
+    "technique_id": "TECH_HERO_PROPERTY_SHOT",
+    "family": "PROPERTY_MEDIA",
+    "name": "Hero Property Shot",
+    "description": "Expansive, perfectly framed footage of the main living room, balcony vista, or exterior facade.",
+    "serves_editorial_needs": [
+      "VISUAL_PAYOFF",
+      "VISUAL_PROOF",
+      "AESTHETIC_BREATHING",
+      "ATMOSPHERE"
+    ],
+    "supports_viewer_effects": [
+      "desire",
+      "anticipation_payoff",
+      "value_perception"
+    ],
+    "good_when": [
+      "Executing initial REVEAL or showcasing key architectural asset"
+    ],
+    "avoid_when": [
+      "Speaker is discussing complex financing that requires graphical focus"
+    ],
+    "compatible_emotional_modes": [
+      "aspirational",
+      "premium",
+      "confident"
+    ],
+    "incompatible_or_risky_contexts": [
+      "Poor lighting or messy unfinished staging"
+    ],
+    "compatible_techniques": [
+      "TECH_AESTHETIC_BREATHING",
+      "TECH_ROOM_LABEL",
+      "TECH_KEN_BURNS"
+    ],
+    "attention_cost": "MEDIUM",
+    "editorial_cost": "LOW",
+    "intensity_capability": "strong",
+    "requires_media_or_context": [
+      "Top tier aesthetic video or photo asset"
+    ],
+    "evidence_source": [
+      "REF_03 facade, REF_05 living room reveal"
+    ],
+    "epistemic_status": "HUMAN-HOMOLOGATED PRINCIPLE",
+    "currently_binding": false
+  },
+  {
+    "technique_id": "TECH_PROPERTY_BROLL",
+    "family": "PROPERTY_MEDIA",
+    "name": "Property B-Roll Cutaway",
+    "description": "Clean video coverage of a specific room or property area synchronized to speech mention.",
+    "serves_editorial_needs": [
+      "VISUAL_PROOF",
+      "SPATIAL_CLARITY",
+      "ATMOSPHERE"
+    ],
+    "supports_viewer_effects": [
+      "spatial_understanding",
+      "belief",
+      "desire"
+    ],
+    "good_when": [
+      "Speaker names a room or feature (kitchen, suites, leisure area)"
+    ],
+    "avoid_when": [
+      "Asset quality is sub-par or unaligned with script"
+    ],
+    "compatible_emotional_modes": [
+      "conversational",
+      "aspirational",
+      "confident"
+    ],
+    "incompatible_or_risky_contexts": [
+      "Unmotivated cutaway when presenter should hold attention"
+    ],
+    "compatible_techniques": [
+      "TECH_ROOM_LABEL",
+      "TECH_CAPTIONS"
+    ],
+    "attention_cost": "LOW",
+    "editorial_cost": "LOW",
+    "intensity_capability": "moderate",
+    "requires_media_or_context": [
+      "Analyzed property video or photo asset"
+    ],
+    "evidence_source": [
+      "Universal across all references"
+    ],
+    "epistemic_status": "REFERENCE-DERIVED PRINCIPLE",
+    "currently_binding": false
+  },
+  {
+    "technique_id": "TECH_DETAIL_SHOT",
+    "family": "PROPERTY_MEDIA",
+    "name": "Macro / Detail Finish Shot",
+    "description": "Tight close-up highlighting fixtures, stone textures, glass railings, barbecue grill, or cabinetry.",
+    "serves_editorial_needs": [
+      "VISUAL_PROOF",
+      "ATMOSPHERE",
+      "EMPHASIS"
+    ],
+    "supports_viewer_effects": [
+      "value_perception",
+      "desire"
+    ],
+    "good_when": [
+      "Highlighting finish quality, decoration, or premium materials"
+    ],
+    "avoid_when": [
+      "Viewer still lacks basic spatial understanding of the room layout"
+    ],
+    "compatible_emotional_modes": [
+      "premium",
+      "aspirational",
+      "confident"
+    ],
+    "incompatible_or_risky_contexts": [
+      "Grainy or out-of-focus macro photos"
+    ],
+    "compatible_techniques": [
+      "TECH_PROPERTY_BROLL",
+      "TECH_CAPTIONS"
+    ],
+    "attention_cost": "LOW",
+    "editorial_cost": "LOW",
+    "intensity_capability": "subtle",
+    "requires_media_or_context": [
+      "High-resolution macro asset"
+    ],
+    "evidence_source": [
+      "REF_01, REF_03, REF_05"
+    ],
+    "epistemic_status": "REFERENCE-DERIVED PRINCIPLE",
+    "currently_binding": false
+  },
+  {
+    "technique_id": "TECH_CAPTIONS",
+    "family": "TYPOGRAPHY",
+    "name": "Dynamic Synchronized Captions",
+    "description": "Subtitles displayed centrally in the bottom safe area synchronized word-by-word with speech.",
+    "serves_editorial_needs": [
+      "INFORMATION_CLARITY",
+      "CONTINUITY"
+    ],
+    "supports_viewer_effects": [
+      "understanding",
+      "memorability"
+    ],
+    "good_when": [
+      "Always active for accessibility and silent feed comprehension"
+    ],
+    "avoid_when": [
+      "Occluding key product details or platform UI"
+    ],
+    "compatible_emotional_modes": [
+      "all"
+    ],
+    "incompatible_or_risky_contexts": [
+      "Placement over bottom UI controls (lower 250px without margin)"
+    ],
+    "compatible_techniques": [
+      "TECH_KEYWORD_EMPHASIS"
+    ],
+    "attention_cost": "LOW",
+    "editorial_cost": "LOW",
+    "intensity_capability": "subtle",
+    "requires_media_or_context": [
+      "Word-level transcript alignment"
+    ],
+    "evidence_source": [
+      "100% of references"
+    ],
+    "epistemic_status": "REFERENCE-DERIVED PRINCIPLE",
+    "currently_binding": false
+  },
+  {
+    "technique_id": "TECH_KEYWORD_EMPHASIS",
+    "family": "TYPOGRAPHY",
+    "name": "Keyword Color / Scale Emphasis",
+    "description": "Highlighting emphasized nouns, verbs, and figures in high-contrast brand accent color within captions.",
+    "serves_editorial_needs": [
+      "EMPHASIS",
+      "INFORMATION_CLARITY",
+      "NOVELTY"
+    ],
+    "supports_viewer_effects": [
+      "memorability",
+      "understanding"
+    ],
+    "good_when": [
+      "Speaker vocalizes key values, room names, or emotional terms"
+    ],
+    "avoid_when": [
+      "Overused on every single word (destroys hierarchy)"
+    ],
+    "compatible_emotional_modes": [
+      "all"
+    ],
+    "incompatible_or_risky_contexts": [
+      "Low contrast color choices against video background"
+    ],
+    "compatible_techniques": [
+      "TECH_CAPTIONS",
+      "TECH_PUNCH_IN"
+    ],
+    "attention_cost": "LOW",
+    "editorial_cost": "LOW",
+    "intensity_capability": "subtle",
+    "requires_media_or_context": [
+      "Caption track with emphasis tokens"
+    ],
+    "evidence_source": [
+      "100% of references"
+    ],
+    "epistemic_status": "REFERENCE-DERIVED PRINCIPLE",
+    "currently_binding": false
+  },
+  {
+    "technique_id": "TECH_HERO_NUMBER",
+    "family": "TYPOGRAPHY",
+    "name": "Hero Number Typography",
+    "description": "Large, clean typographic treatment of a pivotal metric (price, down payment, square meters).",
+    "serves_editorial_needs": [
+      "EMPHASIS",
+      "INFORMATION_CLARITY",
+      "VISUAL_PAYOFF"
+    ],
+    "supports_viewer_effects": [
+      "memorability",
+      "value_perception",
+      "belief"
+    ],
+    "good_when": [
+      "Communicating key commercial anchor (\"R$ 350.000\", \"68m²\", \"R$ 2.000/mês\")"
+    ],
+    "avoid_when": [
+      "Minor non-essential numbers that clutter comprehension"
+    ],
+    "compatible_emotional_modes": [
+      "confident",
+      "urgent",
+      "aspirational"
+    ],
+    "incompatible_or_risky_contexts": [
+      "Multiple competing large numbers on screen at once"
+    ],
+    "compatible_techniques": [
+      "TECH_PRICE_CARD",
+      "TECH_IMPACT_SFX"
+    ],
+    "attention_cost": "HIGH",
+    "editorial_cost": "MEDIUM",
+    "intensity_capability": "strong",
+    "requires_media_or_context": [
+      "Numeric data in script"
+    ],
+    "evidence_source": [
+      "REF_02, REF_03, REF_04"
+    ],
+    "epistemic_status": "REFERENCE-DERIVED PRINCIPLE",
+    "currently_binding": false
+  },
+  {
+    "technique_id": "TECH_ROOM_LABEL",
+    "family": "TYPOGRAPHY",
+    "name": "Lower-Third Room / Feature Badge",
+    "description": "Subtle semi-transparent pill badge in lower corner identifying room name and dimension.",
+    "serves_editorial_needs": [
+      "SPATIAL_CLARITY",
+      "INFORMATION_CLARITY"
+    ],
+    "supports_viewer_effects": [
+      "orientation",
+      "spatial_understanding"
+    ],
+    "good_when": [
+      "Entering a new room in b-roll or walkthrough"
+    ],
+    "avoid_when": [
+      "Presenter is speaking fullscreen in studio"
+    ],
+    "compatible_emotional_modes": [
+      "premium",
+      "conversational",
+      "aspirational"
+    ],
+    "incompatible_or_risky_contexts": [
+      "Colliding with caption safe zone"
+    ],
+    "compatible_techniques": [
+      "TECH_PROPERTY_BROLL",
+      "TECH_HERO_PROPERTY_SHOT"
+    ],
+    "attention_cost": "LOW",
+    "editorial_cost": "LOW",
+    "intensity_capability": "subtle",
+    "requires_media_or_context": [
+      "Room metadata"
+    ],
+    "evidence_source": [
+      "REF_03, REF_05"
+    ],
+    "epistemic_status": "REFERENCE-DERIVED PRINCIPLE",
+    "currently_binding": false
+  },
+  {
+    "technique_id": "TECH_PRICE_CARD",
+    "family": "INFORMATION_GRAPHICS",
+    "name": "Commercial Condition / Price Card",
+    "description": "Polished graphic card summarizing total price, down payment, installment flow, or program financing.",
+    "serves_editorial_needs": [
+      "INFORMATION_CLARITY",
+      "EMPHASIS",
+      "VISUAL_PROOF"
+    ],
+    "supports_viewer_effects": [
+      "value_perception",
+      "belief",
+      "memorability"
+    ],
+    "good_when": [
+      "Speaker details complete financial structure"
+    ],
+    "avoid_when": [
+      "Emotional storytelling hook where financial cards feel premature"
+    ],
+    "compatible_emotional_modes": [
+      "confident",
+      "reassuring",
+      "urgent"
+    ],
+    "incompatible_or_risky_contexts": [
+      "Overloaded spreadsheet-style cards with tiny unreadable text"
+    ],
+    "compatible_techniques": [
+      "TECH_HERO_NUMBER",
+      "TECH_TRANSITION_SFX"
+    ],
+    "attention_cost": "HIGH",
+    "editorial_cost": "MEDIUM",
+    "intensity_capability": "strong",
+    "requires_media_or_context": [
+      "Financial parameters"
+    ],
+    "evidence_source": [
+      "REF_03, REF_04"
+    ],
+    "epistemic_status": "REFERENCE-DERIVED PRINCIPLE",
+    "currently_binding": false
+  },
+  {
+    "technique_id": "TECH_FEATURE_BADGE",
+    "family": "INFORMATION_GRAPHICS",
+    "name": "Amenity / Feature Pill Badge",
+    "description": "Compact icon + text badge popping onto screen to highlight key amenities (24h security, pool, elevator).",
+    "serves_editorial_needs": [
+      "INFORMATION_CLARITY",
+      "EMPHASIS"
+    ],
+    "supports_viewer_effects": [
+      "value_perception",
+      "understanding"
+    ],
+    "good_when": [
+      "Rapidly listing multiple development amenities"
+    ],
+    "avoid_when": [
+      "Covering critical parts of the footage"
+    ],
+    "compatible_emotional_modes": [
+      "conversational",
+      "confident",
+      "aspirational"
+    ],
+    "incompatible_or_risky_contexts": [
+      "More than 2 badges simultaneous on mobile portrait"
+    ],
+    "compatible_techniques": [
+      "TECH_PROPERTY_BROLL"
+    ],
+    "attention_cost": "MEDIUM",
+    "editorial_cost": "LOW",
+    "intensity_capability": "moderate",
+    "requires_media_or_context": [
+      "Amenity metadata"
+    ],
+    "evidence_source": [
+      "REF_03, REF_04, REF_05"
+    ],
+    "epistemic_status": "REFERENCE-DERIVED PRINCIPLE",
+    "currently_binding": false
+  },
+  {
+    "technique_id": "TECH_LOCATION_DRONE",
+    "family": "LOCATION",
+    "name": "Location Drone / Aerial Context",
+    "description": "High-altitude drone shot showing shoreline, urban neighborhood, major avenues, or surrounding greenery.",
+    "serves_editorial_needs": [
+      "CONTEXT",
+      "ATMOSPHERE",
+      "VISUAL_PAYOFF"
+    ],
+    "supports_viewer_effects": [
+      "orientation",
+      "desire",
+      "value_perception"
+    ],
+    "good_when": [
+      "Mentioning city, neighborhood prestige, or beach distance"
+    ],
+    "avoid_when": [
+      "Discussing interior room finish details"
+    ],
+    "compatible_emotional_modes": [
+      "aspirational",
+      "premium",
+      "confident"
+    ],
+    "incompatible_or_risky_contexts": [
+      "Unrelated stock drone footage of different cities"
+    ],
+    "compatible_techniques": [
+      "TECH_AESTHETIC_BREATHING",
+      "TECH_KEN_BURNS"
+    ],
+    "attention_cost": "MEDIUM",
+    "editorial_cost": "LOW",
+    "intensity_capability": "strong",
+    "requires_media_or_context": [
+      "Aerial drone footage of the actual location"
+    ],
+    "evidence_source": [
+      "REF_03, REF_04"
+    ],
+    "epistemic_status": "REFERENCE-DERIVED PRINCIPLE",
+    "currently_binding": false
+  },
+  {
+    "technique_id": "TECH_POI_VISUAL",
+    "family": "LOCATION",
+    "name": "Point of Interest Visual / Distance Callout",
+    "description": "Visual asset or badge highlighting proximity to key landmarks (shopping malls, supermarkets, highways).",
+    "serves_editorial_needs": [
+      "CONTEXT",
+      "VISUAL_PROOF",
+      "INFORMATION_CLARITY"
+    ],
+    "supports_viewer_effects": [
+      "understanding",
+      "belief",
+      "value_perception"
+    ],
+    "good_when": [
+      "Script cites specific landmarks (e.g. \"Taubaté Shopping\", \"Shibata\", \"Dutra\")",
+      "High evidence need on location claims"
+    ],
+    "avoid_when": [
+      "Landmark is unknown or lacks commercial/lifestyle appeal"
+    ],
+    "compatible_emotional_modes": [
+      "conversational",
+      "confident",
+      "reassuring"
+    ],
+    "incompatible_or_risky_contexts": [
+      "Generic unbranded street photos"
+    ],
+    "compatible_techniques": [
+      "TECH_CAPTIONS",
+      "TECH_FEATURE_BADGE"
+    ],
+    "attention_cost": "MEDIUM",
+    "editorial_cost": "MEDIUM",
+    "intensity_capability": "moderate",
+    "requires_media_or_context": [
+      "POI asset or graphic template"
+    ],
+    "evidence_source": [
+      "REF_03, REF_04, Case_01"
+    ],
+    "epistemic_status": "REFERENCE-DERIVED PRINCIPLE",
+    "currently_binding": false
+  },
+  {
+    "technique_id": "TECH_KEN_BURNS",
+    "family": "MOTION",
+    "name": "Slow Ken Burns Push / Pan",
+    "description": "Subtle 1.05x zoom or slow pan applied to still photography or static footage to maintain kinetic life.",
+    "serves_editorial_needs": [
+      "NOVELTY",
+      "ATMOSPHERE",
+      "CONTINUITY"
+    ],
+    "supports_viewer_effects": [
+      "spatial_understanding",
+      "desire"
+    ],
+    "good_when": [
+      "Displaying high-resolution still photos of rooms or renders"
+    ],
+    "avoid_when": [
+      "Source photo resolution is too low for crop without artifacting"
+    ],
+    "compatible_emotional_modes": [
+      "aspirational",
+      "premium",
+      "conversational"
+    ],
+    "incompatible_or_risky_contexts": [
+      "Fast jerky motion on static photos"
+    ],
+    "compatible_techniques": [
+      "TECH_PROPERTY_PHOTO",
+      "TECH_HERO_PROPERTY_SHOT"
+    ],
+    "attention_cost": "LOW",
+    "editorial_cost": "LOW",
+    "intensity_capability": "subtle",
+    "requires_media_or_context": [
+      "High-res still photo"
+    ],
+    "evidence_source": [
+      "Phase 4B/4C Photo engine"
+    ],
+    "epistemic_status": "HUMAN-HOMOLOGATED PRINCIPLE",
+    "currently_binding": false
+  },
+  {
+    "technique_id": "TECH_MUSIC_BED",
+    "family": "AUDIO",
+    "name": "Adaptive Music Bed",
+    "description": "Instrumental music track providing emotional foundation, dynamically ducked under speech.",
+    "serves_editorial_needs": [
+      "ATMOSPHERE",
+      "CONTINUITY"
+    ],
+    "supports_viewer_effects": [
+      "desire",
+      "trust",
+      "urgency"
+    ],
+    "good_when": [
+      "Continuous throughout entire video"
+    ],
+    "avoid_when": [
+      "Loud abrasive music that masks vocal intelligibility"
+    ],
+    "compatible_emotional_modes": [
+      "all"
+    ],
+    "incompatible_or_risky_contexts": [
+      "Vocal tracks in background competing with presenter"
+    ],
+    "compatible_techniques": [
+      "TECH_CAPTIONS",
+      "TECH_DUCKING"
+    ],
+    "attention_cost": "LOW",
+    "editorial_cost": "LOW",
+    "intensity_capability": "subtle",
+    "requires_media_or_context": [
+      "Music audio file"
+    ],
+    "evidence_source": [
+      "Universal in 100% of references"
+    ],
+    "epistemic_status": "HUMAN-HOMOLOGATED PRINCIPLE",
+    "currently_binding": false
+  },
+  {
+    "technique_id": "TECH_TRANSITION_SFX",
+    "family": "AUDIO",
+    "name": "Transition / Accent SFX",
+    "description": "Short subtle acoustic accent (whoosh, subtle click, gentle riser) punctuating a major visual change.",
+    "serves_editorial_needs": [
+      "EMPHASIS",
+      "NOVELTY"
+    ],
+    "supports_viewer_effects": [
+      "memorability",
+      "surprise"
+    ],
+    "good_when": [
+      "Accompanying major punch-in, price card reveal, or section break"
+    ],
+    "avoid_when": [
+      "Overused on every single cut (causes acoustic irritation)"
+    ],
+    "compatible_emotional_modes": [
+      "confident",
+      "urgent",
+      "playful"
+    ],
+    "incompatible_or_risky_contexts": [
+      "Loud high-gain sound effects"
+    ],
+    "compatible_techniques": [
+      "TECH_PUNCH_IN",
+      "TECH_PRICE_CARD"
+    ],
+    "attention_cost": "MEDIUM",
+    "editorial_cost": "LOW",
+    "intensity_capability": "subtle",
+    "requires_media_or_context": [
+      "SFX sound library"
+    ],
+    "evidence_source": [
+      "REF_01, REF_02, REF_03"
+    ],
+    "epistemic_status": "REFERENCE-DERIVED PRINCIPLE",
+    "currently_binding": false
+  }
+]

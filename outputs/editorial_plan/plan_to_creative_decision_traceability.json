@@ -1,0 +1,92 @@
+{
+  "traceability_id": "TRACE_PLAN_TO_CDM_V01",
+  "epistemic_status": "QUALITATIVE_TRACEABILITY",
+  "mappings": [
+    {
+      "plan_unit_id": "PLAN_UNIT_01",
+      "beat_id": "BEAT_01",
+      "creative_decision_id": "DEC_CASE01_BEAT_01",
+      "state_decision_preserved": "HOLD",
+      "selected_techniques_preserved": []
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_02",
+      "beat_id": "BEAT_02",
+      "creative_decision_id": "DEC_CASE01_BEAT_02",
+      "state_decision_preserved": "SWITCH",
+      "selected_techniques_preserved": [
+        "T_BROLL_HERO_REVEAL"
+      ]
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_03",
+      "beat_id": "BEAT_03",
+      "creative_decision_id": "DEC_CASE01_BEAT_03",
+      "state_decision_preserved": "HOLD",
+      "selected_techniques_preserved": []
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_04",
+      "beat_id": "BEAT_04",
+      "creative_decision_id": "DEC_CASE01_BEAT_04",
+      "state_decision_preserved": "SWITCH",
+      "selected_techniques_preserved": [
+        "T_BROLL_HERO_REVEAL",
+        "T_LOWER_THIRD_LOCATION_TAG"
+      ]
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_05",
+      "beat_id": "BEAT_05",
+      "creative_decision_id": "DEC_CASE01_BEAT_05",
+      "state_decision_preserved": "SWITCH",
+      "selected_techniques_preserved": [
+        "T_BROLL_SEQUENTIAL_DETAIL"
+      ]
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_06",
+      "beat_id": "BEAT_06",
+      "creative_decision_id": "DEC_CASE01_BEAT_06",
+      "state_decision_preserved": "SWITCH",
+      "selected_techniques_preserved": [
+        "T_BROLL_HERO_REVEAL"
+      ]
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_07",
+      "beat_id": "BEAT_07",
+      "creative_decision_id": "DEC_CASE01_BEAT_07",
+      "state_decision_preserved": "SWITCH",
+      "selected_techniques_preserved": [
+        "T_BROLL_SEQUENTIAL_DETAIL"
+      ]
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_08",
+      "beat_id": "BEAT_08",
+      "creative_decision_id": "DEC_CASE01_BEAT_08",
+      "state_decision_preserved": "SWITCH",
+      "selected_techniques_preserved": [
+        "T_PRESENTER_PUNCH_IN",
+        "T_CARD_PRICE_TERMS_HERO"
+      ]
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_09",
+      "beat_id": "BEAT_09",
+      "creative_decision_id": "DEC_CASE01_BEAT_09",
+      "state_decision_preserved": "EVOLVE",
+      "selected_techniques_preserved": []
+    },
+    {
+      "plan_unit_id": "PLAN_UNIT_10",
+      "beat_id": "BEAT_010",
+      "creative_decision_id": "DEC_CASE01_BEAT_10",
+      "state_decision_preserved": "EVOLVE",
+      "selected_techniques_preserved": [
+        "T_CTA_END_CARD_MINIMAL"
+      ]
+    }
+  ]
+}

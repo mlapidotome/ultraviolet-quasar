@@ -1,0 +1,11 @@
+{
+  "traceability_id": "TRACE_PLAN_TO_DNA_V01",
+  "dna_version": "v1 (Epistemic Hardening 3.1)",
+  "principles_applied": [
+    "PRIN_CORE_01 (Human Presence & Trust): Human leads opening (B1), price authority (B8), and closing (B10).",
+    "PRIN_CORE_02 (Breathing Room / No Anxiety): Visual holds in B1, B3, B6 preserve spatial absorption.",
+    "PRIN_CORE_04 (Visual Proof Obligation): Property proves physical layout (B2, B5, B6, B7).",
+    "PRIN_CORE_07 (Clean Premium Finish): Minimal graphic load (B1-B3, B5-B7, B9 clean).",
+    "PRIN_CORE_08 (Respect Real Assets): Beat 04 flags VERIFIED_EVIDENCE_REQUIRED without fabricating proof."
+  ]
+}

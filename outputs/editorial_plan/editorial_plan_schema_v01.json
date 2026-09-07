@@ -1,0 +1,18 @@
+{
+  "schema_id": "SCHEMA_EDITORIAL_PLAN_V01",
+  "title": "Editorial Plan Schema",
+  "description": "Master document schema for the timeline semantic contract across all video beats.",
+  "epistemic_status": "QUALITATIVE_SCHEMA_CANDIDATE",
+  "currently_binding": false,
+  "fields": {
+    "plan_id": "string",
+    "case_id": "string",
+    "property_name": "string",
+    "presenter": "string",
+    "total_beats": "number",
+    "total_duration_seconds": "number",
+    "provenance": "object with ground truth lock",
+    "plan_trajectory_summary": "object tracking macro visual and cognitive arc",
+    "plan_units": "array of EDITORIAL_PLAN_UNIT objects"
+  }
+}

@@ -1,0 +1,324 @@
+{
+  "schema_version": "1.2",
+  "creative_id": "crv_case01_residencial_julia_pilot_v01",
+  "blueprint_version": 1,
+  "format": {
+    "aspect_ratio": "9:16",
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
+  },
+  "editing_style": {
+    "style_id": "luxury_minimal",
+    "version": 1
+  },
+  "total_duration_ms": 52680,
+  "audio_track": {
+    "primary_asset_id": "ast_presenter_marcel_julia_v2",
+    "broll_audio_policy": "mute_all_broll"
+  },
+  "visual_timeline": [
+    {
+      "asset_id": "ast_presenter_marcel_julia_v2",
+      "asset_type": "video",
+      "start_ms": 0,
+      "end_ms": 6440,
+      "source_in_ms": 0,
+      "source_out_ms": 6440,
+      "fit": "cover",
+      "transition_in": {
+        "type": "cut"
+      }
+    },
+    {
+      "asset_id": "ast_vid_julia_living",
+      "asset_type": "video",
+      "start_ms": 6440,
+      "end_ms": 12239,
+      "source_in_ms": 0,
+      "source_out_ms": 5799,
+      "fit": "cover",
+      "transition_in": {
+        "type": "cut"
+      }
+    },
+    {
+      "asset_id": "ast_vid_julia_balcony",
+      "asset_type": "video",
+      "start_ms": 12239,
+      "end_ms": 19200,
+      "source_in_ms": 0,
+      "source_out_ms": 6961,
+      "fit": "cover",
+      "transition_in": {
+        "type": "cut"
+      }
+    },
+    {
+      "asset_id": "ast_vid_julia_living",
+      "asset_type": "video",
+      "start_ms": 19200,
+      "end_ms": 27440,
+      "source_in_ms": 3320,
+      "source_out_ms": 11560,
+      "fit": "cover",
+      "transition_in": {
+        "type": "cut"
+      }
+    },
+    {
+      "asset_id": "ast_vid_julia_amenities",
+      "asset_type": "video",
+      "start_ms": 27440,
+      "end_ms": 31799,
+      "source_in_ms": 0,
+      "source_out_ms": 4359,
+      "fit": "cover",
+      "transition_in": {
+        "type": "cut"
+      }
+    },
+    {
+      "asset_id": "ast_vid_julia_amenities",
+      "asset_type": "video",
+      "start_ms": 31799,
+      "end_ms": 37040,
+      "source_in_ms": 4359,
+      "source_out_ms": 9600,
+      "fit": "cover",
+      "transition_in": {
+        "type": "cut"
+      }
+    },
+    {
+      "asset_id": "ast_presenter_marcel_julia_v2",
+      "asset_type": "video",
+      "start_ms": 37040,
+      "end_ms": 44680,
+      "source_in_ms": 37040,
+      "source_out_ms": 44680,
+      "fit": "cover",
+      "transition_in": {
+        "type": "cut"
+      }
+    },
+    {
+      "asset_id": "ast_presenter_marcel_julia_v2",
+      "asset_type": "video",
+      "start_ms": 44680,
+      "end_ms": 47040,
+      "source_in_ms": 44680,
+      "source_out_ms": 47040,
+      "fit": "cover",
+      "transition_in": {
+        "type": "cut"
+      }
+    },
+    {
+      "asset_id": "ast_presenter_marcel_julia_v2",
+      "asset_type": "video",
+      "start_ms": 47040,
+      "end_ms": 52680,
+      "source_in_ms": 47040,
+      "source_out_ms": 52680,
+      "fit": "cover",
+      "transition_in": {
+        "type": "cut"
+      }
+    }
+  ],
+  "pip": {
+    "enabled": false,
+    "windows": []
+  },
+  "overlays": [
+    {
+      "id": "ov_loc_beat_04",
+      "type": "location_tag",
+      "position": "lower_third",
+      "text": "Taubaté Shopping / Shibata / Dutra",
+      "start_ms": 12239,
+      "end_ms": 19200
+    },
+    {
+      "id": "ov_fin_beat_08",
+      "type": "price_badge",
+      "position": "lower_third",
+      "text": "Parcelas na faixa de R$ 2.000 | Total R$ 350.000 (MCMV)",
+      "start_ms": 37040,
+      "end_ms": 44680
+    },
+    {
+      "id": "ov_cta_beat_010",
+      "type": "cta_banner",
+      "position": "bottom_safe",
+      "text": "Saiba Mais | Agende sua Visita",
+      "start_ms": 47040,
+      "end_ms": 52680
+    }
+  ],
+  "captions": [
+    {
+      "start_ms": 0,
+      "end_ms": 6440,
+      "text": "Por que continuar pagando aluguel se você pode morar a minutos do Taubaté Shopping e do Shibata pagando parcelas de R$2.000?"
+    },
+    {
+      "start_ms": 6440,
+      "end_ms": 9760,
+      "text": "Dá uma olhada nesse apartamento de R$350.000 no Residencial Júlia."
+    },
+    {
+      "start_ms": 9760,
+      "end_ms": 12239,
+      "text": "A localização é perfeita para o dia a dia."
+    },
+    {
+      "start_ms": 12239,
+      "end_ms": 19200,
+      "text": "Você estará a poucos minutos do Taubaté Shopping, coladinho ao supermercado Shibata e com acesso ultra rápido à Dutra e Carvalho Pinto."
+    },
+    {
+      "start_ms": 19200,
+      "end_ms": 27440,
+      "text": "O apartamento tem 68m² muito bem planejados: sala espaçosa, cozinha funcional, dois banheiros, dois dormitórios sendo uma suíte privativa."
+    },
+    {
+      "start_ms": 27440,
+      "end_ms": 31799,
+      "text": "E o destaque especial: uma varanda deliciosa com churrasqueira para curtir o fim de semana."
+    },
+    {
+      "start_ms": 31799,
+      "end_ms": 37040,
+      "text": "O condomínio conta com portaria remota 24h, salão de festas, área gourmet, playground e vaga coberta."
+    },
+    {
+      "start_ms": 37040,
+      "end_ms": 44680,
+      "text": "Tudo isso por apenas R$350.000, financiado pelo Minha Casa Minha Vida, com entrada em torno de R$60.000 a R$70.000 e parcelas na faixa de R$2.000."
+    },
+    {
+      "start_ms": 44680,
+      "end_ms": 47040,
+      "text": "E aí, gostou dessa oportunidade?"
+    },
+    {
+      "start_ms": 47040,
+      "end_ms": 52680,
+      "text": "Faz o seguinte: clica no botão Saiba Mais, deixe o seu melhor telefone que a nossa equipe vai te chamar e agendar uma visita."
+    }
+  ],
+  "resolution_metadata": {
+    "compiler_version": "1.0.0",
+    "compiled_at": "2026-09-07T01:53:02.854Z",
+    "case_id": "CASE_01",
+    "total_beats": 10,
+    "resolution_trace": [
+      {
+        "beat_id": "BEAT_01",
+        "time_range": "00:00.000 - 00:06.440",
+        "state_decision": "HOLD",
+        "source_strategy": "PRESENTER",
+        "graphic_intent": "NONE",
+        "action": "HOLD_PRESENTER_FULLSCREEN",
+        "selected_asset_id": "ast_presenter_marcel_julia_v2"
+      },
+      {
+        "beat_id": "BEAT_02",
+        "time_range": "00:06.440 - 00:09.760",
+        "state_decision": "SWITCH",
+        "source_strategy": "PROPERTY",
+        "graphic_intent": "NONE",
+        "action": "SWITCH_TO_PROPERTY_4C (VIDEO_TRIM)",
+        "selected_asset_id": "ast_vid_julia_living"
+      },
+      {
+        "beat_id": "BEAT_03",
+        "time_range": "00:09.760 - 00:12.239",
+        "state_decision": "HOLD",
+        "source_strategy": "CURRENT_STATE",
+        "graphic_intent": "NONE",
+        "action": "HOLD_SUSTAIN_PREVIOUS_VISUAL",
+        "selected_asset_id": "ast_vid_julia_living"
+      },
+      {
+        "beat_id": "BEAT_04",
+        "time_range": "00:12.239 - 00:19.200",
+        "state_decision": "SWITCH",
+        "source_strategy": "LOCATION",
+        "graphic_intent": "LOCATION_SUPPORT",
+        "action": "SWITCH_TO_LOCATION_BROLL_4C",
+        "selected_asset_id": "ast_vid_julia_balcony"
+      },
+      {
+        "beat_id": "BEAT_05",
+        "time_range": "00:19.200 - 00:27.440",
+        "state_decision": "SWITCH",
+        "source_strategy": "PROPERTY",
+        "graphic_intent": "NONE",
+        "action": "SWITCH_TO_PROPERTY_4C (VIDEO_TRIM)",
+        "selected_asset_id": "ast_vid_julia_living"
+      },
+      {
+        "beat_id": "BEAT_06",
+        "time_range": "00:27.440 - 00:31.799",
+        "state_decision": "SWITCH",
+        "source_strategy": "LIFESTYLE",
+        "graphic_intent": "NONE",
+        "action": "SWITCH_TO_PROPERTY_4C (VIDEO_TRIM)",
+        "selected_asset_id": "ast_vid_julia_amenities"
+      },
+      {
+        "beat_id": "BEAT_07",
+        "time_range": "00:31.799 - 00:37.040",
+        "state_decision": "SWITCH",
+        "source_strategy": "PROPERTY",
+        "graphic_intent": "NONE",
+        "action": "SWITCH_TO_PROPERTY_4C (VIDEO_TRIM)",
+        "selected_asset_id": "ast_vid_julia_amenities"
+      },
+      {
+        "beat_id": "BEAT_08",
+        "time_range": "00:37.040 - 00:44.680",
+        "state_decision": "SWITCH",
+        "source_strategy": "PRESENTER",
+        "graphic_intent": "HERO_INFORMATION",
+        "action": "SWITCH_TO_PRESENTER",
+        "selected_asset_id": "ast_presenter_marcel_julia_v2"
+      },
+      {
+        "beat_id": "BEAT_09",
+        "time_range": "00:44.680 - 00:47.040",
+        "state_decision": "EVOLVE",
+        "source_strategy": "PRESENTER",
+        "graphic_intent": "NONE",
+        "action": "EVOLVE_PRESENTER_BASE",
+        "selected_asset_id": "ast_presenter_marcel_julia_v2"
+      },
+      {
+        "beat_id": "BEAT_010",
+        "time_range": "00:47.040 - 00:52.680",
+        "state_decision": "EVOLVE",
+        "source_strategy": "PRESENTER",
+        "graphic_intent": "CTA_SUPPORT",
+        "action": "EVOLVE_PRESENTER_BASE",
+        "selected_asset_id": "ast_presenter_marcel_julia_v2"
+      }
+    ],
+    "graceful_degradations": [
+      {
+        "beat_id": "BEAT_08",
+        "type": "DESIGN_SYSTEM_DEGRADATION",
+        "detail": "Complex multi-field financial card degraded to structured single-box price_badge."
+      }
+    ],
+    "unresolved_requirements": [
+      {
+        "beat_id": "BEAT_04",
+        "type": "EXTERNAL_LOCATION_EVIDENCE",
+        "detail": "Geographic proximity proof to Taubaté Shopping, Shibata, Dutra requires external verified asset."
+      }
+    ]
+  }
+}

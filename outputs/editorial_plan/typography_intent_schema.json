@@ -1,0 +1,14 @@
+{
+  "schema_id": "SCHEMA_TYPOGRAPHY_INTENT_V01",
+  "title": "Typography Intent Schema",
+  "description": "Captures typographic hierarchy, semantic target, and desired effect without technical styling (fonts, colors, coordinates).",
+  "epistemic_status": "QUALITATIVE_SCHEMA_CANDIDATE",
+  "currently_binding": false,
+  "fields": {
+    "role": "caption | keyword_emphasis | financial_anchor | location_identifier | room_identifier | cta_instruction | NONE",
+    "hierarchy": "SUPPORTING | MEANINGFUL | MAJOR | HERO | NONE",
+    "semantic_target": "Text or domain entity to be emphasized or anchored",
+    "desired_effect": "Viewer cognitive/emotional effect intended by the typographic cue",
+    "visual_priority": "LOW | BALANCED | HIGH"
+  }
+}

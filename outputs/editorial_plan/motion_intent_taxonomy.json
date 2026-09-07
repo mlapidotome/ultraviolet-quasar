@@ -1,0 +1,17 @@
+{
+  "taxonomy_id": "TAXONOMY_MOTION_INTENT_V01",
+  "title": "Motion Intent Taxonomy",
+  "description": "Specifies qualitative camera or on-screen motion goals without easing curves, zoom factors, or keyframes.",
+  "epistemic_status": "QUALITATIVE_TAXONOMY_CANDIDATE",
+  "currently_binding": false,
+  "values": [
+    "PRESERVE_NATURAL_MOTION",
+    "SUBTLE_EVOLUTION",
+    "ATTENTION_REFOCUS",
+    "SPATIAL_EXPLORATION",
+    "HERO_REVEAL",
+    "INFORMATION_REVEAL",
+    "NONE",
+    "UNRESOLVED"
+  ]
+}

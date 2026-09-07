@@ -1,0 +1,434 @@
+{
+  "version": "0.2",
+  "title": "Bali Editorial Grammar v0.2",
+  "narrative_functions": [
+    {
+      "id": "NF_HOOK",
+      "name": "HOOK",
+      "description": "Captures initial attention, disrupts scrolling feed, and creates immediate curiosity or emotional self-identification.",
+      "core_intent": "Attention capture and bounce prevention",
+      "typical_viewer_effects": [
+        "curiosity",
+        "identification",
+        "surprise"
+      ],
+      "primary_editorial_needs": [
+        "HUMAN_CONNECTION",
+        "NOVELTY",
+        "VISUAL_PROOF"
+      ]
+    },
+    {
+      "id": "NF_PAIN",
+      "name": "PAIN",
+      "description": "Explores daily friction, suffering, spatial constraint, or emotional frustration experienced by the prospect.",
+      "core_intent": "Empathy and problem identification",
+      "typical_viewer_effects": [
+        "identification",
+        "relief",
+        "trust"
+      ],
+      "primary_editorial_needs": [
+        "HUMAN_CONNECTION",
+        "EMPHASIS",
+        "ATMOSPHERE"
+      ]
+    },
+    {
+      "id": "NF_PROMISE",
+      "name": "PROMISE",
+      "description": "Introduces the core possibility, transformation, or alternative available to the buyer.",
+      "core_intent": "Hope, curiosity, and thematic proposition",
+      "typical_viewer_effects": [
+        "curiosity",
+        "anticipation_payoff",
+        "understanding"
+      ],
+      "primary_editorial_needs": [
+        "HUMAN_CONNECTION",
+        "INFORMATION_CLARITY",
+        "NOVELTY"
+      ]
+    },
+    {
+      "id": "NF_REVEAL",
+      "name": "REVEAL",
+      "description": "Formal visual/narrative materialization of the person, product, development, key space, or solution that was set up previously.",
+      "core_intent": "Payoff of curiosity and physical grounding of the offer",
+      "typical_viewer_effects": [
+        "anticipation_payoff",
+        "orientation",
+        "curiosity_resolution",
+        "surprise"
+      ],
+      "primary_editorial_needs": [
+        "VISUAL_PAYOFF",
+        "VISUAL_PROOF",
+        "SPATIAL_CLARITY"
+      ]
+    },
+    {
+      "id": "NF_EXPLANATION",
+      "name": "EXPLANATION",
+      "description": "Breaks down how the opportunity, mechanism, financing, or physical layout works.",
+      "core_intent": "Cognitive comprehension and elimination of confusion",
+      "typical_viewer_effects": [
+        "understanding",
+        "trust",
+        "spatial_understanding"
+      ],
+      "primary_editorial_needs": [
+        "INFORMATION_CLARITY",
+        "CONTINUITY",
+        "SPATIAL_CLARITY"
+      ]
+    },
+    {
+      "id": "NF_PROOF",
+      "name": "PROOF",
+      "description": "Demonstrates tangible factual evidence, specifications, real footage, or documentation validating previous claims.",
+      "core_intent": "Validation of truth and risk reduction",
+      "typical_viewer_effects": [
+        "belief",
+        "trust",
+        "value_perception"
+      ],
+      "primary_editorial_needs": [
+        "VISUAL_PROOF",
+        "SPATIAL_CLARITY",
+        "CONTEXT"
+      ]
+    },
+    {
+      "id": "NF_DEMONSTRATION",
+      "name": "DEMONSTRATION",
+      "description": "Shows how the space, room, feature, or amenities are experienced in real life.",
+      "core_intent": "Spatial clarity and practical visualization",
+      "typical_viewer_effects": [
+        "spatial_understanding",
+        "desire",
+        "understanding"
+      ],
+      "primary_editorial_needs": [
+        "SPATIAL_CLARITY",
+        "VISUAL_PROOF",
+        "ATMOSPHERE"
+      ]
+    },
+    {
+      "id": "NF_DESIRE",
+      "name": "DESIRE",
+      "description": "Evokes aspirational lifestyle, leisure, aesthetic delight, and emotional attachment to the property.",
+      "core_intent": "Aspirational projection and emotional attraction",
+      "typical_viewer_effects": [
+        "desire",
+        "anticipation_payoff",
+        "value_perception"
+      ],
+      "primary_editorial_needs": [
+        "ATMOSPHERE",
+        "AESTHETIC_BREATHING",
+        "VISUAL_PAYOFF"
+      ]
+    },
+    {
+      "id": "NF_VALUE",
+      "name": "VALUE",
+      "description": "Highlights the cost-benefit ratio, appreciation potential, luxury-to-price balance, or unique advantages.",
+      "core_intent": "Perceived value elevation",
+      "typical_viewer_effects": [
+        "value_perception",
+        "belief",
+        "memorability"
+      ],
+      "primary_editorial_needs": [
+        "EMPHASIS",
+        "INFORMATION_CLARITY",
+        "CONTEXT"
+      ]
+    },
+    {
+      "id": "NF_AUTHORITY",
+      "name": "AUTHORITY",
+      "description": "Demonstrates market expertise, institutional security, construction track record, or professional credibility.",
+      "core_intent": "Security, trust building, and credibility",
+      "typical_viewer_effects": [
+        "trust",
+        "belief"
+      ],
+      "primary_editorial_needs": [
+        "HUMAN_CONNECTION",
+        "INFORMATION_CLARITY"
+      ]
+    },
+    {
+      "id": "NF_OBJECTION",
+      "name": "OBJECTION",
+      "description": "Directly tackles, dismantles, and resolves major buyer hesitations (financial, geographical, bureaucratic).",
+      "core_intent": "Friction removal and reassurance",
+      "typical_viewer_effects": [
+        "relief",
+        "belief",
+        "trust"
+      ],
+      "primary_editorial_needs": [
+        "HUMAN_CONNECTION",
+        "INFORMATION_CLARITY",
+        "EMPHASIS"
+      ]
+    },
+    {
+      "id": "NF_OFFER",
+      "name": "OFFER",
+      "description": "Articulates the specific commercial proposal, entry conditions, price point, financing program, or availability.",
+      "core_intent": "Commercial proposition and accessibility framing",
+      "typical_viewer_effects": [
+        "value_perception",
+        "urgency",
+        "action_readiness"
+      ],
+      "primary_editorial_needs": [
+        "INFORMATION_CLARITY",
+        "EMPHASIS",
+        "HUMAN_CONNECTION"
+      ]
+    },
+    {
+      "id": "NF_CTA",
+      "name": "CTA",
+      "description": "Directs the prospect toward a single, frictionless, immediate next action (button, link, message, scheduling).",
+      "core_intent": "Conversion guidance and friction-free closing",
+      "typical_viewer_effects": [
+        "action_readiness",
+        "urgency",
+        "trust"
+      ],
+      "primary_editorial_needs": [
+        "ACTION_CLARITY",
+        "HUMAN_CONNECTION"
+      ]
+    }
+  ],
+  "viewer_effects": [
+    {
+      "id": "VE_CURIOSITY",
+      "name": "curiosity",
+      "description": "Desire to keep watching to discover what happens or how a promise is fulfilled."
+    },
+    {
+      "id": "VE_IDENTIFICATION",
+      "name": "identification",
+      "description": "Feeling of \"this person understands my reality and speaks to me\"."
+    },
+    {
+      "id": "VE_UNDERSTANDING",
+      "name": "understanding",
+      "description": "Clear mental comprehension of how an offer, space, or process operates."
+    },
+    {
+      "id": "VE_BELIEF",
+      "name": "belief",
+      "description": "Cognitive acceptance that a claim is authentic, factual, and attainable."
+    },
+    {
+      "id": "VE_TRUST",
+      "name": "trust",
+      "description": "Emotional security and confidence in the presenter, developer, or agency."
+    },
+    {
+      "id": "VE_DESIRE",
+      "name": "desire",
+      "description": "Aspirational longing to inhabit the space or own the lifestyle portrayed."
+    },
+    {
+      "id": "VE_SURPRISE",
+      "name": "surprise",
+      "description": "Unexpected revelation or pleasant counter-intuitive insight."
+    },
+    {
+      "id": "VE_RELIEF",
+      "name": "relief",
+      "description": "Alleviation of financial anxiety, spatial frustration, or bureaucratic fear."
+    },
+    {
+      "id": "VE_URGENCY",
+      "name": "urgency",
+      "description": "Recognition of limited opportunity or timing advantage requiring action."
+    },
+    {
+      "id": "VE_VALUE_PERCEPTION",
+      "name": "value_perception",
+      "description": "Recognition that the property delivers immense value relative to its cost."
+    },
+    {
+      "id": "VE_SPATIAL_UNDERSTANDING",
+      "name": "spatial_understanding",
+      "description": "Mental 3D map of floorplan flow, room dimensions, and integration."
+    },
+    {
+      "id": "VE_MEMORABILITY",
+      "name": "memorability",
+      "description": "Key figures, unique amenities, or emotional phrases retained in memory."
+    },
+    {
+      "id": "VE_ACTION_READINESS",
+      "name": "action_readiness",
+      "description": "Preparedness to tap the screen, send a lead, or book a site visit."
+    },
+    {
+      "id": "VE_ANTICIPATION_PAYOFF",
+      "name": "anticipation_payoff",
+      "description": "Pleasurable fulfillment of a setup or curiosity gap previously built."
+    },
+    {
+      "id": "VE_ORIENTATION",
+      "name": "orientation",
+      "description": "Clear grounding in where we are geographically, physically, and narratively."
+    },
+    {
+      "id": "VE_CURIOSITY_RESOLUTION",
+      "name": "curiosity_resolution",
+      "description": "Resolution of an open question posed earlier in the video."
+    }
+  ],
+  "editorial_needs": [
+    {
+      "id": "NEED_HUMAN_CONNECTION",
+      "name": "HUMAN_CONNECTION",
+      "description": "Establishing, sustaining, or re-anchoring direct personal empathy, trust, and eye contact with the viewer."
+    },
+    {
+      "id": "NEED_VISUAL_PROOF",
+      "name": "VISUAL_PROOF",
+      "description": "Providing authentic visual materialization of a spoken claim, physical space, or tangible spec."
+    },
+    {
+      "id": "NEED_SPATIAL_CLARITY",
+      "name": "SPATIAL_CLARITY",
+      "description": "Conveying physical layout, room proportions, flow, and three-dimensional architectural relationships."
+    },
+    {
+      "id": "NEED_INFORMATION_CLARITY",
+      "name": "INFORMATION_CLARITY",
+      "description": "Ensuring complex numbers, financing terms, locations, or rules are effortlessly understood."
+    },
+    {
+      "id": "NEED_EMPHASIS",
+      "name": "EMPHASIS",
+      "description": "Visually and acoustically accentuating a pivotal moment, price anchor, or game-changing benefit."
+    },
+    {
+      "id": "NEED_ATMOSPHERE",
+      "name": "ATMOSPHERE",
+      "description": "Building sensory mood, cozy lighting, aspirational elegance, and emotional warmth."
+    },
+    {
+      "id": "NEED_NOVELTY",
+      "name": "NOVELTY",
+      "description": "Introducing sensory refresh, scale shift, or visual disruption to prevent feed drop-off."
+    },
+    {
+      "id": "NEED_CONTINUITY",
+      "name": "CONTINUITY",
+      "description": "Maintaining unbroken flow, narrative focus, and logical sequence across thoughts."
+    },
+    {
+      "id": "NEED_CONTEXT",
+      "name": "CONTEXT",
+      "description": "Grounding the property in its wider geographical, urban, neighborhood, or market setting."
+    },
+    {
+      "id": "NEED_ACTION_CLARITY",
+      "name": "ACTION_CLARITY",
+      "description": "Making the immediate next conversion step unmistakable, friction-free, and inviting."
+    },
+    {
+      "id": "NEED_VISUAL_PAYOFF",
+      "name": "VISUAL_PAYOFF",
+      "description": "Delivering the visual satisfaction of seeing what was teased or promised in earlier moments."
+    },
+    {
+      "id": "NEED_PERFORMANCE_PRESERVATION",
+      "name": "PERFORMANCE_PRESERVATION",
+      "description": "Protecting an exceptionally strong, emotive, or comedic presenter delivery without cutting prematurely."
+    },
+    {
+      "id": "NEED_AESTHETIC_BREATHING",
+      "name": "AESTHETIC_BREATHING",
+      "description": "Allowing visually stunning property frames to be contemplated without rushed cutting."
+    }
+  ],
+  "narrative_arc_states": [
+    {
+      "id": "ARC_SETUP",
+      "name": "setup",
+      "description": "Establishing premise, context, pain point, or initial curiosity hook."
+    },
+    {
+      "id": "ARC_TENSION",
+      "name": "tension",
+      "description": "Heightening awareness of the problem, friction, or urgency."
+    },
+    {
+      "id": "ARC_DEVELOPMENT",
+      "name": "development",
+      "description": "Elaborating arguments, lifestyle opportunities, and product capabilities."
+    },
+    {
+      "id": "ARC_PROOF",
+      "name": "proof",
+      "description": "Validating claims through footage, numbers, specs, and architectural evidence."
+    },
+    {
+      "id": "ARC_REVEAL",
+      "name": "reveal",
+      "description": "Pivotal unveiling of the property, price, or core breakthrough."
+    },
+    {
+      "id": "ARC_PAYOFF",
+      "name": "payoff",
+      "description": "Delivering visual/emotional gratification and aspirational lifestyle reward."
+    },
+    {
+      "id": "ARC_TRANSITION",
+      "name": "transition",
+      "description": "Pivoting from product exploration to commercial terms or closing."
+    },
+    {
+      "id": "ARC_CONVERSION",
+      "name": "conversion",
+      "description": "Direct closing call to action and next steps guidance."
+    }
+  ],
+  "traceability": {
+    "grammar_version": "0.2",
+    "dna_version": "1.1.0-hardened",
+    "mappings": [
+      {
+        "grammar_component": "Narrative Functions & Viewer Effects",
+        "serves_dna_principle": "PRIN_CORE_03 (Intent Before Literality)",
+        "rationale": "Grammar interprets what the sentence is trying to achieve (Narrative Function + Viewer Effect) before seeking visual solutions."
+      },
+      {
+        "grammar_component": "HOLD / EVOLVE / SWITCH State Model",
+        "serves_dna_principle": "PRIN_CORE_02 (Intelligent Dynamism)",
+        "rationale": "Before cutting, the system asks whether an editorial reason exists to change the screen state, preventing timer-based cutting."
+      },
+      {
+        "grammar_component": "Editorial Importance Scale",
+        "serves_dna_principle": "PRIN_CORE_04 (Controlled Impact)",
+        "rationale": "Categorizing beats into SUPPORTING, MEANINGFUL, MAJOR, and HERO dictates emphasis intensity."
+      },
+      {
+        "grammar_component": "Subject vs Narrative Function Orthogonality",
+        "serves_dna_principle": "PRIN_AVOID_02 (Literal Keyword Matching Prohibition)",
+        "rationale": "Decoupling what is mentioned (Subject) from how it is framed (Function) stops naive keyword substring cutting."
+      },
+      {
+        "grammar_component": "Presenter Continuity Preservation in Grammar",
+        "serves_dna_principle": "PRIN_CORE_01 (Human-Led Storytelling)",
+        "rationale": "Presenter presence is recognized as a narrative asset, ensuring the human guide conducts the arc."
+      }
+    ]
+  }
+}

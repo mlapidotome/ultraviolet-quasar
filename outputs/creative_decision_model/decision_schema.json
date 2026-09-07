@@ -1,0 +1,27 @@
+{
+  "schema_id": "SCHEMA_CREATIVE_DECISION_V01",
+  "title": "Creative Decision Schema",
+  "epistemic_status": "QUALITATIVE_SCHEMA_CANDIDATE",
+  "currently_binding": false,
+  "provenance_safeguards": {
+    "ground_truth_source": "HUMAN_HOMOLOGATED_TRANSCRIPT",
+    "ground_truth_authority": "HUMAN_HOMOLOGATED_CASE_GROUND_TRUTH",
+    "ground_truth_locked": true,
+    "concept_safeguard": "Case ground truth must never be silently replaced by similarly named media, filenames, previous analyses, reference datasets or inferred content."
+  },
+  "decision_flow_stages": [
+    "1_BEAT_INTERPRETATION",
+    "2_NARRATIVE_ARC_CONTEXT",
+    "3_EDITORIAL_MEMORY",
+    "4_NEED_PRIORITIZATION",
+    "5_VISUAL_DEBT",
+    "6_CURRENT_VISUAL_STATE",
+    "7_MEDIA_FITNESS",
+    "8_STATE_DECISION_HOLD_EVOLVE_SWITCH",
+    "9_CANDIDATE_GENERATION",
+    "10_ATTENTION_COST_CHECK",
+    "11_SELECTION_AND_ALTERNATIVES",
+    "12_REJECTION_RATIONALE",
+    "13_CONFIDENCE_AND_UNCERTAINTY"
+  ]
+}

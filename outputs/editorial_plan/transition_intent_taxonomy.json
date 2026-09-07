@@ -1,0 +1,17 @@
+{
+  "taxonomy_id": "TAXONOMY_TRANSITION_INTENT_V01",
+  "title": "Transition Intent Taxonomy",
+  "description": "Describes the motivated purpose of shot transitions. Excludes frame durations and wipe/crossfade presets.",
+  "epistemic_status": "QUALITATIVE_TAXONOMY_CANDIDATE",
+  "currently_binding": false,
+  "values": [
+    "CONTINUOUS",
+    "CLEAN_CHANGE",
+    "NARRATIVE_BREAK",
+    "REVEAL",
+    "REANCHOR",
+    "PAYOFF",
+    "RESET",
+    "UNRESOLVED"
+  ]
+}

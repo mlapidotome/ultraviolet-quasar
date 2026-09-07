@@ -1,0 +1,696 @@
+{
+  "version": "1.1.0-hardened",
+  "title": "Bali Imóveis Editorial DNA v1 (Epistemically Hardened)",
+  "timestamp": "2026-09-06T20:02:33.577Z",
+  "authority": "Homologated Human Creative Directives + Empirical 5-Reference Deconstruction",
+  "epistemic_meta_rules": [
+    "Reference frequency does not imply Bali obligation.",
+    "Observed numerical regularities are priors for experimentation, not production thresholds, until validated through Bali-specific renders."
+  ],
+  "epistemic_categories_definition": {
+    "category_1": "HUMAN-HOMOLOGATED PRINCIPLE — Creative authority from Bali leadership; binding philosophical invariant.",
+    "category_2": "REFERENCE-DERIVED PRINCIPLE — Qualitative principle derived from cross-reference synthesis; binding philosophical intent.",
+    "category_3": "CALIBRATION CANDIDATE — Quantitative observed range/prior; strictly non-binding until future render testing.",
+    "category_4": "FUTURE EXECUTION RULE — Executable production logic/algorithm; explicitly not defined in Step 3."
+  },
+  "core_philosophy": {
+    "motto": "HUMAN LEADS. PROPERTY PROVES. EDITING AMPLIFIES.",
+    "dynamism_motto": "FAST WHEN ATTENTION REQUIRES IT. CALM WHEN THE IMAGE DESERVES IT.",
+    "importance_motto": "EDITORIAL IMPORTANCE GOVERNS EMPHASIS INTENSITY.",
+    "variation_motto": "CONSISTENCY WITHOUT SAMENESS."
+  },
+  "principles": [
+    {
+      "principle_id": "PRIN_CORE_01",
+      "name": "Human-Led Storytelling (Human Leads, Property Proves, Editing Amplifies)",
+      "classification": "core",
+      "epistemic_category": "HUMAN-HOMOLOGATED PRINCIPLE",
+      "description": "Editorial conduction is anchored in human storytelling while the physical property acts as concrete proof and emotional payoff. The human presenter establishes trust, empathy, logic, and narrative progression, while the property visually validates every claim.",
+      "human_decision_source": "Bali Leadership Directive: Human-led narrative conduction balanced with property proof.",
+      "supporting_patterns": [
+        "PAT_HOOK_01",
+        "PAT_SYNC_01",
+        "PAT_PRES_02",
+        "PAT_CTA_01"
+      ],
+      "supporting_refs": [
+        "REF_01",
+        "REF_02",
+        "REF_04",
+        "REF_05"
+      ],
+      "evidence_strength": "human_directive",
+      "currently_binding": true,
+      "notes": "Dictates who carries the narrative weight and continuity; does NOT impose a rigid mathematical screen-time quota."
+    },
+    {
+      "principle_id": "PRIN_CORE_02",
+      "name": "Intelligent Dynamism (Fast When Attention Demands, Calm When Image Deserves)",
+      "classification": "core",
+      "epistemic_category": "HUMAN-HOMOLOGATED PRINCIPLE",
+      "description": "Visual pacing is dynamically motivated by narrative need, never by arbitrary timers. Fast-paced cuts and punches are applied during hooks, curiosity gaps, and rapid arguments, but visually rich property imagery is given space to breathe and be appreciated.",
+      "human_decision_source": "Bali Leadership Directive: Dynamic, but not hyperactive.",
+      "supporting_patterns": [
+        "PAT_PACE_01",
+        "PAT_INTERRUPT_01",
+        "PAT_BROLL_01"
+      ],
+      "supporting_refs": [
+        "REF_01",
+        "REF_03",
+        "REF_04",
+        "REF_05"
+      ],
+      "evidence_strength": "human_directive",
+      "currently_binding": true,
+      "notes": "Rejects both static boring real estate slideshows and chaotic template hyperactivity."
+    },
+    {
+      "principle_id": "PRIN_CORE_03",
+      "name": "Intent Before Literality (Narrative Meaning Over Pure Keyword Matching)",
+      "classification": "core",
+      "epistemic_category": "HUMAN-HOMOLOGATED PRINCIPLE",
+      "description": "Visual selection must prioritize what a sentence is trying to make the viewer understand, feel, believe, or desire, rather than blind substring translation. High-level emotional intent guides whether to show a wide room, a lifestyle detail, or keep the presenter on screen.",
+      "human_decision_source": "Bali Leadership Directive: What is this sentence trying to achieve?",
+      "supporting_patterns": [
+        "PAT_SYNC_01",
+        "PAT_SYNC_02"
+      ],
+      "supporting_refs": [
+        "REF_01",
+        "REF_02",
+        "REF_03",
+        "REF_04",
+        "REF_05"
+      ],
+      "evidence_strength": "human_directive",
+      "currently_binding": true,
+      "notes": "Semantic match remains a core constraint, but intent dictates visual hierarchy."
+    },
+    {
+      "principle_id": "PRIN_CORE_04",
+      "name": "Controlled Impact (Editorial Importance Governs Emphasis Intensity)",
+      "classification": "core",
+      "epistemic_category": "HUMAN-HOMOLOGATED PRINCIPLE",
+      "description": "Editorial emphasis (punch-ins, typography scaling, sound accents, full-screen cards) is strictly scaled according to the editorial importance of the information. Minor factual specs receive subtle treatment; game-changing offers or key pain points receive high visual energy.",
+      "human_decision_source": "Bali Leadership Directive: Editorial Importance -> Emphasis Intensity.",
+      "supporting_patterns": [
+        "PAT_CUT_02",
+        "PAT_TYPO_02",
+        "PAT_SOUND_01"
+      ],
+      "supporting_refs": [
+        "REF_02",
+        "REF_03",
+        "REF_04"
+      ],
+      "evidence_strength": "human_directive",
+      "currently_binding": true,
+      "notes": "Prevents sensory fatigue by ensuring visual volume matches content significance."
+    },
+    {
+      "principle_id": "PRIN_CORE_05",
+      "name": "Modern Sophistication (Clean, Refined, Human, Never Stiff)",
+      "classification": "core",
+      "epistemic_category": "HUMAN-HOMOLOGATED PRINCIPLE",
+      "description": "The baseline visual personality is clean, premium, and contemporary with polished typography, fluid motion graphics, and restrained sound design. It seamlessly flexes toward Playful/Social during light/humorous moments and toward Premium/Minimal for luxury developments.",
+      "human_decision_source": "Bali Leadership Directive: Sophisticated and contemporary without being corporate or pretentious.",
+      "supporting_patterns": [
+        "PAT_TYPO_02",
+        "PAT_TYPO_03",
+        "PAT_TRANS_01"
+      ],
+      "supporting_refs": [
+        "REF_01",
+        "REF_03",
+        "REF_04",
+        "REF_05"
+      ],
+      "evidence_strength": "human_directive",
+      "currently_binding": true,
+      "notes": "Positioned midway between amateur social template chaos and rigid corporate broadcast."
+    },
+    {
+      "principle_id": "PRIN_CORE_06",
+      "name": "Presenter as Story Guide (Fluid Transitions Across Storyteller, Seller, and Expert)",
+      "classification": "core",
+      "epistemic_category": "HUMAN-HOMOLOGATED PRINCIPLE",
+      "description": "The on-camera presenter is not an automated talking head but an empathetic guide whose posture, framing, and pacing adapt as the narrative flows across Storyteller (empathy/pain), Expert (education/specs), and Seller (urgency/action).",
+      "human_decision_source": "Bali Leadership Directive: Presenter identity as Storyteller/Guide.",
+      "supporting_patterns": [
+        "PAT_PRES_01",
+        "PAT_PRES_02",
+        "PAT_CTA_01"
+      ],
+      "supporting_refs": [
+        "REF_01",
+        "REF_02",
+        "REF_04",
+        "REF_05"
+      ],
+      "evidence_strength": "human_directive",
+      "currently_binding": true,
+      "notes": "Allows multi-phase emotional arc within a single narrative piece."
+    },
+    {
+      "principle_id": "PRIN_CORE_07",
+      "name": "Purposeful Hook Construction (Zero Friction, Prompt Voice Onset & Early Human Connection)",
+      "classification": "core",
+      "epistemic_category": "REFERENCE-DERIVED PRINCIPLE",
+      "description": "Videos open at frame zero with prompt voice onset, immediate human eye contact or high-impact property hero visual, and zero static title screens or animated corporate bumpers. Early visual evolution is introduced promptly to secure feed retention.",
+      "human_decision_source": "Creative synthesis derived from universal hook behavior in references.",
+      "supporting_patterns": [
+        "PAT_HOOK_01",
+        "PAT_HOOK_02"
+      ],
+      "supporting_refs": [
+        "REF_01",
+        "REF_02",
+        "REF_03",
+        "REF_04",
+        "REF_05"
+      ],
+      "evidence_strength": "strong_reference_support",
+      "currently_binding": true,
+      "calibration_reference": "CALIB_HOOK_VOICE_ONSET, CALIB_HOOK_FIRST_INTERRUPT",
+      "notes": "Core principle enforces prompt start and zero friction; specific latency (<0.3s) is moved to calibration candidate."
+    },
+    {
+      "principle_id": "PRIN_CORE_08",
+      "name": "Purposeful B-Roll (Every Cutaway Must Have an Explicit Narrative Job)",
+      "classification": "core",
+      "epistemic_category": "REFERENCE-DERIVED PRINCIPLE",
+      "description": "B-roll footage or photos are never inserted as mindless wallpaper to fill timeline gaps. Every B-roll asset must execute an explicit editorial job: Proof, Demonstration, Desire, Spatial Understanding, Feature Detail, Atmosphere, Location, Lifestyle, or Emotional Reinforcement.",
+      "human_decision_source": "Derived from cross-reference analysis: B-Roll Should Have a Job.",
+      "supporting_patterns": [
+        "PAT_SYNC_01",
+        "PAT_BROLL_01",
+        "PAT_BROLL_02"
+      ],
+      "supporting_refs": [
+        "REF_01",
+        "REF_03",
+        "REF_04",
+        "REF_05"
+      ],
+      "evidence_strength": "strong_reference_support",
+      "currently_binding": true,
+      "notes": "Prevents arbitrary cutaways unaligned with current spoken arguments."
+    },
+    {
+      "principle_id": "PRIN_CORE_09",
+      "name": "Aesthetic Breathing Room (Proportional Contemplation for High-Value Property Imagery)",
+      "classification": "core",
+      "epistemic_category": "REFERENCE-DERIVED PRINCIPLE",
+      "description": "When presenting an exceptionally striking architectural view, breathtaking balcony vista, or masterfully designed space, the editor intentionally permits visual contemplation proportional to the editorial and aesthetic value of the image, suspending rapid cutting.",
+      "human_decision_source": "Derived from tension analysis between REF_02 (hyper-cut) and REF_05 (spatial appreciation).",
+      "supporting_patterns": [
+        "PAT_BROLL_01"
+      ],
+      "supporting_refs": [
+        "REF_03",
+        "REF_05"
+      ],
+      "evidence_strength": "moderate_reference_support",
+      "currently_binding": true,
+      "calibration_reference": "CALIB_BREATHING_ROOM_DURATION",
+      "notes": "Core principle protects aesthetic appreciation; specific hold ranges (3.0s-5.0s) are moved to calibration candidate."
+    },
+    {
+      "principle_id": "PRIN_CORE_10",
+      "name": "Functional Typography (Information Layer with Hierarchical Emphasis)",
+      "classification": "core",
+      "epistemic_category": "REFERENCE-DERIVED PRINCIPLE",
+      "description": "Typography serves as an active cognitive guide. Captions highlight spoken keywords with high-contrast emphasis hierarchy, lower-thirds identify rooms and specs cleanly, and key numbers are visually anchored without cluttering active framing.",
+      "human_decision_source": "Universal standard observed in 100% of analyzed references.",
+      "supporting_patterns": [
+        "PAT_TYPO_02",
+        "PAT_TYPO_03",
+        "PAT_CUT_02"
+      ],
+      "supporting_refs": [
+        "REF_01",
+        "REF_02",
+        "REF_03",
+        "REF_04",
+        "REF_05"
+      ],
+      "evidence_strength": "strong_reference_support",
+      "currently_binding": true,
+      "calibration_reference": "CALIB_TYPOGRAPHY_EMPHASIS_COLORS",
+      "notes": "Core principle establishes functional hierarchy; specific hex codes are reference observations, to be mapped to Bali brand tokens."
+    },
+    {
+      "principle_id": "PRIN_CORE_11",
+      "name": "Supportive Audio Architecture (Vocal Intelligibility Dominance, Subordinate Polish)",
+      "classification": "core",
+      "epistemic_category": "REFERENCE-DERIVED PRINCIPLE",
+      "description": "The human voice is the sacrosanct focal point of the audio mix. Background music provides steady emotional undertone, while sound effects (whooshes, hits, clicks) serve solely to punctuate narrative shifts and visual transitions, ducked cleanly to never compete with dialogue.",
+      "human_decision_source": "Universal sound structure across top references.",
+      "supporting_patterns": [
+        "PAT_SOUND_01"
+      ],
+      "supporting_refs": [
+        "REF_01",
+        "REF_02",
+        "REF_03"
+      ],
+      "evidence_strength": "strong_reference_support",
+      "currently_binding": true,
+      "calibration_reference": "CALIB_SOUND_SFX_DUCKING_LEVEL",
+      "notes": "Core principle establishes vocal dominance; specific dB gain values are moved to calibration candidate."
+    },
+    {
+      "principle_id": "PRIN_CORE_12",
+      "name": "Motivated Transition Discipline (Default to Unobtrusive Cuts, Motivated Polish)",
+      "classification": "core",
+      "epistemic_category": "REFERENCE-DERIVED PRINCIPLE",
+      "description": "Clean hard cuts are the default tool for internal shot progression. Elaborate digital transitions (whip pans, zoom blurs, slides) require explicit narrative justification (such as major chapter changes or energetic hook resets) rather than serving as decorative display.",
+      "human_decision_source": "Empirical finding: overwhelming dominance of motivated cuts in professional references.",
+      "supporting_patterns": [
+        "PAT_TRANS_01",
+        "PAT_CUT_01"
+      ],
+      "supporting_refs": [
+        "REF_01",
+        "REF_02",
+        "REF_03",
+        "REF_04",
+        "REF_05"
+      ],
+      "evidence_strength": "strong_reference_support",
+      "currently_binding": true,
+      "calibration_reference": "CALIB_TRANSITION_HARD_CUT_RATIO",
+      "notes": "Core principle establishes motivated cut default; >85% is an observed dataset metric, not a hard quota."
+    },
+    {
+      "principle_id": "PRIN_CORE_13",
+      "name": "Natural Narrative CTA (Clear Next Step Anchored in Human Warmth)",
+      "classification": "core",
+      "epistemic_category": "REFERENCE-DERIVED PRINCIPLE",
+      "description": "The Call to Action is the natural culmination of the story. The presenter reclaims the screen, maintains direct eye contact, and provides clear, friction-free guidance on the immediate next action, reinforced by clean on-screen UI cues.",
+      "human_decision_source": "Universal pattern across all high-converting real estate videos.",
+      "supporting_patterns": [
+        "PAT_CTA_01"
+      ],
+      "supporting_refs": [
+        "REF_01",
+        "REF_02",
+        "REF_03",
+        "REF_04",
+        "REF_05"
+      ],
+      "evidence_strength": "strong_reference_support",
+      "currently_binding": true,
+      "notes": "Avoids abrupt drop-offs or clinical corporate end slates."
+    },
+    {
+      "principle_id": "PRIN_CORE_14",
+      "name": "Consistency Without Sameness (Brand Cohesion Without Template Fatigue)",
+      "classification": "core",
+      "epistemic_category": "HUMAN-HOMOLOGATED PRINCIPLE",
+      "description": "Every Bali video must be immediately recognizable by its tone, refinement, and rhythm, yet no two videos should share identical cut intervals, visual sequencing, or repetitive effect placements.",
+      "human_decision_source": "Core architectural directive: avoid template monotony across large catalog generation.",
+      "supporting_patterns": [
+        "PAT_PACE_01",
+        "PAT_INTERRUPT_01"
+      ],
+      "supporting_refs": [
+        "REF_01",
+        "REF_03",
+        "REF_04",
+        "REF_05"
+      ],
+      "evidence_strength": "human_directive",
+      "currently_binding": true,
+      "notes": "Guarantees the Bali catalog feels like a curated media house rather than an automated bot factory."
+    },
+    {
+      "principle_id": "PRIN_CTX_01",
+      "name": "Contextual Pacing Adaptation (Dynamic Modulation by Content Objective)",
+      "classification": "contextual",
+      "epistemic_category": "REFERENCE-DERIVED PRINCIPLE",
+      "description": "Pacing adapts dynamically according to product tier, narrative objective, and target audience. Conversion and pain-point ads adopt an agile, high-density cadence; luxury property showcases and detailed walkthroughs adopt a refined, fluid cadence.",
+      "human_decision_source": "Resolution of Tension 01 (REF_02 vs REF_05).",
+      "supporting_patterns": [
+        "PAT_PACE_01"
+      ],
+      "supporting_refs": [
+        "REF_02",
+        "REF_05"
+      ],
+      "evidence_strength": "strong_reference_support",
+      "currently_binding": true,
+      "calibration_reference": "CALIB_PACING_CONVERSION_VS_TOUR",
+      "notes": "Core principle establishes contextual variability; specific cut frequency numbers are calibration candidates."
+    },
+    {
+      "principle_id": "PRIN_CTX_02",
+      "name": "Presenter Screen Share Modulation (Narrative Conduction vs Product Showcase)",
+      "classification": "contextual",
+      "epistemic_category": "REFERENCE-DERIVED PRINCIPLE",
+      "description": "The proportion of visible presenter screen presence modulates contextually. Pain-point storytelling and objection handling emphasize higher presenter visual presence; property walkthroughs and launch showcases elevate the physical asset to the primary visual plane.",
+      "human_decision_source": "Resolution of Tension 02 (REF_01/04 vs REF_03/05).",
+      "supporting_patterns": [
+        "PAT_PRES_02"
+      ],
+      "supporting_refs": [
+        "REF_01",
+        "REF_03",
+        "REF_04",
+        "REF_05"
+      ],
+      "evidence_strength": "strong_reference_support",
+      "currently_binding": true,
+      "calibration_reference": "CALIB_PRESENTER_SCREEN_SHARE_RATIO",
+      "notes": "Core principle establishes screen share flexibility; specific percentages are calibration candidates."
+    },
+    {
+      "principle_id": "PRIN_CTX_03",
+      "name": "Modular Graphic Wrapper (Clean Native vs Direct Commercial Wrapper)",
+      "classification": "contextual",
+      "epistemic_category": "REFERENCE-DERIVED PRINCIPLE",
+      "description": "Graphic overlays adapt to distribution context. Paid feed ads for developments utilize persistent top headline banners and price callouts; organic social reels and luxury tours adopt a clean, distraction-free native framing.",
+      "human_decision_source": "Resolution of Tension 03 (Commercial Wrapper vs Clean Native).",
+      "supporting_patterns": [
+        "PAT_TYPO_01",
+        "PAT_TYPO_03"
+      ],
+      "supporting_refs": [
+        "REF_03",
+        "REF_04"
+      ],
+      "evidence_strength": "moderate_reference_support",
+      "currently_binding": true,
+      "notes": "Ensures advertising effectiveness without degrading brand elegance in organic channels."
+    },
+    {
+      "principle_id": "PRIN_CTX_04",
+      "name": "Urban & Geographical Context Integration (Neighborhood Proof)",
+      "classification": "contextual",
+      "epistemic_category": "REFERENCE-DERIVED PRINCIPLE",
+      "description": "When location, accessibility, beach proximity, or neighborhood prestige is a central selling pillar, external contextual media (drone flyovers, street-level footage, animated map pins, travel time badges) are deployed to prove lifestyle value.",
+      "human_decision_source": "Derived from location patterns in REF_03 and REF_04.",
+      "supporting_patterns": [
+        "PAT_BROLL_01"
+      ],
+      "supporting_refs": [
+        "REF_03",
+        "REF_04"
+      ],
+      "evidence_strength": "moderate_reference_support",
+      "currently_binding": true,
+      "notes": "Answers the buyer question: \"What is it like to actually live in this neighborhood?\""
+    },
+    {
+      "principle_id": "PRIN_AVOID_01",
+      "name": "Arbitrary Timer-Based Cutting (Effects for Effects Sake)",
+      "classification": "avoid",
+      "epistemic_category": "HUMAN-HOMOLOGATED PRINCIPLE",
+      "description": "Strict prohibition of cutting, zooming, or triggering graphics solely because a fixed timer expired. Every visual alteration must have a narrative, semantic, or attention-motivated reason.",
+      "human_decision_source": "Homologated Anti-Pattern: Rejection of mechanical mindless editing.",
+      "supporting_patterns": [
+        "PAT_CUT_01",
+        "PAT_PACE_01"
+      ],
+      "supporting_refs": [
+        "REF_01",
+        "REF_02",
+        "REF_03",
+        "REF_04",
+        "REF_05"
+      ],
+      "evidence_strength": "human_directive",
+      "currently_binding": true,
+      "notes": "Separates human-feeling intelligent pacing from crude script-loop automation."
+    },
+    {
+      "principle_id": "PRIN_AVOID_02",
+      "name": "Literal Keyword Matching Without Narrative Context",
+      "classification": "avoid",
+      "epistemic_category": "HUMAN-HOMOLOGATED PRINCIPLE",
+      "description": "Strict prohibition of naive substring matching that cuts to random assets on isolated keywords without understanding sentence intent. Contextual narrative understanding must govern all media selections.",
+      "human_decision_source": "Homologated Anti-Pattern: Intent before literality.",
+      "supporting_patterns": [
+        "PAT_SYNC_01",
+        "PAT_SYNC_02"
+      ],
+      "supporting_refs": [
+        "REF_01",
+        "REF_02",
+        "REF_03",
+        "REF_04",
+        "REF_05"
+      ],
+      "evidence_strength": "human_directive",
+      "currently_binding": true,
+      "notes": "Prevents embarrassing semantic hallucinations in automated video composition."
+    },
+    {
+      "principle_id": "PRIN_AVOID_03",
+      "name": "Visual Overload & Graphic Clutter (Hiding Property Behind Cards)",
+      "classification": "avoid",
+      "epistemic_category": "HUMAN-HOMOLOGATED PRINCIPLE",
+      "description": "Strict prohibition of covering beautiful property imagery with oversized graphic cards, intrusive cartoon stickers, or excessive multi-layered animations that obscure architectural quality.",
+      "human_decision_source": "Homologated Anti-Pattern: Modern sophistication.",
+      "supporting_patterns": [
+        "PAT_TYPO_03",
+        "PAT_BROLL_01"
+      ],
+      "supporting_refs": [
+        "REF_01",
+        "REF_05"
+      ],
+      "evidence_strength": "human_directive",
+      "currently_binding": true,
+      "notes": "The property is a high-value asset; never treat it as background noise."
+    },
+    {
+      "principle_id": "PRIN_AVOID_04",
+      "name": "Presenter Monologue Stagnation (Unmotivated Visual Inactivity)",
+      "classification": "avoid",
+      "epistemic_category": "REFERENCE-DERIVED PRINCIPLE",
+      "description": "Avoid visually stagnant presenter stretches when no narrative, performance, framing, or emotional reason justifies them. Continuous monologues require motivated evolution through scale adjustments, reframing, or cutaways.",
+      "human_decision_source": "Refined epistemic formulation based on empirical retention observations.",
+      "supporting_patterns": [
+        "PAT_PRES_01",
+        "PAT_INTERRUPT_01"
+      ],
+      "supporting_refs": [
+        "REF_01",
+        "REF_02",
+        "REF_04"
+      ],
+      "evidence_strength": "strong_reference_support",
+      "currently_binding": true,
+      "calibration_reference": "CALIB_PRESENTER_MONOLOGUE_LIMIT",
+      "notes": "Threshold >5.0s is moved to calibration candidate; principle bans unmotivated visual stagnation."
+    },
+    {
+      "principle_id": "PRIN_AVOID_05",
+      "name": "Endless Disembodied Property Montages Without Human Guidance",
+      "classification": "avoid",
+      "epistemic_category": "HUMAN-HOMOLOGATED PRINCIPLE",
+      "description": "Strict prohibition of long, unguided sequences of property photos or video clips with generic elevator music and no human narrative or presenter anchoring.",
+      "human_decision_source": "Homologated Anti-Pattern: Human-led storytelling requirement.",
+      "supporting_patterns": [
+        "PAT_PRES_02",
+        "PAT_HOOK_01"
+      ],
+      "supporting_refs": [
+        "REF_01",
+        "REF_03",
+        "REF_04",
+        "REF_05"
+      ],
+      "evidence_strength": "human_directive",
+      "currently_binding": true,
+      "notes": "Distinguishes Bali from generic MLS listing slideshows."
+    },
+    {
+      "principle_id": "PRIN_AVOID_06",
+      "name": "Single-Reference Mimicry (Copying REF_05 or Any Single Benchmark)",
+      "classification": "avoid",
+      "epistemic_category": "HUMAN-HOMOLOGATED PRINCIPLE",
+      "description": "Strict prohibition of declaring any single reference (including historical REF_05) as the total Bali identity. The Bali DNA is an elevated synthesis of universal professional standards and intentional brand choices.",
+      "human_decision_source": "Core mandate of Phase 5: Synthesis over imitation.",
+      "supporting_patterns": [],
+      "supporting_refs": [
+        "REF_01",
+        "REF_02",
+        "REF_03",
+        "REF_04",
+        "REF_05"
+      ],
+      "evidence_strength": "human_directive",
+      "currently_binding": true,
+      "notes": "Guarantees genuine brand differentiation and technical defensibility."
+    }
+  ],
+  "calibration_candidates": [
+    {
+      "candidate_id": "CALIB_HOOK_VOICE_ONSET",
+      "topic": "Hook Voice Onset Latency",
+      "parameter_name": "hook_voice_start_latency_seconds",
+      "observed_range": "< 0.3s (0.05s - 0.35s across references)",
+      "source_refs": [
+        "REF_01",
+        "REF_02",
+        "REF_04",
+        "REF_05"
+      ],
+      "evidence_strength": "strong_reference_support",
+      "associated_principle": "PRIN_CORE_07",
+      "candidate_for_future_testing": true,
+      "currently_binding": false,
+      "testing_hypothesis": "Starting voice audio within 0.1s - 0.3s of frame 0 minimizes drop-off on muted/autoplay feeds."
+    },
+    {
+      "candidate_id": "CALIB_HOOK_FIRST_INTERRUPT",
+      "topic": "Hook First Visual Disruption Window",
+      "parameter_name": "hook_first_visual_disruption_seconds",
+      "observed_range": "1.2s - 2.5s",
+      "source_refs": [
+        "REF_01",
+        "REF_02",
+        "REF_03"
+      ],
+      "evidence_strength": "strong_reference_support",
+      "associated_principle": "PRIN_CORE_07",
+      "candidate_for_future_testing": true,
+      "currently_binding": false,
+      "testing_hypothesis": "Executing a scale punch or cut within the first 2.5s resets attention before habituation sets in."
+    },
+    {
+      "candidate_id": "CALIB_BREATHING_ROOM_DURATION",
+      "topic": "Aesthetic Breathing Room Hold Duration",
+      "parameter_name": "aesthetic_breathing_room_hold_seconds",
+      "observed_range": "3.0s - 5.0s (up to 6.5s on scenic drone / facade shots)",
+      "source_refs": [
+        "REF_03",
+        "REF_05"
+      ],
+      "evidence_strength": "moderate_reference_support",
+      "associated_principle": "PRIN_CORE_09",
+      "candidate_for_future_testing": true,
+      "currently_binding": false,
+      "testing_hypothesis": "Holding high aesthetic score photos/videos for 3.0s - 5.0s increases perceived property luxury without inducing boredom."
+    },
+    {
+      "candidate_id": "CALIB_TYPOGRAPHY_EMPHASIS_COLORS",
+      "topic": "Keyword Emphasis Color Palette",
+      "parameter_name": "caption_keyword_highlight_palette",
+      "observed_range": "High-contrast Warm Yellow (#FFD700) and Neon Green (#00E676)",
+      "source_refs": [
+        "REF_01",
+        "REF_02",
+        "REF_03",
+        "REF_04",
+        "REF_05"
+      ],
+      "evidence_strength": "strong_reference_support",
+      "associated_principle": "PRIN_CORE_10",
+      "candidate_for_future_testing": true,
+      "currently_binding": false,
+      "testing_hypothesis": "Highlighting emphasized words in warm gold/yellow or vibrant green improves reading retention; Bali brand tokens must define final palette."
+    },
+    {
+      "candidate_id": "CALIB_SOUND_SFX_DUCKING_LEVEL",
+      "topic": "SFX Mix Volume & Ducking Relative to Dialogue",
+      "parameter_name": "sfx_gain_relative_to_dialogue_db",
+      "observed_range": "-14dB to -18dB under dialogue track; music at -18dB to -24dB",
+      "source_refs": [
+        "REF_01",
+        "REF_02",
+        "REF_03"
+      ],
+      "evidence_strength": "moderate_reference_support",
+      "associated_principle": "PRIN_CORE_11",
+      "candidate_for_future_testing": true,
+      "currently_binding": false,
+      "testing_hypothesis": "Keeping transition and punch SFX in the -14dB to -18dB range adds perceptual polish without reducing speech intelligibility."
+    },
+    {
+      "candidate_id": "CALIB_TRANSITION_HARD_CUT_RATIO",
+      "topic": "Hard Cut Dominance Percentage",
+      "parameter_name": "hard_cut_to_digital_transition_ratio_percent",
+      "observed_range": "88.7% hard cuts across 133 shots (80% - 95% per reference)",
+      "source_refs": [
+        "REF_01",
+        "REF_02",
+        "REF_03",
+        "REF_04",
+        "REF_05"
+      ],
+      "evidence_strength": "strong_reference_support",
+      "associated_principle": "PRIN_CORE_12",
+      "candidate_for_future_testing": true,
+      "currently_binding": false,
+      "testing_hypothesis": "Defaulting to hard cuts for >80% of shot transitions maintains broadcast elegance; digital transitions must remain rare punctuation."
+    },
+    {
+      "candidate_id": "CALIB_PACING_CONVERSION_VS_TOUR",
+      "topic": "Contextual Cut Frequency Ranges",
+      "parameter_name": "cuts_per_minute_by_profile_range",
+      "observed_range": "High-Energy Conversion: 24-35 cuts/min | Property Tour: 14-20 cuts/min",
+      "source_refs": [
+        "REF_02",
+        "REF_05"
+      ],
+      "evidence_strength": "strong_reference_support",
+      "associated_principle": "PRIN_CTX_01",
+      "candidate_for_future_testing": true,
+      "currently_binding": false,
+      "testing_hypothesis": "Calibrating profile pacing targets as flexible distributions (e.g. median shot 1.5s-2.0s for conversion vs 2.8s-3.5s for showcase)."
+    },
+    {
+      "candidate_id": "CALIB_PRESENTER_SCREEN_SHARE_RATIO",
+      "topic": "Presenter Visual Screen Time Distribution",
+      "parameter_name": "presenter_screen_share_percent_range",
+      "observed_range": "Authority/Pain Narrative: 70%-90% | Product Tour/Launch: 15%-35%",
+      "source_refs": [
+        "REF_01",
+        "REF_03",
+        "REF_04",
+        "REF_05"
+      ],
+      "evidence_strength": "strong_reference_support",
+      "associated_principle": "PRIN_CTX_02",
+      "candidate_for_future_testing": true,
+      "currently_binding": false,
+      "testing_hypothesis": "Modulating presenter screen time between 20% and 85% based on narrative archetype preserves human-led guidance while adapting to showcase needs."
+    },
+    {
+      "candidate_id": "CALIB_PRESENTER_MONOLOGUE_LIMIT",
+      "topic": "Presenter Continuous Hold Without Visual Evolution",
+      "parameter_name": "presenter_max_static_hold_seconds",
+      "observed_range": "3.5s - 5.0s before scale punch-in, reframing, or cutaway",
+      "source_refs": [
+        "REF_01",
+        "REF_02",
+        "REF_04"
+      ],
+      "evidence_strength": "strong_reference_support",
+      "associated_principle": "PRIN_AVOID_04",
+      "candidate_for_future_testing": true,
+      "currently_binding": false,
+      "testing_hypothesis": "Triggering an evolution (punch-in, angle change, b-roll cutaway) when presenter speaks continuously beyond narrative sentence boundaries prevents visual stagnation."
+    },
+    {
+      "candidate_id": "CALIB_PRESENTER_PUNCH_SCALE_FACTOR",
+      "topic": "Presenter Digital Punch-In Scale Factor",
+      "parameter_name": "digital_punch_scale_factor",
+      "observed_range": "1.15x - 1.25x crop centered on eye line",
+      "source_refs": [
+        "REF_01",
+        "REF_02",
+        "REF_04"
+      ],
+      "evidence_strength": "strong_reference_support",
+      "associated_principle": "PRIN_CORE_06",
+      "candidate_for_future_testing": true,
+      "currently_binding": false,
+      "testing_hypothesis": "A 1.18x crop factor provides optimal perceptual jump without noticeable pixel softening on standard 1080p footage."
+    }
+  ]
+}

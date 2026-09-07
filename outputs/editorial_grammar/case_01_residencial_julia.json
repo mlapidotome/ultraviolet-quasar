@@ -1,0 +1,368 @@
+{
+  "case_id": "CASE_01",
+  "property_name": "Residencial Júlia",
+  "presenter": "Marcel",
+  "location": "Taubaté / Próximo ao Taubaté Shopping e Shibata",
+  "duration_seconds": 52.68,
+  "source_file": "C:\\Users\\Marcel\\Downloads\\Bali_Julia_EDIT01_v2.mov",
+  "validation_status": "CONCEPTUALLY_VALIDATED",
+  "script_beat_breakdown": [
+    {
+      "beat_id": "BEAT_01",
+      "time_range": "00:00.000 - 00:06.440",
+      "duration_seconds": 6.44,
+      "spoken_text": "Por que continuar pagando aluguel se você pode morar a minutos do Taubaté Shopping e do Shibata pagando parcelas de R$ 2.000?",
+      "arc_state": "setup",
+      "narrative_functions": [
+        "HOOK",
+        "PAIN",
+        "PROMISE",
+        "OFFER"
+      ],
+      "subjects": [
+        "property",
+        "financial",
+        "location",
+        "convenience",
+        "shopping",
+        "supermarket",
+        "installment"
+      ],
+      "viewer_effects": [
+        "curiosity",
+        "identification",
+        "relief",
+        "value_perception"
+      ],
+      "editorial_needs": [
+        "HUMAN_CONNECTION",
+        "INFORMATION_CLARITY",
+        "NOVELTY"
+      ],
+      "evidence_need": "MEDIUM",
+      "editorial_importance": "MAJOR",
+      "emotional_mode": "confident",
+      "human_connection_value": "HIGH",
+      "property_visual_value": "LOW",
+      "continuity_value": "HIGH",
+      "state_preference": "HOLD",
+      "reasoning": "Opening hook directly challenges rental inertia and presents the core proposition. Presenter on camera carries narrative empathy and logic; HOLD/EVOLVE maintains personal trust."
+    },
+    {
+      "beat_id": "BEAT_02",
+      "time_range": "00:06.440 - 00:09.760",
+      "duration_seconds": 3.32,
+      "spoken_text": "Dá uma olhada nesse apartamento de R$ 350.000 no Residencial Júlia.",
+      "arc_state": "reveal",
+      "narrative_functions": [
+        "REVEAL",
+        "PROMISE",
+        "OFFER"
+      ],
+      "subjects": [
+        "property",
+        "price",
+        "name"
+      ],
+      "viewer_effects": [
+        "anticipation_payoff",
+        "orientation",
+        "curiosity_resolution",
+        "value_perception"
+      ],
+      "editorial_needs": [
+        "VISUAL_PAYOFF",
+        "VISUAL_PROOF",
+        "SPATIAL_CLARITY"
+      ],
+      "evidence_need": "HIGH",
+      "editorial_importance": "MAJOR",
+      "emotional_mode": "confident",
+      "human_connection_value": "LOW",
+      "property_visual_value": "HIGH",
+      "continuity_value": "MEDIUM",
+      "state_preference": "SWITCH",
+      "reasoning": "The verbal prompt (\"Dá uma olhada\") demands an immediate visual payoff of the physical asset. SWITCH to hero property footage validates curiosity."
+    },
+    {
+      "beat_id": "BEAT_03",
+      "time_range": "00:09.760 - 00:12.240",
+      "duration_seconds": 2.48,
+      "spoken_text": "A localização é perfeita para o dia a dia.",
+      "arc_state": "development",
+      "narrative_functions": [
+        "VALUE",
+        "PROMISE"
+      ],
+      "subjects": [
+        "location",
+        "lifestyle",
+        "convenience"
+      ],
+      "viewer_effects": [
+        "understanding",
+        "value_perception"
+      ],
+      "editorial_needs": [
+        "CONTEXT",
+        "ATMOSPHERE"
+      ],
+      "evidence_need": "MEDIUM",
+      "editorial_importance": "SUPPORTING",
+      "emotional_mode": "conversational",
+      "human_connection_value": "MEDIUM",
+      "property_visual_value": "MEDIUM",
+      "continuity_value": "HIGH",
+      "state_preference": "HOLD",
+      "reasoning": "Transition beat setting up specific location landmarks. Can hold or smoothly pan."
+    },
+    {
+      "beat_id": "BEAT_04",
+      "time_range": "00:12.240 - 00:19.200",
+      "duration_seconds": 6.96,
+      "spoken_text": "Você estará a poucos minutos do Taubaté Shopping, coladinho ao supermercado Shibata e com acesso ultra rápido à Dutra e Carvalho Pinto.",
+      "arc_state": "proof",
+      "narrative_functions": [
+        "PROOF",
+        "EXPLANATION",
+        "VALUE"
+      ],
+      "subjects": [
+        "location",
+        "convenience",
+        "shopping",
+        "supermarket",
+        "highway"
+      ],
+      "viewer_effects": [
+        "belief",
+        "understanding",
+        "value_perception",
+        "orientation"
+      ],
+      "editorial_needs": [
+        "CONTEXT",
+        "VISUAL_PROOF",
+        "INFORMATION_CLARITY"
+      ],
+      "evidence_need": "CRITICAL",
+      "editorial_importance": "MAJOR",
+      "emotional_mode": "confident",
+      "human_connection_value": "LOW",
+      "property_visual_value": "MEDIUM",
+      "continuity_value": "MEDIUM",
+      "state_preference": "SWITCH",
+      "reasoning": "Specific geographic landmark claims require tangible visual evidence (POI badges, drone aerial, route reference). SWITCH candidate."
+    },
+    {
+      "beat_id": "BEAT_05",
+      "time_range": "00:19.200 - 00:27.440",
+      "duration_seconds": 8.24,
+      "spoken_text": "O apartamento tem 68m² muito bem planejados: sala espaçosa, cozinha funcional, dois banheiros, dois dormitórios sendo uma suíte privativa.",
+      "arc_state": "development",
+      "narrative_functions": [
+        "DEMONSTRATION",
+        "PROOF",
+        "EXPLANATION"
+      ],
+      "subjects": [
+        "property",
+        "room",
+        "kitchen",
+        "living_room",
+        "bedroom",
+        "bathroom",
+        "suite"
+      ],
+      "viewer_effects": [
+        "spatial_understanding",
+        "belief",
+        "value_perception"
+      ],
+      "editorial_needs": [
+        "SPATIAL_CLARITY",
+        "VISUAL_PROOF",
+        "INFORMATION_CLARITY"
+      ],
+      "evidence_need": "HIGH",
+      "editorial_importance": "MAJOR",
+      "emotional_mode": "conversational",
+      "human_connection_value": "LOW",
+      "property_visual_value": "HIGH",
+      "continuity_value": "HIGH",
+      "state_preference": "SWITCH",
+      "reasoning": "Property-led sequence demonstrating interior layout and room dimensions. Sequential B-rolls of living room, kitchen, and suites."
+    },
+    {
+      "beat_id": "BEAT_06",
+      "time_range": "00:27.440 - 00:31.800",
+      "duration_seconds": 4.36,
+      "spoken_text": "E o destaque especial: uma varanda deliciosa com churrasqueira para curtir o fim de semana.",
+      "arc_state": "payoff",
+      "narrative_functions": [
+        "DESIRE",
+        "VALUE",
+        "PROOF"
+      ],
+      "subjects": [
+        "balcony",
+        "barbecue",
+        "lifestyle",
+        "family"
+      ],
+      "viewer_effects": [
+        "desire",
+        "anticipation_payoff",
+        "value_perception"
+      ],
+      "editorial_needs": [
+        "ATMOSPHERE",
+        "AESTHETIC_BREATHING",
+        "VISUAL_PROOF"
+      ],
+      "evidence_need": "HIGH",
+      "editorial_importance": "HERO",
+      "emotional_mode": "aspirational",
+      "human_connection_value": "LOW",
+      "property_visual_value": "HIGH",
+      "continuity_value": "MEDIUM",
+      "state_preference": "SWITCH",
+      "reasoning": "Key lifestyle feature (balcony with barbecue). High aesthetic and aspirational value; deserves breathing room hold."
+    },
+    {
+      "beat_id": "BEAT_07",
+      "time_range": "00:31.800 - 00:37.040",
+      "duration_seconds": 5.24,
+      "spoken_text": "O condomínio conta com portaria remota 24h, salão de festas, área gourmet, playground e vaga coberta.",
+      "arc_state": "proof",
+      "narrative_functions": [
+        "PROOF",
+        "VALUE",
+        "AUTHORITY"
+      ],
+      "subjects": [
+        "property",
+        "security",
+        "lifestyle",
+        "convenience"
+      ],
+      "viewer_effects": [
+        "understanding",
+        "value_perception",
+        "trust"
+      ],
+      "editorial_needs": [
+        "INFORMATION_CLARITY",
+        "VISUAL_PROOF"
+      ],
+      "evidence_need": "MEDIUM",
+      "editorial_importance": "MEANINGFUL",
+      "emotional_mode": "confident",
+      "human_connection_value": "LOW",
+      "property_visual_value": "MEDIUM",
+      "continuity_value": "MEDIUM",
+      "state_preference": "EVOLVE",
+      "reasoning": "Condominium amenity checklist. Sequential cutaways or badge overlays highlighting amenities."
+    },
+    {
+      "beat_id": "BEAT_08",
+      "time_range": "00:37.040 - 00:44.680",
+      "duration_seconds": 7.64,
+      "spoken_text": "Tudo isso por apenas R$ 350.000, financiado pelo Minha Casa Minha Vida com entrada em torno de R$ 60.000 a R$ 70.000 e parcelas na faixa de R$ 2.000.",
+      "arc_state": "reveal",
+      "narrative_functions": [
+        "OFFER",
+        "EXPLANATION",
+        "OBJECTION"
+      ],
+      "subjects": [
+        "financial",
+        "price",
+        "down_payment",
+        "installment",
+        "MCMV"
+      ],
+      "viewer_effects": [
+        "value_perception",
+        "relief",
+        "belief",
+        "memorability"
+      ],
+      "editorial_needs": [
+        "INFORMATION_CLARITY",
+        "EMPHASIS",
+        "HUMAN_CONNECTION"
+      ],
+      "evidence_need": "HIGH",
+      "editorial_importance": "HERO",
+      "emotional_mode": "confident",
+      "human_connection_value": "HIGH",
+      "property_visual_value": "LOW",
+      "continuity_value": "HIGH",
+      "state_preference": "SWITCH",
+      "reasoning": "Pivotal commercial accessibility breakdown. Presenter reclaims screen for financial authority; reinforced by clean on-screen commercial card."
+    },
+    {
+      "beat_id": "BEAT_09",
+      "time_range": "00:44.680 - 00:47.040",
+      "duration_seconds": 2.36,
+      "spoken_text": "E aí, gostou dessa oportunidade?",
+      "arc_state": "transition",
+      "narrative_functions": [
+        "HOOK",
+        "AUTHORITY"
+      ],
+      "subjects": [
+        "personal_story"
+      ],
+      "viewer_effects": [
+        "identification",
+        "trust"
+      ],
+      "editorial_needs": [
+        "HUMAN_CONNECTION",
+        "NOVELTY"
+      ],
+      "evidence_need": "LOW",
+      "editorial_importance": "SUPPORTING",
+      "emotional_mode": "conversational",
+      "human_connection_value": "HIGH",
+      "property_visual_value": "LOW",
+      "continuity_value": "HIGH",
+      "state_preference": "HOLD",
+      "reasoning": "Conversational human pulse check bridging the financial offer to the closing CTA."
+    },
+    {
+      "beat_id": "BEAT_10",
+      "time_range": "00:47.040 - 00:52.680",
+      "duration_seconds": 5.64,
+      "spoken_text": "Faz o seguinte: clica no botão Saiba Mais, deixe o seu melhor telefone que a nossa equipe vai te chamar e agendar uma visita.",
+      "arc_state": "conversion",
+      "narrative_functions": [
+        "CTA",
+        "OFFER"
+      ],
+      "subjects": [
+        "process"
+      ],
+      "viewer_effects": [
+        "action_readiness",
+        "trust",
+        "urgency"
+      ],
+      "editorial_needs": [
+        "ACTION_CLARITY",
+        "HUMAN_CONNECTION"
+      ],
+      "evidence_need": "LOW",
+      "editorial_importance": "MAJOR",
+      "emotional_mode": "confident",
+      "human_connection_value": "HIGH",
+      "property_visual_value": "LOW",
+      "continuity_value": "HIGH",
+      "state_preference": "HOLD",
+      "reasoning": "Direct closing call to action. Presenter maintains eye contact and gives clear instructions on what happens next."
+    }
+  ],
+  "editorial_reasoning_flow": "HUMAN PROMISE -> PROPERTY REVEAL -> LOCATION PROOF -> PROPERTY DEMONSTRATION -> LIFESTYLE DESIRE -> CONDOMINIUM VALUE -> HUMAN FINANCIAL REANCHOR -> HUMAN CTA"
+}

@@ -1,0 +1,23 @@
+{
+  "model_id": "MOD_VISUAL_DEBT_V01",
+  "title": "Narrative Visual Debt & Payoff Model",
+  "description": "Tracks pending narrative expectations created by spoken promises without enforcing mandatory or rigid cut rules.",
+  "epistemic_status": "QUALITATIVE_FRAMEWORK_CANDIDATE",
+  "currently_binding": false,
+  "core_principles": [
+    "Visual Debt represents pending viewer expectation created when the script promises, describes, or references a visual element not yet shown.",
+    "Visual Debt heightens the contextual relevance of visual payoff, but does NOT enforce a mandatory cut, media switch, specific technique, fixed timestamp, or literal representation.",
+    "Payoff can occur through cutting to B-roll, evolving current framing, or remaining on presenter when human performance already satisfies the narrative beat.",
+    "Unresolved debt that extends past the relevant narrative unit expires or transitions naturally without breaking the edit."
+  ],
+  "debt_lifecycle": {
+    "creation": "Script or presenter introduces an unseen feature, metric, or location.",
+    "elevation": "Viewer curiosity builds as description continues without visual manifestation.",
+    "resolution_modes": [
+      "SWITCH_PAYOFF: Cutting to relevant B-roll / asset showing the described element.",
+      "IN_STATE_PAYOFF: Presenter gesture, expression, or existing framing organically fulfills the moment.",
+      "GRAPHIC_PAYOFF: Clean minimal typographic or icon cue anchors the claim.",
+      "NARRATIVE_TRANSITION: The topic moves to another subject and debt naturally decays without forced cut."
+    ]
+  }
+}

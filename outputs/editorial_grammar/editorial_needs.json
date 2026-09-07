@@ -1,0 +1,67 @@
+[
+  {
+    "id": "NEED_HUMAN_CONNECTION",
+    "name": "HUMAN_CONNECTION",
+    "description": "Establishing, sustaining, or re-anchoring direct personal empathy, trust, and eye contact with the viewer."
+  },
+  {
+    "id": "NEED_VISUAL_PROOF",
+    "name": "VISUAL_PROOF",
+    "description": "Providing authentic visual materialization of a spoken claim, physical space, or tangible spec."
+  },
+  {
+    "id": "NEED_SPATIAL_CLARITY",
+    "name": "SPATIAL_CLARITY",
+    "description": "Conveying physical layout, room proportions, flow, and three-dimensional architectural relationships."
+  },
+  {
+    "id": "NEED_INFORMATION_CLARITY",
+    "name": "INFORMATION_CLARITY",
+    "description": "Ensuring complex numbers, financing terms, locations, or rules are effortlessly understood."
+  },
+  {
+    "id": "NEED_EMPHASIS",
+    "name": "EMPHASIS",
+    "description": "Visually and acoustically accentuating a pivotal moment, price anchor, or game-changing benefit."
+  },
+  {
+    "id": "NEED_ATMOSPHERE",
+    "name": "ATMOSPHERE",
+    "description": "Building sensory mood, cozy lighting, aspirational elegance, and emotional warmth."
+  },
+  {
+    "id": "NEED_NOVELTY",
+    "name": "NOVELTY",
+    "description": "Introducing sensory refresh, scale shift, or visual disruption to prevent feed drop-off."
+  },
+  {
+    "id": "NEED_CONTINUITY",
+    "name": "CONTINUITY",
+    "description": "Maintaining unbroken flow, narrative focus, and logical sequence across thoughts."
+  },
+  {
+    "id": "NEED_CONTEXT",
+    "name": "CONTEXT",
+    "description": "Grounding the property in its wider geographical, urban, neighborhood, or market setting."
+  },
+  {
+    "id": "NEED_ACTION_CLARITY",
+    "name": "ACTION_CLARITY",
+    "description": "Making the immediate next conversion step unmistakable, friction-free, and inviting."
+  },
+  {
+    "id": "NEED_VISUAL_PAYOFF",
+    "name": "VISUAL_PAYOFF",
+    "description": "Delivering the visual satisfaction of seeing what was teased or promised in earlier moments."
+  },
+  {
+    "id": "NEED_PERFORMANCE_PRESERVATION",
+    "name": "PERFORMANCE_PRESERVATION",
+    "description": "Protecting an exceptionally strong, emotive, or comedic presenter delivery without cutting prematurely."
+  },
+  {
+    "id": "NEED_AESTHETIC_BREATHING",
+    "name": "AESTHETIC_BREATHING",
+    "description": "Allowing visually stunning property frames to be contemplated without rushed cutting."
+  }
+]

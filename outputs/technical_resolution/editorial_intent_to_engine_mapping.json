@@ -1,0 +1,43 @@
+{
+  "mapping_id": "MAPPING_EDITORIAL_INTENT_TO_ENGINE_V01",
+  "title": "Editorial Plan Intent to Blueprint 1.2 / Composer V3 Mapping",
+  "epistemic_status": "SYSTEM_MAPPING_SPECIFICATION",
+  "currently_binding": false,
+  "mappings": [
+    {
+      "plan_intent": "source_strategy: PRESENTER + state_decision: HOLD",
+      "blueprint_1_2_target": "visual_timeline item with kind: 'presenter_video' OR direct single-track video pass-through with audio sync",
+      "composer_v3_action": "Pass-through re-encode with caption drawtext overlay; zero B-roll insertion"
+    },
+    {
+      "plan_intent": "source_strategy: PROPERTY + media_intent: property_reveal / property_demonstration",
+      "blueprint_1_2_target": "visual_timeline item (kind: 'property_video' with source_in_ms / source_out_ms, or kind: 'property_photo' with motion: 'ken_burns')",
+      "composer_v3_action": "Render B-roll layer with presenter voice-over preserved on audio master"
+    },
+    {
+      "plan_intent": "source_strategy: CURRENT_STATE + state_decision: HOLD",
+      "blueprint_1_2_target": "Extend previous visual_timeline item end_ms across current beat boundary",
+      "composer_v3_action": "Sustain active video/photo segment seamlessly without cut or filter reload"
+    },
+    {
+      "plan_intent": "graphic_intent: LOCATION_SUPPORT",
+      "blueprint_1_2_target": "overlays item with type: 'location_tag', position: 'lower_third', text: target_string",
+      "composer_v3_action": "Compile drawtext filter with TTF font metrics and safe rectangle bounding box"
+    },
+    {
+      "plan_intent": "graphic_intent: HERO_INFORMATION (Beat 08)",
+      "blueprint_1_2_target": "overlays item (current single-string price_badge OR new multi-line structured card)",
+      "composer_v3_action": "Compile structured card overlay alongside presenter punch-in framing"
+    },
+    {
+      "plan_intent": "graphic_intent: CTA_SUPPORT (Beat 10)",
+      "blueprint_1_2_target": "overlays item with type: 'cta_banner' / 'cta_badge', position: 'bottom_safe'",
+      "composer_v3_action": "Compile closing CTA badge drawtext filter during beat time window"
+    },
+    {
+      "plan_intent": "state_decision: EVOLVE + frame cleanse (Beat 09)",
+      "blueprint_1_2_target": "End previous overlay at Beat 08 end_ms; zero overlays during Beat 09",
+      "composer_v3_action": "Clean frame render on presenter"
+    }
+  ]
+}

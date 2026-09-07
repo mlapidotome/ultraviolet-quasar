@@ -1,0 +1,2385 @@
+{
+  "task": "transcribe",
+  "language": "portuguese",
+  "duration": 122.01000213623047,
+  "text": "Se você é brasileiro e está no exterior, este vídeo é pra você, porque dá pra garantir o seu pedaço do litoral capixaba, sem banco e sem comprovação de renda, e ainda sem sair de onde você está. É isso mesmo, deixa eu te explicar. Sabe Guarapari? Sim, Guarapari, a cidade mais famosa do litoral do Espírito Santo, tá vivendo um novo ciclo de crescimento, obras de mobilidade, turismo em alta e valorização puxada pela procura. E é exatamente aí que nasce este novo empreendimento, o Atlantic Garden, um bairro novo, planejado do zero e integrado ao primeiro parque linear da região. São mais de 600 lotes a partir de 300 metros quadrados, num bairro completo com moradia, comércio e serviço. Agora, presta atenção que essa é a parte pra quem tá fora do Brasil. Você consegue comprar o seu lote direto com a loteadora, sem banco, sem financiamento, sem comprovação de renda. Pra quem ganha em dólar ou em euro e não tem renda declarada, essa é a oportunidade que o banco nunca abre e nunca vai abrir. Processo totalmente à distância, com todo o atendimento necessário pra você conhecer seu empreendimento, pra você visualizar seu lote, feito inclusive pela maior imobiliária do Espírito Santo. Ou seja, você consegue comprar o seu lote, fazer o seu investimento de forma segura diretamente do seu sofá. Quem tá fora sabe que uma hora existe a possibilidade de voltar e quem comprar o terreno agora volta pra construir na cidade já valorizada. Se você tem interesse, você quer saber mais, é simples e é fácil, aperta no botão que abaixo, realiza seu cadastro que o Jorge e toda a equipe da Grande Vitória Imobiliária vai entrar em contato com você, te passar maiores informações, fluxo, ou seja, absolutamente tudo o que você precisa pra fazer.",
+  "segments": [
+    {
+      "id": 0,
+      "seek": 0,
+      "start": 2.380000114440918,
+      "end": 9.079999923706055,
+      "text": " Se você é brasileiro e está no exterior, este vídeo é pra você, porque dá pra garantir",
+      "tokens": [
+        50364,
+        1100,
+        2723,
+        1136,
+        28435,
+        5182,
+        308,
+        3192,
+        572,
+        20677,
+        11,
+        4065,
+        8071,
+        1136,
+        3206,
+        2723,
+        11,
+        4021,
+        14401,
+        3206,
+        22251,
+        347,
+        50818
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2382047325372696,
+      "compression_ratio": 1.508547067642212,
+      "no_speech_prob": 0.9022045731544495
+    },
+    {
+      "id": 1,
+      "seek": 0,
+      "start": 9.079999923706055,
+      "end": 16.020000457763672,
+      "text": " o seu pedaço do litoral capixaba, sem banco e sem comprovação de renda, e ainda sem",
+      "tokens": [
+        50818,
+        277,
+        7986,
+        5670,
+        64,
+        8560,
+        360,
+        287,
+        3029,
+        304,
+        1410,
+        970,
+        5509,
+        11,
+        4361,
+        45498,
+        308,
+        4361,
+        715,
+        340,
+        2757,
+        2917,
+        368,
+        6125,
+        64,
+        11,
+        308,
+        11804,
+        4361,
+        51156
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2382047325372696,
+      "compression_ratio": 1.508547067642212,
+      "no_speech_prob": 0.9022045731544495
+    },
+    {
+      "id": 2,
+      "seek": 0,
+      "start": 16.020000457763672,
+      "end": 17.540000915527344,
+      "text": " sair de onde você está.",
+      "tokens": [
+        51156,
+        29157,
+        368,
+        14396,
+        2723,
+        3192,
+        13,
+        51258
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2382047325372696,
+      "compression_ratio": 1.508547067642212,
+      "no_speech_prob": 0.9022045731544495
+    },
+    {
+      "id": 3,
+      "seek": 0,
+      "start": 17.920000076293945,
+      "end": 19.280000686645508,
+      "text": " É isso mesmo, deixa eu te explicar.",
+      "tokens": [
+        51258,
+        4922,
+        4616,
+        9082,
+        11,
+        26208,
+        2228,
+        535,
+        26682,
+        13,
+        51338
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2382047325372696,
+      "compression_ratio": 1.508547067642212,
+      "no_speech_prob": 0.9022045731544495
+    },
+    {
+      "id": 4,
+      "seek": 0,
+      "start": 19.700000762939453,
+      "end": 20.200000762939453,
+      "text": " Sabe Guarapari?",
+      "tokens": [
+        51338,
+        318,
+        4488,
+        2694,
+        289,
+        569,
+        3504,
+        30,
+        51388
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2382047325372696,
+      "compression_ratio": 1.508547067642212,
+      "no_speech_prob": 0.9022045731544495
+    },
+    {
+      "id": 5,
+      "seek": 0,
+      "start": 20.479999542236328,
+      "end": 27.299999237060547,
+      "text": " Sim, Guarapari, a cidade mais famosa do litoral do Espírito Santo, tá vivendo um novo ciclo",
+      "tokens": [
+        51388,
+        3998,
+        11,
+        2694,
+        289,
+        569,
+        3504,
+        11,
+        257,
+        27882,
+        2420,
+        1087,
+        6447,
+        360,
+        287,
+        3029,
+        304,
+        360,
+        24978,
+        870,
+        17492,
+        49639,
+        11,
+        7737,
+        11005,
+        3999,
+        1105,
+        18246,
+        27464,
+        752,
+        51730
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2382047325372696,
+      "compression_ratio": 1.508547067642212,
+      "no_speech_prob": 0.9022045731544495
+    },
+    {
+      "id": 6,
+      "seek": 2730,
+      "start": 27.299999237060547,
+      "end": 34.400001525878906,
+      "text": " de crescimento, obras de mobilidade, turismo em alta e valorização puxada pela procura.",
+      "tokens": [
+        50364,
+        368,
+        20964,
+        28317,
+        11,
+        47618,
+        368,
+        15891,
+        6014,
+        11,
+        3243,
+        6882,
+        846,
+        26495,
+        308,
+        15367,
+        27467,
+        2362,
+        87,
+        1538,
+        14820,
+        9510,
+        2991,
+        13,
+        50728
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.26282694935798645,
+      "compression_ratio": 1.4814814329147339,
+      "no_speech_prob": 0.66729336977005
+    },
+    {
+      "id": 7,
+      "seek": 2730,
+      "start": 34.5,
+      "end": 41.31999969482422,
+      "text": " E é exatamente aí que nasce este novo empreendimento, o Atlantic Garden, um bairro novo, planejado",
+      "tokens": [
+        50728,
+        462,
+        1136,
+        35937,
+        7461,
+        631,
+        5382,
+        384,
+        4065,
+        18246,
+        43223,
+        521,
+        10030,
+        11,
+        277,
+        20233,
+        19429,
+        11,
+        1105,
+        272,
+        1246,
+        340,
+        18246,
+        11,
+        5720,
+        73,
+        1573,
+        51065
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.26282694935798645,
+      "compression_ratio": 1.4814814329147339,
+      "no_speech_prob": 0.66729336977005
+    },
+    {
+      "id": 8,
+      "seek": 2730,
+      "start": 41.31999969482422,
+      "end": 45.81999969482422,
+      "text": " do zero e integrado ao primeiro parque linear da região.",
+      "tokens": [
+        51065,
+        360,
+        4018,
+        308,
+        3572,
+        1573,
+        8130,
+        18314,
+        971,
+        1077,
+        8213,
+        1120,
+        45697,
+        13,
+        51301
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.26282694935798645,
+      "compression_ratio": 1.4814814329147339,
+      "no_speech_prob": 0.66729336977005
+    },
+    {
+      "id": 9,
+      "seek": 2730,
+      "start": 46.2400016784668,
+      "end": 53.08000183105469,
+      "text": " São mais de 600 lotes a partir de 300 metros quadrados, num bairro completo com moradia,",
+      "tokens": [
+        51301,
+        22401,
+        2420,
+        368,
+        11849,
+        688,
+        279,
+        257,
+        13906,
+        368,
+        6641,
+        34761,
+        10787,
+        40491,
+        11,
+        1031,
+        272,
+        1246,
+        340,
+        40135,
+        395,
+        1896,
+        42343,
+        11,
+        51666
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.26282694935798645,
+      "compression_ratio": 1.4814814329147339,
+      "no_speech_prob": 0.66729336977005
+    },
+    {
+      "id": 10,
+      "seek": 2730,
+      "start": 53.939998626708984,
+      "end": 55.18000030517578,
+      "text": " comércio e serviço.",
+      "tokens": [
+        51666,
+        395,
+        4198,
+        8529,
+        308,
+        37076,
+        8560,
+        13,
+        51774
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.26282694935798645,
+      "compression_ratio": 1.4814814329147339,
+      "no_speech_prob": 0.66729336977005
+    },
+    {
+      "id": 11,
+      "seek": 5518,
+      "start": 55.18000030517578,
+      "end": 59.400001525878906,
+      "text": " Agora, presta atenção que essa é a parte pra quem tá fora do Brasil.",
+      "tokens": [
+        50364,
+        16023,
+        11,
+        659,
+        9140,
+        39044,
+        631,
+        7208,
+        1136,
+        257,
+        6975,
+        3206,
+        13026,
+        7737,
+        24530,
+        360,
+        14861,
+        13,
+        50602
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2541525363922119,
+      "compression_ratio": 1.6370967626571655,
+      "no_speech_prob": 0.35496610403060913
+    },
+    {
+      "id": 12,
+      "seek": 5518,
+      "start": 60,
+      "end": 67.22000122070312,
+      "text": " Você consegue comprar o seu lote direto com a loteadora, sem banco, sem financiamento,",
+      "tokens": [
+        50602,
+        9781,
+        27179,
+        22077,
+        277,
+        7986,
+        688,
+        68,
+        1264,
+        1353,
+        395,
+        257,
+        688,
+        2056,
+        3252,
+        11,
+        4361,
+        45498,
+        11,
+        4361,
+        24323,
+        8824,
+        11,
+        50978
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2541525363922119,
+      "compression_ratio": 1.6370967626571655,
+      "no_speech_prob": 0.35496610403060913
+    },
+    {
+      "id": 13,
+      "seek": 5518,
+      "start": 68.12000274658203,
+      "end": 69.69999694824219,
+      "text": " sem comprovação de renda.",
+      "tokens": [
+        50978,
+        4361,
+        715,
+        340,
+        2757,
+        2917,
+        368,
+        6125,
+        64,
+        13,
+        51110
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2541525363922119,
+      "compression_ratio": 1.6370967626571655,
+      "no_speech_prob": 0.35496610403060913
+    },
+    {
+      "id": 14,
+      "seek": 5518,
+      "start": 70.04000091552734,
+      "end": 75.30000305175781,
+      "text": " Pra quem ganha em dólar ou em euro e não tem renda declarada, essa é a oportunidade",
+      "tokens": [
+        51110,
+        12133,
+        13026,
+        7574,
+        1641,
+        846,
+        18816,
+        2200,
+        2820,
+        846,
+        14206,
+        308,
+        2431,
+        1383,
+        6125,
+        64,
+        16694,
+        1538,
+        11,
+        7208,
+        1136,
+        257,
+        24237,
+        6014,
+        51372
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2541525363922119,
+      "compression_ratio": 1.6370967626571655,
+      "no_speech_prob": 0.35496610403060913
+    },
+    {
+      "id": 15,
+      "seek": 5518,
+      "start": 75.30000305175781,
+      "end": 78.04000091552734,
+      "text": " que o banco nunca abre e nunca vai abrir.",
+      "tokens": [
+        51372,
+        631,
+        277,
+        45498,
+        13768,
+        41594,
+        308,
+        13768,
+        4405,
+        27446,
+        13,
+        51520
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2541525363922119,
+      "compression_ratio": 1.6370967626571655,
+      "no_speech_prob": 0.35496610403060913
+    },
+    {
+      "id": 16,
+      "seek": 5518,
+      "start": 78.58000183105469,
+      "end": 84.16000366210938,
+      "text": " Processo totalmente à distância, com todo o atendimento necessário pra você conhecer",
+      "tokens": [
+        51520,
+        31093,
+        78,
+        30865,
+        1531,
+        1483,
+        25677,
+        11,
+        395,
+        5149,
+        277,
+        412,
+        521,
+        10030,
+        2688,
+        12657,
+        3206,
+        2723,
+        46235,
+        51818
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2541525363922119,
+      "compression_ratio": 1.6370967626571655,
+      "no_speech_prob": 0.35496610403060913
+    },
+    {
+      "id": 17,
+      "seek": 8416,
+      "start": 84.16000366210938,
+      "end": 88.91999816894531,
+      "text": " seu empreendimento, pra você visualizar seu lote, feito inclusive pela maior imobiliária",
+      "tokens": [
+        50364,
+        7986,
+        43223,
+        521,
+        10030,
+        11,
+        3206,
+        2723,
+        5056,
+        9736,
+        7986,
+        688,
+        68,
+        11,
+        31243,
+        13429,
+        14820,
+        15859,
+        566,
+        996,
+        2312,
+        31861,
+        50612
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.24713920056819916,
+      "compression_ratio": 1.619217038154602,
+      "no_speech_prob": 0.8400678038597107
+    },
+    {
+      "id": 18,
+      "seek": 8416,
+      "start": 88.91999816894531,
+      "end": 90.5199966430664,
+      "text": " do Espírito Santo.",
+      "tokens": [
+        50612,
+        360,
+        24978,
+        870,
+        17492,
+        49639,
+        13,
+        50686
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.24713920056819916,
+      "compression_ratio": 1.619217038154602,
+      "no_speech_prob": 0.8400678038597107
+    },
+    {
+      "id": 19,
+      "seek": 8416,
+      "start": 90.80000305175781,
+      "end": 96.04000091552734,
+      "text": " Ou seja, você consegue comprar o seu lote, fazer o seu investimento de forma segura diretamente",
+      "tokens": [
+        50686,
+        11710,
+        13459,
+        11,
+        2723,
+        27179,
+        22077,
+        277,
+        7986,
+        688,
+        68,
+        11,
+        6736,
+        277,
+        7986,
+        1963,
+        10030,
+        368,
+        8366,
+        3896,
+        2991,
+        48196,
+        3439,
+        50974
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.24713920056819916,
+      "compression_ratio": 1.619217038154602,
+      "no_speech_prob": 0.8400678038597107
+    },
+    {
+      "id": 20,
+      "seek": 8416,
+      "start": 96.04000091552734,
+      "end": 97.05999755859375,
+      "text": " do seu sofá.",
+      "tokens": [
+        50974,
+        360,
+        7986,
+        37259,
+        842,
+        13,
+        51024
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.24713920056819916,
+      "compression_ratio": 1.619217038154602,
+      "no_speech_prob": 0.8400678038597107
+    },
+    {
+      "id": 21,
+      "seek": 8416,
+      "start": 97.27999877929688,
+      "end": 103.76000213623047,
+      "text": " Quem tá fora sabe que uma hora existe a possibilidade de voltar e quem comprar o terreno agora volta",
+      "tokens": [
+        51024,
+        32342,
+        7737,
+        24530,
+        12275,
+        631,
+        2772,
+        15098,
+        16304,
+        257,
+        24145,
+        6014,
+        368,
+        36291,
+        308,
+        13026,
+        22077,
+        277,
+        1796,
+        48207,
+        9851,
+        18765,
+        51350
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.24713920056819916,
+      "compression_ratio": 1.619217038154602,
+      "no_speech_prob": 0.8400678038597107
+    },
+    {
+      "id": 22,
+      "seek": 8416,
+      "start": 103.76000213623047,
+      "end": 106.77999877929688,
+      "text": " pra construir na cidade já valorizada.",
+      "tokens": [
+        51350,
+        3206,
+        38445,
+        1667,
+        27882,
+        6242,
+        15367,
+        39600,
+        13,
+        51504
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.24713920056819916,
+      "compression_ratio": 1.619217038154602,
+      "no_speech_prob": 0.8400678038597107
+    },
+    {
+      "id": 23,
+      "seek": 8416,
+      "start": 107.05999755859375,
+      "end": 111.4800033569336,
+      "text": " Se você tem interesse, você quer saber mais, é simples e é fácil, aperta no botão que",
+      "tokens": [
+        51504,
+        1100,
+        2723,
+        1383,
+        728,
+        7357,
+        11,
+        2723,
+        7083,
+        12489,
+        2420,
+        11,
+        1136,
+        21730,
+        308,
+        1136,
+        17474,
+        11,
+        43139,
+        1328,
+        572,
+        10592,
+        1076,
+        631,
+        51730
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.24713920056819916,
+      "compression_ratio": 1.619217038154602,
+      "no_speech_prob": 0.8400678038597107
+    },
+    {
+      "id": 24,
+      "seek": 11172,
+      "start": 111.72000122070312,
+      "end": 115.44000244140625,
+      "text": " abaixo, realiza seu cadastro que o Jorge e toda a equipe da Grande Vitória Imobiliária",
+      "tokens": [
+        50364,
+        46981,
+        15617,
+        11,
+        957,
+        13427,
+        7986,
+        12209,
+        525,
+        340,
+        631,
+        277,
+        36875,
+        308,
+        11687,
+        257,
+        1267,
+        6527,
+        1120,
+        28384,
+        22463,
+        15250,
+        4331,
+        996,
+        2312,
+        31861,
+        50548
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.3164305090904236,
+      "compression_ratio": 1.3095238208770752,
+      "no_speech_prob": 0.9715881943702698
+    },
+    {
+      "id": 25,
+      "seek": 11172,
+      "start": 115.44000244140625,
+      "end": 120.55999755859375,
+      "text": " vai entrar em contato com você, te passar maiores informações, fluxo, ou seja, absolutamente",
+      "tokens": [
+        50548,
+        4405,
+        20913,
+        846,
+        660,
+        2513,
+        395,
+        2723,
+        11,
+        535,
+        20630,
+        12698,
+        2706,
+        42542,
+        11,
+        19298,
+        78,
+        11,
+        2820,
+        13459,
+        11,
+        49285,
+        50810
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.3164305090904236,
+      "compression_ratio": 1.3095238208770752,
+      "no_speech_prob": 0.9715881943702698
+    },
+    {
+      "id": 26,
+      "seek": 11172,
+      "start": 120.55999755859375,
+      "end": 121.9800033569336,
+      "text": " tudo o que você precisa pra fazer.",
+      "tokens": [
+        50810,
+        9379,
+        277,
+        631,
+        2723,
+        18861,
+        3206,
+        6736,
+        13,
+        50878
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.3164305090904236,
+      "compression_ratio": 1.3095238208770752,
+      "no_speech_prob": 0.9715881943702698
+    }
+  ],
+  "words": [
+    {
+      "word": "Se",
+      "start": 2.380000114440918,
+      "end": 3.0999999046325684
+    },
+    {
+      "word": "você",
+      "start": 3.0999999046325684,
+      "end": 3.5999999046325684
+    },
+    {
+      "word": "é",
+      "start": 3.5999999046325684,
+      "end": 3.9600000381469727
+    },
+    {
+      "word": "brasileiro",
+      "start": 3.9600000381469727,
+      "end": 4.659999847412109
+    },
+    {
+      "word": "e",
+      "start": 4.659999847412109,
+      "end": 5.179999828338623
+    },
+    {
+      "word": "está",
+      "start": 5.179999828338623,
+      "end": 5.360000133514404
+    },
+    {
+      "word": "no",
+      "start": 5.360000133514404,
+      "end": 5.639999866485596
+    },
+    {
+      "word": "exterior",
+      "start": 5.639999866485596,
+      "end": 6.079999923706055
+    },
+    {
+      "word": "este",
+      "start": 6.599999904632568,
+      "end": 6.820000171661377
+    },
+    {
+      "word": "vídeo",
+      "start": 6.820000171661377,
+      "end": 7.079999923706055
+    },
+    {
+      "word": "é",
+      "start": 7.079999923706055,
+      "end": 7.300000190734863
+    },
+    {
+      "word": "pra",
+      "start": 7.300000190734863,
+      "end": 7.5
+    },
+    {
+      "word": "você",
+      "start": 7.5,
+      "end": 8
+    },
+    {
+      "word": "porque",
+      "start": 8.220000267028809,
+      "end": 8.420000076293945
+    },
+    {
+      "word": "dá",
+      "start": 8.420000076293945,
+      "end": 8.539999961853027
+    },
+    {
+      "word": "pra",
+      "start": 8.539999961853027,
+      "end": 8.739999771118164
+    },
+    {
+      "word": "garantir",
+      "start": 8.739999771118164,
+      "end": 9.079999923706055
+    },
+    {
+      "word": "o",
+      "start": 9.079999923706055,
+      "end": 9.239999771118164
+    },
+    {
+      "word": "seu",
+      "start": 9.239999771118164,
+      "end": 9.399999618530273
+    },
+    {
+      "word": "pedaço",
+      "start": 9.399999618530273,
+      "end": 9.65999984741211
+    },
+    {
+      "word": "do",
+      "start": 9.65999984741211,
+      "end": 10.140000343322754
+    },
+    {
+      "word": "litoral",
+      "start": 10.140000343322754,
+      "end": 10.279999732971191
+    },
+    {
+      "word": "capixaba",
+      "start": 10.279999732971191,
+      "end": 11.4399995803833
+    },
+    {
+      "word": "sem",
+      "start": 12.119999885559082,
+      "end": 12.260000228881836
+    },
+    {
+      "word": "banco",
+      "start": 12.260000228881836,
+      "end": 12.640000343322754
+    },
+    {
+      "word": "e",
+      "start": 12.640000343322754,
+      "end": 13.199999809265137
+    },
+    {
+      "word": "sem",
+      "start": 13.199999809265137,
+      "end": 13.4399995803833
+    },
+    {
+      "word": "comprovação",
+      "start": 13.4399995803833,
+      "end": 14.079999923706055
+    },
+    {
+      "word": "de",
+      "start": 14.079999923706055,
+      "end": 14.680000305175781
+    },
+    {
+      "word": "renda",
+      "start": 14.680000305175781,
+      "end": 14.699999809265137
+    },
+    {
+      "word": "e",
+      "start": 14.800000190734863,
+      "end": 14.960000038146973
+    },
+    {
+      "word": "ainda",
+      "start": 14.960000038146973,
+      "end": 15.380000114440918
+    },
+    {
+      "word": "sem",
+      "start": 15.380000114440918,
+      "end": 16.020000457763672
+    },
+    {
+      "word": "sair",
+      "start": 16.020000457763672,
+      "end": 16.3799991607666
+    },
+    {
+      "word": "de",
+      "start": 16.3799991607666,
+      "end": 16.81999969482422
+    },
+    {
+      "word": "onde",
+      "start": 16.81999969482422,
+      "end": 16.81999969482422
+    },
+    {
+      "word": "você",
+      "start": 16.81999969482422,
+      "end": 17.440000534057617
+    },
+    {
+      "word": "está",
+      "start": 17.440000534057617,
+      "end": 17.540000915527344
+    },
+    {
+      "word": "É",
+      "start": 17.920000076293945,
+      "end": 18.100000381469727
+    },
+    {
+      "word": "isso",
+      "start": 18.100000381469727,
+      "end": 18.280000686645508
+    },
+    {
+      "word": "mesmo",
+      "start": 18.280000686645508,
+      "end": 18.479999542236328
+    },
+    {
+      "word": "deixa",
+      "start": 18.6200008392334,
+      "end": 18.65999984741211
+    },
+    {
+      "word": "eu",
+      "start": 18.65999984741211,
+      "end": 18.760000228881836
+    },
+    {
+      "word": "te",
+      "start": 18.760000228881836,
+      "end": 19.280000686645508
+    },
+    {
+      "word": "explicar",
+      "start": 19.280000686645508,
+      "end": 19.280000686645508
+    },
+    {
+      "word": "Sabe",
+      "start": 19.700000762939453,
+      "end": 19.700000762939453
+    },
+    {
+      "word": "Guarapari",
+      "start": 19.700000762939453,
+      "end": 20.200000762939453
+    },
+    {
+      "word": "Sim",
+      "start": 20.479999542236328,
+      "end": 20.739999771118164
+    },
+    {
+      "word": "Guarapari",
+      "start": 20.799999237060547,
+      "end": 21.299999237060547
+    },
+    {
+      "word": "a",
+      "start": 21.739999771118164,
+      "end": 22.360000610351562
+    },
+    {
+      "word": "cidade",
+      "start": 22.360000610351562,
+      "end": 22.399999618530273
+    },
+    {
+      "word": "mais",
+      "start": 22.399999618530273,
+      "end": 23.079999923706055
+    },
+    {
+      "word": "famosa",
+      "start": 23.079999923706055,
+      "end": 23.360000610351562
+    },
+    {
+      "word": "do",
+      "start": 23.360000610351562,
+      "end": 23.739999771118164
+    },
+    {
+      "word": "litoral",
+      "start": 23.739999771118164,
+      "end": 24.100000381469727
+    },
+    {
+      "word": "do",
+      "start": 24.100000381469727,
+      "end": 24.559999465942383
+    },
+    {
+      "word": "Espírito",
+      "start": 24.559999465942383,
+      "end": 24.68000030517578
+    },
+    {
+      "word": "Santo",
+      "start": 24.68000030517578,
+      "end": 25.059999465942383
+    },
+    {
+      "word": "tá",
+      "start": 25.600000381469727,
+      "end": 25.799999237060547
+    },
+    {
+      "word": "vivendo",
+      "start": 25.799999237060547,
+      "end": 26.219999313354492
+    },
+    {
+      "word": "um",
+      "start": 26.219999313354492,
+      "end": 26.65999984741211
+    },
+    {
+      "word": "novo",
+      "start": 26.65999984741211,
+      "end": 27.200000762939453
+    },
+    {
+      "word": "ciclo",
+      "start": 27.200000762939453,
+      "end": 27.299999237060547
+    },
+    {
+      "word": "de",
+      "start": 27.299999237060547,
+      "end": 27.520000457763672
+    },
+    {
+      "word": "crescimento",
+      "start": 27.520000457763672,
+      "end": 28.18000030517578
+    },
+    {
+      "word": "obras",
+      "start": 28.860000610351562,
+      "end": 28.860000610351562
+    },
+    {
+      "word": "de",
+      "start": 28.860000610351562,
+      "end": 29.399999618530273
+    },
+    {
+      "word": "mobilidade",
+      "start": 29.399999618530273,
+      "end": 29.68000030517578
+    },
+    {
+      "word": "turismo",
+      "start": 30.639999389648438,
+      "end": 30.719999313354492
+    },
+    {
+      "word": "em",
+      "start": 30.719999313354492,
+      "end": 31.479999542236328
+    },
+    {
+      "word": "alta",
+      "start": 31.479999542236328,
+      "end": 31.479999542236328
+    },
+    {
+      "word": "e",
+      "start": 31.479999542236328,
+      "end": 32.15999984741211
+    },
+    {
+      "word": "valorização",
+      "start": 32.15999984741211,
+      "end": 32.900001525878906
+    },
+    {
+      "word": "puxada",
+      "start": 32.900001525878906,
+      "end": 33.47999954223633
+    },
+    {
+      "word": "pela",
+      "start": 33.47999954223633,
+      "end": 33.79999923706055
+    },
+    {
+      "word": "procura",
+      "start": 33.79999923706055,
+      "end": 34.400001525878906
+    },
+    {
+      "word": "E",
+      "start": 34.5,
+      "end": 34.560001373291016
+    },
+    {
+      "word": "é",
+      "start": 34.560001373291016,
+      "end": 34.81999969482422
+    },
+    {
+      "word": "exatamente",
+      "start": 34.81999969482422,
+      "end": 35.599998474121094
+    },
+    {
+      "word": "aí",
+      "start": 35.599998474121094,
+      "end": 36.02000045776367
+    },
+    {
+      "word": "que",
+      "start": 36.02000045776367,
+      "end": 36.81999969482422
+    },
+    {
+      "word": "nasce",
+      "start": 36.81999969482422,
+      "end": 36.86000061035156
+    },
+    {
+      "word": "este",
+      "start": 36.86000061035156,
+      "end": 37.15999984741211
+    },
+    {
+      "word": "novo",
+      "start": 37.15999984741211,
+      "end": 37.439998626708984
+    },
+    {
+      "word": "empreendimento",
+      "start": 37.439998626708984,
+      "end": 37.97999954223633
+    },
+    {
+      "word": "o",
+      "start": 38.060001373291016,
+      "end": 38.279998779296875
+    },
+    {
+      "word": "Atlantic",
+      "start": 38.279998779296875,
+      "end": 38.560001373291016
+    },
+    {
+      "word": "Garden",
+      "start": 38.560001373291016,
+      "end": 39.02000045776367
+    },
+    {
+      "word": "um",
+      "start": 39.400001525878906,
+      "end": 39.720001220703125
+    },
+    {
+      "word": "bairro",
+      "start": 39.720001220703125,
+      "end": 39.720001220703125
+    },
+    {
+      "word": "novo",
+      "start": 39.720001220703125,
+      "end": 40.279998779296875
+    },
+    {
+      "word": "planejado",
+      "start": 40.58000183105469,
+      "end": 41.31999969482422
+    },
+    {
+      "word": "do",
+      "start": 41.31999969482422,
+      "end": 41.86000061035156
+    },
+    {
+      "word": "zero",
+      "start": 41.86000061035156,
+      "end": 41.86000061035156
+    },
+    {
+      "word": "e",
+      "start": 41.86000061035156,
+      "end": 42.7599983215332
+    },
+    {
+      "word": "integrado",
+      "start": 42.7599983215332,
+      "end": 43.31999969482422
+    },
+    {
+      "word": "ao",
+      "start": 43.31999969482422,
+      "end": 43.63999938964844
+    },
+    {
+      "word": "primeiro",
+      "start": 43.63999938964844,
+      "end": 44.099998474121094
+    },
+    {
+      "word": "parque",
+      "start": 44.099998474121094,
+      "end": 44.41999816894531
+    },
+    {
+      "word": "linear",
+      "start": 44.41999816894531,
+      "end": 44.959999084472656
+    },
+    {
+      "word": "da",
+      "start": 44.959999084472656,
+      "end": 45.81999969482422
+    },
+    {
+      "word": "região",
+      "start": 45.81999969482422,
+      "end": 45.81999969482422
+    },
+    {
+      "word": "São",
+      "start": 46.2400016784668,
+      "end": 46.279998779296875
+    },
+    {
+      "word": "mais",
+      "start": 46.279998779296875,
+      "end": 46.5
+    },
+    {
+      "word": "de",
+      "start": 46.5,
+      "end": 46.65999984741211
+    },
+    {
+      "word": "600",
+      "start": 46.65999984741211,
+      "end": 47.08000183105469
+    },
+    {
+      "word": "lotes",
+      "start": 47.08000183105469,
+      "end": 47.439998626708984
+    },
+    {
+      "word": "a",
+      "start": 47.439998626708984,
+      "end": 47.81999969482422
+    },
+    {
+      "word": "partir",
+      "start": 47.81999969482422,
+      "end": 47.81999969482422
+    },
+    {
+      "word": "de",
+      "start": 47.81999969482422,
+      "end": 49.18000030517578
+    },
+    {
+      "word": "300",
+      "start": 49.18000030517578,
+      "end": 49.220001220703125
+    },
+    {
+      "word": "metros",
+      "start": 49.220001220703125,
+      "end": 49.880001068115234
+    },
+    {
+      "word": "quadrados",
+      "start": 49.880001068115234,
+      "end": 50.5
+    },
+    {
+      "word": "num",
+      "start": 50.70000076293945,
+      "end": 51.34000015258789
+    },
+    {
+      "word": "bairro",
+      "start": 51.34000015258789,
+      "end": 51.34000015258789
+    },
+    {
+      "word": "completo",
+      "start": 51.34000015258789,
+      "end": 52.15999984741211
+    },
+    {
+      "word": "com",
+      "start": 52.15999984741211,
+      "end": 52.560001373291016
+    },
+    {
+      "word": "moradia",
+      "start": 52.560001373291016,
+      "end": 53.08000183105469
+    },
+    {
+      "word": "comércio",
+      "start": 53.939998626708984,
+      "end": 53.939998626708984
+    },
+    {
+      "word": "e",
+      "start": 53.939998626708984,
+      "end": 54.720001220703125
+    },
+    {
+      "word": "serviço",
+      "start": 54.720001220703125,
+      "end": 55.18000030517578
+    },
+    {
+      "word": "Agora",
+      "start": 55.18000030517578,
+      "end": 55.52000045776367
+    },
+    {
+      "word": "presta",
+      "start": 55.779998779296875,
+      "end": 55.86000061035156
+    },
+    {
+      "word": "atenção",
+      "start": 55.86000061035156,
+      "end": 56.29999923706055
+    },
+    {
+      "word": "que",
+      "start": 56.29999923706055,
+      "end": 56.880001068115234
+    },
+    {
+      "word": "essa",
+      "start": 56.880001068115234,
+      "end": 57.220001220703125
+    },
+    {
+      "word": "é",
+      "start": 57.220001220703125,
+      "end": 57.47999954223633
+    },
+    {
+      "word": "a",
+      "start": 57.47999954223633,
+      "end": 57.880001068115234
+    },
+    {
+      "word": "parte",
+      "start": 57.880001068115234,
+      "end": 57.900001525878906
+    },
+    {
+      "word": "pra",
+      "start": 57.900001525878906,
+      "end": 58.20000076293945
+    },
+    {
+      "word": "quem",
+      "start": 58.20000076293945,
+      "end": 58.41999816894531
+    },
+    {
+      "word": "tá",
+      "start": 58.41999816894531,
+      "end": 58.63999938964844
+    },
+    {
+      "word": "fora",
+      "start": 58.63999938964844,
+      "end": 58.84000015258789
+    },
+    {
+      "word": "do",
+      "start": 58.84000015258789,
+      "end": 59.400001525878906
+    },
+    {
+      "word": "Brasil",
+      "start": 59.400001525878906,
+      "end": 59.400001525878906
+    },
+    {
+      "word": "Você",
+      "start": 60,
+      "end": 60
+    },
+    {
+      "word": "consegue",
+      "start": 60,
+      "end": 60.400001525878906
+    },
+    {
+      "word": "comprar",
+      "start": 60.400001525878906,
+      "end": 60.7599983215332
+    },
+    {
+      "word": "o",
+      "start": 60.7599983215332,
+      "end": 61.400001525878906
+    },
+    {
+      "word": "seu",
+      "start": 61.400001525878906,
+      "end": 61.91999816894531
+    },
+    {
+      "word": "lote",
+      "start": 61.91999816894531,
+      "end": 62.439998626708984
+    },
+    {
+      "word": "direto",
+      "start": 62.439998626708984,
+      "end": 63
+    },
+    {
+      "word": "com",
+      "start": 63,
+      "end": 63.400001525878906
+    },
+    {
+      "word": "a",
+      "start": 63.400001525878906,
+      "end": 63.70000076293945
+    },
+    {
+      "word": "loteadora",
+      "start": 63.70000076293945,
+      "end": 64.19999694824219
+    },
+    {
+      "word": "sem",
+      "start": 64.77999877929688,
+      "end": 64.9000015258789
+    },
+    {
+      "word": "banco",
+      "start": 64.9000015258789,
+      "end": 65.23999786376953
+    },
+    {
+      "word": "sem",
+      "start": 65.86000061035156,
+      "end": 66.31999969482422
+    },
+    {
+      "word": "financiamento",
+      "start": 66.31999969482422,
+      "end": 67.22000122070312
+    },
+    {
+      "word": "sem",
+      "start": 68.12000274658203,
+      "end": 68.12000274658203
+    },
+    {
+      "word": "comprovação",
+      "start": 68.12000274658203,
+      "end": 69.0999984741211
+    },
+    {
+      "word": "de",
+      "start": 69.0999984741211,
+      "end": 69.66000366210938
+    },
+    {
+      "word": "renda",
+      "start": 69.66000366210938,
+      "end": 69.69999694824219
+    },
+    {
+      "word": "Pra",
+      "start": 70.04000091552734,
+      "end": 70.12000274658203
+    },
+    {
+      "word": "quem",
+      "start": 70.12000274658203,
+      "end": 70.44000244140625
+    },
+    {
+      "word": "ganha",
+      "start": 70.44000244140625,
+      "end": 70.77999877929688
+    },
+    {
+      "word": "em",
+      "start": 70.77999877929688,
+      "end": 71.19999694824219
+    },
+    {
+      "word": "dólar",
+      "start": 71.19999694824219,
+      "end": 71.54000091552734
+    },
+    {
+      "word": "ou",
+      "start": 71.54000091552734,
+      "end": 71.95999908447266
+    },
+    {
+      "word": "em",
+      "start": 71.95999908447266,
+      "end": 72.30000305175781
+    },
+    {
+      "word": "euro",
+      "start": 72.30000305175781,
+      "end": 72.30000305175781
+    },
+    {
+      "word": "e",
+      "start": 72.30000305175781,
+      "end": 72.5
+    },
+    {
+      "word": "não",
+      "start": 72.5,
+      "end": 72.63999938964844
+    },
+    {
+      "word": "tem",
+      "start": 72.63999938964844,
+      "end": 72.9000015258789
+    },
+    {
+      "word": "renda",
+      "start": 72.9000015258789,
+      "end": 73.08000183105469
+    },
+    {
+      "word": "declarada",
+      "start": 73.08000183105469,
+      "end": 73.68000030517578
+    },
+    {
+      "word": "essa",
+      "start": 73.91999816894531,
+      "end": 74.08000183105469
+    },
+    {
+      "word": "é",
+      "start": 74.08000183105469,
+      "end": 74.36000061035156
+    },
+    {
+      "word": "a",
+      "start": 74.36000061035156,
+      "end": 74.94000244140625
+    },
+    {
+      "word": "oportunidade",
+      "start": 74.94000244140625,
+      "end": 75.30000305175781
+    },
+    {
+      "word": "que",
+      "start": 75.30000305175781,
+      "end": 75.45999908447266
+    },
+    {
+      "word": "o",
+      "start": 75.45999908447266,
+      "end": 75.77999877929688
+    },
+    {
+      "word": "banco",
+      "start": 75.77999877929688,
+      "end": 75.77999877929688
+    },
+    {
+      "word": "nunca",
+      "start": 75.77999877929688,
+      "end": 76.31999969482422
+    },
+    {
+      "word": "abre",
+      "start": 76.31999969482422,
+      "end": 77
+    },
+    {
+      "word": "e",
+      "start": 77,
+      "end": 77.36000061035156
+    },
+    {
+      "word": "nunca",
+      "start": 77.36000061035156,
+      "end": 77.5199966430664
+    },
+    {
+      "word": "vai",
+      "start": 77.5199966430664,
+      "end": 77.86000061035156
+    },
+    {
+      "word": "abrir",
+      "start": 77.86000061035156,
+      "end": 78.04000091552734
+    },
+    {
+      "word": "Processo",
+      "start": 78.58000183105469,
+      "end": 78.9800033569336
+    },
+    {
+      "word": "totalmente",
+      "start": 78.9800033569336,
+      "end": 79.68000030517578
+    },
+    {
+      "word": "à",
+      "start": 79.68000030517578,
+      "end": 80.54000091552734
+    },
+    {
+      "word": "distância",
+      "start": 80.54000091552734,
+      "end": 80.54000091552734
+    },
+    {
+      "word": "com",
+      "start": 80.83999633789062,
+      "end": 81.16000366210938
+    },
+    {
+      "word": "todo",
+      "start": 81.16000366210938,
+      "end": 81.45999908447266
+    },
+    {
+      "word": "o",
+      "start": 81.45999908447266,
+      "end": 81.83999633789062
+    },
+    {
+      "word": "atendimento",
+      "start": 81.83999633789062,
+      "end": 82.13999938964844
+    },
+    {
+      "word": "necessário",
+      "start": 82.13999938964844,
+      "end": 83.0199966430664
+    },
+    {
+      "word": "pra",
+      "start": 83.0199966430664,
+      "end": 83.55999755859375
+    },
+    {
+      "word": "você",
+      "start": 83.55999755859375,
+      "end": 83.91999816894531
+    },
+    {
+      "word": "conhecer",
+      "start": 83.91999816894531,
+      "end": 84.16000366210938
+    },
+    {
+      "word": "seu",
+      "start": 84.16000366210938,
+      "end": 84.33999633789062
+    },
+    {
+      "word": "empreendimento",
+      "start": 84.33999633789062,
+      "end": 85.0199966430664
+    },
+    {
+      "word": "pra",
+      "start": 85.18000030517578,
+      "end": 85.18000030517578
+    },
+    {
+      "word": "você",
+      "start": 85.18000030517578,
+      "end": 85.5
+    },
+    {
+      "word": "visualizar",
+      "start": 85.5,
+      "end": 85.91999816894531
+    },
+    {
+      "word": "seu",
+      "start": 85.91999816894531,
+      "end": 86.36000061035156
+    },
+    {
+      "word": "lote",
+      "start": 86.36000061035156,
+      "end": 86.66000366210938
+    },
+    {
+      "word": "feito",
+      "start": 86.68000030517578,
+      "end": 87.05999755859375
+    },
+    {
+      "word": "inclusive",
+      "start": 87.05999755859375,
+      "end": 87.95999908447266
+    },
+    {
+      "word": "pela",
+      "start": 87.95999908447266,
+      "end": 88.0999984741211
+    },
+    {
+      "word": "maior",
+      "start": 88.0999984741211,
+      "end": 88.37999725341797
+    },
+    {
+      "word": "imobiliária",
+      "start": 88.37999725341797,
+      "end": 88.91999816894531
+    },
+    {
+      "word": "do",
+      "start": 88.91999816894531,
+      "end": 89.5999984741211
+    },
+    {
+      "word": "Espírito",
+      "start": 89.5999984741211,
+      "end": 90.0999984741211
+    },
+    {
+      "word": "Santo",
+      "start": 90.0999984741211,
+      "end": 90.5199966430664
+    },
+    {
+      "word": "Ou",
+      "start": 90.80000305175781,
+      "end": 91.0199966430664
+    },
+    {
+      "word": "seja",
+      "start": 91.0199966430664,
+      "end": 91.04000091552734
+    },
+    {
+      "word": "você",
+      "start": 91.36000061035156,
+      "end": 91.45999908447266
+    },
+    {
+      "word": "consegue",
+      "start": 91.45999908447266,
+      "end": 91.80000305175781
+    },
+    {
+      "word": "comprar",
+      "start": 91.80000305175781,
+      "end": 92.23999786376953
+    },
+    {
+      "word": "o",
+      "start": 92.23999786376953,
+      "end": 92.80000305175781
+    },
+    {
+      "word": "seu",
+      "start": 92.80000305175781,
+      "end": 93.16000366210938
+    },
+    {
+      "word": "lote",
+      "start": 93.16000366210938,
+      "end": 93.19999694824219
+    },
+    {
+      "word": "fazer",
+      "start": 93.5,
+      "end": 93.5
+    },
+    {
+      "word": "o",
+      "start": 93.5,
+      "end": 93.68000030517578
+    },
+    {
+      "word": "seu",
+      "start": 93.68000030517578,
+      "end": 94.12000274658203
+    },
+    {
+      "word": "investimento",
+      "start": 94.12000274658203,
+      "end": 94.23999786376953
+    },
+    {
+      "word": "de",
+      "start": 94.23999786376953,
+      "end": 94.5999984741211
+    },
+    {
+      "word": "forma",
+      "start": 94.5999984741211,
+      "end": 94.66000366210938
+    },
+    {
+      "word": "segura",
+      "start": 94.66000366210938,
+      "end": 95.22000122070312
+    },
+    {
+      "word": "diretamente",
+      "start": 95.22000122070312,
+      "end": 96.04000091552734
+    },
+    {
+      "word": "do",
+      "start": 96.04000091552734,
+      "end": 96.55999755859375
+    },
+    {
+      "word": "seu",
+      "start": 96.55999755859375,
+      "end": 96.86000061035156
+    },
+    {
+      "word": "sofá",
+      "start": 96.86000061035156,
+      "end": 97.05999755859375
+    },
+    {
+      "word": "Quem",
+      "start": 97.27999877929688,
+      "end": 97.27999877929688
+    },
+    {
+      "word": "tá",
+      "start": 97.27999877929688,
+      "end": 97.5
+    },
+    {
+      "word": "fora",
+      "start": 97.5,
+      "end": 97.77999877929688
+    },
+    {
+      "word": "sabe",
+      "start": 97.77999877929688,
+      "end": 98.16000366210938
+    },
+    {
+      "word": "que",
+      "start": 98.16000366210938,
+      "end": 98.41999816894531
+    },
+    {
+      "word": "uma",
+      "start": 98.41999816894531,
+      "end": 98.91999816894531
+    },
+    {
+      "word": "hora",
+      "start": 98.91999816894531,
+      "end": 99.33999633789062
+    },
+    {
+      "word": "existe",
+      "start": 99.33999633789062,
+      "end": 99.9800033569336
+    },
+    {
+      "word": "a",
+      "start": 99.9800033569336,
+      "end": 100.37999725341797
+    },
+    {
+      "word": "possibilidade",
+      "start": 100.37999725341797,
+      "end": 100.69999694824219
+    },
+    {
+      "word": "de",
+      "start": 100.69999694824219,
+      "end": 101.36000061035156
+    },
+    {
+      "word": "voltar",
+      "start": 101.36000061035156,
+      "end": 101.36000061035156
+    },
+    {
+      "word": "e",
+      "start": 101.36000061035156,
+      "end": 101.76000213623047
+    },
+    {
+      "word": "quem",
+      "start": 101.76000213623047,
+      "end": 101.86000061035156
+    },
+    {
+      "word": "comprar",
+      "start": 101.86000061035156,
+      "end": 102.08000183105469
+    },
+    {
+      "word": "o",
+      "start": 102.08000183105469,
+      "end": 102.4800033569336
+    },
+    {
+      "word": "terreno",
+      "start": 102.4800033569336,
+      "end": 102.4800033569336
+    },
+    {
+      "word": "agora",
+      "start": 102.4800033569336,
+      "end": 103.08000183105469
+    },
+    {
+      "word": "volta",
+      "start": 103.08000183105469,
+      "end": 103.76000213623047
+    },
+    {
+      "word": "pra",
+      "start": 103.76000213623047,
+      "end": 104.16000366210938
+    },
+    {
+      "word": "construir",
+      "start": 104.16000366210938,
+      "end": 104.58000183105469
+    },
+    {
+      "word": "na",
+      "start": 104.58000183105469,
+      "end": 105.12000274658203
+    },
+    {
+      "word": "cidade",
+      "start": 105.12000274658203,
+      "end": 105.55999755859375
+    },
+    {
+      "word": "já",
+      "start": 105.55999755859375,
+      "end": 106.13999938964844
+    },
+    {
+      "word": "valorizada",
+      "start": 106.13999938964844,
+      "end": 106.77999877929688
+    },
+    {
+      "word": "Se",
+      "start": 107.05999755859375,
+      "end": 107.16000366210938
+    },
+    {
+      "word": "você",
+      "start": 107.16000366210938,
+      "end": 107.41999816894531
+    },
+    {
+      "word": "tem",
+      "start": 107.41999816894531,
+      "end": 107.77999877929688
+    },
+    {
+      "word": "interesse",
+      "start": 107.77999877929688,
+      "end": 107.86000061035156
+    },
+    {
+      "word": "você",
+      "start": 108.0199966430664,
+      "end": 108.19999694824219
+    },
+    {
+      "word": "quer",
+      "start": 108.19999694824219,
+      "end": 108.44000244140625
+    },
+    {
+      "word": "saber",
+      "start": 108.44000244140625,
+      "end": 108.63999938964844
+    },
+    {
+      "word": "mais",
+      "start": 108.63999938964844,
+      "end": 108.9800033569336
+    },
+    {
+      "word": "é",
+      "start": 109.13999938964844,
+      "end": 109.22000122070312
+    },
+    {
+      "word": "simples",
+      "start": 109.22000122070312,
+      "end": 109.4800033569336
+    },
+    {
+      "word": "e",
+      "start": 109.4800033569336,
+      "end": 109.68000030517578
+    },
+    {
+      "word": "é",
+      "start": 109.68000030517578,
+      "end": 110.04000091552734
+    },
+    {
+      "word": "fácil",
+      "start": 110.04000091552734,
+      "end": 110.04000091552734
+    },
+    {
+      "word": "aperta",
+      "start": 110.87999725341797,
+      "end": 110.91999816894531
+    },
+    {
+      "word": "no",
+      "start": 110.91999816894531,
+      "end": 111.37999725341797
+    },
+    {
+      "word": "botão",
+      "start": 111.37999725341797,
+      "end": 111.37999725341797
+    },
+    {
+      "word": "que",
+      "start": 111.37999725341797,
+      "end": 111.72000122070312
+    },
+    {
+      "word": "abaixo",
+      "start": 111.72000122070312,
+      "end": 112.18000030517578
+    },
+    {
+      "word": "realiza",
+      "start": 112.69999694824219,
+      "end": 112.81999969482422
+    },
+    {
+      "word": "seu",
+      "start": 112.81999969482422,
+      "end": 113.0199966430664
+    },
+    {
+      "word": "cadastro",
+      "start": 113.0199966430664,
+      "end": 113.41999816894531
+    },
+    {
+      "word": "que",
+      "start": 113.41999816894531,
+      "end": 113.54000091552734
+    },
+    {
+      "word": "o",
+      "start": 113.54000091552734,
+      "end": 113.62000274658203
+    },
+    {
+      "word": "Jorge",
+      "start": 113.62000274658203,
+      "end": 113.77999877929688
+    },
+    {
+      "word": "e",
+      "start": 113.77999877929688,
+      "end": 114.05999755859375
+    },
+    {
+      "word": "toda",
+      "start": 114.05999755859375,
+      "end": 114.12000274658203
+    },
+    {
+      "word": "a",
+      "start": 114.12000274658203,
+      "end": 114.30000305175781
+    },
+    {
+      "word": "equipe",
+      "start": 114.30000305175781,
+      "end": 114.36000061035156
+    },
+    {
+      "word": "da",
+      "start": 114.36000061035156,
+      "end": 114.5
+    },
+    {
+      "word": "Grande",
+      "start": 114.5,
+      "end": 114.69999694824219
+    },
+    {
+      "word": "Vitória",
+      "start": 114.69999694824219,
+      "end": 114.95999908447266
+    },
+    {
+      "word": "Imobiliária",
+      "start": 114.95999908447266,
+      "end": 115.44000244140625
+    },
+    {
+      "word": "vai",
+      "start": 115.44000244140625,
+      "end": 115.69999694824219
+    },
+    {
+      "word": "entrar",
+      "start": 115.69999694824219,
+      "end": 115.83999633789062
+    },
+    {
+      "word": "em",
+      "start": 115.83999633789062,
+      "end": 116
+    },
+    {
+      "word": "contato",
+      "start": 116,
+      "end": 116.23999786376953
+    },
+    {
+      "word": "com",
+      "start": 116.23999786376953,
+      "end": 116.4800033569336
+    },
+    {
+      "word": "você",
+      "start": 116.4800033569336,
+      "end": 116.63999938964844
+    },
+    {
+      "word": "te",
+      "start": 117.04000091552734,
+      "end": 117.18000030517578
+    },
+    {
+      "word": "passar",
+      "start": 117.18000030517578,
+      "end": 117.33999633789062
+    },
+    {
+      "word": "maiores",
+      "start": 117.33999633789062,
+      "end": 117.73999786376953
+    },
+    {
+      "word": "informações",
+      "start": 117.73999786376953,
+      "end": 118.41999816894531
+    },
+    {
+      "word": "fluxo",
+      "start": 119.23999786376953,
+      "end": 119.4800033569336
+    },
+    {
+      "word": "ou",
+      "start": 119.72000122070312,
+      "end": 119.76000213623047
+    },
+    {
+      "word": "seja",
+      "start": 119.76000213623047,
+      "end": 119.95999908447266
+    },
+    {
+      "word": "absolutamente",
+      "start": 120.55999755859375,
+      "end": 120.55999755859375
+    },
+    {
+      "word": "tudo",
+      "start": 120.55999755859375,
+      "end": 120.86000061035156
+    },
+    {
+      "word": "o",
+      "start": 120.86000061035156,
+      "end": 121
+    },
+    {
+      "word": "que",
+      "start": 121,
+      "end": 121
+    },
+    {
+      "word": "você",
+      "start": 121,
+      "end": 121.23999786376953
+    },
+    {
+      "word": "precisa",
+      "start": 121.23999786376953,
+      "end": 121.58000183105469
+    },
+    {
+      "word": "pra",
+      "start": 121.58000183105469,
+      "end": 121.80000305175781
+    },
+    {
+      "word": "fazer",
+      "start": 121.80000305175781,
+      "end": 121.9800033569336
+    }
+  ],
+  "usage": {
+    "type": "duration",
+    "seconds": 123
+  }
+}

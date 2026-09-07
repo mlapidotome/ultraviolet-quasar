@@ -1,0 +1,82 @@
+[
+  {
+    "id": "VE_CURIOSITY",
+    "name": "curiosity",
+    "description": "Desire to keep watching to discover what happens or how a promise is fulfilled."
+  },
+  {
+    "id": "VE_IDENTIFICATION",
+    "name": "identification",
+    "description": "Feeling of \"this person understands my reality and speaks to me\"."
+  },
+  {
+    "id": "VE_UNDERSTANDING",
+    "name": "understanding",
+    "description": "Clear mental comprehension of how an offer, space, or process operates."
+  },
+  {
+    "id": "VE_BELIEF",
+    "name": "belief",
+    "description": "Cognitive acceptance that a claim is authentic, factual, and attainable."
+  },
+  {
+    "id": "VE_TRUST",
+    "name": "trust",
+    "description": "Emotional security and confidence in the presenter, developer, or agency."
+  },
+  {
+    "id": "VE_DESIRE",
+    "name": "desire",
+    "description": "Aspirational longing to inhabit the space or own the lifestyle portrayed."
+  },
+  {
+    "id": "VE_SURPRISE",
+    "name": "surprise",
+    "description": "Unexpected revelation or pleasant counter-intuitive insight."
+  },
+  {
+    "id": "VE_RELIEF",
+    "name": "relief",
+    "description": "Alleviation of financial anxiety, spatial frustration, or bureaucratic fear."
+  },
+  {
+    "id": "VE_URGENCY",
+    "name": "urgency",
+    "description": "Recognition of limited opportunity or timing advantage requiring action."
+  },
+  {
+    "id": "VE_VALUE_PERCEPTION",
+    "name": "value_perception",
+    "description": "Recognition that the property delivers immense value relative to its cost."
+  },
+  {
+    "id": "VE_SPATIAL_UNDERSTANDING",
+    "name": "spatial_understanding",
+    "description": "Mental 3D map of floorplan flow, room dimensions, and integration."
+  },
+  {
+    "id": "VE_MEMORABILITY",
+    "name": "memorability",
+    "description": "Key figures, unique amenities, or emotional phrases retained in memory."
+  },
+  {
+    "id": "VE_ACTION_READINESS",
+    "name": "action_readiness",
+    "description": "Preparedness to tap the screen, send a lead, or book a site visit."
+  },
+  {
+    "id": "VE_ANTICIPATION_PAYOFF",
+    "name": "anticipation_payoff",
+    "description": "Pleasurable fulfillment of a setup or curiosity gap previously built."
+  },
+  {
+    "id": "VE_ORIENTATION",
+    "name": "orientation",
+    "description": "Clear grounding in where we are geographically, physically, and narratively."
+  },
+  {
+    "id": "VE_CURIOSITY_RESOLUTION",
+    "name": "curiosity_resolution",
+    "description": "Resolution of an open question posed earlier in the video."
+  }
+]

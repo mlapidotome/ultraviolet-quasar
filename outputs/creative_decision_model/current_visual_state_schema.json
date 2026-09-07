@@ -1,0 +1,14 @@
+{
+  "schema_id": "SCHEMA_CURRENT_VISUAL_STATE_V01",
+  "title": "Current Visual State Schema",
+  "description": "Captures the active visual environment prior to making the next editorial decision.",
+  "epistemic_status": "QUALITATIVE_SCHEMA_CANDIDATE",
+  "currently_binding": false,
+  "state_fields": {
+    "source_type": "PRESENTER_ON_CAMERA | BROLL_INSERT | GRAPHIC_FULLSCREEN | UNKNOWN",
+    "subject": "Description of active subject on screen (e.g. Presenter Marcel, Living Room B-roll)",
+    "framing": "Framing descriptor (e.g. MEDIUM_SHOT, WIDE_HERO, DETAIL_CLOSEUP)",
+    "active_graphics": "List of currently active typography / card overlays",
+    "pacing_feel": "Qualitative assessment of visual hold duration (e.g. FRESH, SETTLED, EXTENDED)"
+  }
+}

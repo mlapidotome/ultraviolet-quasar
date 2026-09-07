@@ -1,0 +1,19 @@
+{
+  "schema_id": "SCHEMA_EDITORIAL_MEMORY_V01",
+  "title": "Qualitative Editorial Memory Schema",
+  "description": "Maintains temporal and historical context of recent editorial decisions without arbitrary time windows or numerical thresholds.",
+  "epistemic_status": "QUALITATIVE_SCHEMA_CANDIDATE",
+  "currently_binding": false,
+  "tracked_dimensions": {
+    "recent_cut_density": "Qualitative perception of recent edit pace (e.g., calm, balanced, rapid) across recent beats.",
+    "recent_visual_activity": "Qualitative level of on-screen motion, camera movement, or graphical changes in recent moments.",
+    "recent_technique_history": "Ordered list of recent technique types applied to avoid unwanted repetitive patterns.",
+    "recent_stimulus_intensity": "Cumulative qualitative cognitive load from text overlays, audio punches, and framing shifts.",
+    "used_assets": "Catalogue of B-roll takes and graphic elements already displayed to prevent unintentional asset reuse."
+  },
+  "memory_principles": [
+    "No fixed duration windows or cut quotas are binding.",
+    "Memory serves as qualitative awareness to balance rhythm and prevent visual fatigue.",
+    "Repetition avoidance is contextual rather than strictly numerical."
+  ]
+}

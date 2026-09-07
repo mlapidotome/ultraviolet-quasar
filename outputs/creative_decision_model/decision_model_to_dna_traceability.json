@@ -1,0 +1,31 @@
+{
+  "model_version": "0.1",
+  "dna_version": "1.1.0-hardened",
+  "traceability_mappings": [
+    {
+      "decision_principle": "HUMAN LEADS. PROPERTY PROVES.",
+      "maps_to_dna": "PRIN_CORE_01 & PRIN_CORE_06",
+      "manifestation_in_model": "Presenter conducts setup, financial explanation, and CTA; property takes visual center stage during reveal, demonstration, and lifestyle climax."
+    },
+    {
+      "decision_principle": "INTENT BEFORE LITERALITY",
+      "maps_to_dna": "PRIN_CORE_03",
+      "manifestation_in_model": "Evaluates what the sentence aims to achieve before generating technique candidates; avoids crude keyword substring cutting."
+    },
+    {
+      "decision_principle": "FAST WHEN ATTENTION REQUIRES, CALM WHEN IMAGE DESERVES",
+      "maps_to_dna": "PRIN_CORE_02 & PRIN_CORE_09",
+      "manifestation_in_model": "Enforces Aesthetic Breathing Room on Beat 06 (balcony) while keeping Beat 07 (amenities) brisk."
+    },
+    {
+      "decision_principle": "EDITORIAL IMPORTANCE GOVERNS EMPHASIS INTENSITY",
+      "maps_to_dna": "PRIN_CORE_04",
+      "manifestation_in_model": "Assigns HIGH attention budget and Presenter+Graphic strategy to Beat 08 (HERO price), while keeping Beat 03 subtle."
+    },
+    {
+      "decision_principle": "CONSISTENCY WITHOUT SAMENESS",
+      "maps_to_dna": "PRIN_CORE_14",
+      "manifestation_in_model": "Editorial Memory tracks recent visual sources and techniques to prevent repetitive mechanical cut loops."
+    }
+  ]
+}

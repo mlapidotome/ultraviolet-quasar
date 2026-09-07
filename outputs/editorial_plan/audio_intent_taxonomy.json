@@ -1,0 +1,18 @@
+{
+  "taxonomy_id": "TAXONOMY_AUDIO_INTENT_V01",
+  "title": "Audio Intent Taxonomy",
+  "description": "Defines audio narrative priority. Sound design is subordinate to spoken dialogue. Excludes dB, LUFS, EQ, and plugins.",
+  "epistemic_status": "QUALITATIVE_TAXONOMY_CANDIDATE",
+  "currently_binding": false,
+  "values": [
+    "VOICE_FIRST",
+    "PRESERVE_DIALOGUE",
+    "EMOTIONAL_SUPPORT",
+    "TRANSITION_SUPPORT",
+    "EMPHASIS_SUPPORT",
+    "ATMOSPHERE_SUPPORT",
+    "SILENCE_ALLOWED",
+    "NO_ADDITIONAL_AUDIO",
+    "UNRESOLVED"
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "case_id": "CASE_01",
+  "title": "Case 01 Plan Continuity & Semantic Dependency Map",
+  "epistemic_status": "QUALITATIVE_CONTINUITY_MAP",
+  "currently_binding": false,
+  "flow": [
+    {
+      "from": "BEAT_01",
+      "to": "BEAT_02",
+      "type": "HOOK_TO_REVEAL",
+      "continuity": "Voice continues; source shifts Presenter -> Property Living Room; pays hook visual debt."
+    },
+    {
+      "from": "BEAT_02",
+      "to": "BEAT_03",
+      "type": "REVEAL_TO_BRIDGE",
+      "continuity": "Hold interior framing; voice bridges to location; provides visual breathing room."
+    },
+    {
+      "from": "BEAT_03",
+      "to": "BEAT_04",
+      "type": "BRIDGE_TO_LOCATION",
+      "continuity": "Source shifts Property -> Location; requires verified evidence for landmarks."
+    },
+    {
+      "from": "BEAT_04",
+      "to": "BEAT_05",
+      "type": "LOCATION_TO_INTERIOR",
+      "continuity": "Source shifts Location -> Interior sequential rooms; proves 68m² layout."
+    },
+    {
+      "from": "BEAT_05",
+      "to": "BEAT_06",
+      "type": "INTERIOR_TO_BALCONY_HERO",
+      "continuity": "Source shifts Interior -> Gourmet Balcony; emotional lifestyle climax."
+    },
+    {
+      "from": "BEAT_06",
+      "to": "BEAT_07",
+      "type": "BALCONY_TO_AMENITIES",
+      "continuity": "Source shifts Balcony -> Condo Common Facilities; proves building security & leisure."
+    },
+    {
+      "from": "BEAT_07",
+      "to": "BEAT_08",
+      "type": "AMENITIES_TO_FINANCIAL_REANCHOR",
+      "continuity": "Source shifts Condo -> Presenter on Camera; introduces financial summary card."
+    },
+    {
+      "from": "BEAT_08",
+      "to": "BEAT_09",
+      "type": "FINANCIAL_TO_CONSULTATIVE_BRIDGE",
+      "continuity": "Evolve: dismiss card, clean frame, hold Marcel eye contact for personal question."
+    },
+    {
+      "from": "BEAT_09",
+      "to": "BEAT_10",
+      "type": "BRIDGE_TO_CTA_CLOSE",
+      "continuity": "Evolve: introduce subtle CTA badge while Marcel delivers direct closing instruction."
+    }
+  ]
+}

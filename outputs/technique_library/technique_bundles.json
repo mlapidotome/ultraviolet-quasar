@@ -1,0 +1,92 @@
+[
+  {
+    "bundle_id": "BUNDLE_HUMAN_EMPHASIS",
+    "name": "Human Emphasis Bundle",
+    "description": "Combines digital scale punch-in, caption keyword color emphasis, and subtle transition audio accent for major presenter statements.",
+    "candidate_techniques": [
+      "TECH_PUNCH_IN",
+      "TECH_KEYWORD_EMPHASIS",
+      "TECH_TRANSITION_SFX"
+    ],
+    "serves_needs": [
+      "HUMAN_CONNECTION",
+      "EMPHASIS",
+      "NOVELTY"
+    ],
+    "candidate_bundle": true,
+    "currently_binding": false
+  },
+  {
+    "bundle_id": "BUNDLE_PROPERTY_HERO",
+    "name": "Property Hero Showcase Bundle",
+    "description": "Combines hero wide property footage/photo, aesthetic breathing room, room identification lower-third, and slow Ken Burns push.",
+    "candidate_techniques": [
+      "TECH_HERO_PROPERTY_SHOT",
+      "TECH_VISUAL_HOLD",
+      "TECH_ROOM_LABEL",
+      "TECH_KEN_BURNS"
+    ],
+    "serves_needs": [
+      "VISUAL_PAYOFF",
+      "VISUAL_PROOF",
+      "AESTHETIC_BREATHING",
+      "SPATIAL_CLARITY"
+    ],
+    "candidate_bundle": true,
+    "currently_binding": false
+  },
+  {
+    "bundle_id": "BUNDLE_LOCATION_PROOF",
+    "name": "Location & Proximity Proof Bundle",
+    "description": "Combines drone aerial context or POI visual with landmark identification badge and geographic caption emphasis.",
+    "candidate_techniques": [
+      "TECH_LOCATION_DRONE",
+      "TECH_POI_VISUAL",
+      "TECH_FEATURE_BADGE",
+      "TECH_KEYWORD_EMPHASIS"
+    ],
+    "serves_needs": [
+      "CONTEXT",
+      "VISUAL_PROOF",
+      "INFORMATION_CLARITY"
+    ],
+    "candidate_bundle": true,
+    "currently_binding": false
+  },
+  {
+    "bundle_id": "BUNDLE_FINANCIAL_HERO",
+    "name": "Financial Clarity & Hero Number Bundle",
+    "description": "Combines hero price typography, commercial condition card, presenter-plus-graphic layout, and acoustic impact accent.",
+    "candidate_techniques": [
+      "TECH_HERO_NUMBER",
+      "TECH_PRICE_CARD",
+      "TECH_PRESENTER_PLUS_GRAPHIC",
+      "TECH_TRANSITION_SFX"
+    ],
+    "serves_needs": [
+      "INFORMATION_CLARITY",
+      "EMPHASIS",
+      "HUMAN_CONNECTION"
+    ],
+    "candidate_bundle": true,
+    "currently_binding": false
+  },
+  {
+    "bundle_id": "BUNDLE_REVEAL_PAYOFF",
+    "name": "Reveal & Curiosity Payoff Bundle",
+    "description": "Transitions cleanly from presenter setup into hero property visual payoff, holding the frame to satisfy anticipation.",
+    "candidate_techniques": [
+      "TECH_HARD_CUT",
+      "TECH_HERO_PROPERTY_SHOT",
+      "TECH_VISUAL_HOLD",
+      "TECH_ROOM_LABEL"
+    ],
+    "serves_needs": [
+      "VISUAL_PAYOFF",
+      "SPATIAL_CLARITY",
+      "NOVELTY"
+    ],
+    "candidate_bundle": true,
+    "currently_binding": false
+  }
+]

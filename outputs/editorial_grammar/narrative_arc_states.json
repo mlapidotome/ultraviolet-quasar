@@ -1,0 +1,42 @@
+[
+  {
+    "id": "ARC_SETUP",
+    "name": "setup",
+    "description": "Establishing premise, context, pain point, or initial curiosity hook."
+  },
+  {
+    "id": "ARC_TENSION",
+    "name": "tension",
+    "description": "Heightening awareness of the problem, friction, or urgency."
+  },
+  {
+    "id": "ARC_DEVELOPMENT",
+    "name": "development",
+    "description": "Elaborating arguments, lifestyle opportunities, and product capabilities."
+  },
+  {
+    "id": "ARC_PROOF",
+    "name": "proof",
+    "description": "Validating claims through footage, numbers, specs, and architectural evidence."
+  },
+  {
+    "id": "ARC_REVEAL",
+    "name": "reveal",
+    "description": "Pivotal unveiling of the property, price, or core breakthrough."
+  },
+  {
+    "id": "ARC_PAYOFF",
+    "name": "payoff",
+    "description": "Delivering visual/emotional gratification and aspirational lifestyle reward."
+  },
+  {
+    "id": "ARC_TRANSITION",
+    "name": "transition",
+    "description": "Pivoting from product exploration to commercial terms or closing."
+  },
+  {
+    "id": "ARC_CONVERSION",
+    "name": "conversion",
+    "description": "Direct closing call to action and next steps guidance."
+  }
+]

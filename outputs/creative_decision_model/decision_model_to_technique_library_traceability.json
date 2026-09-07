@@ -1,0 +1,21 @@
+{
+  "model_version": "0.1",
+  "technique_library_version": "0.1",
+  "traceability_mappings": [
+    {
+      "decision_component": "Candidate Generation",
+      "maps_to_technique_layer": "Technique Contracts & Serves Needs Mappings",
+      "description": "Queries Technique Library only after Primary Need, State Decision, and Constraints are established."
+    },
+    {
+      "decision_component": "Editorial Cost Evaluation",
+      "maps_to_technique_layer": "Editorial Cost Model",
+      "description": "Filters candidate techniques to ensure attention expenditure matches beat editorial importance."
+    },
+    {
+      "decision_component": "Candidate Bundles",
+      "maps_to_technique_layer": "Candidate Recipe Bundles",
+      "description": "Deploys non-binding bundles (e.g. BUNDLE_FINANCIAL_HERO on Beat 08) as synergistic candidate packages."
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "technique_library_version": "0.1",
+  "matrix": [
+    {
+      "need_id": "NEED_HUMAN_CONNECTION",
+      "need_name": "HUMAN_CONNECTION",
+      "satisfying_technique_candidates": [
+        "TECH_PUNCH_IN",
+        "TECH_PRESENTER_PLUS_GRAPHIC"
+      ]
+    },
+    {
+      "need_id": "NEED_VISUAL_PROOF",
+      "need_name": "VISUAL_PROOF",
+      "satisfying_technique_candidates": [
+        "TECH_HARD_CUT",
+        "TECH_CUTAWAY",
+        "TECH_HERO_PROPERTY_SHOT",
+        "TECH_PROPERTY_BROLL",
+        "TECH_DETAIL_SHOT",
+        "TECH_PRICE_CARD",
+        "TECH_POI_VISUAL"
+      ]
+    },
+    {
+      "need_id": "NEED_SPATIAL_CLARITY",
+      "need_name": "SPATIAL_CLARITY",
+      "satisfying_technique_candidates": [
+        "TECH_HARD_CUT",
+        "TECH_PROPERTY_BROLL",
+        "TECH_ROOM_LABEL"
+      ]
+    },
+    {
+      "need_id": "NEED_INFORMATION_CLARITY",
+      "need_name": "INFORMATION_CLARITY",
+      "satisfying_technique_candidates": [
+        "TECH_PRESENTER_PLUS_GRAPHIC",
+        "TECH_CAPTIONS",
+        "TECH_KEYWORD_EMPHASIS",
+        "TECH_HERO_NUMBER",
+        "TECH_ROOM_LABEL",
+        "TECH_PRICE_CARD",
+        "TECH_FEATURE_BADGE",
+        "TECH_POI_VISUAL"
+      ]
+    },
+    {
+      "need_id": "NEED_EMPHASIS",
+      "need_name": "EMPHASIS",
+      "satisfying_technique_candidates": [
+        "TECH_CUTAWAY",
+        "TECH_PUNCH_IN",
+        "TECH_PRESENTER_PLUS_GRAPHIC",
+        "TECH_DETAIL_SHOT",
+        "TECH_KEYWORD_EMPHASIS",
+        "TECH_HERO_NUMBER",
+        "TECH_PRICE_CARD",
+        "TECH_FEATURE_BADGE",
+        "TECH_TRANSITION_SFX"
+      ]
+    },
+    {
+      "need_id": "NEED_ATMOSPHERE",
+      "need_name": "ATMOSPHERE",
+      "satisfying_technique_candidates": [
+        "TECH_HERO_PROPERTY_SHOT",
+        "TECH_PROPERTY_BROLL",
+        "TECH_DETAIL_SHOT",
+        "TECH_LOCATION_DRONE",
+        "TECH_KEN_BURNS",
+        "TECH_MUSIC_BED"
+      ]
+    },
+    {
+      "need_id": "NEED_NOVELTY",
+      "need_name": "NOVELTY",
+      "satisfying_technique_candidates": [
+        "TECH_HARD_CUT",
+        "TECH_CUTAWAY",
+        "TECH_PUNCH_IN",
+        "TECH_SUBTLE_REFRAME",
+        "TECH_KEYWORD_EMPHASIS",
+        "TECH_KEN_BURNS",
+        "TECH_TRANSITION_SFX"
+      ]
+    },
+    {
+      "need_id": "NEED_CONTINUITY",
+      "need_name": "CONTINUITY",
+      "satisfying_technique_candidates": [
+        "TECH_HARD_CUT",
+        "TECH_VISUAL_HOLD",
+        "TECH_SUBTLE_REFRAME",
+        "TECH_CAPTIONS",
+        "TECH_KEN_BURNS",
+        "TECH_MUSIC_BED"
+      ]
+    },
+    {
+      "need_id": "NEED_CONTEXT",
+      "need_name": "CONTEXT",
+      "satisfying_technique_candidates": [
+        "TECH_LOCATION_DRONE",
+        "TECH_POI_VISUAL"
+      ]
+    },
+    {
+      "need_id": "NEED_ACTION_CLARITY",
+      "need_name": "ACTION_CLARITY",
+      "satisfying_technique_candidates": []
+    },
+    {
+      "need_id": "NEED_VISUAL_PAYOFF",
+      "need_name": "VISUAL_PAYOFF",
+      "satisfying_technique_candidates": [
+        "TECH_HERO_PROPERTY_SHOT",
+        "TECH_HERO_NUMBER",
+        "TECH_LOCATION_DRONE"
+      ]
+    },
+    {
+      "need_id": "NEED_PERFORMANCE_PRESERVATION",
+      "need_name": "PERFORMANCE_PRESERVATION",
+      "satisfying_technique_candidates": [
+        "TECH_VISUAL_HOLD",
+        "TECH_SUBTLE_REFRAME"
+      ]
+    },
+    {
+      "need_id": "NEED_AESTHETIC_BREATHING",
+      "need_name": "AESTHETIC_BREATHING",
+      "satisfying_technique_candidates": [
+        "TECH_VISUAL_HOLD",
+        "TECH_HERO_PROPERTY_SHOT"
+      ]
+    }
+  ]
+}

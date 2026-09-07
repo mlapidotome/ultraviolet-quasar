@@ -1,0 +1,53 @@
+{
+  "contract_id": "CONTRACT_DESIGN_RESOLUTION_V01",
+  "title": "Design Resolution Requirement Contract",
+  "description": "Defines the boundary between abstract editorial intent (e.g. HERO_INFORMATION) and concrete graphic component layout.",
+  "epistemic_status": "SYSTEM_CONTRACT_SPECIFICATION",
+  "currently_binding": false,
+  "required_design_components": [
+    {
+      "component_id": "COMP_CARD_PRICE_TERMS_HERO",
+      "editorial_intent": "HERO_INFORMATION (Beat 08)",
+      "data_fields_to_render": [
+        "total_price (R$ 350.000)",
+        "financing_program (Minha Casa Minha Vida)",
+        "down_payment_range (Entrada R$ 60.000 a R$ 70.000)",
+        "monthly_installment (~R$ 2.000/mês)"
+      ],
+      "open_hierarchy": "Installment vs Total Price visual dominance (UNRESOLVED)",
+      "design_token_requirements": [
+        "card_background_opacity",
+        "font_hierarchy",
+        "badge_accent_color",
+        "safe_rect_position"
+      ]
+    },
+    {
+      "component_id": "COMP_CTA_END_CARD_MINIMAL",
+      "editorial_intent": "CTA_SUPPORT (Beat 10)",
+      "data_fields_to_render": [
+        "action_prompt (Saiba Mais)",
+        "sub_text (Agende sua visita)",
+        "brand_identity (Bali Imóveis)"
+      ],
+      "open_hierarchy": "RESOLVED (Minimal button badge over presenter frame)",
+      "design_token_requirements": [
+        "button_shape",
+        "accent_color",
+        "bottom_safe_offset"
+      ]
+    },
+    {
+      "component_id": "COMP_LOCATION_TAG_MINIMAL",
+      "editorial_intent": "LOCATION_SUPPORT (Beat 04)",
+      "data_fields_to_render": [
+        "location_name (Taubaté / Próx. Shopping e Shibata)"
+      ],
+      "open_hierarchy": "RESOLVED (Standard location tag supported in existing overlay engine)",
+      "design_token_requirements": [
+        "lower_third_safe_rect",
+        "semi_transparent_backdrop"
+      ]
+    }
+  ]
+}

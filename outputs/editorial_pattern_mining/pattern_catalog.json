@@ -1,0 +1,463 @@
+[
+  {
+    "pattern_id": "PAT_HOOK_01",
+    "family": "HOOK_PATTERNS",
+    "name": "Immediate Human Face & Provocative Question Hook",
+    "description": "The video opens in frame 0.0s with a human face looking directly into the lens, delivering a provocative pain or curiosity statement within the first 2.5 seconds.",
+    "observed_trigger": "Video start (0.0s - 3.0s)",
+    "editorial_intent": "Stop user feed scrolling, establish instant human connection and provoke immediate curiosity or self-identification.",
+    "visual_response": "Medium close-up of presenter looking straight at camera with rapid punch-in or cut within 2.5s.",
+    "technique": "Hard cut opening, kinetic bold title, immediate voice start (no intro bumper or logo).",
+    "supporting_refs": [
+      "REF_01",
+      "REF_02",
+      "REF_04",
+      "REF_05"
+    ],
+    "support_count": 4,
+    "example_shots": [
+      "REF_01: SHOT_01-05",
+      "REF_02: SHOT_01",
+      "REF_04: SHOT_01",
+      "REF_05: SHOT_01-03"
+    ],
+    "confidence": 0.98,
+    "universality": "universal",
+    "hypothesized_rule": "Start video at t=0 with presenter face or property hero punch, with voice starting within 0.3s and first visual interrupt within 3.0s.",
+    "caveats": "REF_03 opened with an aerial context view before showing presenter, indicating scenic real estate can also hook with stunning drone visuals."
+  },
+  {
+    "pattern_id": "PAT_HOOK_02",
+    "family": "HOOK_PATTERNS",
+    "name": "Immediate Visual Micro-Interrupts in Hook Window",
+    "description": "During the first 5.0 seconds of the video, at least 2 to 4 rapid cuts or punch-ins occur to establish a fast perceptual rhythm.",
+    "observed_trigger": "First 5 seconds of playback",
+    "editorial_intent": "Prevent early drop-off and create high cognitive engagement.",
+    "visual_response": "Series of micro-shots (0.25s to 1.5s) altering zoom scale or angle.",
+    "technique": "Digital punch-in (scale 1.15x - 1.25x) or rapid b-roll tease.",
+    "supporting_refs": [
+      "REF_01",
+      "REF_02",
+      "REF_03"
+    ],
+    "support_count": 3,
+    "example_shots": [
+      "REF_01: SHOT_01 (0.25s), SHOT_02 (0.45s), SHOT_03 (1.35s)",
+      "REF_02: SHOT_02 (0.56s), SHOT_04 (0.63s)",
+      "REF_03: SHOT_01 (0.43s), SHOT_02 (0.87s)"
+    ],
+    "confidence": 0.92,
+    "universality": "frequent",
+    "hypothesized_rule": "Inject at least 2 visual scale or angle disruptions in the first 4.0 seconds of speech.",
+    "caveats": "Excessive micro-cuts can feel jarring in slow luxury property walkthroughs."
+  },
+  {
+    "pattern_id": "PAT_SYNC_01",
+    "family": "SPEECH_VISUAL_PATTERNS",
+    "name": "Literal Semantic Materialization on Key Noun Mention",
+    "description": "The moment a specific physical space, feature, or tangible benefit is spoken (e.g. \"cozinha\", \"bife\", \"varanda gourmet\", \"lote\", \"piscina\"), the image cuts directly to that exact visual.",
+    "observed_trigger": "Presenter voice uttering physical feature, appliance, or room noun.",
+    "editorial_intent": "Validate spoken claim instantly with visual proof, creating high cognitive coherence.",
+    "visual_response": "Cut from presenter to high-quality B-roll or render of the spoken object.",
+    "technique": "Synchronous cut (aligned within ±100ms of the stressed noun).",
+    "supporting_refs": [
+      "REF_01",
+      "REF_02",
+      "REF_03",
+      "REF_04",
+      "REF_05"
+    ],
+    "support_count": 5,
+    "example_shots": [
+      "REF_01: SHOT_10 (fala sobre funcionária/área de serviço)",
+      "REF_01: SHOT_13 (fala sobre freezer vertical / despensa)",
+      "REF_03: SHOT_06-08 (fala sobre 2 quartos / 61 a 68m²)",
+      "REF_04: SHOT_06 (fala sobre Guarapari / orla)",
+      "REF_05: SHOT_04-12 (fala sobre 109m², varanda gourmet conectada)"
+    ],
+    "confidence": 0.99,
+    "universality": "universal",
+    "hypothesized_rule": "When script contains a high-value physical feature, trigger an immediate B-roll / photo cutaway lasting 1.5s to 3.5s.",
+    "caveats": "Do not cut away if the presenter is in the middle of a high-emotion personal epiphany."
+  },
+  {
+    "pattern_id": "PAT_SYNC_02",
+    "family": "SPEECH_VISUAL_PATTERNS",
+    "name": "Conceptual Metaphor Cutaway for Abstract Pain or Proof",
+    "description": "When the presenter discusses abstract pain points or achievements (e.g., \"sofrendo\", \"bagunça\", \"30 milhões de views\", \"sem banco\"), the video cuts to a metaphorical b-roll, meme, or graphic proof.",
+    "observed_trigger": "Speech describing emotional frustration, numerical authority, or administrative barrier.",
+    "editorial_intent": "Make intangible concepts visceral and emotionally charged.",
+    "visual_response": "Cut to symbolic b-roll (dirty sink, smoking steak, dashboard screenshot, red objection icon).",
+    "technique": "Metaphorical B-roll insertion + sound accent.",
+    "supporting_refs": [
+      "REF_01",
+      "REF_02",
+      "REF_04"
+    ],
+    "support_count": 3,
+    "example_shots": [
+      "REF_01: SHOT_07-08 (bife esfumaçando, prato sujo)",
+      "REF_02: SHOT_02-05 (bastidores, dashboard)",
+      "REF_04: SHOT_13-14 (cartela sem banco / sem comprovação)"
+    ],
+    "confidence": 0.9,
+    "universality": "frequent",
+    "hypothesized_rule": "Pair abstract pain points with symbolic illustrative footage or graphic proof cards.",
+    "caveats": "Must remain tasteful; real estate requires balancing tension with aspirational elegance."
+  },
+  {
+    "pattern_id": "PAT_CUT_01",
+    "family": "CUT_TRIGGERS",
+    "name": "Syntactic Phrase Boundary Cut (Breath / Clause Cut)",
+    "description": "Cuts strictly align with the natural pause between clauses, comma breaks, or sentence completions, avoiding cutting mid-syllable.",
+    "observed_trigger": "Natural syntactic pause, comma, or end of sentence in speech transcript.",
+    "editorial_intent": "Maintain fluent acoustic cadence and prevent visual-audio dissonance.",
+    "visual_response": "Hard cut or transition placed cleanly during the millisecond gap between words.",
+    "technique": "Audio-led cut alignment.",
+    "supporting_refs": [
+      "REF_01",
+      "REF_02",
+      "REF_03",
+      "REF_04",
+      "REF_05"
+    ],
+    "support_count": 5,
+    "example_shots": [
+      "Across 92% of all 133 shots in dataset"
+    ],
+    "confidence": 0.98,
+    "universality": "universal",
+    "hypothesized_rule": "Always align shot boundaries to speech pause points (inter-word gaps > 80ms) rather than arbitrary time intervals.",
+    "caveats": "If speech is continuous without pauses for 7+ seconds, a punch-in is preferable to an abrupt cut."
+  },
+  {
+    "pattern_id": "PAT_CUT_02",
+    "family": "CUT_TRIGGERS",
+    "name": "Numerical Anchor Cut (Price, Area, Date)",
+    "description": "Speaking a quantifiable metric (e.g. \"109 m²\", \"600 lotes\", \"300 mil\", \"2 suítes\") triggers an immediate cut or graphics pop.",
+    "observed_trigger": "Speech transcript contains numeral, monetary value, or unit of measurement.",
+    "editorial_intent": "Anchor high-value factual data in visual memory.",
+    "visual_response": "Cut to full card, badge overlay, or architectural render showing the metric.",
+    "technique": "Graphic lower-third pop or full-screen card synchronized to number.",
+    "supporting_refs": [
+      "REF_02",
+      "REF_03",
+      "REF_04",
+      "REF_05"
+    ],
+    "support_count": 4,
+    "example_shots": [
+      "REF_02: SHOT_08",
+      "REF_03: SHOT_07-09",
+      "REF_04: SHOT_10",
+      "REF_05: SHOT_04"
+    ],
+    "confidence": 0.94,
+    "universality": "universal",
+    "hypothesized_rule": "When price, area or key numbers are voiced, display matching on-screen typography or cut to relevant asset.",
+    "caveats": "Do not overload screen with more than one primary metric at a time."
+  },
+  {
+    "pattern_id": "PAT_PRES_01",
+    "family": "PRESENTER_PATTERNS",
+    "name": "Digital Scale Punch-In for Continuous Monologue",
+    "description": "When the presenter continues talking for longer than 3.5 seconds on the same idea, the editor switches between Medium Shot (1.0x) and Close-Up (1.2x crop) without changing the background.",
+    "observed_trigger": "Presenter speaking continuously for > 3.5s without cutaway to B-roll.",
+    "editorial_intent": "Simulate a two-camera studio setup, maintain visual dynamism and emphasize important sentences.",
+    "visual_response": "Instant change from Medium Shot to Close-Up (punch-in) or vice-versa.",
+    "technique": "2D Scale Transform (100% -> 120%) centered on presenter eyes.",
+    "supporting_refs": [
+      "REF_01",
+      "REF_02",
+      "REF_04"
+    ],
+    "support_count": 3,
+    "example_shots": [
+      "REF_01: SHOT_17-21",
+      "REF_02: SHOT_06-08",
+      "REF_04: SHOT_01-03, SHOT_17-18"
+    ],
+    "confidence": 0.93,
+    "universality": "frequent",
+    "hypothesized_rule": "If presenter stays on screen for > 4.0s, apply a scale punch-in (1.18x) on the next emphatic word.",
+    "caveats": "Source video must have sufficient resolution (e.g. 1080p/4K) to avoid digital blur."
+  },
+  {
+    "pattern_id": "PAT_PRES_02",
+    "family": "PRESENTER_PATTERNS",
+    "name": "Presenter-to-B-roll Handoff and Semantic Return Loop",
+    "description": "Presenter introduces a topic, camera cuts to B-roll for 2 to 5 seconds to showcase it, and then camera cuts back to presenter for the emotional conclusion or next transition.",
+    "observed_trigger": "Transition from general premise to tangible evidence and back to reflection.",
+    "editorial_intent": "Create a rhythmic breathing cycle between human authority (face) and property proof (scenery).",
+    "visual_response": "Presenter (3-4s) -> B-roll 1-3 shots (3-6s) -> Presenter (3-4s).",
+    "technique": "A-roll / B-roll alternating loop with 100% return rate.",
+    "supporting_refs": [
+      "REF_01",
+      "REF_03",
+      "REF_04",
+      "REF_05"
+    ],
+    "support_count": 4,
+    "example_shots": [
+      "REF_01: SHOT_09 -> SHOT_10 -> SHOT_11",
+      "REF_03: SHOT_04 -> SHOT_05-10 -> SHOT_11",
+      "REF_04: SHOT_05 -> SHOT_06-07 -> SHOT_08"
+    ],
+    "confidence": 0.96,
+    "universality": "universal",
+    "hypothesized_rule": "Limit isolated B-roll chains to 2-4 shots before returning to presenter to maintain personal connection.",
+    "caveats": "In pure property tours (REF_05), B-roll chains can extend to 10+ shots with presenter acting as voiceover."
+  },
+  {
+    "pattern_id": "PAT_BROLL_01",
+    "family": "BROLL_PATTERNS",
+    "name": "Dynamic Motion B-roll (Slow Pan / Push-In / Drone)",
+    "description": "B-roll footage is never completely static; it always features subtle camera motion (gimbal push-in, slow pan, or drone flight) to maintain kinetic energy.",
+    "observed_trigger": "Displaying architectural space, room, or external landscape.",
+    "editorial_intent": "Convey depth, luxury, and three-dimensional spatial understanding.",
+    "visual_response": "Smooth forward push-in, lateral slider pan, or descending drone shot.",
+    "technique": "Slow cinematic movement (duration 1.5s - 3.5s per shot).",
+    "supporting_refs": [
+      "REF_03",
+      "REF_04",
+      "REF_05"
+    ],
+    "support_count": 3,
+    "example_shots": [
+      "REF_03: SHOT_05, 09",
+      "REF_04: SHOT_06, 07",
+      "REF_05: SHOT_04, 06, 08, 11"
+    ],
+    "confidence": 0.92,
+    "universality": "frequent",
+    "hypothesized_rule": "When selecting property video segments or photos, prioritize footage with forward/lateral movement or apply slow digital Ken Burns push (1.05x).",
+    "caveats": "Motion must be smooth; erratic handheld shaking degrades perceived property value."
+  },
+  {
+    "pattern_id": "PAT_BROLL_02",
+    "family": "BROLL_PATTERNS",
+    "name": "Macro Detail / Texture Cutaways for Premium Quality",
+    "description": "Brief insertion of close-up detail shots (fixtures, marble, barbecue grill, glass balcony railing) alongside wide room shots.",
+    "observed_trigger": "Speech highlighting finish quality, decoration, or premium materials.",
+    "editorial_intent": "Highlight high-end craftsmanship and tactile luxury.",
+    "visual_response": "Tight close-up shot (1.0s - 2.2s) showing texture or architectural detail.",
+    "technique": "Fast cutaway inserted between wider room shots.",
+    "supporting_refs": [
+      "REF_01",
+      "REF_03",
+      "REF_05"
+    ],
+    "support_count": 3,
+    "example_shots": [
+      "REF_01: SHOT_14 (dispensa detail)",
+      "REF_03: SHOT_10 (decorado detail)",
+      "REF_05: SHOT_07, 10 (acabamentos)"
+    ],
+    "confidence": 0.88,
+    "universality": "frequent",
+    "hypothesized_rule": "Pair wide room establishing shots with tight detail inserts when script mentions high-end finishes.",
+    "caveats": "Requires rich b-roll library with macro coverage."
+  },
+  {
+    "pattern_id": "PAT_PACE_01",
+    "family": "PACING_PATTERNS",
+    "name": "Dynamic Acceleration Curve (Hook Fast -> Body Steady -> CTA Punchy)",
+    "description": "Shot pacing accelerates in the opening hook (avg 1.8s/shot), stabilizes in the narrative body (avg 3.2s/shot), and tightens during the final call to action (avg 2.1s/shot).",
+    "observed_trigger": "Progression across narrative phases of the script.",
+    "editorial_intent": "Hook attention quickly, allow deep comprehension during explanation, and drive urgency during closing conversion.",
+    "visual_response": "Pacing adapts dynamically from 30+ cuts/min (start) to 18 cuts/min (body) to 25 cuts/min (CTA).",
+    "technique": "Variable cut duration according to narrative section.",
+    "supporting_refs": [
+      "REF_01",
+      "REF_02",
+      "REF_03",
+      "REF_04"
+    ],
+    "support_count": 4,
+    "example_shots": [
+      "REF_01: Hook 1.4s -> Body 3.6s -> CTA 2.4s",
+      "REF_03: Hook 1.8s -> Body 2.8s -> CTA 1.9s",
+      "REF_04: Hook 2.3s -> Body 6.2s -> CTA 3.1s"
+    ],
+    "confidence": 0.95,
+    "universality": "universal",
+    "hypothesized_rule": "Structure shot durations with a 3-tier pacing curve: Hook (< 2.2s), Body (2.5s - 4.5s), CTA (< 2.5s).",
+    "caveats": "Pure contemplative walkthroughs (REF_05) maintain a steadier rhythm throughout."
+  },
+  {
+    "pattern_id": "PAT_INTERRUPT_01",
+    "family": "PATTERN_INTERRUPTS",
+    "name": "High-Cadence Pattern Interruption (Every 2.5s - 4.0s)",
+    "description": "To sustain audience retention on short-form feeds, a noticeable sensory change (cut, scale punch, text pop, sound effect, or b-roll switch) occurs at least once every 3.4 seconds on average.",
+    "observed_trigger": "Continuous playback time reaching 3.0 - 4.0s without visual change.",
+    "editorial_intent": "Prevent habituation, reset viewer attention span and eliminate visual stagnation.",
+    "visual_response": "Trigger cut, zoom, graphic badge, or sound marker.",
+    "technique": "Multi-modal micro-disruption.",
+    "supporting_refs": [
+      "REF_01",
+      "REF_02",
+      "REF_03",
+      "REF_04"
+    ],
+    "support_count": 4,
+    "example_shots": [
+      "REF_02: 25 interrupts (every 2.5s)",
+      "REF_03: 23 interrupts (every 3.1s)",
+      "REF_01: 11 interrupts (every 7.1s)"
+    ],
+    "confidence": 0.94,
+    "universality": "universal",
+    "hypothesized_rule": "Never allow more than 4.5s of identical visual framing without triggering a pattern interrupt.",
+    "caveats": "Interrupt intensity must match brand archetype (subtle punch for luxury vs bold kinetic graphics for sales pitch)."
+  },
+  {
+    "pattern_id": "PAT_TYPO_01",
+    "family": "TYPOGRAPHY_PATTERNS",
+    "name": "Persistent Top Headline Banner for Silent Feed Scrollers",
+    "description": "A permanent high-contrast rectangular banner is placed at the top of the frame (above safe zones), stating the main offer or location throughout the entire video.",
+    "observed_trigger": "Real estate promotional video targeting social media feed users.",
+    "editorial_intent": "Provide instantaneous context to muted/silent viewers in the first 0.5s of scrolling.",
+    "visual_response": "Fixed top badge with bold typography (\"SEU LOTE EM GUARAPARI\", \"PRÉ-LANÇAMENTO JOCKEY\").",
+    "technique": "Static overlay positioned in safe top margin (y: 8-15%).",
+    "supporting_refs": [
+      "REF_03",
+      "REF_04"
+    ],
+    "support_count": 2,
+    "example_shots": [
+      "REF_03: Top headline throughout 70s",
+      "REF_04: Top headline throughout 122s"
+    ],
+    "confidence": 0.91,
+    "universality": "frequent",
+    "hypothesized_rule": "Optionally enable a persistent top headline banner for feed ads to maximize instant thematic recognition.",
+    "caveats": "Not used in personal organic storytelling (REF_01, REF_02) where it might feel too commercial."
+  },
+  {
+    "pattern_id": "PAT_TYPO_02",
+    "family": "TYPOGRAPHY_PATTERNS",
+    "name": "Kinetic Subtitles with Highlight Color on High-Value Words",
+    "description": "Subtitles are rendered centered in the bottom/middle safe zone, dynamically highlighting emphasized words (numbers, adjectives, verbs) in high-contrast yellow (#FFD700) or green (#00E676).",
+    "observed_trigger": "Speech vocalization.",
+    "editorial_intent": "Guide reading eye, synchronize visual-auditory processing and emphasize key selling points.",
+    "visual_response": "1 to 3 words displayed per beat, with keyword highlighted in accent color.",
+    "technique": "Word-by-word animated captions.",
+    "supporting_refs": [
+      "REF_01",
+      "REF_02",
+      "REF_03",
+      "REF_04",
+      "REF_05"
+    ],
+    "support_count": 5,
+    "example_shots": [
+      "Observed across 100% of reference videos in dataset"
+    ],
+    "confidence": 0.99,
+    "universality": "universal",
+    "hypothesized_rule": "All speech tracks must have synchronized captions with bold sans-serif font and keyword color highlights.",
+    "caveats": "Position captions safely above platform UI controls (bottom 250px margin)."
+  },
+  {
+    "pattern_id": "PAT_TYPO_03",
+    "family": "TYPOGRAPHY_PATTERNS",
+    "name": "Lower-Third Room / Feature Identifier Badge",
+    "description": "When showing an interior space or apartment amenity, an elegant pill badge or lower-third card appears in the lower-left corner indicating the room name and key spec.",
+    "observed_trigger": "Transition to new room or property feature.",
+    "editorial_intent": "Orient the viewer spatially and reinforce architectural value.",
+    "visual_response": "Semi-transparent card (\"Varanda Gourmet Integrada\", \"Suíte Master 18m²\").",
+    "technique": "Subtle lower-third slide-in with 2.5s on-screen duration.",
+    "supporting_refs": [
+      "REF_03",
+      "REF_05"
+    ],
+    "support_count": 2,
+    "example_shots": [
+      "REF_03: SHOT_07-09",
+      "REF_05: SHOT_04, 06, 09"
+    ],
+    "confidence": 0.89,
+    "universality": "frequent",
+    "hypothesized_rule": "Display room title badge during the first 2.0s of entering any new property room b-roll.",
+    "caveats": "Must avoid colliding with dynamic captions."
+  },
+  {
+    "pattern_id": "PAT_SOUND_01",
+    "family": "SOUND_PATTERNS",
+    "name": "Acoustic Punch Markers on Visual Transitions",
+    "description": "Cuts, punch-ins, and graphic pop-ups are accompanied by subtle acoustic markers (whoosh, hit, bass drop, paper slide) tightly ducked under the voice track.",
+    "observed_trigger": "Visual cut, punch-in, or text appearance.",
+    "editorial_intent": "Reinforce visual transition with auditory feedback, increasing perceived production value.",
+    "visual_response": "Visual change synchronized with audio transient SFX.",
+    "technique": "Short SFX (< 300ms) with voice-ducking priority.",
+    "supporting_refs": [
+      "REF_01",
+      "REF_02",
+      "REF_03"
+    ],
+    "support_count": 3,
+    "example_shots": [
+      "REF_01: cuts 01-04",
+      "REF_02: cuts 01-08",
+      "REF_03: transitions on price GCs"
+    ],
+    "confidence": 0.9,
+    "universality": "frequent",
+    "hypothesized_rule": "Pair major visual transitions and price graphics with subtle acoustic accent SFX.",
+    "caveats": "SFX must never overpower voice clarity; keep SFX at -14dB to -18dB relative to dialogue."
+  },
+  {
+    "pattern_id": "PAT_TRANS_01",
+    "family": "TRANSITION_PATTERNS",
+    "name": "Hard Cut Dominance with Motivated Camera Motion Cuts",
+    "description": "Over 88% of all transitions are clean hard cuts. Digital wipes or zooms are reserved strictly for major section breaks or dramatic hooks.",
+    "observed_trigger": "Standard shot-to-shot progression.",
+    "editorial_intent": "Maintain cinematic clarity, avoid tacky amateur transitions, and maximize editorial speed.",
+    "visual_response": "Instant frame switch on audio pause boundary.",
+    "technique": "Direct hard cut (0 frames transition duration).",
+    "supporting_refs": [
+      "REF_01",
+      "REF_02",
+      "REF_03",
+      "REF_04",
+      "REF_05"
+    ],
+    "support_count": 5,
+    "example_shots": [
+      "Present in 118 out of 133 total shots (88.7%)"
+    ],
+    "confidence": 0.99,
+    "universality": "universal",
+    "hypothesized_rule": "Default to hard cuts for all internal shot transitions; use motion blur or whip pans only for chapter resets.",
+    "caveats": "Whip pans are only motivated when camera is already panning in that direction."
+  },
+  {
+    "pattern_id": "PAT_CTA_01",
+    "family": "CTA_PATTERNS",
+    "name": "Presenter Re-Anchoring & Direct Physical Gesture to Platform CTA Button",
+    "description": "In the final 5-8 seconds, the video returns to the presenter looking straight at camera, physically pointing downward towards the screen button (\"Clica no botão aqui embaixo / no link da bio\").",
+    "observed_trigger": "Closing call to action in script.",
+    "editorial_intent": "Remove friction, guide physical user touch, and establish personal closing accountability.",
+    "visual_response": "Presenter medium shot with downward hand gesture + animated arrow or button overlay.",
+    "technique": "Direct-to-camera eye contact + downward pointing gesture + verbal CTA.",
+    "supporting_refs": [
+      "REF_01",
+      "REF_02",
+      "REF_03",
+      "REF_04",
+      "REF_05"
+    ],
+    "support_count": 5,
+    "example_shots": [
+      "REF_01: SHOT_24-25 (\"agora só depende de você\")",
+      "REF_02: SHOT_36-37 (\"liberada no botão de saiba mais\")",
+      "REF_03: SHOT_26-28 (\"só apertar no botão que tem aqui embaixo\")",
+      "REF_04: SHOT_20-21 (\"aperta no botão aqui abaixo, realiza seu cadastro\")",
+      "REF_05: SHOT_21-22 (\"só você clicar no link da bio ou entrar em contato\")"
+    ],
+    "confidence": 0.99,
+    "universality": "universal",
+    "hypothesized_rule": "Always conclude with presenter on camera looking at lens, delivering clear action guidance with downward spatial reference.",
+    "caveats": "Ensure presenter pointing aligns with the actual button placement of the deployment platform (Feed vs Stories vs Reels)."
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "model_id": "MOD_OPPORTUNITY_DISRUPTION_V01",
+  "title": "Opportunity Gain vs Disruption Cost Model",
+  "description": "Evaluates whether changing visual state provides sufficient narrative gain to justify the cognitive cost of interruption.",
+  "epistemic_status": "QUALITATIVE_FRAMEWORK_CANDIDATE",
+  "currently_binding": false,
+  "core_rule": "Asset existence != reason to cut. A visual switch must provide clear qualitative gain over preserving current state continuity.",
+  "disruption_cost_factors": [
+    "Breaking direct presenter eye contact during emotional or trust-critical speech.",
+    "Interrupting viewer spatial orientation during an active room appreciation.",
+    "Introducing rapid visual changes during complex spoken financial terms."
+  ],
+  "opportunity_gain_factors": [
+    "Providing definitive visual proof of a major verbal claim (e.g. location convenience, balcony feature).",
+    "Resolving high visual debt when viewer curiosity peaks.",
+    "Clarifying complex figures with clean, minimal graphic cards."
+  ]
+}

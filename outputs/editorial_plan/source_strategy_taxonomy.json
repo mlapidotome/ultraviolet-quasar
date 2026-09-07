@@ -1,0 +1,45 @@
+{
+  "taxonomy_id": "TAXONOMY_SOURCE_STRATEGY_V01",
+  "title": "Source Strategy Taxonomy",
+  "description": "Declares the abstract visual source domain for a timeline moment. Does not specify concrete files or queries.",
+  "epistemic_status": "QUALITATIVE_TAXONOMY_CANDIDATE",
+  "currently_binding": false,
+  "values": [
+    {
+      "value": "PRESENTER",
+      "description": "On-camera presenter (Marcel) is the primary visual anchor."
+    },
+    {
+      "value": "PROPERTY",
+      "description": "Property footage (interiors, private rooms, balcony) is primary."
+    },
+    {
+      "value": "LOCATION",
+      "description": "Macro-location, neighborhood landmarks, or urban proximity evidence is primary."
+    },
+    {
+      "value": "INFORMATION",
+      "description": "Graphic / typographic / conceptual communication is primary."
+    },
+    {
+      "value": "LIFESTYLE",
+      "description": "Emotional / aspirational use of spaces is primary."
+    },
+    {
+      "value": "CONTEXT",
+      "description": "Atmospheric or environmental framing is primary."
+    },
+    {
+      "value": "MIXED",
+      "description": "Multiple sources intentionally co-exist in the visual strategy."
+    },
+    {
+      "value": "CURRENT_STATE",
+      "description": "Inherits and sustains the active visual source from the previous beat."
+    },
+    {
+      "value": "UNRESOLVED",
+      "description": "Visual source strategy pending further contextual resolution."
+    }
+  ]
+}

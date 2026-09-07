@@ -1,0 +1,65 @@
+{
+  "taxonomy_id": "TAXONOMY_MEDIA_INTENT_V01",
+  "title": "Media Intent Taxonomy",
+  "description": "Describes the intended editorial function of visual media on timeline, without referencing filenames or technical assets.",
+  "epistemic_status": "QUALITATIVE_TAXONOMY_CANDIDATE",
+  "currently_binding": false,
+  "values": [
+    {
+      "value": "presenter_performance",
+      "description": "Deliver persuasive, empathetic, or authoritative human connection."
+    },
+    {
+      "value": "property_reveal",
+      "description": "First impactful view of the primary living space or property highlight."
+    },
+    {
+      "value": "property_demonstration",
+      "description": "Sequential proof and comprehension of layout, rooms, and metrics."
+    },
+    {
+      "value": "property_hero",
+      "description": "Immersive appreciation of a key differentiator (e.g. gourmet balcony)."
+    },
+    {
+      "value": "feature_detail",
+      "description": "Focused visual proof of architectural or finish details."
+    },
+    {
+      "value": "spatial_orientation",
+      "description": "Help viewer mentally map room flow and real-world proportions."
+    },
+    {
+      "value": "location_context",
+      "description": "Establish macro-surroundings and general urban setting."
+    },
+    {
+      "value": "location_proof",
+      "description": "Provide verified evidence of proximity to specified POIs / highways."
+    },
+    {
+      "value": "amenity_proof",
+      "description": "Substantiate common building facilities and leisure infrastructure."
+    },
+    {
+      "value": "lifestyle_projection",
+      "description": "Evoke the emotional experience of living in the property."
+    },
+    {
+      "value": "financial_support",
+      "description": "Visually assist cognitive digestion of pricing, down payment, and installment terms."
+    },
+    {
+      "value": "cta_support",
+      "description": "Guide viewer attention to conversion mechanism and next steps."
+    },
+    {
+      "value": "atmosphere",
+      "description": "Provide mood, light, and aesthetic texture without specific metric claim."
+    },
+    {
+      "value": "continuity_support",
+      "description": "Maintain visual cohesion during verbal bridges and pauses."
+    }
+  ]
+}

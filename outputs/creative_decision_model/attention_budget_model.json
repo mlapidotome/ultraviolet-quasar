@@ -1,0 +1,18 @@
+{
+  "model_id": "MOD_ATTENTION_BUDGET_V01",
+  "title": "Attention Budget & Cognitive Load Model",
+  "description": "Manages viewer cognitive bandwidth to prevent visual clutter and maintain high comprehension.",
+  "epistemic_status": "QUALITATIVE_FRAMEWORK_CANDIDATE",
+  "currently_binding": false,
+  "core_principles": [
+    "Viewer attention is a finite resource; every cut, graphic overlay, or zoom carries cognitive processing cost.",
+    "Technique combinations must not compete simultaneously for the same focal attention.",
+    "Breathing room is actively preserved to allow absorption of real estate value propositions."
+  ],
+  "qualitative_load_levels": [
+    "LOW",
+    "BALANCED",
+    "HIGH",
+    "SATURATED"
+  ]
+}

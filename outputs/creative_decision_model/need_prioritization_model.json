@@ -1,0 +1,43 @@
+{
+  "model_id": "MOD_NEED_PRIORITIZATION_V01",
+  "title": "Contextual Need Prioritization Model",
+  "description": "Resolves editorial priority dynamically based on narrative beat context. Rejects universal or rigid precedence hierarchies.",
+  "epistemic_status": "QUALITATIVE_FRAMEWORK_CANDIDATE",
+  "currently_binding": false,
+  "core_principles": [
+    "Need prioritization is strictly CONTEXTUAL to the active narrative moment.",
+    "No universal precedence hierarchy exists across all beats (e.g., comprehension does not blindly override visual proof without context).",
+    "Needs compete qualitatively based on viewer cognitive state, verbal proposition, and visual debt."
+  ],
+  "candidate_need_categories": [
+    {
+      "category": "COMPREHENSION_RESCUE",
+      "description": "Interventions required when spoken content presents high cognitive complexity, fast numbers, or confusing phrasing.",
+      "typical_context": "Dense financial figures, legal terms, or rapid multi-part statements."
+    },
+    {
+      "category": "PROOF_OBLIGATION",
+      "description": "Interventions where explicit visual evidence is called for by verbal claims.",
+      "typical_context": "Mentions of specific amenities, views, materials, locations, or spaces."
+    },
+    {
+      "category": "NARRATIVE_CLARITY",
+      "description": "Maintaining clear orientation of who is speaking, what property is being shown, and where it is situated.",
+      "typical_context": "Transitions between macro-location, building amenities, and private unit interiors."
+    },
+    {
+      "category": "ENERGY_AND_PACING",
+      "description": "Managing rhythm, pauses, and momentum across the narrative arc.",
+      "typical_context": "Breathing pauses after key revelations or momentum shifts before calls to action."
+    },
+    {
+      "category": "ENGAGEMENT_AND_CONNECTION",
+      "description": "Fostering trust, rapport, and emotional resonance with the presenter and property lifestyle.",
+      "typical_context": "Opening hook questions, personal consultative advice, and direct closing invitations."
+    }
+  ],
+  "conflict_resolution_heuristic": {
+    "approach": "Contextual qualitative evaluation of viewer attention, narrative debt, and disruption cost.",
+    "binding_hierarchy": null
+  }
+}

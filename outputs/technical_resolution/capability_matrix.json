@@ -1,0 +1,93 @@
+{
+  "matrix_id": "CAPABILITY_MATRIX_V01",
+  "title": "Bali Video Engine Capability Matrix (Step 5C)",
+  "engine_version_audited": "Blueprint 1.2 / Composer V3 / Overlay Engine 3C.1 / Multimodal 4C",
+  "epistemic_status": "SYSTEM_AUDIT_SPECIFICATION",
+  "currently_binding": false,
+  "capabilities": [
+    {
+      "editorial_intent": "HOLD (Presenter on camera fullscreen)",
+      "current_engine_capability": "Presenter video fullscreen timeline playback without overlay",
+      "status": "SUPPORTED",
+      "notes": "Directly supported via Blueprint 1.2 visual_timeline with presenter asset or full video pass-through."
+    },
+    {
+      "editorial_intent": "HOLD (Current state sustained / breathing room)",
+      "current_engine_capability": "Extended visual segment duration in visual_timeline",
+      "status": "SUPPORTED",
+      "notes": "Supported by maintaining existing image/video item duration across multiple spoken beats."
+    },
+    {
+      "editorial_intent": "SWITCH to Property Photo (Hero or Sequential)",
+      "current_engine_capability": "Property photo ingestion (4B.2) + Ken Burns pan/zoom in Composer V3",
+      "status": "SUPPORTED",
+      "notes": "Fully supported via Blueprint 1.2 visual_timeline image items with deterministic Ken Burns animation."
+    },
+    {
+      "editorial_intent": "SWITCH to Property Video B-roll (Hero or Sequential)",
+      "current_engine_capability": "Property video segmentation (4A.1) + exact 1:1 trim (source_in_ms / source_out_ms)",
+      "status": "SUPPORTED",
+      "notes": "Fully supported in Composer V3 with strict timeline-to-source duration matching."
+    },
+    {
+      "editorial_intent": "Presenter Voice-over over B-Roll",
+      "current_engine_capability": "Canonical audio track separation (voice master preserved over visual_timeline)",
+      "status": "SUPPORTED",
+      "notes": "Fully supported in Composer V3; audio track is independent of visual cuts."
+    },
+    {
+      "editorial_intent": "Presenter Picture-in-Picture (PIP) over B-Roll",
+      "current_engine_capability": "Lip-synced PIP window with custom or preset geometry, border, rounded rect",
+      "status": "SUPPORTED",
+      "notes": "Fully supported in Composer V3 via pip.windows array and collision validator."
+    },
+    {
+      "editorial_intent": "Captions (Spoken dialogue subtitle)",
+      "current_engine_capability": "TTF font metrics text-wrapped drawtext filter with safe area compliance",
+      "status": "SUPPORTED",
+      "notes": "Fully supported via captions array in Blueprint 1.1 / 1.2."
+    },
+    {
+      "editorial_intent": "Location Tag Overlay (Minimal)",
+      "current_engine_capability": "Overlay type 'location_tag' at 'lower_third' or 'top_safe'",
+      "status": "SUPPORTED",
+      "notes": "Single string location tag supported; styling governed by editing style presets."
+    },
+    {
+      "editorial_intent": "Price Badge Overlay (Single string)",
+      "current_engine_capability": "Overlay type 'price_badge' at 'lower_third' / 'top_safe'",
+      "status": "SUPPORTED",
+      "notes": "Single string price badge supported."
+    },
+    {
+      "editorial_intent": "Hero Financial Information Card (Multi-field structured terms)",
+      "current_engine_capability": "Overlay engine currently supports single text string per overlay item",
+      "status": "PARTIALLY_SUPPORTED",
+      "notes": "Requires Design Resolution and minor engine extension: multi-line/multi-field structured card (R$350k + MCMV + Entrada R$60-70k + Parcelas R$2.000)."
+    },
+    {
+      "editorial_intent": "Minimal CTA End Card / Button Badge",
+      "current_engine_capability": "Overlay type 'cta_banner' at 'bottom_safe'",
+      "status": "PARTIALLY_SUPPORTED",
+      "notes": "Basic banner supported; dedicated branded button badge / end card is a design system extension."
+    },
+    {
+      "editorial_intent": "Presenter Punch-in (Subtle reframing without source cut)",
+      "current_engine_capability": "Composer supports scale/crop per visual item, but dynamic zoom on continuous video requires segment split",
+      "status": "PARTIALLY_SUPPORTED",
+      "notes": "Can be executed by splitting presenter video timeline item and applying scale transform."
+    },
+    {
+      "editorial_intent": "Verified Location Proof (Geographic proximity / route / POI)",
+      "current_engine_capability": "Engine manages internal property media pool only; no external POI/map sourcing system exists",
+      "status": "REQUIRES_EXTERNAL_MEDIA",
+      "notes": "Engine can render location video/photo IF provided in media pool, but lacks automated external geographic sourcing."
+    },
+    {
+      "editorial_intent": "Clean Frame Dismissal (Graphic cleanse)",
+      "current_engine_capability": "Overlays bound to exact start_ms / end_ms time windows",
+      "status": "SUPPORTED",
+      "notes": "Fully supported; overlay cleanly ends at specified timestamp."
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "taxonomy_id": "TAXONOMY_COMPOSITION_INTENT_V01",
+  "title": "Composition Intent Taxonomy",
+  "description": "Qualitative framing and spatial arrangement goals. Excludes pixels, crops, scales, and coordinates.",
+  "epistemic_status": "QUALITATIVE_TAXONOMY_CANDIDATE",
+  "currently_binding": false,
+  "values": [
+    "human_focused",
+    "property_focused",
+    "immersive",
+    "informational",
+    "clean",
+    "spacious",
+    "contextual",
+    "detail_oriented",
+    "hero",
+    "supporting",
+    "minimal",
+    "balanced"
+  ]
+}

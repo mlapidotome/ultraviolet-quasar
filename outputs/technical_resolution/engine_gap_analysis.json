@@ -1,0 +1,40 @@
+{
+  "analysis_id": "ENGINE_GAP_ANALYSIS_V01",
+  "title": "Video Engine Gap Analysis: Editorial Plan vs. Engine Capabilities",
+  "epistemic_status": "SYSTEM_DIAGNOSTIC",
+  "currently_binding": false,
+  "gap_categories": {
+    "ALREADY_SUPPORTED": [
+      "HOLD presenter on camera (full video playback)",
+      "SWITCH to property photo with Ken Burns pan/zoom",
+      "SWITCH to property video B-roll with 1:1 trim",
+      "Visual breathing room / extended duration across beats",
+      "Presenter voice-over preservation over visual cuts",
+      "Picture-in-Picture (PIP) lip-sync window",
+      "Word/phrase captions with TTF-measured wrapping and safe rectangles",
+      "Single-line location tag and price badge overlays",
+      "Clean frame overlay dismissal at exact timestamps",
+      "Deterministic asset validation (SHA-256 byte hashing & ownership check)"
+    ],
+    "SMALL_EXTENSION": [
+      "Presenter Punch-in: splitting continuous presenter timeline item to apply scale transform",
+      "Multi-line structured overlay: allowing 2-3 structured fields inside a single overlay card container"
+    ],
+    "NEW_ENGINE_CAPABILITY": [
+      "Automated route/map animation generation (e.g. animated drive time from property to shopping)",
+      "Dynamic tracked callouts anchored to video feature coordinates"
+    ],
+    "DESIGN_SYSTEM_GAP": [
+      "Structured Financial Card design specification (typography hierarchy, padding, accent colors)",
+      "Minimal CTA Button Badge component layout",
+      "Design token calibration for luxury real estate graphics"
+    ],
+    "EXTERNAL_MEDIA_GAP": [
+      "Automated sourcing and verification of external geographic POI footage / maps (Beat 04)",
+      "Geographic verification pipeline distinguishing atmospheric drone from factual location proof"
+    ],
+    "CALIBRATION_GAP": [
+      "Beat 08: Commercial decision on whether monthly installment (~R$2.000) or total price (R$350.000) dominates financial card"
+    ]
+  }
+}

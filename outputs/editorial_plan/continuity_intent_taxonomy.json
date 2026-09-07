@@ -1,0 +1,18 @@
+{
+  "taxonomy_id": "TAXONOMY_CONTINUITY_INTENT_V01",
+  "title": "Continuity Intent Taxonomy",
+  "description": "Specifies narrative and perceptual continuity goals across timeline boundaries.",
+  "epistemic_status": "QUALITATIVE_TAXONOMY_CANDIDATE",
+  "currently_binding": false,
+  "values": [
+    "PRESERVE_PERFORMANCE",
+    "PRESERVE_VOICE_OVER",
+    "PRESERVE_SPATIAL_FLOW",
+    "PRESERVE_EMOTIONAL_FLOW",
+    "ALLOW_VISUAL_REANCHOR",
+    "ALLOW_SOURCE_CHANGE",
+    "CREATE_PAYOFF",
+    "RESET_VISUAL_LOAD",
+    "MAINTAIN_CURRENT_STATE"
+  ]
+}

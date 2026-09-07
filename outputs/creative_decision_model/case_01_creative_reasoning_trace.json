@@ -1,0 +1,828 @@
+{
+  "case_id": "CASE_01",
+  "property_name": "Residencial Júlia",
+  "location": "Taubaté, SP (próximo ao Taubaté Shopping e Shibata, acesso à Dutra e Carvalho Pinto)",
+  "presenter": "Marcel",
+  "source_file": "C:\\Users\\Marcel\\Downloads\\Bali_Julia_EDIT01_v2.mov",
+  "provenance": {
+    "ground_truth_source": "HUMAN_HOMOLOGATED_TRANSCRIPT",
+    "ground_truth_authority": "HUMAN_HOMOLOGATED_CASE_GROUND_TRUTH",
+    "ground_truth_locked": true,
+    "safeguard": "Case ground truth must never be silently replaced by similarly named media, filenames, previous analyses, reference datasets or inferred content."
+  },
+  "total_beats": 10,
+  "epistemic_status": "VALIDATION_REASONING_TRACE",
+  "currently_binding": false,
+  "canonical_narrative_functions_enforced": true,
+  "beats": [
+    {
+      "decision_id": "DEC_CASE01_BEAT_01",
+      "beat_id": "BEAT_01",
+      "time_range": "00:00.000 - 00:06.440",
+      "duration_seconds": 6.44,
+      "spoken_text": "Por que continuar pagando aluguel se você pode morar a minutos do Taubaté Shopping e do Shibata pagando parcelas de R$2.000?",
+      "interpretation": {
+        "narrative_functions": [
+          "HOOK",
+          "PAIN",
+          "PROMISE",
+          "OFFER"
+        ],
+        "subjects": [
+          "rent_vs_own",
+          "installment_affordability",
+          "location_proximity",
+          "shopping_supermarket"
+        ],
+        "domain_entities": [
+          "Taubaté Shopping",
+          "Supermercado Shibata",
+          "R$ 2.000"
+        ],
+        "viewer_effects": [
+          "curiosity",
+          "identification",
+          "value_perception",
+          "reassurance"
+        ],
+        "narrative_arc_state": "setup",
+        "emotional_mode": "confident",
+        "editorial_importance": "MAJOR",
+        "evidence_need": "MEDIUM"
+      },
+      "primary_need": "HUMAN_CONNECTION",
+      "secondary_needs": [
+        "INFORMATION_CLARITY",
+        "HOOK_POWER"
+      ],
+      "constraints": [
+        "CONTINUITY",
+        "PERFORMANCE_PRESERVATION"
+      ],
+      "narrative_arc_context": "Opening hook of the video. Establishes the core problem (rental trap) versus the accessible dream (living near premier shopping in Taubaté for ~R$2.000/mo).",
+      "visual_debt": "Pending expectation to see the mentioned location (Taubaté Shopping / Shibata) and property, but no immediate mandatory cut.",
+      "current_visual_state": {
+        "source_type": "presenter_on_camera",
+        "subject": "presenter (Marcel)",
+        "framing": "medium_shot",
+        "presenter_presence": "FULLSCREEN",
+        "property_presence": "ABSENT",
+        "active_graphics": [
+          "TECH_CAPTIONS"
+        ],
+        "pacing_feel": "FRESH (video start)"
+      },
+      "media_fitness": "High for presenter delivery on camera.",
+      "opportunity_gain": "LOW (cutting away on the hook would disrupt personal connection and delivery rapport).",
+      "disruption_cost": "HIGH (cutting early breaks personal rapport and hook delivery).",
+      "state_decision": "HOLD",
+      "primary_visual_strategy": "Preserve presenter performance on camera; establish direct human rapport and hook proposition without distracting cuts.",
+      "candidates": [
+        {
+          "candidate_id": "CAND_01_A",
+          "strategy": "HOLD presenter fullscreen with natural delivery",
+          "selected": true
+        },
+        {
+          "candidate_id": "CAND_01_B",
+          "strategy": "CUT to Taubaté Shopping exterior B-roll",
+          "selected": false,
+          "rejection_reason": "Severing eye contact during the opening question undermines presenter trust and authority."
+        },
+        {
+          "candidate_id": "CAND_01_C",
+          "strategy": "FULLSCREEN graphic text card comparing Rent vs Buy",
+          "selected": false,
+          "rejection_reason": "Premature graphics distract from natural spoken hook delivery."
+        }
+      ],
+      "selected_techniques": [],
+      "alternative_strategy": "CUT to Taubaté Shopping exterior B-roll",
+      "rejection_rationale": "Cutting immediately to shopping/supermarket footage would sever human trust during the opening question.",
+      "reasoning": "Presenter's direct address establishes human connection and authority. Zero-effect preserve performance is the strongest editorial choice.",
+      "confidence": "HIGH",
+      "uncertainty": "LOW (visual details beyond presenter framing are UNKNOWN without media inspection)"
+    },
+    {
+      "decision_id": "DEC_CASE01_BEAT_02",
+      "beat_id": "BEAT_02",
+      "time_range": "00:06.440 - 00:09.760",
+      "duration_seconds": 3.32,
+      "spoken_text": "Dá uma olhada nesse apartamento de R$350.000 no Residencial Júlia.",
+      "interpretation": {
+        "narrative_functions": [
+          "REVEAL",
+          "VALUE",
+          "OFFER"
+        ],
+        "subjects": [
+          "property_introduction",
+          "apartment_interior",
+          "price_anchor"
+        ],
+        "domain_entities": [
+          "Residencial Júlia",
+          "R$ 350.000"
+        ],
+        "viewer_effects": [
+          "curiosity",
+          "orientation",
+          "interest"
+        ],
+        "narrative_arc_state": "orientation",
+        "emotional_mode": "enthusiastic",
+        "editorial_importance": "HIGH",
+        "evidence_need": "HIGH"
+      },
+      "primary_need": "VISUAL_PAYOFF",
+      "secondary_needs": [
+        "PROOF_OBLIGATION",
+        "NARRATIVE_CLARITY"
+      ],
+      "constraints": [
+        "CLARITY"
+      ],
+      "narrative_arc_context": "Direct invitation transitioning from hook question to property introduction.",
+      "visual_debt": "Phrase 'Dá uma olhada' creates strong editorial relevance for visual payoff of the apartment.",
+      "current_visual_state": {
+        "source_type": "presenter_on_camera",
+        "subject": "presenter (Marcel)",
+        "framing": "medium_shot",
+        "presenter_presence": "FULLSCREEN",
+        "property_presence": "ABSENT",
+        "active_graphics": [
+          "TECH_CAPTIONS"
+        ],
+        "pacing_feel": "SETTLED"
+      },
+      "media_fitness": "High for interior living room hero reveal B-roll.",
+      "opportunity_gain": "HIGH (answering 'Dá uma olhada' with the apartment interior delivers clear visual payoff).",
+      "disruption_cost": "LOW (verbal transition invites change of perspective).",
+      "state_decision": "SWITCH",
+      "primary_visual_strategy": "Switch to hero reveal of apartment interior/living room matching the direct invitation 'Dá uma olhada'.",
+      "candidates": [
+        {
+          "candidate_id": "CAND_02_A",
+          "strategy": "SWITCH to living room hero B-roll",
+          "selected": true
+        },
+        {
+          "candidate_id": "CAND_02_B",
+          "strategy": "HOLD on presenter and show lower-third price card R$350.000",
+          "selected": false,
+          "rejection_reason": "Fails to satisfy the explicit visual promise 'Dá uma olhada'."
+        }
+      ],
+      "selected_techniques": [
+        "T_BROLL_HERO_REVEAL"
+      ],
+      "alternative_strategy": "HOLD presenter on camera and display price card",
+      "rejection_rationale": "Remaining on presenter after 'Dá uma olhada' denies the viewer the requested view of the property.",
+      "reasoning": "Fulfills the narrative invitation 'Dá uma olhada' by showcasing the main interior space.",
+      "confidence": "HIGH",
+      "uncertainty": "LOW (specific camera movement of B-roll asset is UNKNOWN)"
+    },
+    {
+      "decision_id": "DEC_CASE01_BEAT_03",
+      "beat_id": "BEAT_03",
+      "time_range": "00:09.760 - 00:12.239",
+      "duration_seconds": 2.48,
+      "spoken_text": "A localização é perfeita para o dia a dia.",
+      "interpretation": {
+        "narrative_functions": [
+          "VALUE",
+          "EXPLANATION"
+        ],
+        "subjects": [
+          "location_value",
+          "convenience_bridge"
+        ],
+        "domain_entities": [],
+        "viewer_effects": [
+          "anticipation",
+          "reassurance"
+        ],
+        "narrative_arc_state": "development",
+        "emotional_mode": "calm",
+        "editorial_importance": "MEDIUM",
+        "evidence_need": "LOW"
+      },
+      "primary_need": "BREATHING_ROOM",
+      "secondary_needs": [
+        "NARRATIVE_CONTINUITY"
+      ],
+      "constraints": [
+        "AVOID_OVER_CUTTING"
+      ],
+      "narrative_arc_context": "Short bridge sentence transitioning from initial reveal to location benefits.",
+      "visual_debt": "Bridge sentence sets up upcoming location details without needing an instant micro-cut.",
+      "current_visual_state": {
+        "source_type": "broll_insert",
+        "subject": "Apartment living room hero",
+        "framing": "wide_interior",
+        "presenter_presence": "VOICEOVER",
+        "property_presence": "FULLSCREEN",
+        "active_graphics": [
+          "TECH_CAPTIONS"
+        ],
+        "pacing_feel": "FRESH"
+      },
+      "media_fitness": "High to sustain living room shot.",
+      "opportunity_gain": "LOW (cutting on a 2.48s bridge creates visual fatigue).",
+      "disruption_cost": "HIGH (rapid micro-cutting disrupts spatial appreciation).",
+      "state_decision": "HOLD",
+      "primary_visual_strategy": "Hold living room B-roll across short verbal transition to maintain pacing and allow visual breathing room.",
+      "candidates": [
+        {
+          "candidate_id": "CAND_03_A",
+          "strategy": "HOLD living room B-roll shot",
+          "selected": true
+        },
+        {
+          "candidate_id": "CAND_03_B",
+          "strategy": "CUT immediately to location map",
+          "selected": false,
+          "rejection_reason": "Cutting immediately on a short bridge sentence creates visual restlessness."
+        }
+      ],
+      "selected_techniques": [],
+      "alternative_strategy": "CUT to location map",
+      "rejection_rationale": "Cutting immediately to a map on a short bridge sentence creates visual restlessness before the specific amenities are mentioned.",
+      "reasoning": "Allows the viewer to appreciate the apartment interior while audio bridges into location.",
+      "confidence": "HIGH",
+      "uncertainty": "LOW"
+    },
+    {
+      "decision_id": "DEC_CASE01_BEAT_04",
+      "beat_id": "BEAT_04",
+      "time_range": "00:12.239 - 00:19.200",
+      "duration_seconds": 6.96,
+      "spoken_text": "Você estará a poucos minutos do Taubaté Shopping, coladinho ao supermercado Shibata e com acesso ultra rápido à Dutra e Carvalho Pinto.",
+      "interpretation": {
+        "narrative_functions": [
+          "PROOF",
+          "EXPLANATION",
+          "VALUE"
+        ],
+        "subjects": [
+          "macro_location",
+          "highway_access",
+          "shopping_proximity",
+          "supermarket_proximity"
+        ],
+        "domain_entities": [
+          "Taubaté Shopping",
+          "Supermercado Shibata",
+          "Rodovia Presidente Dutra",
+          "Rodovia Carvalho Pinto"
+        ],
+        "viewer_effects": [
+          "reassurance",
+          "clarity",
+          "geographic_orientation"
+        ],
+        "narrative_arc_state": "development",
+        "emotional_mode": "confident",
+        "editorial_importance": "HIGH",
+        "evidence_need": "HIGH"
+      },
+      "primary_need": "VISUAL_PROOF",
+      "secondary_needs": [
+        "INFORMATION_CLARITY",
+        "CONVENIENCE_EMPHASIS"
+      ],
+      "constraints": [
+        "GEOGRAPHIC_ACCURACY"
+      ],
+      "narrative_arc_context": "Location proof segment detailing proximity to Taubaté Shopping, Shibata, Dutra and Carvalho Pinto.",
+      "visual_debt": "Specific mention of landmarks creates demand for verified location proof/context.",
+      "current_visual_state": {
+        "source_type": "broll_insert",
+        "subject": "Apartment living room hero",
+        "framing": "wide_interior",
+        "presenter_presence": "VOICEOVER",
+        "property_presence": "FULLSCREEN",
+        "active_graphics": [
+          "TECH_CAPTIONS"
+        ],
+        "pacing_feel": "EXTENDED"
+      },
+      "media_fitness": "UNKNOWN (no external geographical evidence or verified POI media analyzed)",
+      "evidence_strength": "UNKNOWN (generic drone footage provides atmosphere but not verified geographic proof)",
+      "opportunity_gain": "HIGH (substantiating proximity to shopping and highways delivers strong narrative proof).",
+      "disruption_cost": "MEDIUM (warranted by 7-second duration and concrete location claims).",
+      "state_decision": "SWITCH",
+      "primary_visual_strategy": "LOCATION_EVIDENCE_REQUIRED: Switch to verified location evidence (verified POI context, route visualization, or verified aerial/street landmarks); if only unverified atmospheric drone exists, treat evidence strength as UNKNOWN rather than confirmed geographic proof.",
+      "candidates": [
+        {
+          "candidate_id": "CAND_04_A",
+          "strategy": "SWITCH to verified location evidence / B-roll with clean location tag",
+          "selected": true
+        },
+        {
+          "candidate_id": "CAND_04_B",
+          "strategy": "SWITCH to fullscreen complex animated map",
+          "selected": false,
+          "rejection_reason": "Heavy unverified map animation adds cognitive clutter."
+        }
+      ],
+      "selected_techniques": [
+        "T_BROLL_HERO_REVEAL",
+        "T_LOWER_THIRD_LOCATION_TAG"
+      ],
+      "alternative_strategy": "FULLSCREEN animated map graphic",
+      "rejection_rationale": "Complex animated map would add excessive graphic load and disrupt video rhythm.",
+      "reasoning": "Demands verified visual proof of location advantages with minimal, elegant typography, recognizing that unverified drone footage remains UNKNOWN in evidentiary value.",
+      "confidence": "MEDIUM",
+      "uncertainty": "HIGH (geographic verification of B-roll footage and specific POI footage availability is UNKNOWN)"
+    },
+    {
+      "decision_id": "DEC_CASE01_BEAT_05",
+      "beat_id": "BEAT_05",
+      "time_range": "00:19.200 - 00:27.440",
+      "duration_seconds": 8.24,
+      "spoken_text": "O apartamento tem 68m² muito bem planejados: sala espaçosa, cozinha funcional, dois banheiros, dois dormitórios sendo uma suíte privativa.",
+      "interpretation": {
+        "narrative_functions": [
+          "DEMONSTRATION",
+          "PROOF",
+          "EXPLANATION"
+        ],
+        "subjects": [
+          "floor_plan",
+          "square_meters",
+          "living_room",
+          "kitchen",
+          "bathrooms",
+          "bedrooms",
+          "suite"
+        ],
+        "domain_entities": [
+          "68m²",
+          "2 banheiros",
+          "2 dormitórios",
+          "1 suíte"
+        ],
+        "viewer_effects": [
+          "spatial_understanding",
+          "comfort",
+          "practicality"
+        ],
+        "narrative_arc_state": "development",
+        "emotional_mode": "informative",
+        "editorial_importance": "HIGH",
+        "evidence_need": "HIGH"
+      },
+      "primary_need": "DEMONSTRATION_CLARITY",
+      "secondary_needs": [
+        "VISUAL_PROOF",
+        "BREATHING_ROOM"
+      ],
+      "constraints": [
+        "COHERENT_TOUR"
+      ],
+      "narrative_arc_context": "Core property demonstration describing the 68m² layout, living room, kitchen, 2 bathrooms and 2 bedrooms (1 suite).",
+      "visual_debt": "Detailed enumeration of layout invites visual walkthrough of interior spaces.",
+      "current_visual_state": {
+        "source_type": "broll_insert",
+        "subject": "Location evidence / neighborhood context",
+        "framing": "wide_context",
+        "presenter_presence": "VOICEOVER",
+        "property_presence": "CONTEXTUAL",
+        "active_graphics": [
+          "T_LOWER_THIRD_LOCATION_TAG"
+        ],
+        "pacing_feel": "EXTENDED"
+      },
+      "media_fitness": "High for interior sequential detail footage.",
+      "opportunity_gain": "HIGH (returning to interior and touring kitchen, bathrooms, and bedrooms satisfies the architectural breakdown).",
+      "disruption_cost": "LOW (narrative explicitly shifts from macro-location to micro-unit).",
+      "state_decision": "SWITCH",
+      "primary_visual_strategy": "Switch to sequential coverage of apartment interior spaces (living, kitchen, suite) matching spoken tour.",
+      "candidates": [
+        {
+          "candidate_id": "CAND_05_A",
+          "strategy": "SWITCH to sequential detail shots of interior rooms",
+          "selected": true
+        },
+        {
+          "candidate_id": "CAND_05_B",
+          "strategy": "HOLD on location footage and display on-screen bulleted text list of specs",
+          "selected": false,
+          "rejection_reason": "Text list clutters the frame and fails to showcase real interior finishes."
+        }
+      ],
+      "selected_techniques": [
+        "T_BROLL_SEQUENTIAL_DETAIL"
+      ],
+      "alternative_strategy": "On-screen bulleted text list of specs",
+      "rejection_rationale": "On-screen bulleted text list would clutter the screen and distract from visual appreciation of the space.",
+      "reasoning": "Sequential visual coverage provides natural proof of 68m² layout without visual pollution.",
+      "confidence": "HIGH",
+      "uncertainty": "LOW"
+    },
+    {
+      "decision_id": "DEC_CASE01_BEAT_06",
+      "beat_id": "BEAT_06",
+      "time_range": "00:27.440 - 00:31.799",
+      "duration_seconds": 4.36,
+      "spoken_text": "E o destaque especial: uma varanda deliciosa com churrasqueira para curtir o fim de semana.",
+      "interpretation": {
+        "narrative_functions": [
+          "DESIRE",
+          "VALUE",
+          "PROOF"
+        ],
+        "subjects": [
+          "balcony",
+          "barbecue",
+          "weekend_lifestyle",
+          "hero_amenity"
+        ],
+        "domain_entities": [
+          "Varanda com churrasqueira"
+        ],
+        "viewer_effects": [
+          "desire",
+          "relaxation",
+          "lifestyle_aspiration"
+        ],
+        "narrative_arc_state": "climax_feature",
+        "emotional_mode": "warm_enthusiastic",
+        "editorial_importance": "MAJOR",
+        "evidence_need": "HIGH"
+      },
+      "primary_need": "LIFESTYLE_HERO_PAYOFF",
+      "secondary_needs": [
+        "VISUAL_PROOF",
+        "EMOTIONAL_ELEVATION"
+      ],
+      "constraints": [
+        "HIGHLIGHT_HERO_FEATURE"
+      ],
+      "narrative_arc_context": "Lifestyle highlight presenting the balcony and barbecue space as the emotional hero feature.",
+      "visual_debt": "Verbal cue 'destaque especial: uma varanda deliciosa com churrasqueira' focuses attention entirely on the balcony.",
+      "current_visual_state": {
+        "source_type": "broll_insert",
+        "subject": "Interior bedrooms / suite",
+        "framing": "medium_interior",
+        "presenter_presence": "VOICEOVER",
+        "property_presence": "FULLSCREEN",
+        "active_graphics": [
+          "TECH_CAPTIONS"
+        ],
+        "pacing_feel": "SETTLED"
+      },
+      "media_fitness": "High for balcony / barbecue hero footage.",
+      "opportunity_gain": "HIGH (showcasing the key differentiator and lifestyle hero space).",
+      "disruption_cost": "LOW (verbal emphasis marks a distinct highlight moment).",
+      "state_decision": "SWITCH",
+      "primary_visual_strategy": "Switch to hero reveal of the balcony with barbecue, holding the shot to allow lifestyle appreciation.",
+      "candidates": [
+        {
+          "candidate_id": "CAND_06_A",
+          "strategy": "SWITCH to hero reveal of balcony with barbecue",
+          "selected": true
+        },
+        {
+          "candidate_id": "CAND_06_B",
+          "strategy": "SPLIT_SCREEN showing balcony and exterior view simultaneously",
+          "selected": false,
+          "rejection_reason": "Split screen fragments attention and cheapens the aesthetic."
+        }
+      ],
+      "selected_techniques": [
+        "T_BROLL_HERO_REVEAL"
+      ],
+      "alternative_strategy": "SPLIT_SCREEN showing balcony and exterior view",
+      "rejection_rationale": "Split screen fragments attention and cheapens the aesthetic in real estate short-form video.",
+      "reasoning": "Hero reveal of balcony allows viewer to emotionally connect with weekend leisure and lifestyle.",
+      "confidence": "HIGH",
+      "uncertainty": "LOW"
+    },
+    {
+      "decision_id": "DEC_CASE01_BEAT_07",
+      "beat_id": "BEAT_07",
+      "time_range": "00:31.799 - 00:37.040",
+      "duration_seconds": 5.24,
+      "spoken_text": "O condomínio conta com portaria remota 24h, salão de festas, área gourmet, playground e vaga coberta.",
+      "interpretation": {
+        "narrative_functions": [
+          "PROOF",
+          "EXPLANATION",
+          "VALUE"
+        ],
+        "subjects": [
+          "condominium_amenities",
+          "security",
+          "leisure_facilities",
+          "parking"
+        ],
+        "domain_entities": [
+          "Portaria remota 24h",
+          "Salão de festas",
+          "Área gourmet",
+          "Playground",
+          "Vaga coberta"
+        ],
+        "viewer_effects": [
+          "security",
+          "family_appeal",
+          "completeness"
+        ],
+        "narrative_arc_state": "development",
+        "emotional_mode": "reassuring",
+        "editorial_importance": "HIGH",
+        "evidence_need": "HIGH"
+      },
+      "primary_need": "AMENITY_PROOF",
+      "secondary_needs": [
+        "COMPREHENSION",
+        "PACING_CONTROL"
+      ],
+      "constraints": [
+        "SHOW_FACILITIES"
+      ],
+      "narrative_arc_context": "Condominium amenities overview detailing 24h remote concierge, party room, gourmet area, playground, and covered parking.",
+      "visual_debt": "Listing amenities invites visual evidence of condominium infrastructure.",
+      "current_visual_state": {
+        "source_type": "broll_insert",
+        "subject": "Balcony / barbecue hero",
+        "framing": "wide_balcony",
+        "presenter_presence": "VOICEOVER",
+        "property_presence": "FULLSCREEN",
+        "active_graphics": [
+          "TECH_CAPTIONS"
+        ],
+        "pacing_feel": "EXTENDED"
+      },
+      "media_fitness": "High for condo common areas footage.",
+      "opportunity_gain": "HIGH (showing real amenities reinforces security and recreational value).",
+      "disruption_cost": "LOW (clear shift from private unit to building amenities).",
+      "state_decision": "SWITCH",
+      "primary_visual_strategy": "Switch to sequential detail shots of common amenities (facade, playground, party room).",
+      "candidates": [
+        {
+          "candidate_id": "CAND_07_A",
+          "strategy": "SWITCH to sequential detail shots of common amenities",
+          "selected": true
+        },
+        {
+          "candidate_id": "CAND_07_B",
+          "strategy": "HOLD on balcony and overlay animated icon grid",
+          "selected": false,
+          "rejection_reason": "Icon grid creates infomercial clutter."
+        }
+      ],
+      "selected_techniques": [
+        "T_BROLL_SEQUENTIAL_DETAIL"
+      ],
+      "alternative_strategy": "ANIMATED icon grid overlay over balcony shot",
+      "rejection_rationale": "Icon grids create an overly commercial/infomercial feel, contrary to clean editorial elegance.",
+      "reasoning": "Real footage of condominium facilities provides credible proof of infrastructure.",
+      "confidence": "HIGH",
+      "uncertainty": "MEDIUM (specific available amenity takes in B-roll are UNKNOWN)"
+    },
+    {
+      "decision_id": "DEC_CASE01_BEAT_08",
+      "beat_id": "BEAT_08",
+      "time_range": "00:37.040 - 00:44.680",
+      "duration_seconds": 7.64,
+      "spoken_text": "Tudo isso por apenas R$350.000, financiado pelo Minha Casa Minha Vida, com entrada em torno de R$60.000 a R$70.000 e parcelas na faixa de R$2.000.",
+      "interpretation": {
+        "narrative_functions": [
+          "OFFER",
+          "VALUE",
+          "AUTHORITY",
+          "PROOF"
+        ],
+        "subjects": [
+          "total_price",
+          "government_financing_program",
+          "down_payment",
+          "monthly_installments",
+          "financial_feasibility"
+        ],
+        "domain_entities": [
+          "R$ 350.000",
+          "Minha Casa Minha Vida",
+          "Entrada R$ 60.000 a R$ 70.000",
+          "Parcelas R$ 2.000"
+        ],
+        "viewer_effects": [
+          "accessibility",
+          "empowerment",
+          "decision_urgency",
+          "credibility"
+        ],
+        "narrative_arc_state": "financial_climax",
+        "emotional_mode": "authoritative_consultative",
+        "editorial_importance": "CRITICAL",
+        "evidence_need": "HIGH"
+      },
+      "primary_need": "FINANCIAL_CLARITY",
+      "secondary_needs": [
+        "HUMAN_AUTHORITY",
+        "TRUST_ANCHOR"
+      ],
+      "constraints": [
+        "NUMERICAL_ACCURACY",
+        "AVOID_VISUAL_CLUTTER"
+      ],
+      "narrative_arc_context": "Financial anchor and proposition: R$350k total price, MCMV program, R$60-70k down payment, ~R$2k monthly installments.",
+      "visual_debt": "Complex numerical structure benefits from clear typographic anchoring alongside presenter authority.",
+      "current_visual_state": {
+        "source_type": "broll_insert",
+        "subject": "Condo amenities",
+        "framing": "medium_facility",
+        "presenter_presence": "VOICEOVER",
+        "property_presence": "FULLSCREEN",
+        "active_graphics": [
+          "TECH_CAPTIONS"
+        ],
+        "pacing_feel": "EXTENDED"
+      },
+      "media_fitness": "High for return to presenter Marcel + clean financial card.",
+      "opportunity_gain": "HIGH (returning to presenter's face provides human trust for numbers; card aids comprehension).",
+      "disruption_cost": "LOW (major narrative climax warrants strong anchor).",
+      "state_decision": "SWITCH",
+      "primary_visual_strategy": "Return to presenter on camera with subtle punch-in and accompany with a clean, minimal financial summary card.",
+      "candidates": [
+        {
+          "candidate_id": "CAND_08_A",
+          "strategy": "SWITCH to presenter on camera (subtle punch-in) with clean financial card",
+          "selected": true
+        },
+        {
+          "candidate_id": "CAND_08_B",
+          "strategy": "HOLD on B-roll with large animated price sticker",
+          "selected": false,
+          "rejection_reason": "Announcing major financial terms over silent B-roll loses personal consultative authority."
+        }
+      ],
+      "selected_techniques": [
+        "T_PRESENTER_PUNCH_IN",
+        "T_CARD_PRICE_TERMS_HERO"
+      ],
+      "alternative_strategy": "HOLD on B-roll with large animated price sticker",
+      "rejection_rationale": "Announcing major financial terms over silent B-roll loses the personal consultative authority of the realtor.",
+      "reasoning": "Presenter's presence builds trust during financial commitment, while a clean card anchors complex numbers (MCMV, R$350k, parcelas R$2.000).",
+      "confidence": "HIGH",
+      "uncertainty": "LOW"
+    },
+    {
+      "decision_id": "DEC_CASE01_BEAT_09",
+      "beat_id": "BEAT_09",
+      "time_range": "00:44.680 - 00:47.040",
+      "duration_seconds": 2.36,
+      "spoken_text": "E aí, gostou dessa oportunidade?",
+      "interpretation": {
+        "narrative_functions": [
+          "HOOK",
+          "VALUE"
+        ],
+        "subjects": [
+          "consultative_question",
+          "rapport_refresh",
+          "opportunity_reflection"
+        ],
+        "domain_entities": [],
+        "viewer_effects": [
+          "personal_connection",
+          "self_reflection"
+        ],
+        "narrative_arc_state": "cta_bridge",
+        "emotional_mode": "warm_engaging",
+        "editorial_importance": "MEDIUM",
+        "evidence_need": "NONE"
+      },
+      "primary_need": "HUMAN_CONNECTION",
+      "secondary_needs": [
+        "ATTENTION_REFOCUS",
+        "BREATHING_ROOM"
+      ],
+      "constraints": [
+        "CLEAN_FRAME"
+      ],
+      "narrative_arc_context": "Direct personal question bridging from financial numbers to call to action.",
+      "visual_debt": "Direct question invites viewer reflection and reconnection with presenter before final action instruction.",
+      "current_visual_state": {
+        "source_type": "presenter_on_camera",
+        "subject": "presenter (Marcel)",
+        "framing": "medium_close_up",
+        "presenter_presence": "FULLSCREEN",
+        "property_presence": "ABSENT",
+        "active_graphics": [
+          "T_CARD_PRICE_TERMS_HERO",
+          "TECH_CAPTIONS"
+        ],
+        "pacing_feel": "SETTLED"
+      },
+      "media_fitness": "High for presenter on camera.",
+      "opportunity_gain": "MEDIUM (dismissing graphic card refocuses total attention on the presenter's expression).",
+      "disruption_cost": "LOW (clearing graphic elements reduces visual load).",
+      "state_decision": "EVOLVE",
+      "primary_visual_strategy": "Dismiss financial graphic card to clean the frame; hold presenter on camera to establish pure conversational rapport.",
+      "candidates": [
+        {
+          "candidate_id": "CAND_09_A",
+          "strategy": "EVOLVE by dismissing financial card and holding presenter eye contact",
+          "selected": true
+        },
+        {
+          "candidate_id": "CAND_09_B",
+          "strategy": "HOLD price card through the entire CTA",
+          "selected": false,
+          "rejection_reason": "Leaving financial card on screen clutters the frame and competes with CTA."
+        }
+      ],
+      "selected_techniques": [],
+      "alternative_strategy": "HOLD price card on screen through CTA",
+      "rejection_rationale": "Leaving financial card on screen clutters the frame and competes with the upcoming call-to-action.",
+      "reasoning": "Transitioning back to a clean frame allows the presenter's personal question to resonate directly with the viewer.",
+      "confidence": "HIGH",
+      "uncertainty": "LOW"
+    },
+    {
+      "decision_id": "DEC_CASE01_BEAT_10",
+      "beat_id": "BEAT_010",
+      "time_range": "00:47.040 - 00:52.680",
+      "duration_seconds": 5.64,
+      "spoken_text": "Faz o seguinte: clica no botão Saiba Mais, deixe o seu melhor telefone que a nossa equipe vai te chamar e agendar uma visita.",
+      "interpretation": {
+        "narrative_functions": [
+          "CTA",
+          "AUTHORITY",
+          "EXPLANATION"
+        ],
+        "subjects": [
+          "call_to_action",
+          "lead_capture",
+          "visit_scheduling",
+          "friction_reduction"
+        ],
+        "domain_entities": [
+          "Botão Saiba Mais",
+          "Agendamento de visita"
+        ],
+        "viewer_effects": [
+          "clarity_of_action",
+          "low_friction_confidence",
+          "readiness_to_convert"
+        ],
+        "narrative_arc_state": "cta_close",
+        "emotional_mode": "encouraging_clear",
+        "editorial_importance": "CRITICAL",
+        "evidence_need": "LOW"
+      },
+      "primary_need": "ACTION_CLARITY",
+      "secondary_needs": [
+        "TRUST_PRESERVATION",
+        "HUMAN_CLOSING"
+      ],
+      "constraints": [
+        "CLEAR_INSTRUCTION",
+        "MINIMAL_GRAPHICS"
+      ],
+      "narrative_arc_context": "Final call-to-action instructing the viewer to click 'Saiba Mais' and leave phone number for scheduled visit.",
+      "visual_debt": "Instruction to 'clica no botão Saiba Mais' invites subtle directional/minimal closing CTA element.",
+      "current_visual_state": {
+        "source_type": "presenter_on_camera",
+        "subject": "presenter (Marcel)",
+        "framing": "medium_close_up",
+        "presenter_presence": "FULLSCREEN",
+        "property_presence": "ABSENT",
+        "active_graphics": [
+          "TECH_CAPTIONS"
+        ],
+        "pacing_feel": "FRESH"
+      },
+      "media_fitness": "High for presenter on camera + subtle end CTA badge.",
+      "opportunity_gain": "HIGH (combines direct eye contact instruction with minimal actionable overlay).",
+      "disruption_cost": "LOW (natural closing evolution).",
+      "state_decision": "EVOLVE",
+      "primary_visual_strategy": "Evolve presenter base frame by introducing a clean, minimal CTA button badge / end card while preserving direct eye contact closing guidance.",
+      "candidates": [
+        {
+          "candidate_id": "CAND_10_A",
+          "strategy": "EVOLVE presenter on camera with clean minimal CTA button badge / end card",
+          "selected": true
+        },
+        {
+          "candidate_id": "CAND_10_B",
+          "strategy": "CUT to full-screen graphic logo slide",
+          "selected": false,
+          "rejection_reason": "Fullscreen logo card severs human connection at the decisive conversion moment."
+        }
+      ],
+      "selected_techniques": [
+        "T_CTA_END_CARD_MINIMAL"
+      ],
+      "alternative_strategy": "CUT to fullscreen animated logo slide",
+      "rejection_rationale": "Fullscreen logo card severs human connection at the decisive conversion moment.",
+      "reasoning": "Presenter directly instructing action maintains conversion momentum; adding the minimal CTA badge evolves the frame without cutting away.",
+      "confidence": "HIGH",
+      "uncertainty": "LOW"
+    }
+  ]
+}

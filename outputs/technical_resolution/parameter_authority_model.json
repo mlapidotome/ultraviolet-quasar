@@ -1,0 +1,41 @@
+{
+  "model_id": "PARAM_AUTHORITY_MODEL_V01",
+  "title": "Parameter Authority & Provenance Specification",
+  "description": "Enforces that every concrete technical parameter in Technical Resolution has a documented authority source, forbidding arbitrary fabricated numbers.",
+  "epistemic_status": "SYSTEM_SPECIFICATION",
+  "currently_binding": false,
+  "authority_categories": [
+    {
+      "authority": "EXISTING_COMPOSER_CONTRACT",
+      "description": "Mandated by Composer V3 engine specs (e.g. 1080x1920 canvas, 30fps, H.264/AAC, 1:1 source trim invariant, 1500ms min photo duration)."
+    },
+    {
+      "authority": "EXISTING_BALI_DESIGN_TOKEN",
+      "description": "Defined in Bali style presets (styles/presets.js: luxury_minimal, modern_bold, safe rectangles, TTF font registry)."
+    },
+    {
+      "authority": "EXISTING_ASSET_SPEC",
+      "description": "Derived from physical ffprobe / analysis of the media asset (width, height, fps, duration, sample rate, file_hash)."
+    },
+    {
+      "authority": "MEASURED_MEDIA_PROPERTY",
+      "description": "Physical font metrics measured directly from TTF binary (TrueTypeFontMetrics) or semantic analysis scores from 4A/4B/4C."
+    },
+    {
+      "authority": "CALIBRATION_CANDIDATE",
+      "description": "Parameter value proposed for empirical calibration in future testing."
+    },
+    {
+      "authority": "FUTURE_DESIGN_DECISION",
+      "description": "Parameter requiring human design approval (e.g. typography hierarchy in multi-field financial cards)."
+    },
+    {
+      "authority": "FUTURE_ENGINE_CAPABILITY",
+      "description": "Parameter contingent on upcoming engine features (e.g. automated route map generation)."
+    },
+    {
+      "authority": "UNRESOLVED",
+      "description": "Parameter intentionally left open because multiple valid options compete."
+    }
+  ]
+}

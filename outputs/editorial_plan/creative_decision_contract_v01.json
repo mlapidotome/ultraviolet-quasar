@@ -1,0 +1,14 @@
+{
+  "contract_id": "CONTRACT_CREATIVE_DECISION_TO_PLAN_V01",
+  "title": "Creative Decision to Editorial Plan Contract",
+  "description": "Governs the deterministic translation of Creative Decisions into Editorial Plan Units without re-evaluating or contradicting creative choices.",
+  "epistemic_status": "QUALITATIVE_CONTRACT_SPECIFICATION",
+  "currently_binding": false,
+  "translation_rules": [
+    "HOLD decision in CDM MUST map to source_strategy = CURRENT_STATE (or PRESENTER at start), selected_technique_refs = [], and graphic_intent = NONE / inherited.",
+    "EVOLVE decision in CDM MUST preserve base visual source while allowing motivated typographic, graphic, or framing evolution.",
+    "SWITCH decision in CDM MUST declare source_strategy change and specify target media_intent and transition_intent.",
+    "Plan MUST NOT change state_decision (e.g. cannot turn SWITCH into HOLD). If an asset is unavailable, mark UNRESOLVED / PLAN_CONFLICT.",
+    "Editorial Plan MUST NOT introduce render-specific technical parameters (coords, font sizes, hex codes, dB, ms)."
+  ]
+}

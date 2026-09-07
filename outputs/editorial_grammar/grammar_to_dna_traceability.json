@@ -1,0 +1,31 @@
+{
+  "grammar_version": "0.2",
+  "dna_version": "1.1.0-hardened",
+  "mappings": [
+    {
+      "grammar_component": "Narrative Functions & Viewer Effects",
+      "serves_dna_principle": "PRIN_CORE_03 (Intent Before Literality)",
+      "rationale": "Grammar interprets what the sentence is trying to achieve (Narrative Function + Viewer Effect) before seeking visual solutions."
+    },
+    {
+      "grammar_component": "HOLD / EVOLVE / SWITCH State Model",
+      "serves_dna_principle": "PRIN_CORE_02 (Intelligent Dynamism)",
+      "rationale": "Before cutting, the system asks whether an editorial reason exists to change the screen state, preventing timer-based cutting."
+    },
+    {
+      "grammar_component": "Editorial Importance Scale",
+      "serves_dna_principle": "PRIN_CORE_04 (Controlled Impact)",
+      "rationale": "Categorizing beats into SUPPORTING, MEANINGFUL, MAJOR, and HERO dictates emphasis intensity."
+    },
+    {
+      "grammar_component": "Subject vs Narrative Function Orthogonality",
+      "serves_dna_principle": "PRIN_AVOID_02 (Literal Keyword Matching Prohibition)",
+      "rationale": "Decoupling what is mentioned (Subject) from how it is framed (Function) stops naive keyword substring cutting."
+    },
+    {
+      "grammar_component": "Presenter Continuity Preservation in Grammar",
+      "serves_dna_principle": "PRIN_CORE_01 (Human-Led Storytelling)",
+      "rationale": "Presenter presence is recognized as a narrative asset, ensuring the human guide conducts the arc."
+    }
+  ]
+}
