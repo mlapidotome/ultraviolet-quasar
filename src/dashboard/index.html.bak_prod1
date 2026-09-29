@@ -1,0 +1,2812 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Bali Imóveis - Dashboard Gerencial (v1.5 - Fase 3.5E)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .clickable { cursor: pointer; transition: all 0.2s; }
+    .clickable:hover { transform: scale(1.05); }
+    .tab-active { border-bottom: 2px solid #3b82f6; color: #1d4ed8; font-weight: bold; }
+    .tab-inactive { color: #6b7280; }
+    .tab-inactive:hover { color: #374151; }
+    .details-row { display: none; background-color: #f8fafc; }
+    .details-row.open { display: table-row; }
+  </style>
+<script src="/xlsx.full.min.js"></script></head>
+<body class="bg-gray-100 p-8 font-sans">
+  <div class="max-w-7xl mx-auto">
+    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
+
+    <header class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-800">Painel Gerencial de Leads</h1>
+        <div class="flex items-center gap-2.5 mt-2 flex-wrap">
+          <p class="text-gray-600 text-sm" id="meta-periodo">Carregando período...</p>
+          <span class="text-gray-300">•</span>
+          <div class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700 border border-slate-300 shadow-sm" id="badge-base-atualizada" title="Data e hora da gravação real do snapshot no disco">
+            <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            <span id="texto-base-atualizada">Base atualizada em: verificando...</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col items-end gap-2">
+        <span class="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded border border-blue-400">FASE 3.5E - Pauta de Reunião 1:1</span>
+      </div>
+    </header>
+
+    <div class="flex border-b border-gray-300 mb-6">
+      <button onclick="switchTab('visao')" id="tab-visao" class="py-2 px-4 tab-active">Visão Geral (Contagem)</button>
+      <button onclick="switchTab('gestao')" id="tab-gestao" class="py-2 px-4 tab-inactive text-purple-700 font-semibold flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+        Gestão da Carteira (1:1)
+      </button>
+    </div>
+
+    <!-- Barra de Filtros (Global) -->
+    <div class="bg-white p-4 rounded-lg shadow mb-8 flex flex-wrap items-end gap-4">
+      <div class="flex flex-col">
+        <label class="text-xs font-bold text-gray-500 mb-1">Período</label>
+        <div class="flex items-center gap-2">
+          <input type="date" id="filter-inicio" class="text-sm border rounded p-2">
+          <span class="text-gray-400">até</span>
+          <input type="date" id="filter-fim" class="text-sm border rounded p-2">
+        </div>
+      </div>
+        <div class="flex flex-col">
+          <label class="text-xs font-bold text-gray-500 mb-1">Funil</label>
+          <select id="filter-funil" class="text-sm border rounded p-2 w-48" onchange="renderCardsTable()">
+            <option value="todos_exceto_3500">Todos exceto Lançamentos</option>
+          </select>
+        </div>
+      <div class="flex flex-col">
+        <label class="text-xs font-bold text-gray-500 mb-1">Etapa</label>
+        <select id="filter-etapa" class="text-sm border rounded p-2 w-40" onchange="renderCardsTable()"><option value="">Todas</option></select>
+      </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-bold text-gray-600">Corretor</label>
+              <select id="filter-corretor" class="border rounded p-2 text-sm bg-white shadow-sm focus:ring-2 focus:ring-blue-500" onchange="renderCardsTable()"></select>
+            </div>
+            
+            <div class="flex flex-col gap-1 justify-end">
+        <button onclick="applyFilters()" class="bg-blue-500 text-white px-4 py-2 rounded text-sm font-bold">Aplicar</button>
+        <button onclick="clearFilters()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded text-sm font-bold">Limpar</button>
+      </div>
+    </div>
+
+    <!-- TELA 1: Visão Geral -->
+    <div id="view-visao-geral">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-white rounded-lg shadow p-5 border-l-4 border-blue-600">
+          <div class="flex items-center justify-between">
+            <h3 class="text-gray-500 text-xs uppercase font-bold tracking-wider">Leads Únicos (CRM)</h3>
+            <span class="text-xs px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold">Visão Geral</span>
+          </div>
+          <p class="text-4xl font-extrabold text-blue-700 mt-2" id="kpi-unicos">-</p>
+          <span class="text-xs text-gray-500 mt-1 block">Todas as entradas registradas no CRM no período</span>
+        </div>
+        <div class="bg-white rounded-lg shadow p-5 border-l-4 border-indigo-500">
+          <div class="flex items-center justify-between">
+            <h3 class="text-gray-500 text-xs uppercase font-bold tracking-wider">Carteira Operacional</h3>
+            <span class="text-xs px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 font-bold">30 Etapas Ativas</span>
+          </div>
+          <p class="text-4xl font-extrabold text-indigo-700 mt-2" id="kpi-unicos-carteira">-</p>
+          <span class="text-xs text-gray-500 mt-1 block">Clientes comerciais ativos em acompanhamento</span>
+        </div>
+        <div class="bg-white rounded-lg shadow p-5 border-l-4 border-purple-500">
+          <div class="flex items-center justify-between">
+            <h3 class="text-gray-500 text-xs uppercase font-bold tracking-wider">Total de Cards</h3>
+            <span class="text-xs px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-bold">Participações</span>
+          </div>
+          <p class="text-4xl font-extrabold text-purple-700 mt-2" id="kpi-cards">-</p>
+          <span class="text-xs text-gray-500 mt-1 block">Cards ativos monitorados na carteira</span>
+        </div>
+      </div>
+
+      <!-- Detalhamento de Entradas por Pipeline (5 Categorias Conceituais) -->
+      <div class="mb-8">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+            📊 Distribuição de Entradas por Pipeline (CRM)
+          </h2>
+          <span class="text-xs text-gray-500 font-medium bg-slate-100 px-2.5 py-1 rounded border border-slate-200">
+            Regra: Visão Geral contempla 100% dos cadastros do período selecionado
+          </span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5" id="pipeline-distribution-container">
+          <!-- Injetado dinamicamente -->
+        </div>
+      </div>
+
+      <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+        📁 Carteira Comercial Ativa por Funil (1:1)
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6" id="funnels-container"></div>
+
+      <!-- A Visão por Funil e Corretores unificada será injetada no funnels-container -->
+    </div>
+
+    <!-- TELA 3: Gestão da Carteira (Reuniões 1:1) -->
+    <div id="view-gestao" class="hidden">
+      
+      <!-- Filtros Locais da Aba de Gestão -->
+        <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4 mb-6 shadow-sm flex flex-wrap items-center gap-4">
+           <div class="flex flex-col flex-grow min-w-[200px]">
+             <label class="text-xs font-bold text-indigo-700 mb-1">Buscar (Nome ou ID)</label>
+             <input type="text" id="filter-search" placeholder="Ex: Maria ou 12345" class="text-sm border rounded p-2" onkeyup="renderCardsTable()">
+           </div>
+           <div class="flex flex-col">
+             <label class="text-xs font-bold text-indigo-700 mb-1">Situação dos Comentários</label>
+             <select id="filter-comentarios" class="text-sm border rounded p-2 bg-white" onchange="renderCardsTable()">
+               <option value="todos">Todos</option>
+               <option value="com_comentarios">Com comentários no histórico</option>
+               <option value="sem_comentarios">Sem comentários no histórico</option>
+               <option value="nao_verificado">Não verificado</option>
+               <option value="expirado">Consulta expirada</option>
+             </select>
+           </div>
+           <div class="flex flex-col">
+             <label class="text-xs font-bold text-indigo-700 mb-1">Pauta de Reunião</label>
+             <select id="filter-pauta" class="text-sm border rounded p-2 bg-white" onchange="renderCardsTable()">
+               <option value="todos">Todos</option>
+               <option value="marcados">Próxima reunião (Marcados)</option>
+               <option value="retomar">🎯 Casos para retomar (Pendente, Aguardando, Vencido ou Sem acomp.)</option>
+               <option value="dispensados">Discutidos (Sem necessidade de retorno)</option>
+             </select>
+           </div>
+           <div class="flex flex-col">
+             <label class="text-xs font-bold text-indigo-700 mb-1">Situação Acomp.</label>
+             <select id="filter-situacao" class="text-sm border rounded p-2 bg-white" onchange="renderCardsTable()">
+               <option value="todos">Todos</option>
+               <option value="acoes_executar">⚡ Ações a executar (Pendente ou Aguardando)</option>
+               <option value="Pendente">Pendente</option>
+               <option value="Aguardando retorno">Aguardando retorno</option>
+               <option value="Concluído">Concluído</option>
+               <option value="Não informado">Não informado</option>
+               <option value="sem_acomp">Sem acompanhamento</option>
+             </select>
+           </div>
+           <div class="flex flex-col">
+             <label class="text-xs font-bold text-indigo-700 mb-1">Prazo</label>
+             <select id="filter-prazo" class="text-sm border rounded p-2 bg-white" onchange="renderCardsTable()">
+               <option value="todos">Todos</option>
+               <option value="vencido">⚠️ Ações vencidas</option>
+             </select>
+           </div>
+           
+            <div class="flex flex-row flex-wrap flex-grow items-end justify-end gap-2">
+              <button id="btn-open-sync-modal" onclick="openSyncModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded shadow-sm flex items-center gap-2 transition shadow" title="Atualizar carteira de leads no ImobTotal">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                  Atualizar leads
+               </button>
+              <button id="btn-open-resumo-modal" onclick="openResumoModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm px-4 py-2 rounded shadow-sm flex items-center gap-2 transition shadow" title="Gerar texto dos combinados desta data para WhatsApp">
+                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                 Gerar resumo dos combinados
+              </button>
+              <button onclick="prepareBulkVerification()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm px-4 py-2 rounded shadow-sm flex items-center gap-2 transition">
+                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                 Verificar comentários em lote
+              </button>
+              <button id="btn-export-excel" onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm px-4 py-2 rounded shadow-sm flex items-center gap-2 transition shadow">
+                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                 Exportar Excel
+              </button>
+              <button id="btn-select-all" onclick="toggleSelectAllFiltered(true)" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded shadow-sm flex items-center gap-2 transition shadow">
+                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                 Selecionar todos os leads
+              </button>
+            </div>
+        </div>
+
+        <!-- MODAL BULK COMMENTS -->
+        <div id="modal-bulk-comments" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+           <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md flex flex-col">
+              <h3 class="font-bold text-xl text-gray-800 mb-4 border-b pb-2">Verificar Comentários em Lote</h3>
+              
+              <div id="bulk-step-1">
+                 <p class="text-sm text-gray-600 mb-4">Esta operação fará uma varredura nos clientes atualmente filtrados que ainda não tiveram seus históricos verificados.</p>
+                 
+                 <ul class="text-sm mb-6 bg-gray-50 p-4 rounded border">
+                    <li class="flex justify-between mb-1"><span>Total de clientes (únicos):</span> <strong id="bulk-total" class="text-gray-800">0</strong></li>
+                    <li class="flex justify-between mb-1"><span>Com cache válido (ignorado):</span> <strong id="bulk-cached" class="text-green-700">0</strong></li>
+                    <li class="flex justify-between mt-2 pt-2 border-t"><span>Pendentes de verificação:</span> <strong id="bulk-pending" class="text-blue-700">0</strong></li>
+                    <li class="flex justify-between text-xs text-gray-500 mt-1"><span>Requisições estimadas (API):</span> <strong id="bulk-reqs">0</strong></li>
+                 </ul>
+                 
+                 <div class="flex justify-end gap-2">
+                    <button onclick="document.getElementById('modal-bulk-comments').classList.add('hidden')" class="px-4 py-2 border rounded text-gray-600 font-bold hover:bg-gray-100">Cancelar</button>
+                    <button id="btn-start-bulk" onclick="executeBulkVerification()" class="px-4 py-2 bg-indigo-600 text-white rounded font-bold hover:bg-indigo-700">Iniciar Verificação</button>
+                 </div>
+              </div>
+              
+              <div id="bulk-step-2" class="hidden flex flex-col">
+                 <p class="text-sm font-bold text-gray-700 mb-2" id="bulk-status-text">Verificando cliente 0 de 0...</p>
+                 <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+                    <div id="bulk-progress-bar" class="bg-indigo-600 h-2.5 rounded-full" style="width: 0%"></div>
+                 </div>
+                 <div class="text-xs text-gray-500 mb-4 h-12 overflow-y-auto border p-2 bg-gray-50 rounded" id="bulk-log">
+                    <!-- Logs da execução -->
+                 </div>
+                 
+                  <div class="flex justify-end">
+                     <button id="btn-stop-bulk" onclick="stopBulkVerification()" class="px-4 py-2 bg-red-600 text-white rounded font-bold hover:bg-red-700">Interromper fila</button>
+                     <button id="btn-close-bulk" onclick="closeBulkVerification()" class="hidden px-4 py-2 bg-gray-600 text-white rounded font-bold hover:bg-gray-700">Fechar e ver tabela</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+        <!-- MODAL RESUMO DOS COMBINADOS (Fase 3.5N) -->
+        <div id="modal-resumo-reuniao" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+           <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl flex flex-col max-h-[90vh]">
+              <div class="flex justify-between items-center pb-3 border-b mb-4">
+                 <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2">
+                   📝 Resumo dos Combinados da Reunião
+                 </h3>
+                 <button onclick="fecharResumoModal()" class="text-gray-400 hover:text-gray-600 text-lg font-bold">✕</button>
+              </div>
+
+              <div class="bg-indigo-50 border border-indigo-100 rounded p-3 mb-3 flex flex-wrap items-end gap-3">
+                 <div class="flex flex-col flex-1 min-w-[160px]">
+                    <label class="text-xs font-bold text-indigo-900 mb-1">Corretor:</label>
+                    <select id="modal-resumo-corretor" class="text-sm border rounded p-1.5 bg-white shadow-sm" onchange="onResumoParamsChange()"></select>
+                 </div>
+                 <div class="flex flex-col flex-1 min-w-[140px]">
+                    <label class="text-xs font-bold text-indigo-900 mb-1">Data da Reunião:</label>
+                    <input type="date" id="modal-resumo-data" class="text-sm border rounded p-1.5 bg-white shadow-sm" onchange="onResumoParamsChange()">
+                 </div>
+                 <button id="btn-carregar-gerar-resumo" onclick="carregarOuGerarResumo()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-3.5 py-2 rounded shadow-sm flex items-center gap-1.5 transition">
+                    🔄 Carregar / Gerar
+                 </button>
+              </div>
+
+              <div id="modal-resumo-status-alert" class="hidden text-xs p-2 rounded mb-3"></div>
+
+              <div class="flex flex-col flex-1 min-h-[220px] mb-4">
+                 <div class="flex justify-between items-center mb-1">
+                    <label class="text-xs font-bold text-gray-700">Texto dos Combinados (Editável antes de copiar/salvar):</label>
+                    <span id="modal-resumo-unsaved-badge" class="hidden text-[10px] text-amber-700 bg-amber-100 px-2 py-0.5 rounded font-bold">● Alterações não salvas</span>
+                 </div>
+                 <textarea id="modal-resumo-texto" class="w-full flex-1 min-h-[220px] p-3 text-xs font-mono border rounded shadow-inner bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 leading-relaxed" placeholder="Selecione o corretor e a data e clique em Carregar / Gerar..." oninput="onResumoTextareaChange()"></textarea>
+                 <span class="text-[11px] text-gray-500 mt-1">💡 Dica: O texto usa formatação nativa do WhatsApp (*negrito*, quebras e tópicos). Você pode editá-lo à vontade.</span>
+              </div>
+
+              <div class="flex flex-wrap justify-between items-center gap-2 pt-3 border-t">
+                 <button id="btn-salvar-resumo" onclick="salvarResumoLocalmente()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 font-bold text-xs px-3 py-2 rounded transition flex items-center gap-1.5 shadow-sm">
+                    💾 Salvar Resumo Localmente
+                 </button>
+                 <div class="flex items-center gap-2">
+                    <button onclick="fecharResumoModal()" class="px-3 py-2 border rounded text-xs text-gray-600 font-bold hover:bg-gray-100">
+                       Fechar
+                    </button>
+                    <button id="btn-copiar-resumo" onclick="copiarResumoWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2 rounded shadow flex items-center gap-1.5 transition">
+                       📋 Copiar Resumo (WhatsApp)
+                    </button>
+                 </div>
+              </div>
+           </div>
+        </div>
+
+        <!-- MODAL ATUALIZAÇÃO SEGURA DE LEADS (Fase 3.5P) -->
+        <div id="modal-sync-leads" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+           <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl flex flex-col max-h-[90vh]">
+              <div class="flex justify-between items-center pb-2 mb-3">
+                 <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2">
+                   🔄 Atualização da Carteira de Leads
+                 </h3>
+                 <button onclick="requestCloseSyncModal()" class="text-gray-400 hover:text-gray-600 text-lg font-bold" title="Fechar modal">✕</button>
+              </div>
+
+              <!-- STEPPER DE 4 ETAPAS -->
+              <div class="grid grid-cols-4 gap-1.5 mb-4 text-[11px] font-bold border-b pb-3 text-center" id="sync-stepper">
+                 <div id="step-ind-1" class="py-1.5 px-1 rounded bg-blue-100 text-blue-800 border border-blue-300 transition">1. Consultar CRM</div>
+                 <div id="step-ind-2" class="py-1.5 px-1 rounded bg-gray-100 text-gray-400 border border-gray-200 transition">2. Conferir alterações</div>
+                 <div id="step-ind-3" class="py-1.5 px-1 rounded bg-gray-100 text-gray-400 border border-gray-200 transition">3. Gravar atualização</div>
+                 <div id="step-ind-4" class="py-1.5 px-1 rounded bg-gray-100 text-gray-400 border border-gray-200 transition">4. Concluído</div>
+              </div>
+
+              <!-- PASSO 1: ORIENTAÇÃO E CONSULTA AO CRM -->
+              <div id="sync-step-1" class="flex flex-col">
+                 <div class="flex items-center gap-2 mb-3">
+                    <span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded font-bold border border-emerald-300">
+                      🟢 Consulta Segura ao ImobTotal
+                    </span>
+                    <span class="text-xs text-gray-500">Varredura exclusiva nas 30 etapas ativas dos 4 funis comerciais.</span>
+                 </div>
+
+                 <p class="text-sm text-gray-600 mb-4">
+                   Esta etapa consulta o CRM em modo de leitura para identificar novos leads, mudanças de etapa e alterações de corretor, permitindo que você confira tudo antes de aplicar qualquer gravação.
+                 </p>
+
+                  <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3.5 mb-4 text-xs space-y-2 text-indigo-950">
+                     <div class="flex items-start gap-2">
+                        <span class="font-bold min-w-[140px]">🎯 Funis e Etapas:</span>
+                        <span><b>30 Etapas Comerciais Ativas</b> (Terceiros: 6, MAP: 7, MCMV: 7, Lançamentos: 10).</span>
+                     </div>
+                     <div class="flex items-start gap-2">
+                        <span class="font-bold min-w-[140px]">👥 Clientes da Carteira:</span>
+                        <span>Todos os clientes existentes na carteira local são <b>reconfirmados e atualizados</b> sem restrição de data de cadastro. Cards em etapas inativas permanecem <b>preservados intactos</b>.</span>
+                     </div>
+                     <div class="flex items-start gap-2">
+                        <span class="font-bold min-w-[140px]">🆕 Novos Clientes:</span>
+                        <span>Novos leads encontrados nas etapas ativas são importados somente se cadastrados nos <b>últimos 60 dias</b>.</span>
+                     </div>
+                     <div class="flex items-start gap-2">
+                        <span class="font-bold min-w-[140px]">🔒 Preservação Absoluta:</span>
+                        <span>Comentários em cache, reuniões 1:1, pautas e telefones <b>NÃO</b> são alterados.</span>
+                     </div>
+                     <div class="flex items-start gap-2">
+                        <span class="font-bold min-w-[140px]">🛡️ Segurança e Backup:</span>
+                        <span>A consulta roda em memória. Um backup timestamped é criado antes de gravar no disco.</span>
+                     </div>
+                  </div>
+
+                 <div class="flex justify-end gap-2 pt-2 border-t">
+                    <button onclick="requestCloseSyncModal()" class="px-4 py-2 border rounded text-xs font-bold text-gray-600 hover:bg-gray-100 transition">Cancelar</button>
+                    <button id="btn-start-sync-preview" onclick="startSyncPreview()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-bold shadow flex items-center gap-1.5 transition">
+                       🔍 Consultar CRM (Iniciar Leitura)
+                    </button>
+                 </div>
+              </div>
+
+              <!-- PASSO 2: PROGRESSO DA CONSULTA EM MEMÓRIA -->
+              <div id="sync-step-2" class="hidden flex flex-col py-4">
+                 <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-bold text-gray-700" id="sync-progress-status">Consultando etapas dos 4 funis em memória...</span>
+                    <span class="text-xs font-bold text-blue-600" id="sync-progress-percent">0%</span>
+                 </div>
+                 <div class="w-full bg-gray-200 rounded-full h-3 mb-4 overflow-hidden">
+                    <div id="sync-progress-bar" class="bg-blue-600 h-3 rounded-full transition-all duration-300" style="width: 15%"></div>
+                 </div>
+                 <p class="text-xs text-gray-500 italic mb-4">Aguarde. A consulta está sendo executada no ImobTotal e comparada com o snapshot atual.</p>
+                 <div class="flex justify-end">
+                    <button id="btn-abort-sync" onclick="requestCloseSyncModal()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-bold transition">
+                       Interromper Consulta
+                    </button>
+                 </div>
+              </div>
+
+              <!-- PASSO 3: CONFERÊNCIA DE ALTERAÇÕES (DIFF) -->
+              <div id="sync-step-3" class="hidden flex flex-col flex-1 overflow-y-auto">
+                 <!-- AVISO EXPLÍCITO OBRIGATÓRIO (Item 3) -->
+                 <div id="sync-warning-banner" class="bg-amber-50 border-2 border-amber-400 text-amber-900 rounded-lg p-3.5 mb-3 flex items-start gap-3 shadow-sm">
+                    <span class="text-xl leading-none">⚠️</span>
+                    <div class="text-xs">
+                       <p class="font-bold text-sm text-amber-900 mb-0.5">A consulta foi concluída, mas o painel AINDA NÃO foi atualizado.</p>
+                       <p class="text-amber-800">Confira as alterações abaixo e clique em <b>"CONFIRMAR E ATUALIZAR PAINEL"</b> para salvar os dados.</p>
+                    </div>
+                 </div>
+
+                 <!-- BANNER DE SESSÃO EXPIRADA (Item 6) -->
+                 <div id="sync-expired-banner" class="hidden bg-red-50 border-2 border-red-500 text-red-900 rounded-lg p-3.5 mb-3 flex items-start justify-between gap-3 shadow-sm">
+                    <div class="flex items-start gap-2.5 text-xs">
+                       <span class="text-xl leading-none">🛑</span>
+                       <div>
+                          <p class="font-bold text-sm text-red-900 mb-0.5">Esta prévia expirou.</p>
+                          <p class="text-red-800">Faça uma nova consulta antes de atualizar o painel.</p>
+                       </div>
+                    </div>
+                    <button onclick="startSyncPreview()" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-bold transition shadow">
+                       🔄 Nova Consulta
+                    </button>
+                 </div>
+
+                 <!-- Painel de Conciliação Antes / Depois -->
+                 <div class="bg-slate-50 border border-slate-200 rounded p-2.5 mb-2.5 text-xs flex flex-wrap justify-between items-center gap-3">
+                    <div>
+                       <span class="text-gray-500 block uppercase font-bold text-[10px]">👥 Clientes Únicos:</span>
+                       <span class="text-sm font-black text-gray-800" id="sync-leads-antes">0</span> ➔ <span class="text-sm font-black text-blue-700" id="sync-leads-depois">0</span>
+                       <span class="text-[11px] text-blue-600 font-semibold" id="sync-leads-dif">(+0 novos)</span>
+                    </div>
+                    <div>
+                       <span class="text-gray-500 block uppercase font-bold text-[10px]">📇 Total de Cards na Carteira:</span>
+                       <span class="text-sm font-black text-gray-800" id="sync-cards-antes">0</span> ➔ <span class="text-sm font-black text-indigo-700" id="sync-cards-depois">0</span>
+                       <span class="text-[11px] text-indigo-600 font-semibold" id="sync-cards-dif">(+0 novos cards)</span>
+                    </div>
+                    <div>
+                       <span class="text-gray-500 block uppercase font-bold text-[10px]">🔄 Movimentações no CRM:</span>
+                       <span class="text-xs font-black text-purple-700" id="sync-mov-etapas">0 etapa(s)</span> • <span class="text-xs font-black text-cyan-700" id="sync-mov-corretores">0 corretor(es)</span>
+                    </div>
+                 </div>
+
+                 <!-- Grid de Indicadores Separando os 4 Grupos -->
+                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center mb-2.5">
+                    <div class="bg-emerald-50 border border-emerald-200 rounded p-1.5">
+                       <span class="block text-[10px] uppercase font-bold text-emerald-800">Reconfirmados</span>
+                       <span class="text-base font-black text-emerald-900" id="sync-diff-preexistentes-reconf">0</span>
+                       <span class="block text-[9px] text-emerald-700 font-medium">Cards preexistentes</span>
+                    </div>
+                    <div class="bg-amber-50 border border-amber-200 rounded p-1.5">
+                       <span class="block text-[10px] uppercase font-bold text-amber-800">Preservados</span>
+                       <span class="text-base font-black text-amber-900" id="sync-diff-preservados">0</span>
+                       <span class="block text-[9px] text-amber-700 font-medium">Etapa não verificada</span>
+                    </div>
+                    <div class="bg-blue-50 border border-blue-200 rounded p-1.5">
+                       <span class="block text-[10px] uppercase font-bold text-blue-800">Novos Clientes</span>
+                       <span class="text-base font-black text-blue-900" id="sync-diff-novos-leads">0</span>
+                       <span class="block text-[9px] text-blue-700 font-medium">&lt; 60 dias de cadastro</span>
+                    </div>
+                    <div class="bg-indigo-50 border border-indigo-200 rounded p-1.5">
+                       <span class="block text-[10px] uppercase font-bold text-indigo-800">Novas Participações</span>
+                       <span class="text-base font-black text-indigo-900" id="sync-diff-novas-partic">0</span>
+                       <span class="block text-[9px] text-indigo-700 font-medium">2º funil p/ cliente atual</span>
+                    </div>
+                 </div>
+
+                 <!-- Banner Informativo dos Cards Preservados -->
+                 <div class="bg-amber-50/70 border border-amber-200 rounded p-2 mb-2.5 text-[11px] text-amber-950 flex items-start gap-2">
+                    <span class="text-sm">🔒</span>
+                    <div>
+                       <span class="font-bold">Registros Preservados (Etapa Atual Não Verificada):</span>
+                       <p class="text-amber-900 text-[10px] mt-0.5 leading-tight">
+                          Cards preexistentes cujas etapas não foram consultadas neste ciclo (por estarem em etapas inativas/fechadas ou não retornadas nas 30 etapas ativas). Permanecem 100% intactos com suas etapas conhecidas e anotações.
+                       </p>
+                    </div>
+                 </div>
+
+                 <!-- Detalhamento Expansível -->
+                 <div class="border rounded p-2.5 bg-gray-50 max-h-44 overflow-y-auto mb-3 text-xs font-mono" id="sync-diff-detalhes">
+                    <!-- Injetado dinamicamente -->
+                 </div>
+
+                 <div class="text-[11px] text-gray-500 mb-3 bg-blue-50/60 p-2 rounded border border-blue-100 flex items-center gap-1.5">
+                   <span>💡</span>
+                   <span>Um backup automático com data e hora (<code>bali_test_33a_backup_*.json</code>) será gerado imediatamente antes da gravação.</span>
+                 </div>
+
+                 <div class="flex justify-between items-center pt-2 border-t mt-2">
+                    <button onclick="requestCloseSyncModal()" class="px-4 py-2 border rounded text-xs font-bold text-gray-600 hover:bg-gray-100 transition">
+                       ❌ Descartar e Sair
+                    </button>
+                    <!-- BOTÃO DESTACADO: CONFIRMAR E ATUALIZAR PAINEL (Item 2) -->
+                    <button id="btn-apply-sync" onclick="applySyncConfirmed()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-black shadow-lg flex items-center gap-2 transition transform active:scale-95 border border-emerald-500 ring-2 ring-emerald-200">
+                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                       CONFIRMAR E ATUALIZAR PAINEL
+                    </button>
+                 </div>
+              </div>
+
+              <!-- PASSO 4: RESULTADO / SUCESSO (Item 4) -->
+              <div id="sync-step-4" class="hidden flex flex-col py-2">
+                 <div class="bg-emerald-50 border-2 border-emerald-500 text-emerald-950 rounded-lg p-5 mb-4 shadow-sm">
+                    <div class="flex items-center gap-2.5 mb-3">
+                       <span class="text-2xl">✅</span>
+                       <h4 class="font-bold text-base text-emerald-900">Atualização concluída</h4>
+                    </div>
+                    <div class="space-y-1.5 text-sm text-emerald-950 pl-8 mb-4">
+                       <p>• <b><span id="sync-success-novos-leads">0</span></b> novos leads adicionados</p>
+                       <p>• <b><span id="sync-success-novas-partic">0</span></b> novas participações adicionadas</p>
+                       <p>• <b><span id="sync-success-mudancas-etapa">0</span></b> alterações de etapa</p>
+                       <div class="pt-3 border-t border-emerald-200 font-bold text-xs text-emerald-800 flex items-center gap-1.5">
+                          <svg class="w-4 h-4 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                          <span>Base atualizada em <span id="sync-success-data-hora">-</span></span>
+                       </div>
+                    </div>
+                    <p class="text-[11px] text-emerald-700 pl-8 font-mono">📁 Backup de segurança gerado: <span id="sync-backup-name" class="font-bold">-</span></p>
+                 </div>
+                 <div class="flex justify-end">
+                    <button onclick="closeSyncModalAndReload()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-bold shadow transition">
+                       Concluir e Ver Painel Atualizado
+                    </button>
+                 </div>
+              </div>
+           </div>
+        </div>
+
+        <!-- RÉGUA COMPACTA DA PAUTA DE REUNIÃO (Fase 3.5M) -->
+        <div id="pauta-summary-bar" class="hidden bg-white border border-indigo-200 rounded-lg p-3 mb-4 shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2 pb-1.5 border-b border-gray-100">
+            <span class="text-xs font-bold text-indigo-900 flex items-center gap-1.5" id="pauta-summary-title">
+              📋 Resumo da Pauta de Reunião
+            </span>
+            <span class="text-[11px] text-gray-500 font-medium">Contagem de todos os cards da pauta (reflete corretor e funil)</span>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 text-center">
+            <div class="bg-indigo-50/60 border border-indigo-100 rounded p-1.5">
+              <span class="block text-[10px] uppercase font-bold text-indigo-700">Total Marcados</span>
+              <span class="text-base font-black text-indigo-900" id="kpi-pauta-total">0</span>
+              <span class="block text-[10px] text-indigo-600 font-medium" id="kpi-pauta-unicos">(0 clientes)</span>
+            </div>
+            <div class="bg-amber-50/60 border border-amber-100 rounded p-1.5">
+              <span class="block text-[10px] uppercase font-bold text-amber-700">Pendentes</span>
+              <span class="text-base font-black text-amber-900" id="kpi-pauta-pendentes">0</span>
+            </div>
+            <div class="bg-sky-50/60 border border-sky-100 rounded p-1.5">
+              <span class="block text-[10px] uppercase font-bold text-sky-700">Aguardando</span>
+              <span class="text-base font-black text-sky-900" id="kpi-pauta-aguardando">0</span>
+            </div>
+            <div class="bg-emerald-50/60 border border-emerald-100 rounded p-1.5">
+              <span class="block text-[10px] uppercase font-bold text-emerald-700">Concluídos</span>
+              <span class="text-base font-black text-emerald-900" id="kpi-pauta-concluidos">0</span>
+            </div>
+            <div class="bg-red-50/60 border border-red-200 rounded p-1.5">
+              <span class="block text-[10px] uppercase font-bold text-red-700">⚠️ Vencidos</span>
+              <span class="text-base font-black text-red-800" id="kpi-pauta-vencidos">0</span>
+            </div>
+            <div class="bg-gray-50 border border-gray-200 rounded p-1.5">
+              <span class="block text-[10px] uppercase font-bold text-gray-600">Sem Acomp.</span>
+              <span class="text-base font-black text-gray-700" id="kpi-pauta-sem-acomp">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap justify-between items-center mb-4 gap-2">
+          <div class="flex flex-wrap items-center gap-2">
+            <h3 class="text-lg font-bold text-gray-800 border-l-4 border-blue-500 pl-2" id="gestao-stats-layer1">Carregando...</h3>
+            <div class="flex items-center gap-1.5 ml-2">
+              <button onclick="toggleSelectAllFiltered(true)" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold px-2.5 py-1 rounded transition flex items-center gap-1 shadow-sm" title="Selecionar todos os leads correspondentes aos filtros atuais">
+                ☑️ Selecionar todos
+              </button>
+              <button onclick="toggleSelectAllFiltered(false)" class="text-xs bg-gray-50 hover:bg-gray-100 text-gray-600 border border-gray-200 font-bold px-2.5 py-1 rounded transition flex items-center gap-1 shadow-sm" title="Desmarcar todos os leads correspondentes aos filtros atuais">
+                Desmarcar todos
+              </button>
+            </div>
+          </div>
+          
+          <!-- Paginação -->
+          <div class="flex items-center gap-2 text-sm">
+             <button onclick="changePage(-1)" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 font-bold">&laquo; Ant</button>
+             <span id="page-indicator" class="font-bold text-gray-700">Pág 1 / 1</span>
+             <button onclick="changePage(1)" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 font-bold">Próx &raquo;</button>
+          </div>
+        </div>
+
+        <div id="analyze-report-container" class="bg-white border rounded shadow-sm overflow-hidden mb-6">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-gray-100 text-gray-600 text-xs uppercase font-bold border-b">
+              <tr>
+                <th class="p-3 w-10 text-center" title="Selecionar / Desmarcar todos os leads filtrados">
+                  <input type="checkbox" id="check-select-all" onchange="toggleSelectAllFiltered(this.checked)" class="w-4 h-4 text-blue-600 rounded cursor-pointer">
+                </th>
+                <th class="p-3">Cliente</th>
+                <th class="p-3">Funil & Etapa</th>
+                <th class="p-3">Corretor</th>
+                <th class="p-3">Comentários (Global)</th>
+                <th class="p-3">Últ. Atend.</th>
+                <th class="p-3 text-right">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="analyze-results-content" class="text-gray-800">
+              <!-- JS Populates -->
+            </tbody>
+          </table>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- MODAL DRILL-DOWN DOS PIPELINES (Fase 3.5R) -->
+  <div id="modal-pipeline-drilldown" class="hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+     <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl flex flex-col max-h-[90vh] overflow-hidden border border-gray-200">
+        <!-- Header -->
+        <div class="px-6 py-4 border-b flex justify-between items-center bg-gray-50/80">
+           <div>
+              <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2" id="drilldown-modal-title">
+                 Leads — Pipeline
+              </h3>
+              <p class="text-xs text-gray-500 mt-0.5" id="drilldown-modal-subtitle">
+                 Entradas registradas no período selecionado
+              </p>
+           </div>
+           <button onclick="closePipelineDrillDown()" class="text-gray-400 hover:text-gray-700 text-xl font-bold p-1 rounded hover:bg-gray-200 transition" title="Fechar">
+              ✕
+           </button>
+        </div>
+
+        <!-- Content Body (Scrollable) -->
+        <div class="p-6 overflow-y-auto flex-1 space-y-3 bg-slate-50/50" id="drilldown-modal-content">
+           <!-- Leads list dynamically injected -->
+        </div>
+
+        <!-- Footer -->
+        <div class="px-6 py-3 border-t bg-gray-50 flex justify-between items-center">
+           <span class="text-xs text-gray-500 font-medium" id="drilldown-modal-footer-count">Total: 0 leads</span>
+           <button onclick="closePipelineDrillDown()" class="px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold rounded-lg transition shadow-xs">
+              Fechar
+           </button>
+        </div>
+     </div>
+  </div>
+
+  <script>
+    let currentData = null;
+    let globalOptions = null;
+    let globalMetricsData = null;
+    let currentTab = 'visao';
+    let telefones_cache = {};
+    
+    // Estado local da UI
+    let uiState = {
+      currentPage: 1,
+        itemsPerPage: 10,
+        filteredCards: [],
+        historicos: {}, // Simulador de cache de sessão
+        agenda: {}
+      };
+
+    const EXCLUDED_STAGE_IDS = [15204, 15205, 15257, 15258];
+
+    async function migrateAgendaIfNeeded() {
+        const localAgenda = localStorage.getItem('bali_meeting_agenda');
+        const migrated = localStorage.getItem('bali_meeting_agenda_migrated');
+        if (localAgenda && !migrated) {
+            try {
+                const agendaObj = JSON.parse(localAgenda);
+                if (Object.keys(agendaObj).length > 0) {
+                    await fetch('/api/pauta/migrate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ agendaObj })
+                    });
+                }
+                localStorage.setItem('bali_meeting_agenda_migrated', 'true');
+            } catch(e) { console.error('Migration error', e); }
+        }
+    }
+    migrateAgendaIfNeeded();
+
+    async function toggleAgenda(leadId, funilId) {
+      const key = `${leadId}_${funilId}`;
+      const isCurrentlyChecked = !!uiState.agenda[key];
+      const newValue = !isCurrentlyChecked;
+      
+      // Optimistic UI Update
+      if (newValue) {
+          uiState.agenda[key] = true;
+          if (currentData && currentData.acompanhamentos && currentData.acompanhamentos[key]) {
+              currentData.acompanhamentos[key].status_pauta = 'manter';
+              currentData.acompanhamentos[key].dispensado_em = null;
+          }
+      } else {
+          delete uiState.agenda[key];
+      }
+      renderCardsTable(true);
+      
+      try {
+          await fetch('/api/pauta/toggle', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ leadId, funilId, checked: newValue })
+          });
+      } catch(e) {
+          console.error(e);
+          // Revert on error
+          if (isCurrentlyChecked) uiState.agenda[key] = true;
+          else delete uiState.agenda[key];
+          renderCardsTable(true);
+      }
+    }
+
+    async function toggleSelectAllFiltered(shouldCheck) {
+      if (!uiState.filteredCards || uiState.filteredCards.length === 0) {
+          alert("Nenhum lead filtrado para selecionar.");
+          return;
+      }
+      
+      const previousState = { ...uiState.agenda };
+      const items = [];
+      
+      uiState.filteredCards.forEach(c => {
+          const key = `${c.lead_id}_${c.funil_id}`;
+          if (shouldCheck) {
+              uiState.agenda[key] = true;
+              if (currentData && currentData.acompanhamentos && currentData.acompanhamentos[key]) {
+                  currentData.acompanhamentos[key].status_pauta = 'manter';
+                  currentData.acompanhamentos[key].dispensado_em = null;
+              }
+          } else {
+              delete uiState.agenda[key];
+          }
+          items.push({ leadId: c.lead_id, funilId: c.funil_id });
+      });
+      
+      renderCardsTable(true);
+      
+      try {
+          const res = await fetch('/api/pauta/toggle-bulk', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ items, checked: shouldCheck })
+          });
+          if (!res.ok) throw new Error('Falha ao salvar no servidor');
+      } catch(e) {
+          console.error(e);
+          alert('Erro ao salvar seleção em lote: ' + e.message);
+          uiState.agenda = previousState;
+          renderCardsTable(true);
+      }
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById('tab-visao').className = tab === 'visao' ? 'py-2 px-4 tab-active' : 'py-2 px-4 tab-inactive';
+      document.getElementById('tab-gestao').className = tab === 'gestao' ? 'py-2 px-4 tab-active text-purple-700 flex items-center gap-2' : 'py-2 px-4 tab-inactive text-purple-700 flex items-center gap-2';
+      
+      document.getElementById('view-visao-geral').classList.add('hidden');
+      document.getElementById('view-gestao').classList.add('hidden');
+
+      if(tab === 'visao') document.getElementById('view-visao-geral').classList.remove('hidden');
+      if(tab === 'gestao') {
+        document.getElementById('view-gestao').classList.remove('hidden');
+        renderGestaoLayer1();
+      }
+    }
+
+    function populateOptions() {
+      if (!globalOptions) return;
+      const funilSelect = document.getElementById('filter-funil');
+      const corretorSelect = document.getElementById('filter-corretor');
+
+      const currFunil = funilSelect.value;
+      const currCorretor = corretorSelect.value;
+
+      funilSelect.innerHTML = '<option value="todos_exceto_3500">Todos exceto Lançamentos</option><option value="todos_incluindo_3500">Absolutamente Todos</option>';
+      Object.keys(globalOptions.funis).forEach(id => {
+        funilSelect.innerHTML += `<option value="${id}">${globalOptions.funis[id]}</option>`;
+      });
+
+      funilSelect.value = currFunil || 'todos_exceto_3500';
+
+      corretorSelect.innerHTML = '<option value="">Todos</option>';
+      globalOptions.corretores.forEach(c => {
+        corretorSelect.innerHTML += `<option value="${c}">${c}</option>`;
+      });
+      corretorSelect.value = currCorretor || '';
+
+      updateEtapasOptions();
+    }
+
+    function updateEtapasOptions() {
+      const funilId = document.getElementById('filter-funil').value;
+      const etapaSelect = document.getElementById('filter-etapa');
+      const currEtapa = etapaSelect.value;
+      
+      etapaSelect.innerHTML = '<option value="">Todas</option>';
+      
+      if (!globalOptions) return;
+
+      if (funilId && globalOptions.etapas_por_funil[funilId]) {
+        globalOptions.etapas_por_funil[funilId].forEach(e => {
+          etapaSelect.innerHTML += `<option value="${e}">${e}</option>`;
+        });
+      } else {
+        const allStages = new Set();
+        Object.values(globalOptions.etapas_por_funil).forEach(etapas => {
+          etapas.forEach(e => allStages.add(e));
+        });
+        Array.from(allStages).sort().forEach(e => {
+          etapaSelect.innerHTML += `<option value="${e}">${e}</option>`;
+        });
+      }
+      if (currEtapa) etapaSelect.value = currEtapa;
+    }
+
+    function gotoGestaoCorretor(funilId, corretorNome) {
+       document.getElementById('filter-funil').value = funilId;
+       updateEtapasOptions();
+       document.getElementById('filter-etapa').value = '';
+       document.getElementById('filter-corretor').value = corretorNome;
+       switchTab('gestao');
+       applyFilters();
+    }
+
+    function applyFilters() {
+      const inicio = document.getElementById('filter-inicio').value;
+      const fim = document.getElementById('filter-fim').value;
+      const funil = document.getElementById('filter-funil').value;
+      const etapa = document.getElementById('filter-etapa').value;
+      const corretor = document.getElementById('filter-corretor').value;
+
+      const params = new URLSearchParams();
+      if (inicio) params.append('inicio', inicio);
+      if (fim) params.append('fim', fim);
+      if (funil) params.append('funil', funil);
+      if (etapa) params.append('etapa', etapa);
+      if (corretor) params.append('corretor', corretor);
+
+      uiState.currentPage = 1; // Reseta paginação
+      loadDashboard(params.toString());
+    }
+
+    function clearFilters() {
+      document.getElementById('filter-inicio').value = '';
+      document.getElementById('filter-fim').value = '';
+      document.getElementById('filter-funil').value = 'todos_exceto_3500';
+      document.getElementById('filter-etapa').value = '';
+      document.getElementById('filter-corretor').value = '';
+      document.getElementById('filter-search').value = '';
+      document.getElementById('filter-comentarios').value = 'todos';
+      document.getElementById('filter-pauta').value = 'todos';
+      if (document.getElementById('filter-situacao')) document.getElementById('filter-situacao').value = 'todos';
+      if (document.getElementById('filter-prazo')) document.getElementById('filter-prazo').value = 'todos';
+      
+      updateEtapasOptions();
+      carregarTelefones();
+      uiState.currentPage = 1;
+      
+      loadDashboard();
+    }
+
+    async function loadDashboard(paramsStr = null) {
+      try {
+        let urlParams;
+        if (paramsStr !== null) {
+          urlParams = new URLSearchParams(paramsStr);
+          window.history.pushState({}, '', '?' + paramsStr);
+        } else {
+          urlParams = new URLSearchParams(window.location.search);
+        }
+        
+        // Aplica os selects a partir da URL se houver
+        ['inicio', 'fim', 'funil', 'etapa', 'corretor'].forEach(param => {
+          if (urlParams.has(param)) {
+            document.getElementById(`filter-${param}`).value = urlParams.get(param);
+          }
+        });
+
+        const [res, resPhones] = await Promise.all([
+          fetch(`/api/metrics?${urlParams.toString()}`),
+          fetch('/api/phones')
+        ]);
+
+        if (resPhones.ok) {
+          try {
+            telefones_cache = await resPhones.json();
+          } catch(e) { console.error("Erro parsing telefones", e); }
+        }
+
+        const data = await res.json();
+
+        if (res.ok) {
+          globalMetricsData = data.metrics.funis;
+          currentData = data;
+          
+          uiState.agenda = {};
+          if (data.acompanhamentos) {
+              Object.keys(data.acompanhamentos).forEach(k => {
+                  if (data.acompanhamentos[k].na_pauta) uiState.agenda[k] = true;
+              });
+          }
+          
+          if (!globalOptions) { 
+            globalOptions = data.opcoes; 
+            populateOptions(); 
+          }
+
+          document.getElementById('meta-periodo').textContent = `Filtro Global: ${data.metrics.metadata.periodo_avaliado}`;
+          if (document.getElementById('texto-base-atualizada')) {
+            const dt = data.metrics.metadata.ultima_atualizacao || data.metrics.metadata.arquivo_mtime;
+            document.getElementById('texto-base-atualizada').textContent = `Base atualizada em: ${formatarDataHoraBr(dt)}`;
+          }
+          const visaoGeral = data.metrics.visao_geral || { leads_unicos: data.metrics.geral.leads_unicos, distribuicao: {} };
+          const dist = visaoGeral.distribuicao || {};
+
+          document.getElementById('kpi-unicos').textContent = visaoGeral.leads_unicos;
+          if (document.getElementById('kpi-unicos-carteira')) {
+            document.getElementById('kpi-unicos-carteira').textContent = (data.metrics.carteira && data.metrics.carteira.leads_unicos !== undefined) ? data.metrics.carteira.leads_unicos : data.metrics.geral.leads_unicos;
+          }
+          document.getElementById('kpi-cards').textContent = (data.metrics.carteira && data.metrics.carteira.total_cards !== undefined) ? data.metrics.carteira.total_cards : data.metrics.geral.total_cards;
+
+          renderPipelineDistribution(dist);
+          
+          let htmlFunnels = '';
+          const funilFilter = document.getElementById('filter-funil').value || 'todos_exceto_3500';
+          Object.values(data.metrics.funis).forEach(f => {
+            let shouldRender = false;
+            if (funilFilter === 'todos_incluindo_3500') shouldRender = true;
+            else if (funilFilter === 'todos_exceto_3500') shouldRender = (f.id !== 3500);
+            else shouldRender = (f.id.toString() === funilFilter);
+            
+            if (shouldRender) {
+              htmlFunnels += `<div class="bg-white p-4 shadow rounded flex flex-col h-full">`;
+              htmlFunnels += `  <div class="border-b pb-2 mb-3">`;
+              htmlFunnels += `    <h4 class="font-bold text-gray-800">${f.nome}</h4>`;
+              htmlFunnels += `    <p class="text-2xl text-gray-700 font-black">${f.total_cards}</p>`;
+              htmlFunnels += `  </div>`;
+              
+              const corretoresObj = f.corretores || {};
+              const sortedCorrs = Object.keys(corretoresObj).sort((a,b) => {
+                 if (a === 'SEM CORRETOR') return -1;
+                 if (b === 'SEM CORRETOR') return 1;
+                 return corretoresObj[b] - corretoresObj[a];
+              });
+              
+              if (sortedCorrs.length > 0) {
+                 htmlFunnels += `<div class="flex flex-col gap-2">`;
+                 sortedCorrs.forEach(c => {
+                    const count = corretoresObj[c];
+                    if (count === 0) return;
+                    const displayName = c === 'SEM CORRETOR' ? 'Sem corretor' : c;
+                    const bgColor = c === 'SEM CORRETOR' ? 'bg-red-50 border-red-200 text-red-800 hover:bg-red-100' : 'bg-blue-50 border-blue-100 text-blue-900 hover:bg-blue-100';
+                    
+                    htmlFunnels += `
+                      <div onclick="gotoGestaoCorretor('${f.id}', '${c}')" class="cursor-pointer border rounded p-2 flex justify-between items-center transition ${bgColor} shadow-sm">
+                         <span class="text-xs font-bold truncate pr-2 opacity-80" title="${displayName}">${displayName}</span>
+                         <span class="text-lg font-black">${count}</span>
+                      </div>
+                    `;
+                 });
+                 htmlFunnels += `</div>`;
+              }
+              htmlFunnels += `</div>`;
+            }
+          });
+          document.getElementById('funnels-container').innerHTML = htmlFunnels;
+
+          renderCardsTable();
+        }
+        if (currentTab === 'gestao') renderGestaoLayer1();
+      } catch (err) { console.error(err); }
+    }
+
+    function renderPipelineDistribution(dist) {
+      const container = document.getElementById('pipeline-distribution-container');
+      if (!container) return;
+
+      const terceirosCount = dist.terceiros || 0;
+      const mapCount = dist.map || 0;
+      const mcmvCount = dist.mcmv || 0;
+      const outrosTotal = (dist.outros && dist.outros.total) ? dist.outros.total : 0;
+      const outrosDetalhes = (dist.outros && dist.outros.detalhes) ? dist.outros.detalhes : {};
+      const semPipelineCount = dist.sem_pipeline || 0;
+
+      // Monta os detalhes dinâmicos de outros pipelines (sem hardcode!)
+      const detalhesList = Object.entries(outrosDetalhes)
+        .map(([pNome, qtd]) => `<div class="flex justify-between py-1 border-b border-purple-100 last:border-0"><span class="font-bold text-purple-900 truncate mr-2">${pNome}:</span><span class="font-black text-purple-700 bg-purple-100 px-1.5 py-0.2 rounded text-[11px]">${qtd}</span></div>`)
+        .join('');
+
+      const outrosConteudoHtml = Object.keys(outrosDetalhes).length > 0 
+        ? `<div class="mt-2.5 pt-2 border-t border-purple-200/80 text-xs text-purple-900 space-y-0.5">${detalhesList}</div>` 
+        : `<div class="mt-2.5 pt-2 border-t border-purple-200/80 text-[11px] text-purple-600 italic">Nenhum pipeline adicional</div>`;
+
+      container.innerHTML = `
+        <!-- Card 1: Terceiros -->
+        <div onclick="openPipelineDrillDown('terceiros')" class="group cursor-pointer bg-white rounded-lg shadow-sm border-l-4 border-blue-500 border-t border-r border-b border-gray-200 p-4 flex flex-col justify-between hover:shadow-md hover:border-blue-400 hover:scale-[1.01] transition duration-150 transform">
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-bold text-gray-700 uppercase tracking-wide">Terceiros</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 font-semibold">Portais / Site</span>
+            </div>
+            <p class="text-3xl font-black text-blue-600 mt-1">${terceirosCount}</p>
+            <span class="text-[11px] text-gray-500 mt-1 block">Leads de terceiros cadastrados</span>
+          </div>
+          <div class="mt-3 pt-2 border-t border-blue-100/70 flex items-center justify-between text-xs font-bold text-blue-600 group-hover:text-blue-800 transition">
+            <span>Ver leads</span>
+            <span>→</span>
+          </div>
+        </div>
+
+        <!-- Card 2: MAP -->
+        <div onclick="openPipelineDrillDown('map')" class="group cursor-pointer bg-white rounded-lg shadow-sm border-l-4 border-emerald-500 border-t border-r border-b border-gray-200 p-4 flex flex-col justify-between hover:shadow-md hover:border-emerald-400 hover:scale-[1.01] transition duration-150 transform">
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-bold text-gray-700 uppercase tracking-wide">MAP</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold">Inclui Inativos</span>
+            </div>
+            <p class="text-3xl font-black text-emerald-600 mt-1">${mapCount}</p>
+            <span class="text-[11px] text-gray-500 mt-1 block">Total de entradas no MAP</span>
+          </div>
+          <div class="mt-3 pt-2 border-t border-emerald-100/70 flex items-center justify-between text-xs font-bold text-emerald-600 group-hover:text-emerald-800 transition">
+            <span>Ver leads</span>
+            <span>→</span>
+          </div>
+        </div>
+
+        <!-- Card 3: MCMV -->
+        <div onclick="openPipelineDrillDown('mcmv')" class="group cursor-pointer bg-white rounded-lg shadow-sm border-l-4 border-amber-500 border-t border-r border-b border-gray-200 p-4 flex flex-col justify-between hover:shadow-md hover:border-amber-400 hover:scale-[1.01] transition duration-150 transform">
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-bold text-gray-700 uppercase tracking-wide">MCMV</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 font-semibold">Minha Casa M.V.</span>
+            </div>
+            <p class="text-3xl font-black text-amber-500 mt-1">${mcmvCount}</p>
+            <span class="text-[11px] text-gray-500 mt-1 block">Total de entradas no MCMV</span>
+          </div>
+          <div class="mt-3 pt-2 border-t border-amber-100/70 flex items-center justify-between text-xs font-bold text-amber-600 group-hover:text-amber-800 transition">
+            <span>Ver leads</span>
+            <span>→</span>
+          </div>
+        </div>
+
+        <!-- Card 4: Outros Pipelines (Dinâmico com detalhamento expansível) -->
+        <div onclick="openPipelineDrillDown('outros')" class="group cursor-pointer bg-purple-50/40 rounded-lg shadow-sm border-l-4 border-purple-500 border-t border-r border-b border-purple-200 p-4 flex flex-col justify-between hover:shadow-md hover:border-purple-400 hover:scale-[1.01] transition duration-150 transform">
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-bold text-purple-900 uppercase tracking-wide">Outros Pipelines</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 border border-purple-300 font-semibold">Não Monitorados</span>
+            </div>
+            <p class="text-3xl font-black text-purple-700 mt-1">${outrosTotal}</p>
+            ${outrosConteudoHtml}
+          </div>
+          <div class="mt-3 pt-2 border-t border-purple-200 flex items-center justify-between text-xs font-bold text-purple-700 group-hover:text-purple-900 transition">
+            <span>Ver leads agrupados</span>
+            <span>→</span>
+          </div>
+        </div>
+
+        <!-- Card 5: Sem Pipeline (Destaque para triagem) -->
+        <div onclick="openPipelineDrillDown('sem_pipeline')" class="group cursor-pointer bg-rose-50/50 rounded-lg shadow-sm border-2 border-rose-300 p-4 flex flex-col justify-between hover:shadow-md hover:border-rose-400 hover:scale-[1.01] transition duration-150 transform">
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-bold text-rose-900 uppercase tracking-wide flex items-center gap-1">
+                <span>⚠️</span> Sem Pipeline
+              </span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 border border-rose-300 font-bold">Triagem</span>
+            </div>
+            <p class="text-3xl font-black text-rose-600 mt-1">${semPipelineCount}</p>
+            <span class="text-[11px] text-rose-800 font-medium mt-1 block">Aguardando atribuição inicial no CRM</span>
+          </div>
+          <div class="mt-3 pt-2 border-t border-rose-200 flex items-center justify-between text-xs font-bold text-rose-700 group-hover:text-rose-900 transition">
+            <span>Ver leads p/ triagem</span>
+            <span>→</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function openPipelineDrillDown(catKey) {
+      if (!currentData || !currentData.metrics || !currentData.metrics.visao_geral) return;
+      const vg = currentData.metrics.visao_geral;
+      const leads = (vg.leads_por_categoria && vg.leads_por_categoria[catKey]) ? vg.leads_por_categoria[catKey] : [];
+      
+      const modal = document.getElementById('modal-pipeline-drilldown');
+      const titleEl = document.getElementById('drilldown-modal-title');
+      const subtitleEl = document.getElementById('drilldown-modal-subtitle');
+      const contentEl = document.getElementById('drilldown-modal-content');
+      const countEl = document.getElementById('drilldown-modal-footer-count');
+
+      const configMap = {
+        terceiros: {
+          title: `Leads — Terceiros (${leads.length})`,
+          subtitle: `Leads de portais e parceiros cadastrados no período selecionado`,
+          icon: '🏢'
+        },
+        map: {
+          title: `Leads — MAP (${leads.length})`,
+          subtitle: `Total de entradas no MAP no período selecionado (etapas ativas e inativas)`,
+          icon: '🗺️'
+        },
+        mcmv: {
+          title: `Leads — MCMV (${leads.length})`,
+          subtitle: `Leads do Minha Casa Minha Vida cadastrados no período selecionado`,
+          icon: '🏠'
+        },
+        outros: {
+          title: `Leads — Outros Pipelines (${leads.length})`,
+          subtitle: `Leads em pipelines fora do escopo comercial padrão monitorado`,
+          icon: '📍'
+        },
+        sem_pipeline: {
+          title: `Leads — Sem Pipeline (${leads.length})`,
+          subtitle: `Leads sem pipeline atribuído no CRM (aguardando triagem e direcionamento)`,
+          icon: '⚠️'
+        }
+      };
+
+      const cfg = configMap[catKey] || {
+        title: `Leads (${leads.length})`,
+        subtitle: `Leads cadastrados no período`,
+        icon: '📋'
+      };
+
+      titleEl.innerHTML = `${cfg.icon} ${cfg.title}`;
+      subtitleEl.textContent = cfg.subtitle;
+      countEl.textContent = `Total: ${leads.length} lead(s) exibido(s)`;
+
+      if (leads.length === 0) {
+        contentEl.innerHTML = `
+          <div class="p-8 text-center text-gray-500">
+            <p class="text-sm font-semibold">Nenhum lead encontrado nesta categoria para os filtros aplicados.</p>
+          </div>
+        `;
+        modal.classList.remove('hidden');
+        return;
+      }
+
+      let html = '';
+
+      // Destaque gerencial específico para Sem Pipeline (Item 3)
+      if (catKey === 'sem_pipeline') {
+        html += `
+          <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-900 flex items-start gap-2 shadow-xs mb-3">
+            <span class="text-base">💡</span>
+            <div>
+              <p class="font-bold text-amber-950 text-xs">Identificação para Triagem Comercial:</p>
+              <p class="text-amber-800 text-[11px] mt-0.5 leading-relaxed">
+                Estes clientes não possuem pipeline atribuído. O corretor e o histórico de atendimento indicam se já foram contatados ou se necessitam de atribuição prioritária.
+              </p>
+            </div>
+          </div>
+        `;
+      }
+
+      // Outros Pipelines: Agrupamento Dinâmico por Pipeline Real (Item 4)
+      if (catKey === 'outros') {
+        const groups = {};
+        leads.forEach(l => {
+          const p = l.pipeline || 'Outros';
+          if (!groups[p]) groups[p] = [];
+          groups[p].push(l);
+        });
+
+        Object.keys(groups).sort().forEach(pipeName => {
+          const pipeLeads = groups[pipeName];
+          html += `
+            <div class="bg-purple-100/70 border border-purple-200 rounded-lg px-3.5 py-1.5 mt-2 mb-2 flex items-center justify-between">
+              <span class="font-bold text-xs uppercase tracking-wider text-purple-900 flex items-center gap-1.5">
+                <span>📍</span> Pipeline: <b>${pipeName}</b>
+              </span>
+              <span class="text-[11px] font-black text-purple-800 bg-purple-200/80 px-2 py-0.5 rounded-full">
+                ${pipeLeads.length} lead(s)
+              </span>
+            </div>
+          `;
+          pipeLeads.forEach(lead => {
+            html += renderLeadCardHtml(lead, catKey);
+          });
+        });
+      } else {
+        // Demais categorias (Terceiros, MAP, MCMV, Sem Pipeline)
+        leads.forEach(lead => {
+          html += renderLeadCardHtml(lead, catKey);
+        });
+      }
+
+      contentEl.innerHTML = html;
+      modal.classList.remove('hidden');
+    }
+
+    function renderLeadCardHtml(lead, catKey) {
+      function formatarDt(dtStr) {
+        if (!dtStr) return 'Não informado';
+        const d = new Date(dtStr);
+        if (isNaN(d.getTime())) return dtStr;
+        const dia = String(d.getDate()).padStart(2, '0');
+        const mes = String(d.getMonth() + 1).padStart(2, '0');
+        const ano = d.getFullYear();
+        const hora = String(d.getHours()).padStart(2, '0');
+        const min = String(d.getMinutes()).padStart(2, '0');
+        return `${dia}/${mes}/${ano} às ${hora}:${min}`;
+      }
+
+      const isSemPipeline = catKey === 'sem_pipeline' || !lead.pipeline || lead.pipeline === 'Sem Pipeline';
+      const isEtapaInativa = lead.etapa && (lead.etapa.includes('PAROU DE RESPONDER') || lead.etapa.includes('NÃO TEM INTERESSE') || lead.etapa.includes('Inativa'));
+
+      // Badge de Dias sem Atendimento
+      let diasBadge = '';
+      if (lead.dias_sem_atendimento === null || lead.dias_sem_atendimento === undefined) {
+        diasBadge = '<span class="px-2 py-0.5 rounded bg-gray-100 text-gray-600 text-[10px] font-semibold border border-gray-200">Não informado</span>';
+      } else if (lead.dias_sem_atendimento <= 2) {
+        diasBadge = `<span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200">${lead.dias_sem_atendimento} dia(s)</span>`;
+      } else if (lead.dias_sem_atendimento <= 7) {
+        diasBadge = `<span class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-200">${lead.dias_sem_atendimento} dia(s)</span>`;
+      } else {
+        diasBadge = `<span class="px-2 py-0.5 rounded bg-rose-50 text-rose-700 text-[10px] font-bold border border-rose-200">${lead.dias_sem_atendimento} dia(s)</span>`;
+      }
+
+      // Badge de Etapa / Status Comercial
+      let statusBadge = '';
+      if (isSemPipeline) {
+        statusBadge = '<span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 text-[10px] font-bold border border-rose-300">Sem Pipeline / Sem Etapa</span>';
+      } else if (isEtapaInativa) {
+        statusBadge = `<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-[10px] font-bold border border-slate-300" title="Etapa inativa no CRM (não entra na Gestão da Carteira)">⚠️ ${lead.etapa} (Inativa)</span>`;
+      } else {
+        statusBadge = `<span class="px-2 py-0.5 rounded bg-blue-50 text-blue-800 text-[10px] font-semibold border border-blue-200">${lead.etapa}</span>`;
+      }
+
+      // Formatação do Corretor
+      const corretorDisplay = (lead.corretor && lead.corretor !== 'Sem Corretor')
+        ? `<span class="font-bold text-gray-800 flex items-center gap-1"><span class="text-blue-600">👤</span> ${lead.corretor}</span>`
+        : `<span class="font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">Sem Corretor</span>`;
+
+      return `
+        <div class="bg-white border rounded-xl p-4 shadow-xs hover:border-blue-300 hover:shadow-sm transition duration-150">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5 pb-2 border-b border-gray-100">
+            <div class="flex items-center gap-2">
+              <span class="font-black text-sm text-gray-900">${lead.nome}</span>
+              <span class="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-gray-100 text-gray-600 border border-gray-200">ID: ${lead.id}</span>
+            </div>
+            <div>
+              ${statusBadge}
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-2.5 gap-x-4 text-xs">
+            <div>
+              <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Corretor:</span>
+              <div class="mt-0.5">${corretorDisplay}</div>
+            </div>
+            <div>
+              <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Origem do Lead:</span>
+              <span class="font-semibold text-gray-700 mt-0.5 block">${lead.origem || 'Não informada'}</span>
+            </div>
+            <div>
+              <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Pipeline no CRM:</span>
+              <span class="font-semibold text-gray-700 mt-0.5 block">${lead.pipeline}</span>
+            </div>
+            <div>
+              <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Data de Cadastro:</span>
+              <span class="font-medium text-gray-700 mt-0.5 block">${formatarDt(lead.data_cadastro)}</span>
+            </div>
+            <div>
+              <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Último Atendimento:</span>
+              <span class="font-medium text-gray-700 mt-0.5 block">${formatarDt(lead.data_ultimo_atendimento)}</span>
+            </div>
+            <div>
+              <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Dias sem Atendimento:</span>
+              <div class="mt-0.5">${diasBadge}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function closePipelineDrillDown() {
+      const modal = document.getElementById('modal-pipeline-drilldown');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closePipelineDrillDown();
+    });
+
+    function prepareBulkVerification() {
+      if (isBulkRunning) {
+          alert("Uma verificação em lote já está em andamento. Aguarde ou interrompa a atual.");
+          return;
+      }
+      
+      if (!currentData || !currentData.registros.cards) return;
+      const allCards = currentData.registros.cards;
+      
+      // Aplica apenas os filtros ignorando o filtro de 'Situação dos Comentários'
+      const term = document.getElementById('filter-search').value.toLowerCase();
+      const pautaFilter = document.getElementById('filter-pauta').value;
+
+      const targetCards = allCards.filter(c => {
+         const matchTerm = term === '' || 
+                           c.lead_nome.toLowerCase().includes(term) || 
+                           c.lead_id.toString().includes(term);
+         let matchPauta = true;
+         const keyAcomp = c.lead_id + '_' + c.funil_id;
+         const isMarked = !!uiState.agenda[keyAcomp];
+         if (pautaFilter === 'marcados') {
+            matchPauta = isMarked;
+         } else if (pautaFilter === 'retomar') {
+             if (!isMarked) {
+                 matchPauta = false;
+             } else {
+                 const acompData = (currentData.acompanhamentos || {})[keyAcomp] || {};
+                 const atual = acompData.atual || {};
+                 const currSit = atual.situacao || '';
+                 const hoje = new Date().toISOString().split('T')[0];
+                 const isVencido = atual.previsao && (atual.previsao < hoje) && (currSit !== 'Concluído');
+                 const isPendente = (currSit === 'Pendente');
+                 const isAguardando = (currSit === 'Aguardando retorno');
+                 const isSemAcomp = !acompData.atual || (!atual.resumo && !atual.proxima_acao && !atual.situacao && !atual.previsao);
+                 matchPauta = (isPendente || isAguardando || isVencido || isSemAcomp);
+             }
+         } else if (pautaFilter === 'dispensados') {
+             const acompData = (currentData.acompanhamentos || {})[keyAcomp] || {};
+             matchPauta = (!isMarked && acompData.status_pauta === 'dispensado');
+         }
+         return matchTerm && matchPauta;
+      });
+
+      // Deduplicate leads
+      const leadsMap = {};
+      targetCards.forEach(c => { leadsMap[c.lead_id] = true; });
+      const uniqueLeadIds = Object.keys(leadsMap);
+
+      let cachedCount = 0;
+      let realPendingCount = 0;
+      
+      uiState.bulkQueue = [];
+      
+      uniqueLeadIds.forEach(id => {
+         const resumo = currentData.cache_resumo[id] || { status: 'nao_verificado' };
+         if (resumo.status === 'com_comentarios' || resumo.status === 'sem_comentarios') {
+             cachedCount++;
+         } else {
+             realPendingCount++;
+             uiState.bulkQueue.push(id);
+         }
+      });
+
+      let testLimitMsg = '';
+      const MAX_TEST_LIMIT = 20;
+      if (uiState.bulkQueue.length > MAX_TEST_LIMIT) {
+         uiState.bulkQueue = uiState.bulkQueue.slice(0, MAX_TEST_LIMIT);
+         testLimitMsg = ` <span class="text-red-600 font-bold text-[11px] ml-2">(LIMITADO A ${MAX_TEST_LIMIT} PARA EXPANSÃO CONTROLADA)</span>`;
+      }
+
+      document.getElementById('bulk-total').textContent = uniqueLeadIds.length;
+      document.getElementById('bulk-cached').textContent = cachedCount;
+      document.getElementById('bulk-pending').innerHTML = uiState.bulkQueue.length + testLimitMsg;
+      document.getElementById('bulk-reqs').innerHTML = uiState.bulkQueue.length;
+
+      document.getElementById('bulk-step-1').classList.remove('hidden');
+      document.getElementById('bulk-step-2').classList.add('hidden');
+      document.getElementById('modal-bulk-comments').classList.remove('hidden');
+    }
+    
+    let isBulkRunning = false;
+    
+    function stopBulkVerification() {
+        isBulkRunning = false;
+        document.getElementById('btn-stop-bulk').innerText = 'Interrompendo...';
+        document.getElementById('btn-stop-bulk').disabled = true;
+    }
+    
+    function closeBulkVerification() {
+        document.getElementById('modal-bulk-comments').classList.add('hidden');
+        renderCardsTable(true);
+    }
+    
+    async function executeBulkVerification() {
+        isBulkRunning = true;
+        document.getElementById('bulk-step-1').classList.add('hidden');
+        document.getElementById('bulk-step-2').classList.remove('hidden');
+        document.getElementById('btn-stop-bulk').innerText = 'Interromper fila';
+        document.getElementById('btn-stop-bulk').disabled = false;
+        document.getElementById('btn-stop-bulk').classList.remove('hidden');
+        document.getElementById('btn-close-bulk').classList.add('hidden');
+        
+        const logEl = document.getElementById('bulk-log');
+        logEl.innerHTML = '';
+        const logMsg = (msg, isErr=false) => {
+            const div = document.createElement('div');
+            div.className = isErr ? 'text-red-600 font-bold mb-1' : 'text-gray-700 mb-1';
+            div.innerText = msg;
+            logEl.appendChild(div);
+            logEl.scrollTop = logEl.scrollHeight;
+        };
+        
+        const total = uiState.bulkQueue.length;
+        let currentIdx = 0;
+        let stats = { com: 0, sem: 0, falha: 0, reqs: 0 };
+        
+        for (const leadId of uiState.bulkQueue) {
+            if (!isBulkRunning) {
+                logMsg("--- FILA INTERROMPIDA PELO USUÁRIO ---", true);
+                break;
+            }
+            currentIdx++;
+            
+            document.getElementById('bulk-status-text').innerText = `Verificando cliente ${currentIdx} de ${total} (ID: ${leadId})...`;
+            document.getElementById('bulk-progress-bar').style.width = `${(currentIdx / total) * 100}%`;
+            
+            stats.reqs++;
+            try {
+                const res = await fetch('/api/real-history-single', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ leadId })
+                });
+                
+                const data = await res.json();
+                
+                if (!res.ok) {
+                    stats.falha++;
+                    logMsg(`[ID ${leadId}] Falha: ${data.error || res.statusText}`, true);
+                    if (res.status === 401 || res.status === 403 || res.status === 429) {
+                        logMsg("Parada de segurança: Bloqueio ou falha de autenticação na API.", true);
+                        isBulkRunning = false;
+                        break;
+                    }
+                    continue;
+                }
+                
+                // Grava cache em memória para a tabela usar instantaneamente
+                uiState.historicos[leadId] = { atividades: data.atividades || [], consultado_em: data.consultado_em };
+                
+                const qtd = (data.atividades || []).length;
+                let ultimo = null;
+                if (qtd > 0) {
+                    const first = data.atividades[0];
+                    ultimo = first.data_criacao || first.data_cadastro || first.created_at || first.data;
+                }
+                
+                currentData.cache_resumo[leadId] = {
+                    status: qtd > 0 ? 'com_comentarios' : 'sem_comentarios',
+                    qtd_comentarios: qtd,
+                    data_ultimo_comentario: ultimo,
+                    consultado_em: data.consultado_em
+                };
+                
+                if (qtd > 0) {
+                    stats.com++;
+                    logMsg(`[ID ${leadId}] ${qtd} comentário(s) encontrado(s).`);
+                } else {
+                    stats.sem++;
+                    logMsg(`[ID ${leadId}] Sem comentários.`);
+                }
+                
+                // Pausa de segurança para não engarrafar a UI nem bater na API muito agressivamente do lado do browser
+                await new Promise(r => setTimeout(r, 500));
+                
+            } catch (err) {
+                stats.falha++;
+                logMsg(`[ID ${leadId}] Erro de conexão: ${err.message}`, true);
+            }
+        }
+        
+        isBulkRunning = false;
+        document.getElementById('bulk-status-text').innerText = "Verificação concluída (ou interrompida).";
+        
+        logMsg("---------------------------------");
+        logMsg("RESUMO DA EXECUÇÃO");
+        logMsg(`Total de requisições: ${stats.reqs}`);
+        logMsg(`Clientes COM comentários: ${stats.com}`);
+        logMsg(`Clientes SEM comentários: ${stats.sem}`);
+        logMsg(`Falhas / Restantes na fila: ${stats.falha + (total - currentIdx)}`);
+        
+        document.getElementById('btn-stop-bulk').classList.add('hidden');
+        document.getElementById('btn-close-bulk').classList.remove('hidden');
+    }
+
+    function renderGestaoLayer1() {
+      if(!currentData) return;
+      uiState.currentPage = 1;
+      renderCardsTable();
+    }
+
+    function toggleDetails(rowId) {
+       const row = document.getElementById(rowId);
+       if (row.classList.contains('open')) {
+           row.classList.remove('open');
+       } else {
+           row.classList.add('open');
+       }
+    }
+
+    function toggleHistoricoAcomp(elementId) {
+       const el = document.getElementById(elementId);
+       const icon = document.getElementById('icon-' + elementId);
+       if (!el) return;
+       if (el.classList.contains('hidden')) {
+           el.classList.remove('hidden');
+           if (icon) icon.innerText = '▼';
+       } else {
+           el.classList.add('hidden');
+           if (icon) icon.innerText = '▶';
+       }
+    }
+
+    function changePage(delta) {
+       const totalPages = Math.ceil(uiState.filteredCards.length / uiState.itemsPerPage);
+       uiState.currentPage += delta;
+       if(uiState.currentPage < 1) uiState.currentPage = 1;
+       if(uiState.currentPage > totalPages) uiState.currentPage = totalPages;
+       renderCardsTable(true);
+    }
+
+    async function salvarAcompanhamento(leadId, funilId, btnEl) {
+      const resumo = document.getElementById(`acomp-resumo-${leadId}-${funilId}`).value;
+      const proxima_acao = document.getElementById(`acomp-acao-${leadId}-${funilId}`).value;
+      const previsao = document.getElementById(`acomp-data-${leadId}-${funilId}`).value;
+      const situacao = document.getElementById(`acomp-situacao-${leadId}-${funilId}`).value;
+      const data_reuniao = document.getElementById(`acomp-datareuniao-${leadId}-${funilId}`).value;
+      
+      const radioEl = document.querySelector(`input[name="acomp-encaminhamento-${leadId}-${funilId}"]:checked`);
+      const encaminhamento_pauta = radioEl ? radioEl.value : 'sem_alteracao';
+      
+      const originalText = btnEl.innerText;
+      btnEl.innerText = "Salvando...";
+      btnEl.disabled = true;
+
+      try {
+        const res = await fetch('/api/acompanhamentos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ leadId, funilId, resumo, proxima_acao, previsao, situacao, data_reuniao, encaminhamento_pauta })
+        });
+        
+        const data = await res.json();
+        if (res.ok) {
+           btnEl.innerText = "Salvo!";
+           btnEl.classList.remove('bg-green-600', 'hover:bg-green-700');
+           btnEl.classList.add('bg-blue-600', 'hover:bg-blue-700');
+           
+           const key = `${leadId}_${funilId}`;
+           if (data.na_pauta !== undefined) {
+              if (data.na_pauta) uiState.agenda[key] = true;
+              else delete uiState.agenda[key];
+           }
+           if (!currentData.acompanhamentos) currentData.acompanhamentos = {};
+           if (!currentData.acompanhamentos[key]) currentData.acompanhamentos[key] = { historico: [] };
+           if (data.status_pauta !== undefined) {
+              currentData.acompanhamentos[key].status_pauta = data.status_pauta;
+           }
+           currentData.acompanhamentos[key].atual = data.saved;
+           
+           setTimeout(() => {
+              renderCardsTable(true);
+           }, 700);
+        } else {
+           alert("Erro ao salvar: " + data.error);
+           btnEl.innerText = originalText;
+           btnEl.disabled = false;
+        }
+      } catch (e) {
+        console.error(e);
+        alert("Falha de conexão.");
+        btnEl.innerText = originalText;
+        btnEl.disabled = false;
+      }
+    }
+
+    async function fetchRealHistory(leadId, btnId, forceUpdate = false) {
+      if (forceUpdate) {
+          const ok = confirm(`Deseja atualizar manualmente os comentários no ImobTotal para o Lead ID ${leadId}? Isto consumirá uma requisição real.`);
+          if (!ok) return;
+      } else {
+          const ok = confirm(`Deseja consultar os comentários no ImobTotal para o Lead ID ${leadId}?`);
+          if (!ok) return;
+      }
+      
+      const buttonEl = document.getElementById(btnId);
+      if(buttonEl) buttonEl.disabled = true;
+      
+      try {
+        const res = await fetch('/api/real-history-single', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ leadId, forceUpdate })
+        });
+        
+        const data = await res.json();
+        
+        if (res.status === 410) {
+          uiState.historicos[leadId] = { error: "Histórico não disponível — consultar novamente" };
+          renderCardsTable(true);
+          return;
+        }
+
+        if (!res.ok) {
+          uiState.historicos[leadId] = { error: data.error || "Erro desconhecido" };
+          renderCardsTable(true);
+          return;
+        }
+        
+        // Salva na memória do painel para a sessão (data.atividades e data.consultado_em)
+        uiState.historicos[leadId] = { 
+           atividades: data.atividades || [], 
+           consultado_em: data.consultado_em 
+        };
+        
+        renderCardsTable(true);
+      } catch (err) {
+        uiState.historicos[leadId] = { error: err.message };
+        renderCardsTable(true);
+      }
+    }
+
+      async function carregarTelefones() {
+          try {
+              const res = await fetch('/api/phones');
+              if (res.ok) {
+                  telefones_cache = await res.json();
+              }
+          } catch(e) {
+              console.error('Erro carregando telefones', e);
+          }
+      }
+
+      async function startPhoneSync() {
+          if (!confirm('Iniciar extração paginada de telefones para os 4 funis (165 requisições)?')) return;
+          
+          const funis = [3515, 3500, 5297, 5308];
+          const btn = document.getElementById('btn-sync-phones');
+          if (btn) btn.disabled = true;
+          
+          let totais_salvos = 0;
+          let totais_reqs = 0;
+          
+          try {
+              for (const funil of funis) {
+                  let pagAtual = 1;
+                  let totalPags = 1;
+                  
+                  while (pagAtual <= totalPags) {
+                      if (btn) btn.innerText = `Funil ${funil} - Pág ${pagAtual}/${totalPags > 1 ? totalPags : '?'}`;
+                      
+                      const res = await fetch('/api/phones/sync-page', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ funil_id: funil, pagina: pagAtual })
+                      });
+                      
+                      if (!res.ok) throw new Error('Erro na requisição');
+                      
+                      const data = await res.json();
+                      totais_reqs++;
+                      
+                      if (data.total_paginas) totalPags = data.total_paginas;
+                      totais_salvos += data.salvos_nesta_pagina || 0;
+                      
+                      pagAtual++;
+                  }
+              }
+              alert(`Sincronização concluída!\nRequisições feitas: ${totais_reqs}\nNovos telefones salvos/confirmados: ${totais_salvos}`);
+              await carregarTelefones();
+              renderCardsTable(true);
+          } catch(e) {
+              alert('Erro na sincronização: ' + e.message);
+          } finally {
+              if (btn) {
+                  btn.disabled = false;
+                  btn.innerText = 'Sincronizar Telefones';
+              }
+          }
+      }
+
+      function exportToExcel() {
+          if (!uiState.filteredCards || uiState.filteredCards.length === 0) {
+              alert('Nenhum card para exportar com os filtros atuais.');
+              return;
+          }
+          
+          const uniqueClients = new Set(uiState.filteredCards.map(c => c.lead_id)).size;
+          if (!confirm(`Você exportará ${uiState.filteredCards.length} cards de ${uniqueClients} clientes únicos. Confirmar?`)) return;
+          
+          const rows = [];
+          
+          uiState.filteredCards.forEach(c => {
+              const telRaw = telefones_cache[String(c.lead_id)] || telefones_cache[c.lead_id];
+              const telVal = telRaw ? String(telRaw) : 'Telefone não disponível';
+              
+              const keyAcomp = `${c.lead_id}_${c.funil_id}`;
+              const acompData = (currentData.acompanhamentos || {})[keyAcomp] || {};
+              const atual = acompData.atual || {};
+              const isMarked = !!uiState.agenda[keyAcomp];
+              
+              const resumoStatus = (currentData.cache_resumo[c.lead_id] || {}).status;
+              let sitComentarios = 'Não verificado';
+              if (resumoStatus === 'com_comentarios') sitComentarios = 'Com comentários';
+              else if (resumoStatus === 'sem_comentarios') sitComentarios = 'Sem comentários';
+              else if (resumoStatus === 'expirado') sitComentarios = 'Consulta expirada';
+              
+              const dataUltimo = (c.data_ultimo_atendimento && c.data_ultimo_atendimento !== 'null') 
+                  ? new Date(c.data_ultimo_atendimento).toLocaleDateString() 
+                  : 'Não registrado';
+              
+              const prazoFormatado = atual.previsao ? new Date(atual.previsao).toLocaleDateString() : '';
+              
+              rows.push({
+                  'Nome': c.lead_nome || 'Sem Nome',
+                  'Telefone': String(telVal),
+                  'Corretor': c.corretor_nome || 'Sem corretor',
+                  'Funil': c.funil_nome || '',
+                  'Etapa atual': c.etapa_nome || '',
+                  'Último atendimento registrado': dataUltimo,
+                  'Situação dos comentários': sitComentarios,
+                  'Marcado para reunião': isMarked ? 'Sim' : 'Não',
+                  'Última ação combinada': atual.proxima_acao || '',
+                  'Situação': atual.situacao || '',
+                  'Prazo': prazoFormatado,
+                  'ID': String(c.lead_id),
+                  'Link do atendimento': `https://app.imobtotal.com.br/atendimentos/${c.lead_id}`
+              });
+          });
+          
+          const worksheet = XLSX.utils.json_to_sheet(rows);
+          
+          // Formatar colunas 'Telefone' e 'ID' estritamente como TEXTO
+          const range = XLSX.utils.decode_range(worksheet['!ref']);
+          for (let R = range.s.r; R <= range.e.r; ++R) {
+              for (let C = range.s.c; C <= range.e.c; ++C) {
+                  const cellRef = XLSX.utils.encode_cell({ r: R, c: C });
+                  const cell = worksheet[cellRef];
+                  if (!cell) continue;
+                  const colHeader = worksheet[XLSX.utils.encode_cell({ r: 0, c: C })]?.v;
+                  if (colHeader === 'Telefone' || colHeader === 'ID') {
+                      cell.t = 's';
+                      cell.z = '@';
+                  }
+              }
+          }
+          
+          const workbook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(workbook, worksheet, 'Carteira');
+          
+          const dataHora = new Date().toISOString().slice(0, 10);
+          XLSX.writeFile(workbook, `carteira_clientes_${dataHora}.xlsx`);
+      }
+
+      function renderCardsTable(keepPage = false) {
+      if (!currentData || !currentData.registros || !currentData.registros.cards) return;
+      
+      const funilFilter = document.getElementById('filter-funil').value;
+      const corretorFilter = document.getElementById('filter-corretor').value;
+      
+      let allCards = currentData.registros.cards.filter(c => {
+         let matchFunil = false;
+         if (funilFilter === 'todos' || funilFilter === 'todos_incluindo_3500') {
+             matchFunil = true;
+         } else if (funilFilter === 'todos_exceto_3500') {
+             matchFunil = (c.funil_id != 3500);
+         } else {
+             matchFunil = (c.funil_id == funilFilter);
+         }
+
+         let matchCorretor = (corretorFilter === 'todos' || corretorFilter === '' || !corretorFilter) || (c.corretor_nome == corretorFilter);
+         return matchFunil && matchCorretor;
+      });
+
+      // Transformação de Nomes de Etapa baseada em flags de divergência
+      allCards = allCards.map(c => {
+         const novoCard = { ...c };
+         if (novoCard.nao_localizado_no_crm) {
+             novoCard._etapa_nome_original = novoCard.etapa_nome;
+             novoCard.etapa_nome = "⚠️ Não localizado no funil atual do CRM";
+         } else if (novoCard.divergente) {
+             novoCard._etapa_nome_original = novoCard.etapa_nome;
+             novoCard.etapa_nome = "Etapa atual não confirmada";
+         }
+         return novoCard;
+      });
+
+        // 1) Descobrir todas as etapas únicas APÓS o filtro de funil/corretor e aplicar na combo
+        const uniqueEtapas = [...new Set(allCards.map(c => c.etapa_nome))].sort();
+        const etapaSelect = document.getElementById('filter-etapa');
+        const currEtapa = etapaSelect.value;
+        etapaSelect.innerHTML = '<option value="">Todas as Etapas</option>';
+        uniqueEtapas.forEach(e => {
+            const selected = (e === currEtapa) ? 'selected' : '';
+            etapaSelect.innerHTML += `<option value="${e}" ${selected}>${e}</option>`;
+        });
+        
+        // Se a etapa atual não existe mais nas opções, limpar o filtro
+        if (currEtapa && !uniqueEtapas.includes(currEtapa)) {
+            etapaSelect.value = '';
+        }
+        
+        const etapaFilter = etapaSelect.value;
+        const container = document.getElementById('analyze-results-content');
+        
+        const term = document.getElementById('filter-search').value.toLowerCase();
+        const comentariosFilter = document.getElementById('filter-comentarios').value;
+        const pautaFilter = document.getElementById('filter-pauta').value;
+        const situacaoFilter = document.getElementById('filter-situacao').value;
+        const prazoFilter = document.getElementById('filter-prazo').value;
+  
+        // -------------------------------------------------------------
+        // FASE 3.5M: RÉGUA DE RESUMO DA PAUTA DE REUNIÃO
+        // Ajuste 1: Baseado na pauta completa do corretor/funil selecionado
+        // Ajuste 2: Exibido apenas se houver corretor selecionado ou se filtro de pauta estiver ativo
+        // -------------------------------------------------------------
+        const pautaSummaryBar = document.getElementById('pauta-summary-bar');
+        const shouldShowSummary = (corretorFilter && corretorFilter !== 'todos' && corretorFilter !== '') || (pautaFilter !== 'todos');
+        
+        if (shouldShowSummary && pautaSummaryBar) {
+            pautaSummaryBar.classList.remove('hidden');
+            
+            // Cards marcados na pauta para o recorte de funil e corretor ativos (pauta completa)
+            const pautaCards = allCards.filter(c => !!uiState.agenda[`${c.lead_id}_${c.funil_id}`]);
+            
+            const hoje = new Date().toISOString().split('T')[0];
+            let countPendentes = 0;
+            let countAguardando = 0;
+            let countConcluidos = 0;
+            let countVencidos = 0;
+            let countSemAcomp = 0;
+            
+            pautaCards.forEach(c => {
+                const acompData = (currentData.acompanhamentos || {})[`${c.lead_id}_${c.funil_id}`];
+                const a = acompData?.atual;
+                if (!a || (!a.resumo && !a.proxima_acao && !a.situacao && !a.previsao)) {
+                    countSemAcomp++;
+                } else {
+                    if (a.situacao === 'Pendente') countPendentes++;
+                    else if (a.situacao === 'Aguardando retorno') countAguardando++;
+                    else if (a.situacao === 'Concluído') countConcluidos++;
+                    
+                    // Prazo vencido: data anterior a hoje E situação diferente de Concluído
+                    if (a.previsao && a.previsao < hoje && a.situacao !== 'Concluído') {
+                        countVencidos++;
+                    }
+                }
+            });
+            
+            const uniqueClientsPauta = new Set(pautaCards.map(c => c.lead_id)).size;
+            
+            // Título conforme Ajuste 1
+            const titleEl = document.getElementById('pauta-summary-title');
+            if (titleEl) {
+                if (corretorFilter && corretorFilter !== 'todos' && corretorFilter !== '') {
+                    titleEl.innerHTML = `📋 Resumo da Pauta de Reunião • Corretor: <b>${corretorFilter}</b>`;
+                } else {
+                    titleEl.innerHTML = `📋 Resumo da Pauta de Reunião • <b>Pauta dos corretores selecionados</b>`;
+                }
+            }
+            
+            document.getElementById('kpi-pauta-total').innerText = pautaCards.length;
+            document.getElementById('kpi-pauta-unicos').innerText = `(${uniqueClientsPauta} clientes)`;
+            document.getElementById('kpi-pauta-pendentes').innerText = countPendentes;
+            document.getElementById('kpi-pauta-aguardando').innerText = countAguardando;
+            document.getElementById('kpi-pauta-concluidos').innerText = countConcluidos;
+            document.getElementById('kpi-pauta-vencidos').innerText = countVencidos;
+            document.getElementById('kpi-pauta-sem-acomp').innerText = countSemAcomp;
+        } else if (pautaSummaryBar) {
+            pautaSummaryBar.classList.add('hidden');
+        }
+
+        uiState.filteredCards = allCards.filter(c => {
+           const matchTerm = term === '' || 
+                             c.lead_nome.toLowerCase().includes(term) || 
+                             c.lead_id.toString().includes(term);
+           
+           const matchEtapa = etapaFilter === '' || c.etapa_nome === etapaFilter;
+           
+           const resumo = currentData.cache_resumo[c.lead_id] || { status: 'nao_verificado' };
+         
+         let matchComentarios = true;
+         if (comentariosFilter !== 'todos') {
+            matchComentarios = (resumo.status === comentariosFilter);
+         }
+         
+         const keyAcomp = `${c.lead_id}_${c.funil_id}`;
+         const acompData = (currentData.acompanhamentos || {})[keyAcomp] || {};
+         const atual = acompData.atual || {};
+         
+         let matchPauta = true;
+         const isMarked = !!uiState.agenda[keyAcomp];
+         if (pautaFilter === 'marcados') {
+            matchPauta = isMarked;
+         } else if (pautaFilter === 'retomar') {
+            if (!isMarked) {
+                matchPauta = false;
+            } else {
+                const currSit = atual.situacao || '';
+                const hoje = new Date().toISOString().split('T')[0];
+                const isVencido = atual.previsao && (atual.previsao < hoje) && (currSit !== 'Concluído');
+                const isPendente = (currSit === 'Pendente');
+                const isAguardando = (currSit === 'Aguardando retorno');
+                const isSemAcomp = !acompData.atual || (!atual.resumo && !atual.proxima_acao && !atual.situacao && !atual.previsao);
+                matchPauta = (isPendente || isAguardando || isVencido || isSemAcomp);
+            }
+         } else if (pautaFilter === 'dispensados') {
+            matchPauta = (!isMarked && acompData.status_pauta === 'dispensado');
+         }
+         
+         let matchSituacao = true;
+         if (situacaoFilter !== 'todos') {
+             if (situacaoFilter === 'acoes_executar') {
+                 const currSit = atual.situacao || '';
+                 matchSituacao = (currSit === 'Pendente' || currSit === 'Aguardando retorno');
+             } else if (situacaoFilter === 'sem_acomp') {
+                 matchSituacao = !acompData.atual || (!atual.resumo && !atual.proxima_acao && !atual.situacao && !atual.previsao);
+             } else {
+                 const currSit = atual.situacao || 'Não informado';
+                 matchSituacao = (currSit === situacaoFilter);
+             }
+         }
+         
+         let matchPrazo = true;
+         if (prazoFilter === 'vencido') {
+             if (!atual.previsao) {
+                 matchPrazo = false; // sem prazo não vence
+             } else {
+                 const hoje = new Date().toISOString().split('T')[0];
+                 const isAberto = (atual.situacao !== 'Concluído');
+                 matchPrazo = (atual.previsao < hoje && isAberto);
+             }
+         }
+         
+         return matchTerm && matchEtapa && matchComentarios && matchPauta && matchSituacao && matchPrazo;
+      });
+
+      // Atualizar contagens
+      const leadsMap = {};
+      uiState.filteredCards.forEach(c => { leadsMap[c.lead_id] = true; });
+      const uniqueLeadsCount = Object.keys(leadsMap).length;
+      document.getElementById('gestao-stats-layer1').innerHTML = 
+          `${uniqueLeadsCount} Clientes Únicos e ${uiState.filteredCards.length} Cards na seleção (Reflete pauta e filtros da tabela)`;
+
+      // Atualizar estado do master checkbox
+      const masterCheck = document.getElementById('check-select-all');
+      if (masterCheck) {
+          if (uiState.filteredCards.length === 0) {
+              masterCheck.checked = false;
+              masterCheck.indeterminate = false;
+          } else {
+              const totalFiltered = uiState.filteredCards.length;
+              const markedCount = uiState.filteredCards.filter(c => !!uiState.agenda[`${c.lead_id}_${c.funil_id}`]).length;
+              masterCheck.checked = (markedCount === totalFiltered);
+              masterCheck.indeterminate = (markedCount > 0 && markedCount < totalFiltered);
+          }
+      }
+
+      // Paginação
+      const totalPages = Math.ceil(uiState.filteredCards.length / uiState.itemsPerPage) || 1;
+      if (!keepPage) uiState.currentPage = 1;
+      if (uiState.currentPage > totalPages) uiState.currentPage = totalPages;
+      
+      document.getElementById('page-indicator').textContent = `Pág ${uiState.currentPage} / ${totalPages}`;
+      
+      const startIdx = (uiState.currentPage - 1) * uiState.itemsPerPage;
+      const pageCards = uiState.filteredCards.slice(startIdx, startIdx + uiState.itemsPerPage);
+
+      container.innerHTML = '';
+
+      if (pageCards.length === 0) {
+         container.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500 italic">Nenhum card encontrado com os filtros atuais.</td></tr>`;
+         return;
+      }
+
+      pageCards.forEach((c, idx) => {
+        const rowId = `details-${c.lead_id}-${c.funil_id}-${idx}`;
+        const agendaKey = `${c.lead_id}_${c.funil_id}`;
+        const isMarked = !!uiState.agenda[agendaKey];
+        const dataUltimoStr = c.data_ultimo_atendimento && c.data_ultimo_atendimento !== 'null' ? new Date(c.data_ultimo_atendimento).toLocaleDateString() : 'Não registrado';
+        
+        // Histórico (Agora utilizando estados bem definidos e Cache Backend)
+        const histData = uiState.historicos[c.lead_id];
+        let histHtml = '';
+
+        if (histData && histData.error) {
+            histHtml = `<div class="text-sm text-red-600 mb-3 font-bold border-l-4 border-red-500 pl-2">Falha na consulta: ${histData.error}</div>
+                        <button id="btn-fetch-${c.lead_id}" onclick="fetchRealHistory(${c.lead_id}, 'btn-fetch-${c.lead_id}')" class="text-gray-700 px-3 py-1 rounded text-xs font-bold bg-gray-200 hover:bg-gray-300 transition shadow">
+                          Tentar Novamente / Consultar
+                        </button>`;
+        } else if (histData && histData.atividades) {
+            const dataConsultaStr = new Date(histData.consultado_em).toLocaleString();
+            histHtml += `<div class="bg-blue-50 border border-blue-200 text-blue-900 p-3 rounded text-xs mb-3">
+                           <div class="flex justify-between items-center mb-1">
+                             <p class="font-bold">⚠️ Histórico Global (2ª Camada)</p>
+                             <span class="text-[10px] bg-green-200 text-green-800 px-2 py-0.5 rounded font-bold">Histórico consultado em ${dataConsultaStr}</span>
+                           </div>
+                           <p class="mb-2 text-blue-700 border-b border-blue-200 pb-2">Não reflete necessariamente ações de '${c.etapa_nome}'. Serve apenas como contexto geral do cliente.</p>`;
+            
+            if (histData.atividades.length > 0) {
+               histData.atividades.forEach(a => {
+                  const dateStr = a.data_criacao ? new Date(a.data_criacao).toLocaleString() : '';
+                  histHtml += `<div class="mb-2 pb-2 border-b border-blue-100 last:border-0 last:mb-0 last:pb-0">
+                                 <span class="font-bold text-gray-600">${dateStr} &bull; ${a.usuario_nome || 'Sistema'}</span>
+                                 <p class="text-gray-800 italic ml-2 mt-1 whitespace-pre-wrap">${a.descricao || 'S/ texto'}</p>
+                               </div>`;
+               });
+            } else {
+               histHtml += `<p class="italic text-gray-500">Nenhum comentário retornado do CRM.</p>`;
+            }
+            histHtml += `</div>
+                         <button id="btn-update-${c.lead_id}" onclick="fetchRealHistory(${c.lead_id}, 'btn-update-${c.lead_id}', true)" class="text-gray-600 border border-gray-300 hover:bg-gray-100 px-3 py-1 rounded text-xs font-bold transition">
+                           Atualizar comentários
+                         </button>`;
+        } else {
+            histHtml = `<div class="text-sm text-gray-500 italic mb-3">Histórico não consultado. (Ver Caso aberto com dados locais).</div>
+                        <button id="btn-fetch-${c.lead_id}" onclick="fetchRealHistory(${c.lead_id}, 'btn-fetch-${c.lead_id}')" class="text-white px-3 py-1 rounded text-xs font-bold bg-indigo-600 hover:bg-indigo-700 transition shadow">
+                          Consultar comentários no CRM
+                        </button>`;
+        }
+        
+        // Cache Resumo para a Tabela
+        const resumo = currentData.cache_resumo[c.lead_id] || { status: 'nao_verificado' };
+        let cellComentariosHtml = '';
+        if (resumo.status === 'com_comentarios') {
+            const dateObj = resumo.data_ultimo_comentario ? new Date(resumo.data_ultimo_comentario) : null;
+            const dtUltimo = (dateObj && !isNaN(dateObj)) ? dateObj.toLocaleDateString() : 'Data não informada';
+            const dtColeta = new Date(resumo.consultado_em).toLocaleString();
+            cellComentariosHtml = `
+               <span class="block text-xs font-bold text-blue-700">${resumo.qtd_comentarios} coment. (Global)</span>
+               <span class="block text-[10px] text-gray-500">último em ${dtUltimo}</span>
+               <span class="block text-[9px] text-gray-400 mt-1" title="Verificado em ${dtColeta}">Cache Ok ✓</span>
+            `;
+        } else if (resumo.status === 'sem_comentarios') {
+            const dtColeta = new Date(resumo.consultado_em).toLocaleString();
+            cellComentariosHtml = `
+               <span class="block text-xs text-gray-600 font-bold">Sem comentários</span>
+               <span class="block text-gray-400 text-[9px] mt-1" title="Data da coleta">Consultado: ${dtColeta}</span>
+            `;
+        } else if (resumo.status === 'expirado') {
+            cellComentariosHtml = `<span class="block text-xs text-orange-600 font-bold">Consulta expirada</span>`;
+        } else {
+            cellComentariosHtml = `<span class="block text-xs text-gray-400 italic">Não verificado</span>`;
+        }
+
+        // Acompanhamentos
+        const keyAcomp = `${c.lead_id}_${c.funil_id}`;
+        const acomp = (currentData.acompanhamentos || {})[keyAcomp] || {};
+        const atual = acomp.atual || {};
+        
+        const hojeStr = new Date().toISOString().split('T')[0];
+        const dataReuniaoValue = atual.data_reuniao || hojeStr;
+
+        let historicoHtml = '';
+        if (acomp.historico && acomp.historico.length > 0) {
+            const histReverso = [...acomp.historico].reverse();
+            const histId = `hist-reunioes-${c.lead_id}-${c.funil_id}`;
+            
+            const itensHtml = histReverso.map((item, hIdx) => {
+                const dataReuniao = item.data_reuniao ? new Date(item.data_reuniao + 'T12:00:00').toLocaleDateString() : 'Não informado';
+                const salvoEm = item.salvo_em ? new Date(item.salvo_em).toLocaleString() : 'Não informado';
+                const resumoConv = item.resumo || 'Não informado';
+                const proxAcao = item.proxima_acao || 'Não informado';
+                const prazo = item.previsao ? new Date(item.previsao + 'T12:00:00').toLocaleDateString() : 'Não informado';
+                const situacao = item.situacao || 'Não informado';
+                const autor = item.autor || 'Não informado';
+                
+                let sitColor = 'bg-gray-100 text-gray-700';
+                if (situacao === 'Concluído') sitColor = 'bg-green-100 text-green-800';
+                else if (situacao === 'Pendente') sitColor = 'bg-yellow-100 text-yellow-800';
+                else if (situacao === 'Aguardando retorno') sitColor = 'bg-blue-100 text-blue-800';
+
+                return `
+                  <div class="bg-white border border-amber-200 rounded p-2 mb-2 shadow-xs text-xs">
+                    <div class="flex justify-between items-center mb-1 border-b border-amber-100 pb-1">
+                      <span class="font-bold text-gray-700">📅 Reunião: ${dataReuniao}</span>
+                      <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${sitColor}">${situacao}</span>
+                    </div>
+                    <p class="text-gray-800 mb-1"><span class="font-semibold text-gray-600">Resumo:</span> ${resumoConv}</p>
+                    <div class="grid grid-cols-2 gap-1 text-[11px] text-gray-600 mb-1 bg-amber-50/50 p-1 rounded">
+                      <div><span class="font-semibold">Próxima Ação:</span> ${proxAcao}</div>
+                      <div><span class="font-semibold">Prazo:</span> ${prazo}</div>
+                    </div>
+                    <div class="flex justify-between text-[10px] text-gray-400 mt-1">
+                      <span>Autor: <b>${autor}</b></span>
+                      <span>Salvo em: ${salvoEm}</span>
+                    </div>
+                  </div>
+                `;
+            }).join('');
+
+            historicoHtml = `
+              <div class="mt-3 pt-2 border-t border-amber-200">
+                <button type="button" onclick="toggleHistoricoAcomp('${histId}')" class="text-amber-800 hover:text-amber-900 font-bold text-xs flex items-center gap-1.5 py-1 px-1 rounded hover:bg-amber-100/60 transition">
+                  <span id="icon-${histId}" class="text-[10px]">▶</span>
+                  <span class="underline">Ver versões anteriores (${acomp.historico.length})</span>
+                </button>
+                <div id="${histId}" class="hidden mt-2 max-h-56 overflow-y-auto pr-1">
+                  <div class="text-[10px] text-gray-500 mb-1.5 italic font-medium">Registros anteriores desta reunião (mais recentes primeiro):</div>
+                  ${itensHtml}
+                </div>
+              </div>
+            `;
+        }
+        
+        let statusPautaBadge = '';
+        if (isMarked) {
+            statusPautaBadge = '<span class="bg-indigo-100 text-indigo-800 font-bold px-2 py-0.5 rounded text-[10px]">🟢 Marcado na Pauta</span>';
+        } else if (acomp.status_pauta === 'dispensado') {
+            statusPautaBadge = '<span class="bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded text-[10px]">⏹️ Não precisa voltar por enquanto (Dispensado)</span>';
+        } else {
+            statusPautaBadge = '<span class="bg-gray-100 text-gray-600 font-medium px-2 py-0.5 rounded text-[10px]">⚪ Fora da Pauta (Sem discussão registrada)</span>';
+        }
+        
+        const acompHtml = `
+          <div class="flex justify-between items-center mb-2">
+             <h5 class="font-bold text-gray-800 text-xs uppercase">Anotações da Reunião</h5>
+             ${statusPautaBadge}
+          </div>
+          
+          <div class="flex gap-2 mb-2">
+              <div class="w-1/2">
+                  <label class="text-[10px] font-bold text-gray-500 uppercase">Data da Reunião</label>
+                  <input type="date" id="acomp-datareuniao-${c.lead_id}-${c.funil_id}" class="w-full text-xs border rounded p-1" value="${dataReuniaoValue}">
+              </div>
+              <div class="w-1/2">
+                  <label class="text-[10px] font-bold text-gray-500 uppercase">Situação</label>
+                  <select id="acomp-situacao-${c.lead_id}-${c.funil_id}" class="w-full text-xs border rounded p-1">
+                      <option value="Não informado" ${atual.situacao === 'Não informado' || !atual.situacao ? 'selected' : ''}>Não informado</option>
+                      <option value="Pendente" ${atual.situacao === 'Pendente' ? 'selected' : ''}>Pendente</option>
+                      <option value="Aguardando retorno" ${atual.situacao === 'Aguardando retorno' ? 'selected' : ''}>Aguardando retorno</option>
+                      <option value="Concluído" ${atual.situacao === 'Concluído' ? 'selected' : ''}>Concluído</option>
+                  </select>
+              </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="text-[10px] font-bold text-gray-500 uppercase">Resumo da Conversa</label>
+            <textarea id="acomp-resumo-${c.lead_id}-${c.funil_id}" class="w-full text-xs border rounded p-1" rows="2">${atual.resumo || ''}</textarea>
+          </div>
+          <div class="mb-2">
+            <label class="text-[10px] font-bold text-gray-500 uppercase">Próxima Ação Combinada</label>
+            <input type="text" id="acomp-acao-${c.lead_id}-${c.funil_id}" class="w-full text-xs border rounded p-1" value="${atual.proxima_acao || ''}">
+          </div>
+          <div class="mb-2">
+            <label class="text-[10px] font-bold text-gray-500 uppercase">Data Prevista (Opcional)</label>
+            <input type="date" id="acomp-data-${c.lead_id}-${c.funil_id}" class="w-full text-xs border rounded p-1" value="${atual.previsao || ''}">
+          </div>
+
+          <div class="mb-3 p-2.5 bg-gray-50 border border-gray-200 rounded text-xs">
+            <label class="block text-[10px] font-bold text-gray-700 uppercase mb-1">Encaminhamento da Pauta de Reunião:</label>
+            <div class="flex flex-col gap-1.5 text-[11px]">
+               <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="radio" name="acomp-encaminhamento-${c.lead_id}-${c.funil_id}" value="sem_alteracao" checked class="text-indigo-600">
+                  <span class="text-gray-700 font-medium">Manter status atual (não alterar pauta)</span>
+               </label>
+               <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="radio" name="acomp-encaminhamento-${c.lead_id}-${c.funil_id}" value="manter" class="text-indigo-600">
+                  <span class="text-indigo-800 font-bold">🔄 Voltar à próxima reunião (marcar na pauta)</span>
+               </label>
+               <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="radio" name="acomp-encaminhamento-${c.lead_id}-${c.funil_id}" value="dispensar" class="text-indigo-600">
+                  <span class="text-amber-800 font-bold">⏹️ Não precisa voltar por enquanto (retirar da pauta)</span>
+               </label>
+            </div>
+          </div>
+
+          <button onclick="salvarAcompanhamento(${c.lead_id}, ${c.funil_id}, this)" class="text-white px-3 py-1 rounded text-xs font-bold bg-green-600 hover:bg-green-700 transition shadow">
+            Salvar Acompanhamento
+          </button>
+          ${atual.salvo_em ? `<p class="text-[9px] text-gray-400 mt-1">Última reunião: ${new Date(atual.salvo_em).toLocaleString()} (${atual.autor || 'Sistema'})</p>` : ''}
+          ${historicoHtml}
+        `;
+
+        let acompCompacto = '';
+        const temAcomp = atual.resumo || atual.proxima_acao || (atual.situacao && atual.situacao !== 'Não informado') || atual.previsao;
+        
+        if (temAcomp) {
+            const hojeStr = new Date().toISOString().split('T')[0];
+            const isVencido = atual.previsao && (atual.previsao < hojeStr) && (atual.situacao !== 'Concluído');
+            const prazoFormatado = atual.previsao ? new Date(atual.previsao + 'T12:00:00').toLocaleDateString() : '-';
+            
+            const prazoHtml = isVencido 
+                ? `<span class="bg-red-100 text-red-700 font-bold px-1.5 py-0.5 rounded text-[10px]">⚠️ Vencido em ${prazoFormatado}</span>`
+                : `<span><b>Prazo:</b> ${prazoFormatado}</span>`;
+                
+            let statusColor = 'text-gray-700';
+            if (atual.situacao === 'Concluído') statusColor = 'text-green-700 font-bold';
+            else if (atual.situacao === 'Pendente') statusColor = 'text-amber-700 font-bold';
+            else if (atual.situacao === 'Aguardando retorno') statusColor = 'text-blue-700 font-bold';
+
+            acompCompacto = `
+                <div class="mt-2 pt-1.5 border-t border-gray-200">
+                    <div class="flex flex-wrap items-center gap-1.5 text-[11px] text-gray-700">
+                        <span class="inline-block bg-yellow-100 text-yellow-800 text-[10px] font-bold px-1.5 py-0.5 rounded">Reunião</span>
+                        <span><b>Ação:</b> ${atual.proxima_acao || 'Nenhuma'}</span>
+                        <span class="text-gray-300">|</span>
+                        <span><b>Status:</b> <span class="${statusColor}">${atual.situacao || 'Não informado'}</span></span>
+                        <span class="text-gray-300">|</span>
+                        ${prazoHtml}
+                    </div>
+                    ${atual.resumo ? `<p class="text-[11px] text-gray-600 italic mt-0.5 truncate w-64" title="${atual.resumo}">${atual.resumo}</p>` : ''}
+                </div>
+            `;
+        } else if (isMarked) {
+            acompCompacto = `
+                <div class="mt-2 pt-1.5 border-t border-dashed border-gray-200 flex items-center gap-1.5 text-[11px] text-gray-400 italic">
+                    <span class="inline-block bg-yellow-100 text-yellow-800 text-[10px] font-bold px-1.5 py-0.5 rounded not-italic">Reunião</span>
+                    <span>Sem acompanhamento registrado</span>
+                </div>
+            `;
+        }
+
+        const telVal = telefones_cache[String(c.lead_id)] || telefones_cache[c.lead_id];
+        const telHtml = telVal 
+          ? `<span class="text-xs text-gray-700 font-mono block mb-1">📞 ${telVal}</span>` 
+          : `<span class="text-[11px] text-gray-400 italic block mb-1">Telefone não disponível</span>`;
+
+        const tableRow = `
+          <tr class="border-b hover:bg-gray-50">
+            <td class="p-3 text-center">
+              <input type="checkbox" ${isMarked ? 'checked' : ''} onchange="toggleAgenda(${c.lead_id}, ${c.funil_id})" class="w-4 h-4 text-blue-600 rounded cursor-pointer">
+            </td>
+              <td class="p-3 align-top">
+                <span class="font-bold text-gray-800 block">${c.lead_nome || 'Sem Nome'}</span>
+                ${telHtml}
+                <span class="font-mono text-xs text-gray-500">ID ${c.lead_id}</span>
+                ${acompCompacto}
+              </td>
+            <td class="p-3 align-top">
+              <span class="block font-bold text-indigo-700 text-xs">${c.funil_nome}</span>
+              <span class="block text-gray-700 text-sm mt-0.5">${c.etapa_nome}</span>
+              ${c.reconfirmado_ciclo === false ? '<span class="inline-block bg-gray-100 text-gray-500 text-[10px] px-1.5 py-0.5 rounded border border-gray-200 mt-1" title="Cadastro anterior a 60 dias — etapa mantida da última confirmação">🔒 Preservado (>60d)</span>' : ''}
+              ${c.condicao_etapa === 'nao_confirmada' ? '<span class="inline-block bg-amber-100 text-amber-800 text-[10px] px-1.5 py-0.5 rounded border border-amber-200 mt-1 font-semibold" title="Etapa retornada não confirmada no mapa oficial">⚠️ Etapa não confirmada</span>' : ''}
+            </td>
+            <td class="p-3 align-top text-gray-800 text-sm">
+              ${c.corretor_nome}
+            </td>
+            <td class="p-3 align-top">${cellComentariosHtml}</td>
+            <td class="p-3 align-top text-gray-700 text-sm">${dataUltimoStr}</td>
+            <td class="p-3 align-top text-right min-w-[160px]">
+              <a href="https://app.imobtotal.com.br/atendimentos/${c.lead_id}" target="_blank" class="inline-block text-gray-600 border border-gray-300 hover:bg-gray-100 px-2 py-1 rounded text-xs font-bold mr-1 mb-1 shadow-sm transition">Abrir CRM</a>
+              <button onclick="toggleDetails('${rowId}')" class="text-blue-600 border border-blue-600 hover:bg-blue-50 px-2 py-1 rounded text-xs font-bold shadow-sm transition">Ver caso</button>
+            </td>
+          </tr>
+          <!-- Linha Expansível de Detalhes -->
+          <tr id="${rowId}" class="details-row">
+            <td colspan="7" class="p-4 border-b">
+               <div class="flex gap-4 w-full">
+                 <div class="w-1/4">
+                    <h5 class="font-bold text-gray-800 text-xs uppercase mb-2">Resumo do Card</h5>
+                    ${c.divergente 
+                       ? `<p class="text-sm text-red-600 mb-1 font-bold">⚠️ Etapa atual não confirmada</p>
+                          <p class="text-[10px] text-gray-600 mb-1 bg-gray-100 p-1 rounded"><b>No Snapshot:</b> ${c._etapa_nome_original}<br><b>Retornado hoje:</b> ID ${c.etapa_id_crm_divergente}</p>`
+                       : `<p class="text-sm text-gray-700 mb-1"><b>Etapa atual:</b> ${c.etapa_nome}</p>`
+                    }
+                    <p class="text-sm text-gray-700 mb-1"><b>Últ. Atend (CRM):</b> ${dataUltimoStr}</p>
+                    <p class="text-sm text-gray-700 mb-1"><b>Corretor:</b> ${c.corretor_nome}</p>
+                 </div>
+                 <div class="w-1/3 pl-4 border-l border-gray-200 bg-yellow-50 p-2 rounded-r">
+                    ${acompHtml}
+                 </div>
+                 <div class="w-5/12 pl-4 border-l border-gray-200">
+                    <h5 class="font-bold text-gray-800 text-xs uppercase mb-2">Comentários do CRM (Global)</h5>
+                    ${histHtml}
+                 </div>
+               </div>
+            </td>
+          </tr>
+        `;
+        container.innerHTML += tableRow;
+      });
+    }
+
+    // --- CONTROLE DO MODAL DE RESUMO DOS COMBINADOS (Fase 3.5N) ---
+    let resumoTextoOriginal = '';
+    let resumoHasUnsavedChanges = false;
+
+    function openResumoModal() {
+      const modal = document.getElementById('modal-resumo-reuniao');
+      const corretorSelect = document.getElementById('modal-resumo-corretor');
+      const dataInput = document.getElementById('modal-resumo-data');
+      
+      // Popular corretores com opção inicial de orientação
+      corretorSelect.innerHTML = '<option value="">-- Selecione um Corretor --</option>';
+      const corretores = (globalOptions && globalOptions.corretores) ? globalOptions.corretores : [];
+      corretores.forEach(c => {
+        corretorSelect.innerHTML += `<option value="${c}">${c}</option>`;
+      });
+
+      // Seleção inicial: se já houver corretor selecionado no filtro da tela, usa ele
+      const filtroCorretor = document.getElementById('filter-corretor').value;
+      if (filtroCorretor && corretores.includes(filtroCorretor)) {
+        corretorSelect.value = filtroCorretor;
+      } else {
+        corretorSelect.value = '';
+      }
+
+      // Data padrão: hoje no horário local
+      const hoje = new Date();
+      const ano = hoje.getFullYear();
+      const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+      const dia = String(hoje.getDate()).padStart(2, '0');
+      dataInput.value = `${ano}-${mes}-${dia}`;
+
+      modal.classList.remove('hidden');
+      carregarOuGerarResumo();
+    }
+
+    function fecharResumoModal() {
+      if (resumoHasUnsavedChanges) {
+        const confirmar = confirm("Atenção: existem alterações não salvas no texto do resumo. Deseja realmente fechar?");
+        if (!confirmar) return;
+      }
+      document.getElementById('modal-resumo-reuniao').classList.add('hidden');
+      resumoHasUnsavedChanges = false;
+      document.getElementById('modal-resumo-unsaved-badge').classList.add('hidden');
+    }
+
+    function onResumoParamsChange() {
+      if (resumoHasUnsavedChanges) {
+        const confirmar = confirm("Atenção: você alterou o corretor ou data com alterações não salvas no resumo atual. Deseja continuar e carregar os dados da nova seleção?");
+        if (!confirmar) return;
+      }
+      carregarOuGerarResumo();
+    }
+
+    function onResumoTextareaChange() {
+      const textoAtual = document.getElementById('modal-resumo-texto').value;
+      const unsavedBadge = document.getElementById('modal-resumo-unsaved-badge');
+      if (textoAtual !== resumoTextoOriginal) {
+        resumoHasUnsavedChanges = true;
+        unsavedBadge.classList.remove('hidden');
+      } else {
+        resumoHasUnsavedChanges = false;
+        unsavedBadge.classList.add('hidden');
+      }
+    }
+
+    async function carregarOuGerarResumo() {
+      const corretor = document.getElementById('modal-resumo-corretor').value;
+      const dataReuniao = document.getElementById('modal-resumo-data').value;
+      const alertEl = document.getElementById('modal-resumo-status-alert');
+      const textarea = document.getElementById('modal-resumo-texto');
+      const unsavedBadge = document.getElementById('modal-resumo-unsaved-badge');
+
+      if (!corretor) {
+        alertEl.className = 'text-xs p-2.5 rounded mb-3 bg-amber-50 text-amber-800 border border-amber-200 font-medium';
+        alertEl.textContent = "ℹ️ Selecione um corretor para visualizar ou gerar o resumo dos combinados.";
+        alertEl.classList.remove('hidden');
+        textarea.value = '';
+        textarea.placeholder = 'Selecione um corretor acima e clique em Carregar / Gerar...';
+        unsavedBadge.classList.add('hidden');
+        resumoTextoOriginal = '';
+        resumoHasUnsavedChanges = false;
+        return;
+      }
+
+      if (!dataReuniao) {
+        alertEl.className = 'text-xs p-2.5 rounded mb-3 bg-amber-50 text-amber-800 border border-amber-200 font-medium';
+        alertEl.textContent = "ℹ️ Selecione a data da reunião para visualizar ou gerar o resumo dos combinados.";
+        alertEl.classList.remove('hidden');
+        textarea.value = '';
+        textarea.placeholder = 'Selecione a data acima e clique em Carregar / Gerar...';
+        unsavedBadge.classList.add('hidden');
+        resumoTextoOriginal = '';
+        resumoHasUnsavedChanges = false;
+        return;
+      }
+
+      alertEl.className = 'text-xs p-2 rounded mb-3 bg-blue-50 text-blue-800 border border-blue-200';
+      alertEl.textContent = "Carregando dados da reunião...";
+      alertEl.classList.remove('hidden');
+
+      try {
+        // 1. Verificar se já existe um resumo salvo para este corretor e data
+        const resSalvo = await fetch(`/api/reunioes/resumos?corretor=${encodeURIComponent(corretor)}&data=${encodeURIComponent(dataReuniao)}`);
+        const salvoData = resSalvo.ok ? await resSalvo.json() : null;
+
+        if (salvoData && salvoData.texto) {
+          textarea.value = salvoData.texto;
+          resumoTextoOriginal = salvoData.texto;
+          resumoHasUnsavedChanges = false;
+          unsavedBadge.classList.add('hidden');
+
+          const salvoEmFmt = salvoData.salvo_em ? new Date(salvoData.salvo_em).toLocaleString() : '';
+          alertEl.className = 'text-xs p-2 rounded mb-3 bg-green-50 text-green-800 border border-green-200 flex justify-between items-center';
+          alertEl.innerHTML = `
+            <span>💾 <b>Resumo previamente salvo carregado.</b> ${salvoEmFmt ? `(Salvo em ${salvoEmFmt})` : ''}</span>
+            <button onclick="regerarResumoDosDados()" class="text-xs text-blue-700 underline font-bold hover:text-blue-900 ml-2">Regerar a partir dos dados atuais</button>
+          `;
+          return;
+        }
+
+        // 2. Se não existir resumo salvo, gerar dinamicamente a partir dos acompanhamentos
+        await regerarResumoDosDados();
+
+      } catch (err) {
+        console.error(err);
+        alertEl.className = 'text-xs p-2 rounded mb-3 bg-red-50 text-red-800 border border-red-200';
+        alertEl.textContent = "Erro ao carregar dados: " + err.message;
+      }
+    }
+
+    async function regerarResumoDosDados() {
+      const corretor = document.getElementById('modal-resumo-corretor').value;
+      const dataReuniao = document.getElementById('modal-resumo-data').value;
+      const alertEl = document.getElementById('modal-resumo-status-alert');
+      const textarea = document.getElementById('modal-resumo-texto');
+      const unsavedBadge = document.getElementById('modal-resumo-unsaved-badge');
+
+      const res = await fetch(`/api/reunioes/gerar-resumo?corretor=${encodeURIComponent(corretor)}&data=${encodeURIComponent(dataReuniao)}`);
+      if (!res.ok) throw new Error('Falha ao gerar resumo no servidor');
+      const genData = await res.json();
+
+      textarea.value = genData.texto || '';
+      resumoTextoOriginal = genData.texto || '';
+      resumoHasUnsavedChanges = false;
+      unsavedBadge.classList.add('hidden');
+
+      if (genData.total_cards > 0) {
+        alertEl.className = 'text-xs p-2 rounded mb-3 bg-indigo-50 text-indigo-800 border border-indigo-200';
+        alertEl.textContent = `✨ Resumo gerado com sucesso: ${genData.total_cards} card(s) alinhado(s) para ${corretor} em ${genData.data_formatada}. Revise o texto antes de copiar.`;
+      } else {
+        alertEl.className = 'text-xs p-2 rounded mb-3 bg-amber-50 text-amber-800 border border-amber-200 font-medium';
+        alertEl.textContent = "Nenhum acompanhamento registrado para este corretor nesta data.";
+      }
+    }
+
+    async function copiarResumoWhatsApp() {
+      const textarea = document.getElementById('modal-resumo-texto');
+      const btnCopiar = document.getElementById('btn-copiar-resumo');
+      const texto = textarea.value.trim();
+
+      if (!texto) {
+        alert("O texto do resumo está vazio.");
+        return;
+      }
+
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(texto);
+        } else {
+          textarea.select();
+          document.execCommand('copy');
+        }
+
+        const originalHtml = btnCopiar.innerHTML;
+        btnCopiar.innerHTML = `✓ Copiado para o WhatsApp!`;
+        btnCopiar.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
+        btnCopiar.classList.add('bg-green-700');
+
+        setTimeout(() => {
+          btnCopiar.innerHTML = originalHtml;
+          btnCopiar.classList.remove('bg-green-700');
+          btnCopiar.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
+        }, 2000);
+      } catch (err) {
+        console.error("Falha ao copiar:", err);
+        textarea.select();
+        document.execCommand('copy');
+        alert("Texto copiado para a área de transferência!");
+      }
+    }
+
+    async function salvarResumoLocalmente(overwrite = false) {
+      const corretor = document.getElementById('modal-resumo-corretor').value;
+      const dataReuniao = document.getElementById('modal-resumo-data').value;
+      const textarea = document.getElementById('modal-resumo-texto');
+      const alertEl = document.getElementById('modal-resumo-status-alert');
+      const unsavedBadge = document.getElementById('modal-resumo-unsaved-badge');
+      const texto = textarea.value;
+
+      try {
+        const res = await fetch('/api/reunioes/resumos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ corretor, data_reuniao: dataReuniao, texto_resumo: texto, overwrite })
+        });
+
+        if (res.status === 409) {
+          const confirmar = confirm("Atenção: já existe um resumo salvo para este corretor nesta data.\n\nDeseja sobrescrever com o texto atual?");
+          if (confirmar) {
+            return await salvarResumoLocalmente(true);
+          } else {
+            return;
+          }
+        }
+
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.error || 'Erro ao salvar resumo');
+        }
+
+        const data = await res.json();
+        resumoTextoOriginal = texto;
+        resumoHasUnsavedChanges = false;
+        unsavedBadge.classList.add('hidden');
+
+        alertEl.className = 'text-xs p-2 rounded mb-3 bg-green-50 text-green-800 border border-green-200';
+        alertEl.innerHTML = `💾 <b>Resumo salvo localmente com sucesso!</b> (Vinculado a ${corretor} na data ${dataReuniao})`;
+        alertEl.classList.remove('hidden');
+
+      } catch (err) {
+        console.error(err);
+        alert("Erro ao salvar resumo: " + err.message);
+      }
+    }
+
+    // --- FASE 3.5P: ROTINAS DE ATUALIZAÇÃO SEGURA DA CARTEIRA ---
+    let currentSyncSessionId = null;
+    let currentSyncIsSimulated = false;
+    let currentSyncCreatedAt = null;
+    let currentSyncDiffReport = null;
+    let syncAppliedSuccessfully = false;
+
+    function formatarDataHoraBr(isoStr) {
+      if (!isoStr) return 'Não disponível';
+      const d = new Date(isoStr);
+      if (isNaN(d.getTime())) return isoStr;
+      const dia = String(d.getDate()).padStart(2, '0');
+      const mes = String(d.getMonth() + 1).padStart(2, '0');
+      const ano = d.getFullYear();
+      const hora = String(d.getHours()).padStart(2, '0');
+      const min = String(d.getMinutes()).padStart(2, '0');
+      return `${dia}/${mes}/${ano} às ${hora}:${min}`;
+    }
+
+    function setSyncStepper(stepNum) {
+      const activeClass = "py-1.5 px-1 rounded bg-blue-100 text-blue-900 border border-blue-400 font-extrabold shadow-xs transition";
+      const doneClass = "py-1.5 px-1 rounded bg-slate-100 text-slate-700 border border-slate-300 font-semibold transition";
+      const pendingClass = "py-1.5 px-1 rounded bg-gray-50 text-gray-400 border border-gray-200 font-normal transition";
+      const successClass = "py-1.5 px-1 rounded bg-emerald-100 text-emerald-900 border border-emerald-400 font-extrabold shadow-xs transition";
+
+      for (let i = 1; i <= 4; i++) {
+        const el = document.getElementById(`step-ind-${i}`);
+        if (!el) continue;
+        if (stepNum === 4 && i === 4) {
+          el.className = successClass;
+        } else if (i === stepNum) {
+          el.className = activeClass;
+        } else if (i < stepNum) {
+          el.className = doneClass;
+        } else {
+          el.className = pendingClass;
+        }
+      }
+    }
+
+    function openSyncModal() {
+      currentSyncSessionId = null;
+      currentSyncCreatedAt = null;
+      currentSyncDiffReport = null;
+      syncAppliedSuccessfully = false;
+
+      setSyncStepper(1);
+      document.getElementById('sync-step-1').classList.remove('hidden');
+      document.getElementById('sync-step-2').classList.add('hidden');
+      document.getElementById('sync-step-3').classList.add('hidden');
+      document.getElementById('sync-step-4').classList.add('hidden');
+      document.getElementById('modal-sync-leads').classList.remove('hidden');
+    }
+
+    function closeSyncModal() {
+      document.getElementById('modal-sync-leads').classList.add('hidden');
+      currentSyncSessionId = null;
+      currentSyncCreatedAt = null;
+      currentSyncDiffReport = null;
+      syncAppliedSuccessfully = false;
+    }
+
+    // Proteção contra fechamento acidental se houver prévia aguardando confirmação (Item 5)
+    function requestCloseSyncModal() {
+      if (currentSyncSessionId && !syncAppliedSuccessfully) {
+        const confirmarSaida = confirm("A atualização ainda não foi gravada. Se você sair agora, as alterações não serão aplicadas ao painel. Deseja sair mesmo assim?");
+        if (!confirmarSaida) return;
+      }
+      closeSyncModal();
+    }
+
+    function checkSyncSessionExpired() {
+      if (!currentSyncCreatedAt) return false;
+      const isExp = (Date.now() - currentSyncCreatedAt) > 15 * 60 * 1000;
+      if (isExp) {
+        const expBanner = document.getElementById('sync-expired-banner');
+        const warnBanner = document.getElementById('sync-warning-banner');
+        const btnApply = document.getElementById('btn-apply-sync');
+        if (expBanner) expBanner.classList.remove('hidden');
+        if (warnBanner) warnBanner.classList.add('hidden');
+        if (btnApply) {
+          btnApply.disabled = true;
+          btnApply.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+      }
+      return isExp;
+    }
+
+    async function startSyncPreview() {
+      setSyncStepper(2);
+      document.getElementById('sync-step-1').classList.add('hidden');
+      document.getElementById('sync-step-2').classList.remove('hidden');
+      document.getElementById('sync-step-3').classList.add('hidden');
+      document.getElementById('sync-step-4').classList.add('hidden');
+
+      const progressBar = document.getElementById('sync-progress-bar');
+      const progressStatus = document.getElementById('sync-progress-status');
+      const progressPercent = document.getElementById('sync-progress-percent');
+
+      progressBar.style.width = '20%';
+      progressPercent.innerText = '20%';
+      progressStatus.innerText = 'Iniciando consulta controlada nos 4 funis em memória...';
+
+      let progressVal = 20;
+      const interval = setInterval(() => {
+        if (progressVal < 90) {
+          progressVal += 10;
+          progressBar.style.width = progressVal + '%';
+          progressPercent.innerText = progressVal + '%';
+          if (progressVal === 30) progressStatus.innerText = 'Consultando Terceiros (3515) e MAP (5297)...';
+          if (progressVal === 50) progressStatus.innerText = 'Consultando MCMV (5308) e Lançamentos (3500)...';
+          if (progressVal === 70) progressStatus.innerText = 'Paginando etapas ativas com novos registros...';
+          if (progressVal === 85) progressStatus.innerText = 'Comparando alterações e gerando relatório de conciliação...';
+        }
+      }, 500);
+
+      try {
+        const res = await fetch('/api/sync/preview', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ isSimulated: false })
+        });
+
+        clearInterval(interval);
+        progressBar.style.width = '100%';
+        progressPercent.innerText = '100%';
+
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.error || 'Erro na consulta prévia');
+        }
+
+        const data = await res.json();
+        if (!data.success || !data.sessionId) {
+          throw new Error(data.error || 'A consulta foi incompleta');
+        }
+
+        currentSyncSessionId = data.sessionId;
+        currentSyncCreatedAt = Date.now();
+        currentSyncDiffReport = data.diffReport;
+        currentSyncIsSimulated = data.isSimulated || false;
+        syncAppliedSuccessfully = false;
+
+        renderSyncDiff(data.diffReport);
+
+        setTimeout(() => {
+          setSyncStepper(3);
+          document.getElementById('sync-step-2').classList.add('hidden');
+          document.getElementById('sync-step-3').classList.remove('hidden');
+
+          const expBanner = document.getElementById('sync-expired-banner');
+          const warnBanner = document.getElementById('sync-warning-banner');
+          const btnApply = document.getElementById('btn-apply-sync');
+          if (expBanner) expBanner.classList.add('hidden');
+          if (warnBanner) warnBanner.classList.remove('hidden');
+          if (btnApply) {
+            btnApply.disabled = false;
+            btnApply.classList.remove('opacity-50', 'cursor-not-allowed');
+            btnApply.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> CONFIRMAR E ATUALIZAR PAINEL`;
+          }
+        }, 400);
+
+      } catch (err) {
+        clearInterval(interval);
+        console.error(err);
+        alert("Falha na consulta ao CRM: " + err.message + "\n\nO snapshot anterior permanece 100% inalterado.");
+        closeSyncModal();
+      }
+    }
+
+    function renderSyncDiff(diff) {
+      // 1. Painel Antes / Depois
+      const leadsAntes = diff.leadsUnicosAntes || 0;
+      const leadsDepois = diff.leadsUnicosDepois || 0;
+      const leadsDif = leadsDepois - leadsAntes;
+      document.getElementById('sync-leads-antes').innerText = leadsAntes;
+      document.getElementById('sync-leads-depois').innerText = leadsDepois;
+      document.getElementById('sync-leads-dif').innerText = leadsDif >= 0 ? `(+${leadsDif} novo(s))` : `(${leadsDif})`;
+
+      const cardsAntes = diff.totalCardsAntes || 0;
+      const cardsDepois = diff.totalCardsDepois || 0;
+      const cardsDif = cardsDepois - cardsAntes;
+      document.getElementById('sync-cards-antes').innerText = cardsAntes;
+      document.getElementById('sync-cards-depois').innerText = cardsDepois;
+      document.getElementById('sync-cards-dif').innerText = cardsDif >= 0 ? `(+${cardsDif} novo(s) card(s))` : `(${cardsDif})`;
+
+      document.getElementById('sync-mov-etapas').innerText = `${diff.mudancasEtapa ? diff.mudancasEtapa.length : 0} etapa(s)`;
+      document.getElementById('sync-mov-corretores').innerText = `${diff.mudancasResponsavel ? diff.mudancasResponsavel.length : 0} corretor(es)`;
+
+      // 2. Os 4 Grupos Separados
+      const reconf = diff.cardsPreexistentesReconfirmados !== undefined 
+        ? diff.cardsPreexistentesReconfirmados 
+        : Math.max(0, (diff.cardsReconfirmados || 0) - (diff.novosLeads ? diff.novosLeads.length : 0) - (diff.novasParticipacoes ? diff.novasParticipacoes.length : 0));
+      const preserv = diff.cardsPreexistentesPreservados !== undefined 
+        ? diff.cardsPreexistentesPreservados 
+        : (diff.cardsPreservadosNaoReconfirmados || 0);
+
+      document.getElementById('sync-diff-preexistentes-reconf').innerText = reconf;
+      document.getElementById('sync-diff-preservados').innerText = preserv;
+      document.getElementById('sync-diff-novos-leads').innerText = diff.novosLeads ? diff.novosLeads.length : 0;
+      document.getElementById('sync-diff-novas-partic').innerText = diff.novasParticipacoes ? diff.novasParticipacoes.length : 0;
+
+      // 3. Detalhamento Expansível
+      const detalhesContainer = document.getElementById('sync-diff-detalhes');
+      let html = '';
+
+      if (diff.novosLeads && diff.novosLeads.length > 0) {
+        html += '<div class="mb-2 text-blue-900 font-bold">🆕 Novos Clientes Cadastrados (&lt; 60 dias):</div>';
+        diff.novosLeads.forEach(n => {
+          html += `<div class="pl-2 mb-1 text-gray-700">• <b>${n.nome}</b> (ID ${n.lead_id}) — Funil: ${n.funil_nome} | Etapa: ${n.etapa_nome} | Corretor: ${n.corretor_nome}</div>`;
+        });
+      }
+
+      if (diff.novasParticipacoes && diff.novasParticipacoes.length > 0) {
+        html += '<div class="mt-2 mb-1 text-indigo-900 font-bold">➕ Novas Participações em Outro Funil (Cliente já existente):</div>';
+        diff.novasParticipacoes.forEach(p => {
+          html += `<div class="pl-2 mb-1 text-gray-700">• <b>${p.nome}</b> (ID ${p.lead_id}) — Entrou no Funil: <b>${p.funil_nome}</b> (Etapa: ${p.etapa_nome})</div>`;
+        });
+      }
+
+      if (diff.mudancasEtapa && diff.mudancasEtapa.length > 0) {
+        html += '<div class="mt-2 mb-1 text-purple-900 font-bold">🔄 Mudanças de Etapa Detectadas no CRM:</div>';
+        diff.mudancasEtapa.forEach(m => {
+          html += `<div class="pl-2 mb-1 text-gray-700">• <b>${m.nome}</b> (ID ${m.lead_id} - ${m.funil_nome}): <span class="text-gray-500">${m.de_etapa}</span> ➔ <b class="text-purple-700 font-bold">${m.para_etapa}</b></div>`;
+        });
+      }
+
+      if (diff.mudancasResponsavel && diff.mudancasResponsavel.length > 0) {
+        html += '<div class="mt-2 mb-1 text-cyan-900 font-bold">👤 Mudanças de Corretor Responsável:</div>';
+        diff.mudancasResponsavel.forEach(r => {
+          html += `<div class="pl-2 mb-1 text-gray-700">• <b>${r.nome}</b> (ID ${r.lead_id} - ${r.funil_nome}): <span class="text-gray-500">${r.de_corretor}</span> ➔ <b class="text-cyan-700 font-bold">${r.para_corretor}</b></div>`;
+        });
+      }
+
+      if (diff.novosLeadsGerenciais && diff.novosLeadsGerenciais > 0) {
+        html += `<div class="mt-2 mb-1 text-slate-800 font-bold">📋 Camada Gerencial de Entradas: <b>+${diff.novosLeadsGerenciais}</b> lead(s) capturado(s) (etapas inativas, outros pipelines ou sem pipeline).</div>`;
+      }
+
+      if (diff.etapasNaoConfirmadas && diff.etapasNaoConfirmadas.length > 0) {
+        html += '<div class="mt-2 mb-1 text-amber-900 font-bold">⚠️ Etapas Recentes Não Confirmadas no CRM (Etapa anterior preservada):</div>';
+        diff.etapasNaoConfirmadas.forEach(e => {
+          html += `<div class="pl-2 mb-1 text-amber-800">• <b>${e.nome}</b> (ID ${e.lead_id} - ${e.funil_nome}): Etapa retornada ID ${e.etapa_id_desconhecido} não cadastrada no mapa oficial. Mantida: <b>${e.etapa_mantida}</b></div>`;
+        });
+      }
+
+      if (diff.leadsIgnoradosLegados && diff.leadsIgnoradosLegados > 0) {
+        html += '<div class="mt-2 mb-1 text-gray-600 font-bold">⏳ Leads Legados Descartados (>60 dias fora da carteira):</div>';
+        html += `<div class="pl-2 mb-1 text-gray-500">• <b>${diff.leadsIgnoradosLegados}</b> lead(s) antigo(s) cadastrado(s) há mais de 60 dias não pertenciam ao painel e foram ignorados para evitar importação indevida de histórico legado.</div>`;
+      }
+
+      if (!html) {
+        html = '<div class="text-gray-500 italic p-2">Nenhuma alteração detectada. Todos os cards avaliados continuam com as mesmas etapas e corretores.</div>';
+      }
+
+      detalhesContainer.innerHTML = html;
+    }
+
+    // Gravação definitiva (Passo 3 para 4) — Chamado somente após confirmação do usuário (Itens 2, 4, 6)
+    async function applySyncConfirmed() {
+      if (!currentSyncSessionId || checkSyncSessionExpired()) {
+        alert("Esta prévia expirou. Faça uma nova consulta antes de atualizar o painel.");
+        return;
+      }
+
+      const confirmMsg = "Confirma a gravação da atualização no snapshot da carteira de leads?\n\n" +
+        "• Um backup automático timestamped será gerado antes da gravação.\n" +
+        "• Históricos de comentários, reuniões, resumos e telefones serão 100% preservados.\n" +
+        "• A gravação no disco é definitiva para a sessão ativa.";
+
+      if (!confirm(confirmMsg)) {
+        return;
+      }
+
+      const btnApply = document.getElementById('btn-apply-sync');
+      btnApply.disabled = true;
+      btnApply.innerHTML = `⏳ Gravando atualização com backup...`;
+
+      try {
+        const res = await fetch('/api/sync/apply', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId: currentSyncSessionId, isSimulated: currentSyncIsSimulated })
+        });
+
+        if (!res.ok) {
+          const errData = await res.json();
+          if (errData.error && errData.error.includes("expirou")) {
+            const expBanner = document.getElementById('sync-expired-banner');
+            const warnBanner = document.getElementById('sync-warning-banner');
+            if (expBanner) expBanner.classList.remove('hidden');
+            if (warnBanner) warnBanner.classList.add('hidden');
+            alert("Esta prévia expirou. Faça uma nova consulta antes de atualizar o painel.");
+          } else {
+            alert("Falha na gravação: " + (errData.error || 'Erro desconhecido'));
+          }
+          btnApply.disabled = false;
+          btnApply.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> CONFIRMAR E ATUALIZAR PAINEL`;
+          return;
+        }
+
+        const data = await res.json();
+        syncAppliedSuccessfully = true;
+
+        // Preenche resumo de sucesso detalhado (Item 4)
+        const diff = currentSyncDiffReport || data.diffReport || {};
+        const novosCount = diff.novosLeads ? diff.novosLeads.length : 0;
+        const novasParticCount = diff.novasParticipacoes ? diff.novasParticipacoes.length : 0;
+        const mudancasEtapaCount = diff.mudancasEtapa ? diff.mudancasEtapa.length : 0;
+        const dataHoraFormatada = formatarDataHoraBr(data.baseAtualizadaEm || new Date().toISOString());
+
+        document.getElementById('sync-success-novos-leads').innerText = novosCount;
+        document.getElementById('sync-success-novas-partic').innerText = novasParticCount;
+        document.getElementById('sync-success-mudancas-etapa').innerText = mudancasEtapaCount;
+        document.getElementById('sync-success-data-hora').innerText = dataHoraFormatada;
+        document.getElementById('sync-backup-name').innerText = data.backupFile || 'bali_test_33a_backup_*.json';
+
+        setSyncStepper(4);
+        document.getElementById('sync-step-3').classList.add('hidden');
+        document.getElementById('sync-step-4').classList.remove('hidden');
+
+        // Atualização automática das métricas e dados da tela em segundo plano (Item 4)
+        await loadDashboard();
+
+      } catch (err) {
+        console.error(err);
+        alert("Falha na gravação: " + err.message + "\n\nO snapshot anterior foi mantido.");
+        btnApply.disabled = false;
+        btnApply.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> CONFIRMAR E ATUALIZAR PAINEL`;
+      }
+    }
+
+    function closeSyncModalAndReload() {
+      closeSyncModal();
+      loadDashboard();
+    }
+
+    // Init
+    loadDashboard();
+  </script>
+</body>
+</html>

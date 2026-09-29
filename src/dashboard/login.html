@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — Painel Gerencial Bali Imóveis</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 flex items-center justify-center min-h-screen p-4 font-sans text-slate-800">
+  <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-md p-8">
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-blue-50 border border-blue-200 mb-3 shadow-xs">
+        <span class="text-2xl">🏢</span>
+      </div>
+      <h1 class="text-2xl font-black text-slate-900 tracking-tight">Bali Imóveis</h1>
+      <p class="text-xs font-bold uppercase tracking-wider text-blue-600 mt-1">Painel Gerencial de Leads</p>
+      <p class="text-xs text-slate-500 mt-1">Acesso Restrito — Ambiente Seguro</p>
+    </div>
+
+    <!-- Mensagem de Erro -->
+    <div id="login-error" class="hidden mb-5 bg-rose-50 border border-rose-200 text-rose-800 rounded-lg p-3 text-xs flex items-center gap-2">
+      <span class="text-base">⚠️</span>
+      <span id="login-error-msg">Usuário ou senha inválidos.</span>
+    </div>
+
+    <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+      <div>
+        <label for="username" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Usuário</label>
+        <input 
+          type="text" 
+          id="username" 
+          name="username" 
+          required 
+          autocomplete="username"
+          placeholder="Ex: admin ou gerente"
+          class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:bg-white transition"
+        >
+      </div>
+
+      <div>
+        <label for="password" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Senha</label>
+        <input 
+          type="password" 
+          id="password" 
+          name="password" 
+          required 
+          autocomplete="current-password"
+          placeholder="••••••••"
+          class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:bg-white transition"
+        >
+      </div>
+
+      <button 
+        type="submit" 
+        id="btn-submit"
+        class="w-full mt-2 py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-lg text-sm font-bold shadow transition flex items-center justify-center gap-2"
+      >
+        <span>Entrar no Painel</span>
+        <span>→</span>
+      </button>
+    </form>
+
+    <div class="mt-8 pt-6 border-t border-slate-100 text-center">
+      <p class="text-[11px] text-slate-400">
+        Perfis disponíveis: <b>Administrador</b> (gestão completa e sincronização) e <b>Gerente</b> (gestão da carteira, notas e reuniões 1:1).
+      </p>
+    </div>
+  </div>
+
+  <script>
+    async function handleLogin(e) {
+      e.preventDefault();
+      const errBox = document.getElementById('login-error');
+      const errMsg = document.getElementById('login-error-msg');
+      const btn = document.getElementById('btn-submit');
+      
+      errBox.classList.add('hidden');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="animate-spin text-base">⏳</span> Autenticando...';
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          window.location.href = '/';
+        } else {
+          errMsg.textContent = data.error || 'Credenciais inválidas. Tente novamente.';
+          errBox.classList.remove('hidden');
+          btn.disabled = false;
+          btn.innerHTML = '<span>Entrar no Painel</span> <span>→</span>';
+        }
+      } catch (err) {
+        errMsg.textContent = 'Falha de comunicação com o servidor. Tente novamente.';
+        errBox.classList.remove('hidden');
+        btn.disabled = false;
+        btn.innerHTML = '<span>Entrar no Painel</span> <span>→</span>';
+      }
+    }
+  </script>
+</body>
+</html>

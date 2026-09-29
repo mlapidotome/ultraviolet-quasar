@@ -1,0 +1,145 @@
+/**
+ * Armazenamento Local Persistente — Fase 3.3A (Suporte a N:N Múltiplos Funis)
+ * 
+ * Adaptação para separar:
+ * 1. Lead Único (entidade raiz).
+ * 2. Participações em Funis (1 lead pode estar em N funis simultaneamente).
+ */
+
+const fs = require('fs');
+const path = require('path');
+
+class SyncLocalStore {
+  constructor(options = {}) {
+    this.dbFilePath = options.dbFilePath || path.join(__dirname, '..', '..', 'data', 'bali_leads_sync_store_v2.json');
+    this.ensureDirectoryExists(this.dbFilePath);
+
+    this.data = {
+      version: '2.0.0', // Versão atualizada para formato N:N
+      ultima_atualizacao: null,
+      funis_coletados: [],     // Rastreia a cobertura do snapshot
+      snapshots_leads: {},     // { [lead_id]: LeadGlobalSnapshot }
+      historico_mudancas: []   // Array de eventos
+    };
+
+    this.load();
+  }
+
+  setMonitoredFunis(funisArray) {
+    this.data.funis_coletados = funisArray;
+  }
+
+  ensureDirectoryExists(filePath) {
+    const dir = path.dirname(filePath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+  }
+
+  load() {
+    try {
+      if (fs.existsSync(this.dbFilePath)) {
+        const raw = fs.readFileSync(this.dbFilePath, 'utf8');
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.snapshots_leads) {
+          this.data = parsed;
+        }
+      }
+    } catch (err) {
+      console.warn('⚠️ [LocalStore V2] Falha ao carregar store, inicializando limpo:', err.message);
+    }
+  }
+
+  persistAtomic() {
+    this.data.ultima_atualizacao = new Date().toISOString();
+    const tempPath = `${this.dbFilePath}.tmp_${Date.now()}`;
+    const payload = JSON.stringify(this.data, null, 2);
+
+    try {
+      fs.writeFileSync(tempPath, payload, 'utf8');
+      fs.renameSync(tempPath, this.dbFilePath);
+    } catch (err) {
+      console.error('❌ [LocalStore V2] Erro na gravação atômica:', err.message);
+      if (fs.existsSync(tempPath)) {
+        try { fs.unlinkSync(tempPath); } catch (e) {}
+      }
+      throw err;
+    }
+  }
+
+  getLead(leadId) {
+    return this.data.snapshots_leads[String(leadId)] || null;
+  }
+
+  upsertLead(leadSnapshot) {
+    this.data.snapshots_leads[String(leadSnapshot.id)] = leadSnapshot;
+  }
+
+  recordChange(changeEvent) {
+    if (!Array.isArray(this.data.historico_mudancas)) {
+      this.data.historico_mudancas = [];
+    }
+    const eventRecord = {
+      id: `${changeEvent.lead_id}_${Date.now()}_${this.data.historico_mudancas.length + 1}`,
+      registrado_em: new Date().toISOString(),
+      ...changeEvent
+    };
+    this.data.historico_mudancas.push(eventRecord);
+    return eventRecord;
+  }
+
+  removeLeadFromFunil(leadId, funilId, motivo) {
+    const lead = this.data.snapshots_leads[String(leadId)];
+    if (lead && lead.funis && lead.funis[funilId]) {
+      this.recordChange({
+        lead_id: leadId,
+        funil_id: funilId,
+        tipo: 'SAIDA_MONITORAMENTO_FUNIL',
+        motivo,
+        intervalo_observado: [lead.funis[funilId].ultima_observacao_em, new Date().toISOString()]
+      });
+      delete lead.funis[funilId];
+      // Se não sobrou nenhum funil, podemos remover o lead por completo
+      if (Object.keys(lead.funis).length === 0) {
+        delete this.data.snapshots_leads[String(leadId)];
+      }
+    }
+  }
+
+  /**
+   * Métricas V2: Total de leads únicos vs Total de cartões
+   */
+  getStats() {
+    const stats = {
+      leads_unicos_globais: Object.keys(this.data.snapshots_leads).length,
+      funis: {}
+    };
+
+    for (const lead of Object.values(this.data.snapshots_leads)) {
+      for (const [funilIdStr, partic] of Object.entries(lead.funis || {})) {
+        const funilId = parseInt(funilIdStr, 10);
+        const fNome = partic.funil_nome || `Funil ${funilId}`;
+        if (!stats.funis[fNome]) {
+          stats.funis[fNome] = { funilId, total_cards: 0, comCorretor: 0, semCorretor: 0 };
+        }
+        stats.funis[fNome].total_cards++;
+        if (partic.corretor_id === null) {
+          stats.funis[fNome].semCorretor++;
+        } else {
+          stats.funis[fNome].comCorretor++;
+        }
+      }
+    }
+    return stats;
+  }
+
+  getAllSnapshots() {
+    return Object.values(this.data.snapshots_leads);
+  }
+  
+  getAllChanges() {
+    return this.data.historico_mudancas;
+  }
+}
+
+module.exports = SyncLocalStore;

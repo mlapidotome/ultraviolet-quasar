@@ -1,0 +1,983 @@
+require('dotenv').config();
+const http = require('http');
+const path = require('path');
+const fs = require('fs');
+const url = require('url');
+const crypto = require('crypto');
+const { aggregateMetrics } = require('./aggregator');
+const ImobTotalSyncPrototype = require('../sync/imobtotal_sync_prototype');
+const { analyzePortfolioBatch } = require('./analysis_engine');
+
+const PORT = 3000;
+const DATA_PATH = path.join(__dirname, '..', '..', 'data', 'bali_test_33a.json');
+const CACHE_PATH = path.join(__dirname, '..', '..', 'data', 'cache_historicos.json');
+const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+
+const SYNC_SECRET = "bali-sync-secret-2026"; 
+
+let isSyncing = false;
+let isAnalyzing = false;
+
+// Sessões de staging para atualização controlada (Fase 3.5P)
+const stagingSessions = new Map();
+
+// Helper de verificação de integridade dos 4 arquivos protegidos
+const PROTECTED_FILES = [
+  path.join(__dirname, '..', '..', 'data', 'cache_historicos.json'),
+  path.join(__dirname, '..', '..', 'data', 'reunioes_acompanhamento.json'),
+  path.join(__dirname, '..', '..', 'data', 'reunioes_resumos.json'),
+  path.join(__dirname, '..', '..', 'data', 'telefones_cache.json')
+];
+
+function getProtectedFilesChecksums() {
+  const checksums = {};
+  for (const f of PROTECTED_FILES) {
+    if (fs.existsSync(f)) {
+      const content = fs.readFileSync(f);
+      checksums[path.basename(f)] = crypto.createHash('sha256').update(content).digest('hex');
+    } else {
+      checksums[path.basename(f)] = null;
+    }
+  }
+  return checksums;
+}
+
+function verifyChecksumsMatch(before, after) {
+  for (const key of Object.keys(before)) {
+    if (before[key] !== after[key]) {
+      return { match: false, changedFile: key };
+    }
+  }
+  return { match: true };
+}
+
+function getFileChecksum(filePath) {
+  if (fs.existsSync(filePath)) {
+    const content = fs.readFileSync(filePath);
+    return crypto.createHash('sha256').update(content).digest('hex');
+  }
+  return null;
+}
+
+// Controle de concorrência de consultas individuais
+const pendingRequests = new Map();
+
+// Helpers para o Cache
+function readCache() {
+  if (!fs.existsSync(CACHE_PATH)) return {};
+  try { return JSON.parse(fs.readFileSync(CACHE_PATH, 'utf8')); } catch { return {}; }
+}
+function writeCache(data) {
+  const tmpPath = CACHE_PATH + '.tmp';
+  fs.writeFileSync(tmpPath, JSON.stringify(data, null, 2));
+  fs.renameSync(tmpPath, CACHE_PATH);
+}
+
+// Simulador de GET para Etapa B
+async function simulateRealGet(leadId) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        {
+          id: Date.now(),
+          tipo: "comentario",
+          descricao: `[Simulação Etapa B] Histórico retornado para o Lead ID ${leadId}. O rate limit e o cache estão ativos.`,
+          data_criacao: new Date().toISOString(),
+          usuario_nome: "Teste de Homologação B"
+        }
+      ]);
+    }, 500); // 500ms delay to simulate network/rate limiting
+  });
+}
+
+const server = http.createServer(async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  const parsedUrl = url.parse(req.url, true);
+
+  // --- ROTA DE CONSULTA INDIVIDUAL CONTROLADA (Etapa B) ---
+  if (req.method === 'POST' && parsedUrl.pathname === '/api/real-history-single') {
+    const clientIp = req.socket.remoteAddress;
+    if (!['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(clientIp)) {
+      res.writeHead(403, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({ error: "Acesso negado. Rota restrita ao ambiente local (IP)." }));
+    }
+
+    const origin = req.headers.origin || req.headers.host;
+    if (origin && !origin.includes('localhost:3000') && !origin.includes('127.0.0.1:3000')) {
+      res.writeHead(403, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({ error: "Acesso negado. Origem não autorizada." }));
+    }
+
+    // Se o sincronizador principal estiver rodando, bloqueamos a consulta individual
+    if (isSyncing) {
+      res.writeHead(429, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({ error: "Servidor ocupado com sincronização em lote. Tente novamente em instantes." }));
+    }
+
+    let body = '';
+    req.on('data', chunk => { body += chunk.toString(); });
+    req.on('end', async () => {
+      try {
+        const payload = JSON.parse(body);
+        const leadId = parseInt(payload.leadId, 10);
+        const forceUpdate = payload.forceUpdate === true;
+        
+        const dbData = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'));
+        const leadExists = Object.values(dbData.snapshots_leads || {}).some(l => l.id === leadId);
+        if (!leadExists) {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: "Lead não encontrado na base ativa do dashboard." }));
+        }
+
+        const cache = readCache();
+        const cachedEntry = cache[leadId];
+
+        // 1. Tratamento de expiração e reuso de cache
+        if (cachedEntry && !forceUpdate) {
+          const cacheTime = new Date(cachedEntry.consultado_em).getTime();
+          const age = Date.now() - cacheTime;
+          if (age < SEVEN_DAYS_MS) {
+            res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+            return res.end(JSON.stringify({ success: true, atividades: cachedEntry.atividades, consultado_em: cachedEntry.consultado_em, isSimulated: false, fromCache: true }));
+          } else {
+            // Venceu o prazo: apaga o cache, MAS NÃO CHAMA a API automaticamente
+            delete cache[leadId];
+            writeCache(cache);
+            res.writeHead(410, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ error: "Histórico não disponível — consultar novamente (Cache expirado de 7 dias)." }));
+          }
+        }
+
+        // 2. Controle de concorrência (Se já tem request rodando para este leadId, compartilha a Promise)
+        if (pendingRequests.has(leadId)) {
+          try {
+            const atividadesShared = await pendingRequests.get(leadId);
+            res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+            return res.end(JSON.stringify({ success: true, atividades: atividadesShared, consultado_em: cache[leadId].consultado_em, isSimulated: false, fromCache: false, shared: true }));
+          } catch (sharedErr) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ error: sharedErr.message }));
+          }
+        }
+
+        // 3. Execução da chamada protegida e Real (Ativado Fase 3.5F)
+        const fetchPromise = (async () => {
+          const imobRes = await fetch(`https://app.imobtotal.com.br/api/v1/leads/${leadId}`, {
+            method: 'GET',
+            headers: { 
+              'Authorization': `Bearer ${process.env.IMOBTOTAL_API_KEY}`, 
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            }
+          });
+          
+          if (!imobRes.ok) {
+             const errorBody = await imobRes.text().catch(() => '');
+             throw new Error(`Erro ImobTotal: Status ${imobRes.status}. Detalhes: ${errorBody.slice(0, 100)}`);
+          }
+          
+          const imobData = await imobRes.json();
+          const atividadesLidas = imobData.atividades || imobData.historico || imobData.interacoes || [];
+
+          
+
+          // --- FASE 3.5I: DIAGNÓSTICO ESTRUTURAL (SEM DADOS SENSÍVEIS) ---
+          if (atividadesLidas.length > 0) {
+            const anatomy = {};
+            const sample = atividadesLidas[0];
+            Object.keys(sample).forEach(key => {
+              const val = sample[key];
+              const type = typeof val;
+              if (key.match(/texto|desc|observacao|nome|email|telefone|cpf/i)) {
+                anatomy[key] = `[${type}] (Oculto por Privacidade)`;
+              } else {
+                anatomy[key] = `[${type}] ${val}`;
+              }
+            });
+            const DIAGNOSTIC_PATH = path.join(__dirname, '..', '..', 'data', 'diagnostico_comentario_bruto.json');
+            fs.writeFileSync(DIAGNOSTIC_PATH, JSON.stringify(anatomy, null, 2));
+          }
+          // -------------------------------------------------------------
+
+          let comentarios = atividadesLidas.filter(a => {
+            const t = (a.tipo || a.tipo_atividade || '').toLowerCase();
+            return t.includes('comentario') || t.includes('nota') || t.includes('anotacao') || t.includes('observacao');
+          });
+          
+          if (comentarios.length === 0) comentarios = atividadesLidas.filter(a => a.descricao || a.texto);
+
+          // Validação diagnóstica: Se a API mudou e o payload é desconhecido
+          if (comentarios.length === 0 && atividadesLidas.length > 0) {
+            return atividadesLidas.map(a => ({
+              id: Math.random(),
+              tipo: 'Desconhecido',
+              descricao: `[Diagnóstico Técnico: Campos da atividade recebida = ${Object.keys(a).join(', ')}]`,
+              data_criacao: new Date().toISOString(),
+              usuario_nome: 'Diagnóstico de Sistema'
+            }));
+          }
+
+          return comentarios.map(a => ({
+            id: a.id || Math.random(),
+            tipo: a.tipo || a.tipo_atividade || 'Atividade',
+            descricao: a.descricao || a.texto || a.observacao || 'Sem texto',
+            data_criacao: a.data_criacao || a.data_cadastro || a.created_at || a.data,
+            usuario_nome: a.usuario_nome || a.corretor_nome || a.autor || 'Sistema'
+          }));
+        })();
+
+        pendingRequests.set(leadId, fetchPromise);
+
+        try {
+          const atividades = await fetchPromise;
+          
+          // Grava no cache atômico identificando explicitamente a origem "real"
+          const updatedCache = readCache();
+          const now = new Date().toISOString();
+          updatedCache[leadId] = { consultado_em: now, atividades: atividades, origin: 'real' };
+          writeCache(updatedCache);
+
+          res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+          res.end(JSON.stringify({ success: true, atividades: atividades, consultado_em: now, isSimulated: false }));
+        } catch (apiErr) {
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: `Falha de conexão com ImobTotal: ${apiErr.message}` }));
+        } finally {
+          pendingRequests.delete(leadId); // Limpa o controle após fim da chamada
+        }
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+    });
+    return;
+  }
+
+  // --- ROTA DE MIGRAÇÃO DE PAUTA ---
+  if (req.method === 'POST' && parsedUrl.pathname === '/api/pauta/migrate') {
+      let body = '';
+      req.on('data', chunk => { body += chunk.toString(); });
+      req.on('end', () => {
+         try {
+            const payload = JSON.parse(body);
+            const { agendaObj } = payload;
+            if (agendaObj && typeof agendaObj === 'object') {
+                const REUNIAO_PATH = path.join(__dirname, '..', '..', 'data', 'reunioes_acompanhamento.json');
+                let reunioes = {};
+                if (fs.existsSync(REUNIAO_PATH)) {
+                   try { reunioes = JSON.parse(fs.readFileSync(REUNIAO_PATH, 'utf8')); } catch(e){}
+                }
+                
+                let mudou = false;
+                Object.keys(agendaObj).forEach(key => {
+                    if (agendaObj[key]) {
+                        if (!reunioes[key]) reunioes[key] = { historico: [] };
+                        reunioes[key].na_pauta = true;
+                        mudou = true;
+                    }
+                });
+                
+                if (mudou) {
+                    const tmpPath = REUNIAO_PATH + '.tmp';
+                    fs.writeFileSync(tmpPath, JSON.stringify(reunioes, null, 2));
+                    fs.renameSync(tmpPath, REUNIAO_PATH);
+                }
+            }
+            res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+            res.end(JSON.stringify({ success: true }));
+         } catch (err) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
+         }
+      });
+      return;
+  }
+
+  // --- ROTA DE TOGGLE DA PAUTA ---
+  if (req.method === 'POST' && parsedUrl.pathname === '/api/pauta/toggle') {
+      let body = '';
+      req.on('data', chunk => { body += chunk.toString(); });
+      req.on('end', () => {
+         try {
+             const payload = JSON.parse(body);
+             const { leadId, funilId, checked } = payload;
+             if (!leadId || !funilId) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ error: "Faltam parâmetros." }));
+             }
+             
+             const REUNIAO_PATH = path.join(__dirname, '..', '..', 'data', 'reunioes_acompanhamento.json');
+             let reunioes = {};
+             if (fs.existsSync(REUNIAO_PATH)) {
+                try { reunioes = JSON.parse(fs.readFileSync(REUNIAO_PATH, 'utf8')); } catch(e){}
+             }
+             
+             const key = `${leadId}_${funilId}`;
+             if (!reunioes[key]) reunioes[key] = { historico: [] };
+             reunioes[key].na_pauta = checked;
+             if (checked) {
+                 reunioes[key].status_pauta = 'manter';
+                 reunioes[key].dispensado_em = null;
+             }
+             
+             const tmpPath = REUNIAO_PATH + '.tmp';
+             fs.writeFileSync(tmpPath, JSON.stringify(reunioes, null, 2));
+             fs.renameSync(tmpPath, REUNIAO_PATH);
+             
+             res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+             res.end(JSON.stringify({ success: true, na_pauta: checked, status_pauta: reunioes[key].status_pauta }));
+         } catch(err) {
+             res.writeHead(500, { 'Content-Type': 'application/json' });
+             res.end(JSON.stringify({ error: err.message }));
+         }
+      });
+      return;
+  }
+
+  // --- ROTA DE TOGGLE EM MASSA DA PAUTA ---
+  if (req.method === 'POST' && parsedUrl.pathname === '/api/pauta/toggle-bulk') {
+      let body = '';
+      req.on('data', chunk => { body += chunk.toString(); });
+      req.on('end', () => {
+         try {
+             const payload = JSON.parse(body);
+             const { items, checked } = payload;
+             if (!items || !Array.isArray(items)) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ error: "Faltam parâmetros." }));
+             }
+             
+             const REUNIAO_PATH = path.join(__dirname, '..', '..', 'data', 'reunioes_acompanhamento.json');
+             let reunioes = {};
+             if (fs.existsSync(REUNIAO_PATH)) {
+                try { reunioes = JSON.parse(fs.readFileSync(REUNIAO_PATH, 'utf8')); } catch(e){}
+             }
+             
+             items.forEach(it => {
+                 const key = `${it.leadId}_${it.funilId}`;
+                 if (!reunioes[key]) reunioes[key] = { historico: [] };
+                 reunioes[key].na_pauta = !!checked;
+                 if (checked) {
+                     reunioes[key].status_pauta = 'manter';
+                     reunioes[key].dispensado_em = null;
+                 }
+             });
+             
+             const tmpPath = REUNIAO_PATH + '.tmp';
+             fs.writeFileSync(tmpPath, JSON.stringify(reunioes, null, 2));
+             fs.renameSync(tmpPath, REUNIAO_PATH);
+             
+             res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+             res.end(JSON.stringify({ success: true, count: items.length, na_pauta: checked }));
+         } catch(err) {
+             res.writeHead(500, { 'Content-Type': 'application/json' });
+             res.end(JSON.stringify({ error: err.message }));
+         }
+      });
+      return;
+  }
+
+  // --- ROTA DE ACOMPANHAMENTO DE REUNIÕES (Fase 3.5K / 3.5N) ---
+  if (req.method === 'POST' && parsedUrl.pathname === '/api/acompanhamentos') {
+    let body = '';
+    req.on('data', chunk => { body += chunk.toString(); });
+    req.on('end', () => {
+      try {
+        const payload = JSON.parse(body);
+        const { leadId, funilId, resumo, proxima_acao, previsao, situacao, data_reuniao, encaminhamento_pauta } = payload;
+        
+        if (!leadId || !funilId) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: "Faltam parâmetros de identificação (leadId, funilId)." }));
+        }
+
+        const dbData = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'));
+        const lead = Object.values(dbData.snapshots_leads || {}).find(l => l.id === parseInt(leadId, 10));
+        
+        if (!lead || !lead.funis || !lead.funis[funilId]) {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: "Card não encontrado no snapshot local." }));
+        }
+
+        const REUNIAO_PATH = path.join(__dirname, '..', '..', 'data', 'reunioes_acompanhamento.json');
+        let reunioes = {};
+        if (fs.existsSync(REUNIAO_PATH)) {
+           try { reunioes = JSON.parse(fs.readFileSync(REUNIAO_PATH, 'utf8')); } catch(e){}
+        }
+
+        const key = `${leadId}_${funilId}`;
+        const existing = reunioes[key] || { historico: [] };
+        
+        if (existing.atual) {
+          existing.historico.push(existing.atual); // Move o atual para o histórico
+        }
+
+        existing.atual = {
+          resumo: resumo || '',
+          proxima_acao: proxima_acao || '',
+          previsao: previsao || '',
+          situacao: situacao || 'Não informado',
+          data_reuniao: data_reuniao || new Date().toISOString().split('T')[0],
+          autor: 'Ambiente Local',
+          salvo_em: new Date().toISOString(),
+          encaminhamento_pauta: encaminhamento_pauta || null
+        };
+
+        // Regra de Encaminhamento da Pauta (Fase 3.5N)
+        if (encaminhamento_pauta === 'dispensar') {
+           existing.na_pauta = false;
+           existing.status_pauta = 'dispensado';
+           existing.dispensado_em = data_reuniao || new Date().toISOString().split('T')[0];
+        } else if (encaminhamento_pauta === 'manter') {
+           existing.na_pauta = true;
+           existing.status_pauta = 'manter';
+           existing.dispensado_em = null;
+        }
+        // Se encaminhamento_pauta for 'sem_alteracao' ou não fornecido, não altera na_pauta nem status_pauta
+
+        reunioes[key] = existing;
+
+        const tmpPath = REUNIAO_PATH + '.tmp';
+        fs.writeFileSync(tmpPath, JSON.stringify(reunioes, null, 2));
+        fs.renameSync(tmpPath, REUNIAO_PATH);
+
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ success: true, saved: existing.atual, na_pauta: existing.na_pauta, status_pauta: existing.status_pauta }));
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+    });
+    return;
+  }
+
+  // --- ROTAS DE RESUMOS DE REUNIÕES (Fase 3.5N) ---
+  if (req.method === 'GET' && parsedUrl.pathname === '/api/reunioes/gerar-resumo') {
+      const corretor = parsedUrl.query.corretor;
+      const dataReuniao = parsedUrl.query.data;
+      if (!corretor || !dataReuniao) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: "Faltam parâmetros (corretor, data)." }));
+      }
+
+      try {
+          const dbData = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'));
+          const REUNIAO_PATH = path.join(__dirname, '..', '..', 'data', 'reunioes_acompanhamento.json');
+          let reunioes = {};
+          if (fs.existsSync(REUNIAO_PATH)) {
+              try { reunioes = JSON.parse(fs.readFileSync(REUNIAO_PATH, 'utf8')); } catch(e){}
+          }
+
+          const TELEFONES_PATH = path.join(__dirname, '..', '..', 'data', 'telefones_cache.json');
+          let telefonesCache = {};
+          if (fs.existsSync(TELEFONES_PATH)) {
+              try { telefonesCache = JSON.parse(fs.readFileSync(TELEFONES_PATH, 'utf8')); } catch(e){}
+          }
+
+          function formatarTelefone(tel) {
+              if (!tel) return 'Telefone não cadastrado';
+              const str = String(tel).trim();
+              if (!str) return 'Telefone não cadastrado';
+              if (str.includes('(') && str.includes(')')) return str;
+              const digits = str.replace(/\D/g, '');
+              if (digits.length === 11) {
+                  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+              }
+              if (digits.length === 10) {
+                  return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+              }
+              if (digits.length === 13 && digits.startsWith('55')) {
+                  return `(${digits.slice(2, 4)}) ${digits.slice(4, 9)}-${digits.slice(9)}`;
+              }
+              if (digits.length > 0) return str;
+              return 'Telefone não cadastrado';
+          }
+
+          const leadsRaw = Object.values(dbData.snapshots_leads || {});
+          const cardsMap = {};
+          leadsRaw.forEach(l => {
+              const rawTel = telefonesCache[String(l.id)] || telefonesCache[l.id] || l.telefone_1 || l.telefone;
+              const telFmt = formatarTelefone(rawTel);
+
+              Object.keys(l.funis || {}).forEach(fId => {
+                  const p = l.funis[fId];
+                  cardsMap[`${l.id}_${fId}`] = {
+                      lead_id: l.id,
+                      lead_nome: l.nome || `Lead #${l.id}`,
+                      telefone: telFmt,
+                      funil_id: parseInt(fId, 10),
+                      funil_nome: p.funil_nome || `Funil ${fId}`,
+                      corretor_nome: p.corretor_nome || 'SEM CORRETOR'
+                  };
+              });
+          });
+
+          const cardsFiltrados = [];
+          Object.keys(reunioes).forEach(key => {
+              const info = cardsMap[key];
+              if (!info || info.corretor_nome !== corretor) return;
+
+              const entry = reunioes[key];
+              let registroMaisRecente = null;
+
+              if (entry.atual && entry.atual.data_reuniao === dataReuniao) {
+                  registroMaisRecente = entry.atual;
+              } else if (Array.isArray(entry.historico)) {
+                  for (let i = entry.historico.length - 1; i >= 0; i--) {
+                      if (entry.historico[i].data_reuniao === dataReuniao) {
+                          registroMaisRecente = entry.historico[i];
+                          break;
+                      }
+                  }
+              }
+
+              if (registroMaisRecente) {
+                  let prazoFmt = 'Não informado';
+                  if (registroMaisRecente.previsao) {
+                      const parts = registroMaisRecente.previsao.split('-');
+                      if (parts.length === 3) prazoFmt = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                      else prazoFmt = registroMaisRecente.previsao;
+                  }
+
+                  cardsFiltrados.push({
+                      lead_id: info.lead_id,
+                      funil_id: info.funil_id,
+                      lead_nome: info.lead_nome,
+                      funil_nome: info.funil_nome,
+                      telefone: info.telefone,
+                      proxima_acao: registroMaisRecente.proxima_acao || 'Não informado',
+                      prazo: prazoFmt,
+                      situacao: registroMaisRecente.situacao || 'Não informado',
+                      resumo: registroMaisRecente.resumo || ''
+                  });
+              }
+          });
+
+          // Ordenar alfabeticamente pelo nome do lead para leitura consistente
+          cardsFiltrados.sort((a, b) => (a.lead_nome || '').localeCompare(b.lead_nome || ''));
+
+          let dataFmt = dataReuniao;
+          const dParts = dataReuniao.split('-');
+          if (dParts.length === 3) dataFmt = `${dParts[2]}/${dParts[1]}/${dParts[0]}`;
+
+          let texto = '';
+          if (cardsFiltrados.length === 0) {
+              texto = `Nenhum acompanhamento registrado para este corretor nesta data.`;
+          } else {
+              const header = `📋 *Alinhamento Semanal — Bali Imóveis*\n👤 *Corretor:* ${corretor}\n📅 *Data da Reunião:* ${dataFmt}\n--------------------------------------------------`;
+              
+              const itens = cardsFiltrados.map(c => {
+                  return `Nome: ${c.lead_nome}\nTelefone: ${c.telefone}\nCódigo CRM: ${c.lead_id}\nPróxima ação: ${c.proxima_acao}\nPrazo: ${c.prazo}`;
+              }).join('\n\n');
+
+              const footer = `--------------------------------------------------\n📌 *Total de clientes alinhados:* ${cardsFiltrados.length}`;
+              texto = `${header}\n\n${itens}\n\n${footer}`;
+          }
+
+          res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+          return res.end(JSON.stringify({
+              success: true,
+              corretor,
+              data_reuniao: dataReuniao,
+              data_formatada: dataFmt,
+              total_cards: cardsFiltrados.length,
+              cards: cardsFiltrados,
+              texto
+          }));
+      } catch(err) {
+          console.error(err);
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: err.message }));
+      }
+  }
+
+  if (req.method === 'GET' && parsedUrl.pathname === '/api/reunioes/resumos') {
+     const RESUMOS_PATH = path.join(__dirname, '..', '..', 'data', 'reunioes_resumos.json');
+     let resumos = {};
+     if (fs.existsSync(RESUMOS_PATH)) {
+        try { resumos = JSON.parse(fs.readFileSync(RESUMOS_PATH, 'utf8')); } catch(e){}
+     }
+     const corretor = parsedUrl.query.corretor;
+     const data = parsedUrl.query.data;
+     if (corretor && data) {
+        const key = `${corretor}_${data}`;
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        return res.end(JSON.stringify(resumos[key] || null));
+     }
+     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+     return res.end(JSON.stringify(resumos));
+  }
+
+  if (req.method === 'POST' && parsedUrl.pathname === '/api/reunioes/resumos') {
+     let body = '';
+     req.on('data', chunk => { body += chunk.toString(); });
+     req.on('end', () => {
+        try {
+           const payload = JSON.parse(body);
+           const { corretor, data_reuniao, texto_resumo, overwrite } = payload;
+           if (!corretor || !data_reuniao) {
+              res.writeHead(400, { 'Content-Type': 'application/json' });
+              return res.end(JSON.stringify({ error: "Faltam parâmetros (corretor, data_reuniao)." }));
+           }
+
+           const RESUMOS_PATH = path.join(__dirname, '..', '..', 'data', 'reunioes_resumos.json');
+           let resumos = {};
+           if (fs.existsSync(RESUMOS_PATH)) {
+              try { resumos = JSON.parse(fs.readFileSync(RESUMOS_PATH, 'utf8')); } catch(e){}
+           }
+
+           const key = `${corretor}_${data_reuniao}`;
+           if (resumos[key] && !overwrite) {
+              res.writeHead(409, { 'Content-Type': 'application/json; charset=utf-8' });
+              return res.end(JSON.stringify({ exists: true, message: "Já existe um resumo salvo para este corretor nesta data." }));
+           }
+
+           resumos[key] = {
+              corretor,
+              data_reuniao,
+              texto: texto_resumo || '',
+              salvo_em: new Date().toISOString()
+           };
+
+           const tmpPath = RESUMOS_PATH + '.tmp';
+           fs.writeFileSync(tmpPath, JSON.stringify(resumos, null, 2));
+           fs.renameSync(tmpPath, RESUMOS_PATH);
+
+           res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+           return res.end(JSON.stringify({ success: true, resumo: resumos[key] }));
+        } catch(err) {
+           res.writeHead(500, { 'Content-Type': 'application/json' });
+           return res.end(JSON.stringify({ error: err.message }));
+        }
+     });
+     return;
+  }
+
+  // --- FASE 3.5P: ROTAS DE ATUALIZAÇÃO CONTROLADA ---
+  if (req.method === 'POST' && parsedUrl.pathname === '/api/sync/preview') {
+    if (isSyncing) {
+      res.writeHead(409, { 'Content-Type': 'application/json; charset=utf-8' });
+      return res.end(JSON.stringify({ error: "Servidor ocupado. Outra consulta já está em andamento. Aguarde." }));
+    }
+
+    let body = '';
+    req.on('data', chunk => { body += chunk.toString(); });
+    req.on('end', async () => {
+      isSyncing = true;
+      try {
+        let payload = {};
+        try { payload = JSON.parse(body); } catch(e) {}
+        const isSimulated = payload.isSimulated !== false; // Por padrão simula na Fase 3.5P
+
+        const syncOptions = {
+          dbFilePath: DATA_PATH,
+          janelaDias: 60,
+          dryRun: true,
+          isSimulated: isSimulated,
+          apiKey: process.env.IMOBTOTAL_API_KEY || '7sB_pxSRN1ebZQF99mMcDitxo9L2PkcOIyVauOSrySc',
+          monitoredFunis: [ 
+            { id: 3500, nome: 'Lançamentos' }, 
+            { id: 5308, nome: 'MCMV' },
+            { id: 5297, nome: 'MAP' },
+            { id: 3515, nome: 'Terceiros' }
+          ]
+        };
+
+        const syncEngine = new ImobTotalSyncPrototype(syncOptions);
+        const syncResult = await syncEngine.runSyncCycle();
+
+        const baseDbChecksum = getFileChecksum(DATA_PATH);
+        const sessionId = 'staging_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+        stagingSessions.set(sessionId, {
+          id: sessionId,
+          createdAt: Date.now(),
+          complete: true,
+          baseDbChecksum,
+          diffReport: syncResult.diffReport,
+          stats: syncResult.stats,
+          stagedData: syncResult.stagedData,
+          isSimulated
+        });
+
+        // Limpeza de sessões antigas (> 15 min)
+        const now = Date.now();
+        for (const [sId, sess] of stagingSessions.entries()) {
+          if (now - sess.createdAt > 15 * 60 * 1000) stagingSessions.delete(sId);
+        }
+
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({
+          success: true,
+          sessionId,
+          diffReport: syncResult.diffReport,
+          stats: syncResult.stats,
+          isSimulated,
+          complete: true
+        }));
+      } catch (err) {
+        console.error("Sync Preview Error:", err);
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ success: false, complete: false, error: "Falha na consulta prévia: " + err.message }));
+      } finally {
+        isSyncing = false;
+      }
+    });
+    return;
+  }
+
+  if (req.method === 'POST' && parsedUrl.pathname === '/api/sync/apply') {
+    let body = '';
+    req.on('data', chunk => { body += chunk.toString(); });
+    req.on('end', () => {
+      try {
+        let payload = {};
+        try { payload = JSON.parse(body); } catch(e) {}
+        const { sessionId } = payload;
+
+        if (!sessionId || !stagingSessions.has(sessionId)) {
+          res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
+          return res.end(JSON.stringify({ error: "Esta prévia expirou. Faça uma nova consulta antes de atualizar o painel." }));
+        }
+
+        const session = stagingSessions.get(sessionId);
+
+        // Bloqueio 1: Expiração explícita por TTL (15 minutos)
+        const now = Date.now();
+        if (now - session.createdAt > 15 * 60 * 1000) {
+          stagingSessions.delete(sessionId);
+          res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
+          return res.end(JSON.stringify({ error: "Esta prévia expirou. Faça uma nova consulta antes de atualizar o painel." }));
+        }
+
+        // Bloqueio 2: Consulta incompleta
+        if (!session.complete || !session.stagedData) {
+          res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
+          return res.end(JSON.stringify({ error: "A consulta anterior foi incompleta ou apresentou falha. A aplicação permanece bloqueada." }));
+        }
+
+        // Bloqueio 3: O snapshot mudou desde o início da prévia
+        const currentDbChecksum = getFileChecksum(DATA_PATH);
+        if (session.baseDbChecksum && currentDbChecksum !== session.baseDbChecksum) {
+          res.writeHead(409, { 'Content-Type': 'application/json; charset=utf-8' });
+          return res.end(JSON.stringify({ error: "O snapshot da carteira foi modificado após o início da consulta prévia. A aplicação foi bloqueada para evitar sobrescrever alterações concorrentes." }));
+        }
+
+        // 1. Verificação de integridade dos arquivos históricos antes da gravação
+        const beforeChecksums = getProtectedFilesChecksums();
+
+        // 2. Geração de Backup com Timestamp
+        const nowIso = new Date();
+        const yyyy = nowIso.getFullYear();
+        const mm = String(nowIso.getMonth() + 1).padStart(2, '0');
+        const dd = String(nowIso.getDate()).padStart(2, '0');
+        const hh = String(nowIso.getHours()).padStart(2, '0');
+        const min = String(nowIso.getMinutes()).padStart(2, '0');
+        const ss = String(nowIso.getSeconds()).padStart(2, '0');
+        const tsStr = `${yyyy}${mm}${dd}_${hh}${min}${ss}`;
+
+        const backupPrefix = session.isSimulated ? 'bali_test_33a_backup_SIMULADO_' : 'bali_test_33a_backup_';
+        const backupPath = path.join(__dirname, '..', '..', 'data', `${backupPrefix}${tsStr}.json`);
+
+        if (fs.existsSync(DATA_PATH)) {
+          fs.copyFileSync(DATA_PATH, backupPath);
+        }
+
+        // 3. Aplicação do Snapshot
+        if (session.isSimulated) {
+          // Na Fase 3.5P, se a sessão for simulada, grava em arquivo de teste de homologação sem sobrescrever o bali_test_33a.json real
+          const simStagingPath = path.join(__dirname, '..', '..', 'data', 'bali_test_33a_staging_applied.json');
+          const tmpPath = simStagingPath + '.tmp';
+          fs.writeFileSync(tmpPath, JSON.stringify(session.stagedData, null, 2), 'utf8');
+          fs.renameSync(tmpPath, simStagingPath);
+        } else {
+          // Aplicação real definitiva: gravação atômica (.tmp + renameSync)
+          session.stagedData.ultima_atualizacao = new Date().toISOString();
+          const tmpPath = DATA_PATH + '.tmp';
+          fs.writeFileSync(tmpPath, JSON.stringify(session.stagedData, null, 2), 'utf8');
+          fs.renameSync(tmpPath, DATA_PATH);
+        }
+
+        // 4. Verificação de integridade dos arquivos históricos após a gravação
+        const afterChecksums = getProtectedFilesChecksums();
+        const integrityCheck = verifyChecksumsMatch(beforeChecksums, afterChecksums);
+
+        if (!integrityCheck.match) {
+          console.error(`🚨 [Integrity Alert] O arquivo protegido ${integrityCheck.changedFile} foi modificado indevidamente!`);
+          res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+          return res.end(JSON.stringify({ 
+            error: `Violação de integridade detectada: ${integrityCheck.changedFile} foi alterado.`,
+            integrityFailed: true 
+          }));
+        }
+
+        // Remove a sessão de staging após aplicação
+        stagingSessions.delete(sessionId);
+
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({
+          success: true,
+          message: session.isSimulated 
+            ? "Atualização simulada aplicada com sucesso em ambiente de teste. Histórico 100% preservado."
+            : "Atualização definitiva aplicada com sucesso no snapshot da carteira.",
+          backupFile: path.basename(backupPath),
+          isSimulated: session.isSimulated,
+          integrityVerified: true,
+          diffReport: session.diffReport,
+          baseAtualizadaEm: new Date().toISOString()
+        }));
+      } catch (err) {
+        console.error("Sync Apply Error:", err);
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ error: "Falha na aplicação definitiva: " + err.message }));
+      }
+    });
+    return;
+  }
+
+  // --- BLOQUEIO DE SEGURANÇA DA ROTA ANTIGA ---
+  if (req.method === 'POST' && parsedUrl.pathname === '/api/sync') {
+    res.writeHead(403, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({ 
+      error: "Acesso bloqueado: a sincronização direta sem prévia foi desativada por segurança. Utilize o fluxo controlado /api/sync/preview e /api/sync/apply." 
+    }));
+  }
+
+  // --- ROTA ANTIGA DE LOTE MOCKADO (Mantida isolada, mas não usada na UI) ---
+  if (req.method === 'POST' && parsedUrl.pathname === '/api/analyze-portfolio') {
+    let body = '';
+    req.on('data', chunk => { body += chunk.toString(); });
+    req.on('end', async () => {
+      try {
+        if (isAnalyzing || isSyncing) {
+          res.writeHead(409, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: "Servidor ocupado. Outra coleta está em andamento." }));
+        }
+        isAnalyzing = true;
+        
+        const payload = JSON.parse(body);
+        const leadIds = payload.leadIds || [];
+        const startIndex = payload.startIndex || 0;
+        const batchSize = payload.batchSize || 50;
+
+        const analysisResult = await analyzePortfolioBatch(leadIds, startIndex, batchSize);
+        
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ success: true, result: analysisResult }));
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: err.message }));
+      } finally {
+        isAnalyzing = false;
+      }
+    });
+    return;
+  }
+
+  if (req.method === 'GET' && parsedUrl.pathname === '/api/phones') {
+      const TELEFONES_PATH = path.join(__dirname, '..', '..', 'data', 'telefones_cache.json');
+      let telefones = {};
+      if (fs.existsSync(TELEFONES_PATH)) {
+          try { telefones = JSON.parse(fs.readFileSync(TELEFONES_PATH, 'utf8')); } catch(e){}
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify(telefones));
+  }
+
+  if (req.method === 'POST' && parsedUrl.pathname === '/api/phones/sync-page') {
+      let body = '';
+      req.on('data', chunk => { body += chunk.toString(); });
+      req.on('end', async () => {
+          try {
+              const { funil_id, pagina } = JSON.parse(body);
+              const ImobTotalApiClient = require('../../imobtotal_api_client');
+              const client = new ImobTotalApiClient();
+              
+              const apiRes = await client.getLeads({ funil_id, pagina, por_pagina: 100 });
+              const leadsRetornados = apiRes.leads || [];
+              
+              const dbData = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'));
+              const validLeadIds = new Set(Object.values(dbData.snapshots_leads || {}).map(l => l.id));
+              
+              const TELEFONES_PATH = path.join(__dirname, '..', '..', 'data', 'telefones_cache.json');
+              let telefones = {};
+              if (fs.existsSync(TELEFONES_PATH)) {
+                  try { telefones = JSON.parse(fs.readFileSync(TELEFONES_PATH, 'utf8')); } catch(e){}
+              }
+              
+              let salvos_nesta_pagina = 0;
+              leadsRetornados.forEach(l => {
+                  if (validLeadIds.has(l.id) && l.telefone_1) {
+                      if (!telefones[l.id]) salvos_nesta_pagina++;
+                      telefones[l.id] = l.telefone_1;
+                  }
+              });
+              
+              const tmpPath = TELEFONES_PATH + '.tmp';
+              fs.writeFileSync(tmpPath, JSON.stringify(telefones, null, 2));
+              fs.renameSync(tmpPath, TELEFONES_PATH);
+              
+              res.writeHead(200, { 'Content-Type': 'application/json' });
+              return res.end(JSON.stringify({ 
+                  success: true, 
+                  total_paginas: apiRes.total_paginas,
+                  salvos_nesta_pagina
+              }));
+          } catch (err) {
+              console.error(err);
+              res.writeHead(500, { 'Content-Type': 'application/json' });
+              return res.end(JSON.stringify({ error: err.message }));
+          }
+      });
+      return;
+  }
+
+  if (parsedUrl.pathname === '/api/metrics') {
+    try {
+      const filtros = {
+        inicio: parsedUrl.query.inicio || null,
+        fim: parsedUrl.query.fim || null,
+        funil: parsedUrl.query.funil || null,
+        etapa: parsedUrl.query.etapa || null,
+        corretor: parsedUrl.query.corretor || null,
+        faixa_atendimento: parsedUrl.query.faixa_atendimento || null
+      };
+      
+      const result = aggregateMetrics(DATA_PATH, filtros);
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.end(JSON.stringify(result));
+    } catch (err) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: err.message }));
+    }
+  } else if (parsedUrl.pathname === '/') {
+    fs.readFile(path.join(__dirname, 'index.html'), (err, content) => {
+      if (err) {
+        res.writeHead(500);
+        res.end(`Erro ao carregar index.html`);
+      } else {
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+        res.end(content);
+      }
+    });
+  } else if (parsedUrl.pathname === '/xlsx.full.min.js') {
+    fs.readFile(path.join(__dirname, 'xlsx.full.min.js'), (err, content) => {
+      if (err) {
+        res.writeHead(404);
+        res.end('Not found');
+      } else {
+        res.writeHead(200, { 'Content-Type': 'application/javascript; charset=utf-8' });
+        res.end(content);
+      }
+    });
+  } else if (parsedUrl.pathname === '/favicon.ico') {
+    res.writeHead(204);
+    res.end();
+  } else {
+    res.writeHead(404);
+    res.end('Not found');
+  }
+});
+
+server.listen(PORT, () => {
+  console.log(`Dashboard rodando em http://localhost:${PORT} e http://127.0.0.1:${PORT}`);
+});

@@ -1,0 +1,392 @@
+const fs = require('fs');
+const path = require('path');
+
+function categorizeLeadPipeline(lead) {
+  const funisKeys = Object.keys(lead.funis || {});
+  const pNome = (lead.pipeline_origem_crm || '').trim();
+  const fId = lead.funil_origem_crm_id ? parseInt(lead.funil_origem_crm_id, 10) : null;
+
+  // 1. Terceiros (3515)
+  if (funisKeys.includes('3515') || fId === 3515 || /terceiro/i.test(pNome)) {
+    return { categoria: 'terceiros', pipeline: 'Terceiros' };
+  }
+  // 2. MAP (5297)
+  if (funisKeys.includes('5297') || fId === 5297 || /^map\b/i.test(pNome) || pNome === 'MAP') {
+    return { categoria: 'map', pipeline: 'MAP' };
+  }
+  // 3. MCMV (5308)
+  if (funisKeys.includes('5308') || fId === 5308 || /mcmv/i.test(pNome)) {
+    return { categoria: 'mcmv', pipeline: 'MCMV' };
+  }
+  // 4. Lançamentos (3500)
+  if (funisKeys.includes('3500') || fId === 3500 || /lançamento/i.test(pNome)) {
+    return { categoria: 'lancamentos', pipeline: 'Lançamentos' };
+  }
+
+  // 5. Sem Pipeline
+  if (!pNome || pNome === 'Sem Pipeline' || pNome === 'SEM_PIPELINE' || pNome.toLowerCase() === 'sem funil' || pNome.toLowerCase() === 'sem pipeline') {
+    return { categoria: 'sem_pipeline', pipeline: 'Sem Pipeline' };
+  }
+
+  // 6. Outros Pipelines (dinâmico pelo nome real do CRM, ex: "SÃO PAULO")
+  return { categoria: 'outros', pipeline: pNome };
+}
+
+function matchesDateFilter(dateStr, inicio, fim) {
+  if (!dateStr) return false;
+  const t = new Date(dateStr).getTime();
+  if (isNaN(t)) return false;
+  if (inicio && t < new Date(inicio).getTime()) return false;
+  if (fim) {
+    const fDate = new Date(fim);
+    fDate.setUTCDate(fDate.getUTCDate() + 1);
+    if (t >= fDate.getTime()) return false;
+  }
+  return true;
+}
+
+function aggregateMetrics(data, filtros = {}) {
+  if (!data) {
+    throw new Error("Dados n�o fornecidos");
+  }
+
+  
+  const leadsRaw = Object.values(data.snapshots_leads || {});
+
+  // --- Leitura do Mapa de Nomes Reais (Fase 3.5H) ---
+  const MAPA_PATH = path.join(__dirname, '..', '..', 'data', 'mapa_etapas_crm.json');
+  let mapaEtapas = {};
+  if (fs.existsSync(MAPA_PATH)) {
+     try { mapaEtapas = JSON.parse(fs.readFileSync(MAPA_PATH, 'utf8')); } catch(e){}
+  }
+
+  // 1. Achatar para formato de "Cards" e extrair opções de filtro
+  let allCards = [];
+  const opcoes = {
+    funis: {},
+    etapas_por_funil: {},
+    corretores: new Set()
+  };
+
+  leadsRaw.forEach(lead => {
+    const particKeys = Object.keys(lead.funis || {});
+    particKeys.forEach(fId => {
+      const p = lead.funis[fId];
+      const corretor = p.corretor_nome || 'SEM CORRETOR';
+      const etapaId = p.etapa_id ? parseInt(p.etapa_id, 10) : null;
+      let etapaNome = p.etapa_nome || 'SEM_ETAPA';
+      const funilNome = p.funil_nome || `Funil ${fId}`;
+      
+      // Override the old name with the new CRM name if available
+      if (etapaId) {
+         const key = `${fId}_${etapaId}`;
+         if (mapaEtapas[key] && mapaEtapas[key].nome) {
+            etapaNome = mapaEtapas[key].nome;
+         }
+      }
+
+      allCards.push({
+        lead_id: lead.id,
+        lead_nome: lead.nome,
+        data_cadastro: lead.data_cadastro_crm,
+        data_ultimo_atendimento: lead.data_ultimo_atendimento,
+        dias_sem_atendimento: lead.dias_sem_atendimento,
+        funil_id: parseInt(fId, 10),
+        funil_nome: funilNome,
+        etapa_id: etapaId,
+        etapa_nome: etapaNome,
+        corretor_nome: corretor,
+        conflitos: lead.conflitos_auditoria ? lead.conflitos_auditoria.length : 0
+      });
+
+      opcoes.funis[fId] = funilNome;
+      if (!opcoes.etapas_por_funil[fId]) opcoes.etapas_por_funil[fId] = new Set();
+      opcoes.etapas_por_funil[fId].add(etapaNome);
+      opcoes.corretores.add(corretor);
+    });
+  });
+
+  // Convert sets to arrays for frontend
+  opcoes.corretores = Array.from(opcoes.corretores).sort();
+  Object.keys(opcoes.etapas_por_funil).forEach(fId => {
+    opcoes.etapas_por_funil[fId] = Array.from(opcoes.etapas_por_funil[fId]).sort();
+  });
+
+  // 2. Aplicar Filtros
+  let filteredCards = allCards;
+
+  if (filtros.inicio || filtros.fim) {
+    filteredCards = filteredCards.filter(c => {
+      if (!c.data_cadastro) return false;
+      const t = new Date(c.data_cadastro).getTime();
+      let ok = true;
+      if (filtros.inicio) ok = ok && t >= new Date(filtros.inicio).getTime();
+      if (filtros.fim) {
+        const fDate = new Date(filtros.fim);
+        fDate.setUTCDate(fDate.getUTCDate() + 1);
+        ok = ok && t < fDate.getTime();
+      }
+      return ok;
+    });
+  }
+
+  if (filtros.funil) {
+    if (filtros.funil === 'todos_exceto_3500') {
+      filteredCards = filteredCards.filter(c => c.funil_id !== 3500);
+    } else if (filtros.funil !== 'todos_incluindo_3500') {
+      filteredCards = filteredCards.filter(c => c.funil_id.toString() === filtros.funil.toString());
+    }
+  } else {
+    // Comportamento padrão inicial
+    filteredCards = filteredCards.filter(c => c.funil_id !== 3500);
+  }
+
+  if (filtros.etapa) {
+    filteredCards = filteredCards.filter(c => c.etapa_nome === filtros.etapa);
+  }
+
+  if (filtros.corretor) {
+    filteredCards = filteredCards.filter(c => c.corretor_nome === filtros.corretor);
+  }
+
+  if (filtros.faixa_atendimento) {
+    filteredCards = filteredCards.filter(c => {
+      const dias = c.dias_sem_atendimento;
+      if (filtros.faixa_atendimento === 'indisponivel') return dias === null || dias === undefined;
+      if (dias === null || dias === undefined) return false;
+      
+      if (filtros.faixa_atendimento === '0-2') return dias >= 0 && dias <= 2;
+      if (filtros.faixa_atendimento === '3-7') return dias >= 3 && dias <= 7;
+      if (filtros.faixa_atendimento === '8-14') return dias >= 8 && dias <= 14;
+      if (filtros.faixa_atendimento === '15+') return dias >= 15;
+      return true;
+    });
+  }
+
+  // 3. Re-agregar métricas
+  const leadsUnicosMap = new Map();
+  let totalConflitos = 0;
+
+  let fileMtime = null;
+  try {
+    const st = fs.statSync(filePath);
+    fileMtime = st.mtime.toISOString();
+  } catch (e) {}
+
+  const metrics = {
+    metadata: {
+      ultima_atualizacao: fileMtime || data.ultima_atualizacao,
+      arquivo_mtime: fileMtime,
+      periodo_avaliado: (filtros.inicio || filtros.fim) ? `${filtros.inicio || '*'} até ${filtros.fim || '*'} (pela Data de Cadastro do Lead)` : "Todo o histórico local (60 Dias) - Pela Data de Cadastro",
+      leads_processados: leadsRaw.length
+    },
+    geral: {
+      leads_unicos: 0,
+      total_cards: filteredCards.length,
+      leads_multi_funil: 0,
+      total_conflitos_etapa: 0
+    },
+    funis: {
+      "3500": { id: 3500, nome: "Lançamentos", total_cards: 0, etapas: {}, corretores: {} },
+      "5308": { id: 5308, nome: "MCMV", total_cards: 0, etapas: {}, corretores: {} },
+      "5297": { id: 5297, nome: "MAP", total_cards: 0, etapas: {}, corretores: {} },
+      "3515": { id: 3515, nome: "Terceiros", total_cards: 0, etapas: {}, corretores: {} }
+    }
+  };
+
+  // Group by lead to calculate unique and multi-funnel (within the filtered scope)
+  const cardsPorLead = {};
+  filteredCards.forEach(c => {
+    if (!cardsPorLead[c.lead_id]) {
+      cardsPorLead[c.lead_id] = [];
+      leadsUnicosMap.set(c.lead_id, {
+        id: c.lead_id,
+        nome: c.lead_nome,
+        data_cadastro: c.data_cadastro
+      });
+      totalConflitos += c.conflitos;
+    }
+    cardsPorLead[c.lead_id].push(c);
+
+    // Build funis stats
+    if (!metrics.funis[c.funil_id]) {
+      metrics.funis[c.funil_id] = { id: c.funil_id, nome: c.funil_nome, total_cards: 0, etapas: {}, corretores: {}, corretores_leads: {} };
+    }
+    const f = metrics.funis[c.funil_id];
+    f.total_cards++;
+    f.etapas[c.etapa_nome] = (f.etapas[c.etapa_nome] || 0) + 1;
+    f.corretores[c.corretor_nome] = (f.corretores[c.corretor_nome] || 0) + 1;
+    
+    if (!f.corretores_leads) f.corretores_leads = {};
+    if (!f.corretores_leads[c.corretor_nome]) f.corretores_leads[c.corretor_nome] = new Set();
+    f.corretores_leads[c.corretor_nome].add(c.lead_id);
+  });
+
+  metrics.geral.total_conflitos_etapa = totalConflitos;
+
+  // --- Camada Gerencial de Entradas (Fase 3.5Q / Duas Camadas) ---
+  const leadsVisaoGeral = leadsRaw.filter(l => matchesDateFilter(l.data_cadastro_crm, filtros.inicio, filtros.fim));
+  
+  const distribuicao = {
+    terceiros: 0,
+    map: 0,
+    mcmv: 0,
+    lancamentos: 0,
+    outros: {
+      total: 0,
+      detalhes: {}
+    },
+    sem_pipeline: 0
+  };
+
+  const leads_por_categoria = {
+    terceiros: [],
+    map: [],
+    mcmv: [],
+    lancamentos: [],
+    outros: [],
+    sem_pipeline: []
+  };
+
+  leadsVisaoGeral.forEach(l => {
+    const cat = categorizeLeadPipeline(l);
+
+    const leadItem = {
+      id: l.id,
+      nome: l.nome,
+      corretor: l.corretor_crm || Object.values(l.funis || {}).map(f => f.corretor_nome)[0] || 'Sem Corretor',
+      origem: l.origem || 'Não informada',
+      pipeline: cat.pipeline,
+      etapa: l.etapa_origem_crm || Object.values(l.funis || {}).map(f => f.etapa_nome)[0] || 'Sem Etapa',
+      data_cadastro: l.data_cadastro_crm,
+      data_ultimo_atendimento: l.data_ultimo_atendimento || null,
+      dias_sem_atendimento: l.dias_sem_atendimento !== undefined ? l.dias_sem_atendimento : null,
+      categoria: cat.categoria
+    };
+
+    if (cat.categoria === 'terceiros') {
+      distribuicao.terceiros++;
+      leads_por_categoria.terceiros.push(leadItem);
+    } else if (cat.categoria === 'map') {
+      distribuicao.map++;
+      leads_por_categoria.map.push(leadItem);
+    } else if (cat.categoria === 'mcmv') {
+      distribuicao.mcmv++;
+      leads_por_categoria.mcmv.push(leadItem);
+    } else if (cat.categoria === 'lancamentos') {
+      distribuicao.lancamentos++;
+      leads_por_categoria.lancamentos.push(leadItem);
+    } else if (cat.categoria === 'sem_pipeline') {
+      distribuicao.sem_pipeline++;
+      leads_por_categoria.sem_pipeline.push(leadItem);
+    } else if (cat.categoria === 'outros') {
+      distribuicao.outros.total++;
+      distribuicao.outros.detalhes[cat.pipeline] = (distribuicao.outros.detalhes[cat.pipeline] || 0) + 1;
+      leads_por_categoria.outros.push(leadItem);
+    }
+  });
+
+  metrics.visao_geral = {
+    leads_unicos: leadsVisaoGeral.length,
+    distribuicao,
+    leads_por_categoria
+  };
+
+  // Separação Conceitual Obrigatória:
+  // VISÃO GERAL = todos os leads cadastrados no CRM no período (inclusive inativos, outros pipelines e sem pipeline)
+  metrics.geral.leads_unicos = leadsVisaoGeral.length;
+  // GESTÃO DA CARTEIRA = somente leads operacionais pertencentes às 30 etapas ativas
+  metrics.carteira = {
+    leads_unicos: leadsUnicosMap.size,
+    total_cards: filteredCards.length
+  };
+  metrics.geral.leads_carteira = leadsUnicosMap.size;
+  metrics.geral.cards_carteira = filteredCards.length;
+  
+  Object.values(metrics.funis).forEach(f => {
+     f.corretores_unicos = {};
+     if (f.corretores_leads) {
+        Object.keys(f.corretores_leads).forEach(corr => {
+           f.corretores_unicos[corr] = f.corretores_leads[corr].size;
+        });
+        delete f.corretores_leads;
+     }
+  });
+  
+  Object.values(cardsPorLead).forEach(cards => {
+    if (cards.length > 1) {
+      metrics.geral.leads_multi_funil++;
+    }
+  });
+
+  const funisColetadosIds = (data.funis_coletados || []).map(f => f.id.toString());
+
+  Object.keys(metrics.funis).forEach(fId => {
+    if (metrics.funis[fId].total_cards === 0) {
+      if (funisColetadosIds.includes(fId.toString())) {
+        metrics.funis[fId].coletado_vazio = true; // Coletado, mas zero leads
+      } else {
+        metrics.funis[fId].dados_indisponiveis = true; // Não coletado
+      }
+    }
+  });
+
+  // --- NOVA LÓGICA FASE 3.5G: Leitura do Cache de Histórico ---
+  const CACHE_PATH = path.join(__dirname, '..', '..', 'data', 'cache_historicos.json');
+  const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+  
+  let cacheData = {};
+  if (fs.existsSync(CACHE_PATH)) {
+     try { cacheData = JSON.parse(fs.readFileSync(CACHE_PATH, 'utf8')); } catch(e){}
+  }
+  
+  const cache_resumo = {};
+  const now = Date.now();
+  
+  // Abastece apenas os clientes que estão no escopo da tela atual para poupar banda
+  for (const leadId of leadsUnicosMap.keys()) {
+     const entry = cacheData[leadId];
+     
+     if (!entry || entry.origin !== 'real') {
+         cache_resumo[leadId] = { status: 'nao_verificado' };
+         continue;
+     }
+     
+     const age = now - new Date(entry.consultado_em).getTime();
+     if (age > SEVEN_DAYS_MS) {
+         cache_resumo[leadId] = { status: 'expirado', consultado_em: entry.consultado_em };
+         continue;
+     }
+     
+     const qtd = Array.isArray(entry.atividades) ? entry.atividades.length : 0;
+     let ultimo_data = null;
+     if (qtd > 0) {
+         const sorted = [...entry.atividades].sort((a,b) => new Date(b.data_criacao || b.data_cadastro || 0) - new Date(a.data_criacao || a.data_cadastro || 0));
+         ultimo_data = sorted[0].data_criacao || sorted[0].data_cadastro || sorted[0].created_at;
+     }
+     
+     cache_resumo[leadId] = {
+         status: qtd > 0 ? 'com_comentarios' : 'sem_comentarios',
+         qtd_comentarios: qtd,
+         data_ultimo_comentario: ultimo_data,
+         consultado_em: entry.consultado_em
+     };
+  }
+
+  let acompanhamentos = {};
+
+  return {
+    metrics,
+    opcoes,
+    cache_resumo,
+    acompanhamentos,
+    registros: {
+      unicos: Array.from(leadsUnicosMap.values()),
+      cards: filteredCards
+    }
+  };
+}
+
+module.exports = { aggregateMetrics };
+
+
