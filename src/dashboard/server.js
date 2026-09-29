@@ -1,4 +1,4 @@
-﻿require('dotenv').config();
+﻿try { require('dotenv').config(); } catch (e) {}
 const http = require('http');
 const path = require('path');
 const fs = require('fs');

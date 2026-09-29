@@ -47,7 +47,7 @@ function matchesDateFilter(dateStr, inicio, fim) {
 
 function aggregateMetrics(data, filtros = {}) {
   if (!data) {
-    throw new Error("Dados não fornecidos");
+    throw new Error("Dados nï¿½o fornecidos");
   }
 
   
