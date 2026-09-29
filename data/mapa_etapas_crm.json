@@ -1,0 +1,274 @@
+{
+  "3515_15982": {
+    "nome": "CAIXA DE ENTRADA",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3515_7923": {
+    "nome": "TENTANDO CONTATO COM O LEAD",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3515_15009": {
+    "nome": "PAROU DE RESPONDER / NÃO TEM INTERESSE",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3515_5760": {
+    "nome": "EM ATENDIMENTO (SEM QUALIFAR)",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3515_14588": {
+    "nome": "EM ATENDIMENTO (QUALIFICADO)",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3515_10029": {
+    "nome": "VISITA",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3515_9106": {
+    "nome": "PROPOSTA",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3515_9107": {
+    "nome": "VENDA",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "5308_15981": {
+    "nome": "CAIXA DE ENTRADA",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "5308_15257": {
+    "nome": "TENTANDO CONTATO COM O LEAD",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "5308_15258": {
+    "nome": "SEM CONSEGUIR CONTATO",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "5308_15259": {
+    "nome": "SEM CAPACIDADE DE PGTO (RENDA OU OUTROS)",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "5308_15260": {
+    "nome": "PAROU DE RESPONDER / NÃO TEM INTERESSE",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "5308_15261": {
+    "nome": "EM ATENDIMENTO (SEM QUALIFAR)",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "5308_15262": {
+    "nome": "EM ATENDIMENTO (QUALIFICADO)",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "5308_15263": {
+    "nome": "VISITA",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "5308_15264": {
+    "nome": "PROPOSTA",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "5308_15265": {
+    "nome": "VENDA",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "5297_15426": {
+    "nome": "CAIXA DE ENTRADA",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "5297_15204": {
+    "nome": "TENTANDO CONTATO COM O LEAD",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "5297_15205": {
+    "nome": "SEM CONSEGUIR CONTATO",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "5297_15206": {
+    "nome": "SEM CAPACIDADE DE PGTO (RENDA OU OUTROS)",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "5297_15212": {
+    "nome": "PAROU DE RESPONDER / NÃO TEM INTERESSE",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "5297_15207": {
+    "nome": "EM ATENDIMENTO (SEM QUALIFAR)",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "5297_15208": {
+    "nome": "EM ATENDIMENTO (QUALIFICADO)",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "5297_15209": {
+    "nome": "VISITA",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "5297_15210": {
+    "nome": "PROPOSTA",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "5297_15211": {
+    "nome": "VENDA",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "5281_15119": {
+    "nome": "FRIO",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "4665_11797": {
+    "nome": "NOVO LEAD",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "4665_11812": {
+    "nome": "AGUARDANDO RETORNO DO CLIENTE",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "4665_11813": {
+    "nome": "SEGUNDO DIA AGUARDANDO RETORNO DO CLIENTE",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "4665_11814": {
+    "nome": "TERCEIRO DIA AGUARDANDO RETORNO DO CLIENTE",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "4665_11834": {
+    "nome": "FRIO",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "4665_12136": {
+    "nome": "FRIO [ZONA OESTE]",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "4665_12137": {
+    "nome": "FRIO [ZONA SUL]",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "4665_11877": {
+    "nome": "EM ATENDIMENTO",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "4665_11835": {
+    "nome": "MORNO",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "4665_11836": {
+    "nome": "VISITA AGENDADA",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "4665_11837": {
+    "nome": "VISITA REALIZADA",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "4179_9084": {
+    "nome": "NOVO LEAD",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "4179_9085": {
+    "nome": "AGUARDANDO RETORNO DO CLIENTE",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "4179_9086": {
+    "nome": "SEGUNDO DIA AGUARDANDO CLIENTE",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "4179_9087": {
+    "nome": "TERCEIRO DIA AGUARDANDO CLIENTE",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "4179_9088": {
+    "nome": "CLIENTE COM DÚVIDAS SEM AGENDAR (FICA 1 DIA NESSA ETAPA)",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "4179_9089": {
+    "nome": "VISITA REALIZADA",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "4179_9090": {
+    "nome": "CLIENTE FRIO",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "4179_10030": {
+    "nome": "CLIENTES SEMANAIS",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3514_5751": {
+    "nome": "NOVO LEAD",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3514_7466": {
+    "nome": "SEM CONTATO COM O CLIENTE",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3514_5752": {
+    "nome": "EM ATENDIMENTO",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3514_5753": {
+    "nome": "VISITA AGENDADA",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3514_5754": {
+    "nome": "VISITA REALIZADA ",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3514_5755": {
+    "nome": "PROPOSTA/APROVAÇÃO DE CRÉDITO",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3514_5756": {
+    "nome": "VENDA EM ANDAMENTO ",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3514_7440": {
+    "nome": "VENDA FINALIZADA ",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3500_5668": {
+    "nome": "NOVO LEAD",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3500_9391": {
+    "nome": "AGUARDANDO RETORNO DO CLIENTE",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3500_9398": {
+    "nome": "SEGUNDO DIA AGUARDANDO CLIENTE",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3500_9399": {
+    "nome": "TERCEIRA DIA AGUARDANDO CLIENTE",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3500_7878": {
+    "nome": "FRIO",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3500_15007": {
+    "nome": "LEADFY",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3500_5669": {
+    "nome": "MORNO",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3500_10932": {
+    "nome": "QUENTE",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3500_5670": {
+    "nome": "VISITA AGENDADA",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3500_5671": {
+    "nome": "VISITA REALIZADA",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3500_5672": {
+    "nome": "PROPOSTA/DOCUMENTAÇÃO",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  },
+  "3500_5673": {
+    "nome": "VENDA",
+    "consultado_em": "2026-09-21T01:23:55.404Z"
+  }
+}
